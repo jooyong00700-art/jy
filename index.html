@@ -1,0 +1,2198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101b34">
+<title>리스페토 통합 대시보드 · BIGCELL 스타일</title>
+<style>
+:root{
+  --navy:#0f1a30; --navy2:#18294a; --navy3:#24365c;
+  --ink:#16202f; --ink2:#43506a; --muted:#7b869a;
+  --line:#e6eaf1; --line2:#eef1f6;
+  --bg:#f3f5fa; --card:#ffffff;
+  --blue:#2f6bff; --blue-weak:#eef3ff;
+  --up:#e03e3e; --down:#1c7ed6;
+  --green:#0ea47a; --amber:#f08c00;
+  --radius:14px;
+  --shadow:0 1px 2px rgba(16,27,48,.05), 0 8px 24px -14px rgba(16,27,48,.18);
+  --tap:44px;
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  background:var(--bg); color:var(--ink); font-size:14px; line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:calc(64px + env(safe-area-inset-bottom));
+}
+button{font-family:inherit; font-size:inherit; cursor:pointer; border:0; background:none; color:inherit}
+input,select,textarea{font-family:inherit; font-size:inherit; color:inherit}
+.num{font-variant-numeric:tabular-nums; letter-spacing:-.2px}
+
+/* ---------- layout ---------- */
+.shell{display:flex; min-height:100vh; align-items:flex-start}
+.side{
+  width:232px; flex:0 0 232px; background:var(--navy); color:#c8d2e4;
+  position:sticky; top:0; height:100vh; overflow-y:auto; padding-bottom:20px;
+  scrollbar-width:thin;
+}
+.side::-webkit-scrollbar{width:6px}
+.side::-webkit-scrollbar-thumb{background:#2b3c60; border-radius:3px}
+.brand{display:flex; align-items:center; gap:8px; padding:16px 18px 12px; color:#fff; font-weight:800; letter-spacing:.5px; font-size:17px}
+.brand .dot{width:8px;height:8px;border-radius:50%;background:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.25)}
+.brand small{font-weight:600;font-size:10px;color:#7d8db0;letter-spacing:0}
+.nav-group{padding:6px 0 2px}
+.nav-title{padding:10px 18px 6px; font-size:11px; letter-spacing:.12em; color:#61719a; font-weight:700; text-transform:uppercase}
+.nav-item{display:flex; align-items:center; gap:9px; width:100%; text-align:left; padding:9px 18px; font-size:13.5px; color:#c3cee2; border-left:3px solid transparent}
+.nav-item:hover{background:rgba(255,255,255,.05); color:#fff}
+.nav-item.on{background:rgba(47,107,255,.16); color:#fff; border-left-color:#3b82f6; font-weight:700}
+.nav-item .ico{width:16px; text-align:center; opacity:.85; font-size:13px}
+.nav-item .badge{margin-left:auto; font-size:10px; background:#2f6bff; color:#fff; border-radius:99px; padding:1px 6px; font-weight:700}
+.main{flex:1 1 auto; min-width:0; padding:18px 22px 90px; max-width:1560px}
+
+/* topbar */
+.topbar{display:flex; align-items:center; gap:12px; margin-bottom:14px; flex-wrap:wrap}
+.topbar h1{font-size:21px; margin:0; letter-spacing:-.4px}
+.topbar .sub{color:var(--muted); font-size:12.5px}
+.spacer{flex:1}
+.chip{display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid var(--line); border-radius:999px; padding:6px 11px; font-size:12px; color:var(--ink2); box-shadow:var(--shadow)}
+.chip b{color:var(--ink)}
+.chip .live{width:7px;height:7px;border-radius:50%;background:#22b573; box-shadow:0 0 0 3px rgba(34,181,115,.18)}
+
+/* ---------- cards ---------- */
+.grid{display:grid; gap:14px}
+.card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden}
+.card-h{display:flex; align-items:center; gap:10px; padding:14px 16px; border-bottom:1px solid var(--line2); flex-wrap:wrap}
+.card-h h2{font-size:15px; margin:0; letter-spacing:-.3px}
+.card-h .note{font-size:11.5px; color:var(--muted); font-weight:500}
+.card-b{padding:14px 16px}
+.card-b.flush{padding:0}
+
+/* KPI */
+.kpis{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px}
+.kpi{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:14px 15px; box-shadow:var(--shadow); position:relative; overflow:hidden}
+.kpi .lab{font-size:12px; color:var(--muted); display:flex; align-items:center; gap:6px}
+.kpi .val{font-size:22px; font-weight:800; letter-spacing:-.6px; margin-top:6px}
+.kpi .val small{font-size:13px; font-weight:700; color:var(--muted); margin-left:2px}
+.kpi .delta{font-size:12px; font-weight:700; margin-top:4px; display:flex; gap:5px; align-items:center}
+.kpi.accent{background:linear-gradient(135deg,#1b2d52,#0f1a30); border-color:#1b2d52; color:#fff}
+.kpi.accent .lab{color:#93a4c6}
+.kpi.accent .val{color:#fff}
+.kpi.accent .delta{color:#8fd3ff}
+.up{color:var(--up)}
+.down{color:var(--down)}
+.flat{color:var(--muted)}
+.tag{font-size:10.5px; font-weight:800; padding:2px 6px; border-radius:6px; background:#eef1f7; color:#5b6784}
+.tag.estimate{background:#fff4e0; color:#a86000}
+.tag.live{background:#e8f8f1; color:#0a7f5c}
+.tag.coup{background:#eef3ff; color:#2f6bff}
+
+/* 오늘 매출 카드 · 쿠폰 전/후 */
+.coup-line{display:flex; flex-wrap:wrap; align-items:center; gap:3px 9px; margin-top:6px; font-size:12px; font-weight:600; color:#93a4c6}
+.coup-line b{color:#fff; font-weight:800}
+.coup-line .c2{color:#ffc9c9}
+
+/* ---------- ⚡ 실시간 순수익 조회 ---------- */
+.live-kpi{display:flex; flex-direction:column}
+.live-h{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.live-h .lab{flex:1 1 auto; min-width:0}
+.live-btn{
+  margin-left:auto; display:inline-flex; align-items:center; justify-content:center; gap:6px;
+  min-height:38px; padding:8px 13px; border-radius:10px; white-space:nowrap;
+  font-size:12.5px; font-weight:800; letter-spacing:-.2px; color:#fff;
+  background:linear-gradient(135deg,#5aa0ff 0%,#2f6bff 55%,#1f4fd8 100%);
+  border:1px solid rgba(180,214,255,.55);
+  box-shadow:0 8px 20px -8px rgba(59,130,246,1), inset 0 1px 0 rgba(255,255,255,.3);
+  transition:filter .15s, transform .06s;
+}
+.live-btn:hover{filter:brightness(1.07)}
+.live-btn:active{transform:translateY(1px)}
+.live-btn .bolt{font-size:13px; filter:drop-shadow(0 0 6px rgba(255,255,255,.6))}
+.lp-src{display:flex; align-items:center; gap:8px; flex-wrap:wrap; background:#f7f9fd; border:1px solid var(--line); border-radius:11px; padding:8px 11px; font-size:12px; color:#5b6784}
+.lp-src b{color:var(--ink)}
+.lp-grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px}
+.lp-grid .form-row{margin-bottom:0}
+.lp-grid .form-row label{display:block; font-size:11.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lp-grid .inp{width:100%; font-size:14px; font-weight:800; padding:9px 10px; text-align:right}
+.lp-mix{display:grid; grid-template-columns:1fr 1fr; gap:9px}
+.lp-mix .form-row{margin-bottom:0}
+.lp-mix .inp, #lpRateCtl .inp{width:100%; font-size:14px; font-weight:800; padding:9px 10px; text-align:right}
+/* 쿠폰 차감액 · 쿠폰 제외 실매출 */
+.lp-coup{display:grid; grid-template-columns:172px minmax(0,1fr); gap:9px; margin-top:9px; align-items:stretch}
+.lp-coup .form-row{margin-bottom:0}
+.lp-coup .clab{display:flex; align-items:center; gap:5px; font-size:11.5px; color:#4a5674; font-weight:700; white-space:nowrap; margin-bottom:4px}
+.lp-coup .clab .mini{font-size:10.5px; font-weight:800; color:var(--blue); background:#eef3ff; border-radius:6px; padding:1px 7px}
+.lp-coup .clab .mini.off{color:#8b96ab; background:#eef1f7}
+.lp-coup .inp{width:100%; min-height:38px; font-size:14px; font-weight:800; padding:9px 10px; text-align:right}
+.lp-csum{border:1px solid #d7e3ff; border-radius:11px; padding:8px 11px; background:linear-gradient(135deg,#f7faff,#eef3ff); min-width:0}
+.lp-csum .l{font-size:11px; color:#526a99; font-weight:700}
+.lp-csum .n{font-size:17px; font-weight:800; letter-spacing:-.5px; color:#1d3f8f; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lp-csum .d{font-size:10.5px; color:#7b869a; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lp-resgrid{display:grid; grid-template-columns:1fr 1fr; gap:9px}
+.lp-res{border:1px solid var(--line); border-radius:12px; padding:11px 12px; background:#fff; min-width:0}
+.lp-res .l{font-size:11.5px; color:var(--muted); font-weight:700}
+.lp-res .n{font-size:20px; font-weight:800; letter-spacing:-.6px; margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lp-res .d{font-size:11px; color:var(--muted); margin-top:3px; line-height:1.4}
+.lp-res.lp-sales{grid-column:1/-1; background:linear-gradient(135deg,#f7faff,#eef3ff); border-color:#d7e3ff}
+.lp-res.lp-sales .l{color:#526a99}
+.lp-res.lp-sales .n{font-size:26px; color:#1d3f8f}
+.lp-net{grid-column:1/-1; background:linear-gradient(135deg,#1b2d52,#0f1a30); border-color:#1b2d52; color:#fff}
+.lp-net .l{color:#93a4c6}
+.lp-net .n{font-size:32px; color:#fff}
+.lp-net .n.neg{color:#ff9b9b}
+.lp-net .d{color:#93a4c6}
+.lp-rate{grid-column:1/-1; display:flex; align-items:baseline; gap:10px}
+.lp-rate .n{margin:0 0 0 auto}
+.lp-hint{font-size:11.5px; color:var(--muted); margin-top:7px; line-height:1.6}
+.lp-hint b{color:#4a5674}
+.lp-hint .ok{color:#0a7f5c; font-weight:800}
+
+/* ---------- tables ---------- */
+.tbl-wrap{overflow:auto; -webkit-overflow-scrolling:touch}
+table.tbl{width:100%; border-collapse:collapse; font-size:13px}
+table.tbl th, table.tbl td{padding:10px 12px; text-align:right; white-space:nowrap; border-bottom:1px solid var(--line2)}
+table.tbl th{background:#fafbfd; color:#66718a; font-weight:700; font-size:12px; position:sticky; top:0; z-index:1}
+table.tbl th:first-child, table.tbl td:first-child{text-align:left}
+table.tbl td.l, table.tbl th.l{text-align:left}
+table.tbl tbody tr:hover{background:#fafbff}
+table.tbl tr.total td{background:#f6f9ff; font-weight:800; border-top:2px solid #dbe4f7}
+table.tbl tr.total td:first-child{color:var(--ink)}
+.tbl .prod{display:flex; align-items:center; gap:9px; text-align:left}
+.thumb{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#e9eefb,#dfe7f8); display:grid; place-items:center; font-size:15px; flex:0 0 34px}
+.prod .nm{font-weight:700; font-size:13px; letter-spacing:-.2px}
+.prod .cd{font-size:11px; color:var(--muted)}
+.pill{display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; border-radius:99px; background:#eef2fb; color:#3d5680}
+.pill.rfm{background:#eaf1ff; color:#2158c9}
+.pill.p3p{background:#f1eeff; color:#5b46c9}
+.pill.warn{background:#fff1f1; color:#c92a2a}
+.pill.ok{background:#e9f9f2; color:#0a7f5c}
+
+/* ---------- controls ---------- */
+.toolbar{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+.seg{display:inline-flex; background:#eef1f7; border-radius:9px; padding:3px; gap:2px}
+.seg button{padding:5px 11px; border-radius:7px; font-size:12px; font-weight:700; color:#5f6b85}
+.seg button.on{background:#fff; color:var(--blue); box-shadow:0 1px 3px rgba(16,27,48,.12)}
+.switch{display:inline-flex; align-items:center; gap:7px; font-size:12px; color:var(--ink2); font-weight:600; cursor:pointer; user-select:none}
+.switch input{appearance:none; width:34px; height:19px; border-radius:99px; background:#d6dcea; position:relative; transition:.15s; flex:0 0 34px; cursor:pointer}
+.switch input:checked{background:var(--blue)}
+.switch input::after{content:""; position:absolute; width:15px;height:15px;border-radius:50%;background:#fff; top:2px; left:2px; transition:.15s}
+.switch input:checked::after{left:17px}
+.btn{display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); background:#fff; border-radius:9px; padding:7px 12px; font-size:12.5px; font-weight:700; color:var(--ink2); box-shadow:0 1px 1px rgba(16,27,48,.03)}
+.btn:hover{border-color:#c9d4e8; color:var(--ink)}
+.btn.primary{background:var(--blue); border-color:var(--blue); color:#fff}
+.btn.primary:hover{filter:brightness(1.05)}
+.btn.ghost{background:transparent; border-color:transparent; color:var(--blue); padding:6px 8px}
+select.inp, input.inp{background:#fff; border:1px solid var(--line); border-radius:9px; padding:7px 10px; font-size:12.5px; color:var(--ink); min-height:34px}
+select.inp:focus, input.inp:focus{outline:2px solid #c7d8ff; outline-offset:0; border-color:#9dbcff}
+input.inp[type=number]{text-align:right}
+
+/* ---------- charts ---------- */
+.chart{width:100%; height:auto; display:block}
+.chart.sm{height:auto}
+.legend{display:flex; gap:14px; justify-content:center; font-size:11.5px; color:#59647c; flex-wrap:wrap; margin-bottom:2px}
+.legend i{display:inline-block; width:9px; height:9px; border-radius:3px; margin-right:5px; vertical-align:-1px}
+.tip{position:fixed; pointer-events:none; background:#101b34; color:#fff; font-size:11.5px; padding:7px 9px; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,.25); z-index:80; opacity:0; transition:opacity .08s; white-space:nowrap}
+.tip.on{opacity:1}
+
+/* ---------- calendar ---------- */
+.cal-wrap{display:grid; grid-template-columns:230px minmax(0,1fr); gap:14px; padding:14px 16px}
+.cal-side{display:flex; flex-direction:column; gap:12px}
+.yearbar{display:flex; align-items:center; justify-content:space-between; background:#f7f9fd; border:1px solid var(--line); border-radius:11px; padding:6px 8px}
+.yearbar b{font-size:15px}
+.yearbar button{width:28px;height:28px;border-radius:8px;color:#5f6b85}
+.yearbar button:hover{background:#e9eefb}
+.months{display:grid; grid-template-columns:repeat(3,1fr); gap:6px}
+.months button{padding:9px 0; border-radius:9px; border:1px solid var(--line); background:#fff; font-size:12.5px; font-weight:700; color:#55617a}
+.months button.on{background:var(--blue); border-color:var(--blue); color:#fff}
+.memo-box{border:1px solid var(--line); border-radius:11px; padding:11px 12px; background:#fff}
+.memo-box .mh{display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:800; margin-bottom:8px}
+.memo-box .mh .d{font-weight:600; color:var(--muted); font-size:11.5px}
+.memo-empty{border:1px dashed #d8dfec; border-radius:9px; padding:18px 8px; text-align:center; color:#93a0b6; font-size:12px; background:#fbfcff}
+.memo-item{background:#fff9e8; border:1px solid #ffe6a8; border-radius:9px; padding:8px 9px; font-size:12px; margin-bottom:6px}
+.memo-item b{display:block; margin-bottom:2px}
+.memo-add{width:100%; border:1px dashed #cfd8e8; border-radius:9px; padding:8px; font-size:12px; color:#5f6b85; background:#fff}
+.memo-add:hover{border-color:#9dbcff; color:var(--blue)}
+.side-chart-lab{font-size:11.5px; color:var(--muted); margin-bottom:4px}
+.cal-toggles{display:flex; flex-direction:column; gap:7px; background:#f7f9fd; border:1px solid var(--line); border-radius:11px; padding:10px 11px}
+.grid-cal{display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); border-left:1px solid var(--line); border-top:1px solid var(--line); border-radius:11px; overflow:hidden; background:#fff}
+.grid-cal .dow{padding:7px 0; text-align:center; font-size:11.5px; font-weight:800; color:#6b7690; background:#f7f9fd; border-right:1px solid var(--line); border-bottom:1px solid var(--line)}
+.grid-cal .dow.sun{color:#d64545}
+.grid-cal .dow.sat{color:#2f6bff}
+.day{min-height:92px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); padding:5px 6px; position:relative; background:#fff; text-align:left; display:flex; flex-direction:column; gap:1px}
+.day.other{background:#fbfcfe; color:#b3bccd}
+.day.today{box-shadow:inset 0 0 0 2px var(--blue); z-index:2}
+.day.sel{background:#f5f9ff}
+.day .dn{font-size:11px; font-weight:800; color:#41506b}
+.day.sun .dn{color:#d64545}
+.day.sat .dn{color:#2f6bff}
+.day .sales{font-size:13px; font-weight:800; letter-spacing:-.4px; color:#16202f; line-height:1.2}
+.day .s-short{display:none}
+.day .settle .s-short{display:none}
+.day .delta{font-size:10px; font-weight:700}
+.day .line{font-size:10.5px; color:#5b6784; display:flex; gap:4px; align-items:center; justify-content:space-between}
+.day .line b{font-weight:700; color:#41506b}
+.day .line .v{font-weight:700}
+.day .line .v.net{color:#2f6bff}
+.day .empty{font-size:10.5px; color:#b9c2d3; margin-top:6px}
+.day .settle{margin-top:auto; align-self:flex-start; font-size:9.5px; font-weight:800; color:#2158c9; background:#eaf1ff; border-radius:5px; padding:1px 5px; display:inline-flex; gap:3px; align-items:center}
+.day .memo-dot{position:absolute; top:6px; right:7px; width:6px; height:6px; border-radius:50%; background:#f59f00}
+.cal-foot{display:flex; flex-wrap:wrap; gap:8px 20px; padding:10px 16px 14px; border-top:1px solid var(--line2); font-size:12px; color:#5b6784}
+.cal-foot .it b{color:var(--ink); font-weight:800; margin-left:4px}
+.cal-foot .k{color:var(--muted); font-weight:600}
+.cal-legend{display:flex; flex-wrap:wrap; gap:12px; font-size:11.5px; color:#66718a}
+.cal-legend span{display:inline-flex; align-items:center; gap:5px}
+.cal-legend i{width:9px;height:9px;border-radius:3px;display:inline-block}
+
+/* ---------- modal ---------- */
+.mask{position:fixed; inset:0; background:rgba(15,26,48,.42); display:flex; align-items:center; justify-content:center; padding:16px; z-index:70; backdrop-filter:blur(2px)}
+.modal{background:#fff; border-radius:16px; width:min(720px,100%); max-height:88vh; overflow:auto; box-shadow:0 24px 60px rgba(9,17,33,.35)}
+.modal .mh{display:flex; align-items:center; gap:10px; padding:16px 18px; border-bottom:1px solid var(--line)}
+.modal .mh h3{margin:0; font-size:16px}
+.modal .mh .x{margin-left:auto; width:32px;height:32px;border-radius:8px;color:#6b7690; font-size:18px}
+.modal .mh .x:hover{background:#f1f4fa}
+.modal .mb{padding:16px 18px 18px}
+.kv{display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px}
+.kv .b{border:1px solid var(--line); border-radius:11px; padding:11px 12px}
+.kv .b .l{font-size:11.5px; color:var(--muted); font-weight:700}
+.kv .b .n{font-size:17px; font-weight:800; letter-spacing:-.4px; margin-top:3px}
+.kv .b .d{font-size:11.5px; font-weight:700; margin-top:2px}
+.sec-t{font-size:12.5px; font-weight:800; color:#33405a; margin:14px 0 7px; display:flex; align-items:center; gap:6px}
+.sec-t .cnt{font-weight:700; color:var(--blue); font-size:11.5px}
+.blank{border:1px dashed #d8dfec; border-radius:10px; padding:14px; text-align:center; color:#93a0b6; font-size:12px; background:#fbfcff}
+.form-row{display:grid; gap:8px; margin-bottom:10px}
+.form-row label{font-size:12px; font-weight:700; color:#4a5674}
+.form-row input[type=date], .form-row input[type=text], .form-row textarea{width:100%; border:1px solid var(--line); border-radius:9px; padding:9px 11px; font-size:13px}
+.form-row textarea{min-height:80px; resize:vertical}
+.mfoot{display:flex; gap:8px; justify-content:flex-end; margin-top:14px}
+
+/* ---------- misc ---------- */
+.two{display:grid; grid-template-columns:1.35fr 1fr; gap:14px}
+.three{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+.rank-row{display:flex; align-items:center; gap:10px; padding:9px 12px; border-bottom:1px solid var(--line2); font-size:12.5px}
+.rank-row:last-child{border-bottom:0}
+.rank-row .nm{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600}
+.rank-row .kw{font-size:11px; color:var(--muted)}
+.rank-badge{font-weight:800; font-size:12.5px; min-width:26px; text-align:right}
+.delta-badge{font-size:11.5px; font-weight:800; min-width:44px; text-align:right}
+.inv-bar{height:6px; border-radius:99px; background:#edf0f6; overflow:hidden; min-width:70px}
+.inv-bar i{display:block; height:100%; border-radius:99px}
+.stat-line{display:flex; align-items:center; gap:8px; padding:8px 0; border-bottom:1px dashed var(--line2); font-size:12.5px}
+.stat-line:last-child{border:0}
+.stat-line .lb{flex:1; color:#4a5674; font-weight:600}
+.stat-line .vl{font-weight:800}
+.hint{font-size:11.5px; color:var(--muted); line-height:1.6}
+.hint b{color:#4a5674}
+.formula{background:#f7f9fd; border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:12px; color:#41506b; line-height:1.7}
+.formula code{background:#eef3ff; color:#2158c9; border-radius:5px; padding:1px 5px; font-weight:700; font-family:ui-monospace,Menlo,monospace}
+.alert{display:flex; gap:9px; padding:11px 13px; border-radius:11px; font-size:12.5px; line-height:1.55}
+.alert.warn{background:#fff8e8; color:#8a5a00; border:1px solid #ffe3a8}
+.alert.info{background:#eef4ff; color:#1f4fa8; border:1px solid #d5e2ff}
+.alert.ok{background:#eafaf3; color:#0a7f5c; border:1px solid #bdebd7}
+
+/* report (알림톡 미리보기) */
+.phone{max-width:390px; margin:0 auto; background:#b2c7d9; border-radius:26px; padding:14px 10px 20px; box-shadow:var(--shadow)}
+.phone .top{display:flex; align-items:center; justify-content:space-between; color:#fff; font-size:11px; padding:0 8px 8px}
+.talk{background:#fff; border-radius:14px; padding:2px 0 10px; box-shadow:0 2px 8px rgba(0,0,0,.08); overflow:hidden}
+.talk .th{background:#fff; padding:10px 12px; border-bottom:1px solid #eef1f6; display:flex; align-items:center; gap:8px}
+.talk .th .av{width:26px;height:26px;border-radius:8px;background:#0f1a30; color:#fff; display:grid; place-items:center; font-size:11px; font-weight:800}
+.talk .th b{font-size:12.5px}
+.talk-body{padding:10px 12px; font-size:12.5px; line-height:1.75; color:#222}
+.talk-body .big{font-size:19px; font-weight:800; letter-spacing:-.4px}
+.talk-body hr{border:0; border-top:1px solid #eef1f6; margin:9px 0}
+.talk-body .row{display:flex; justify-content:space-between}
+.talk-body .row span{color:#5b6784}
+.talk-body .row b{font-weight:800}
+.talk-btns{display:flex; gap:6px; padding:0 12px}
+.talk-btns button{flex:1; border:1px solid #e3e8f2; background:#f8fafd; border-radius:8px; padding:7px; font-size:11.5px; font-weight:700; color:#2f6bff}
+
+/* bottom nav (mobile) */
+.tabbar{display:none}
+@media (max-width:1080px){
+  .side{width:196px; flex-basis:196px}
+  .main{padding:14px 14px 90px}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .two{grid-template-columns:1fr}
+  .three{grid-template-columns:1fr}
+  .cal-wrap{grid-template-columns:1fr}
+  .months{grid-template-columns:repeat(6,1fr)}
+}
+@media (max-width:760px){
+  body{padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+  .side{display:none}
+  .main{padding:12px 11px 84px}
+  .topbar h1{font-size:18px}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px}
+  .kpi{padding:11px 12px}
+  .kpi .val{font-size:18px}
+  .kpi .lab{font-size:11px}
+  .live-kpi{grid-column:1/-1}
+  .month-kpi{grid-column:1/-1}
+  .live-kpi .val{font-size:22px}
+  .live-btn{min-height:44px; font-size:13px; padding:9px 14px}
+  .lp-grid{grid-template-columns:1fr 1fr}
+  .lp-coup{grid-template-columns:1fr 1fr; gap:8px}
+  .lp-csum .n{font-size:15px}
+  .lp-res .n{font-size:17px}
+  .lp-res.lp-sales .n{font-size:22px}
+  .lp-net .n{font-size:27px}
+  .lp-src .btn{width:100%; min-height:40px}
+  .mfoot{gap:7px}
+  .mfoot .btn{min-height:42px}
+  #lpCopy{flex:1 1 100%; justify-content:center; margin-right:0!important}
+  #lpApply{flex:1 1 auto; justify-content:center}
+  .card-h{padding:12px 12px}
+  .card-b{padding:12px}
+  .grid-cal .dow{padding:6px 0; font-size:10.5px}
+  .day{min-height:74px; padding:4px}
+  .day .sales{font-size:11px}
+  .day .s-full{display:none}
+  .day .s-short{display:inline}
+  .day .settle .s-full{display:none}
+  .day .settle .s-short{display:inline}
+  .day .line{font-size:9px}
+  .day .line.hide-m{display:none}
+  .day .settle{font-size:8.5px; padding:0 3px}
+  .months{grid-template-columns:repeat(4,1fr)}
+  .cal-wrap{padding:11px}
+  .kv{grid-template-columns:1fr 1fr}
+  table.tbl th, table.tbl td{padding:8px 9px; font-size:12px}
+  .tabbar{
+    display:flex; position:fixed; left:0; right:0; bottom:0; z-index:60;
+    background:rgba(255,255,255,.97); border-top:1px solid var(--line);
+    padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+    backdrop-filter:blur(8px);
+  }
+  .tabbar button{flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; font-size:10px; color:#8b96ab; font-weight:700; padding:5px 0}
+  .tabbar button .i{font-size:17px; line-height:1}
+  .tabbar button.on{color:var(--blue)}
+  .hide-sm{display:none}
+  .sticky-m{position:sticky; top:0; z-index:30; background:var(--bg); padding-top:2px}
+}
+@media print{
+  .side,.tabbar,.topbar .chip,.btn{display:none!important}
+  .main{padding:0}
+  .card{box-shadow:none; break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="side" id="side"></aside>
+  <main class="main" id="app"></main>
+</div>
+<div class="tabbar" id="tabbar"></div>
+<div class="tip" id="tip"></div>
+<script>
+window.__errs = [];
+window.addEventListener('error', function(e){
+  window.__errs.push(String(e.message));
+  var d = document.getElementById('errbar') || (function(){ var x=document.createElement('div'); x.id='errbar'; x.style.cssText='position:fixed;left:0;right:0;bottom:0;background:#c92a2a;color:#fff;font-size:11px;padding:6px 10px;z-index:999;white-space:pre-wrap'; document.body.appendChild(x); return x; })();
+  d.textContent = '오류: ' + e.message + ' @' + (e.filename||'') + ':' + e.lineno;
+});
+</script>
+<script>
+/* ============================================================
+   리스페토 통합 대시보드 (빅셀 스타일 클론 + 개선판)
+   - 실데이터: 빅셀 app.bigcell.co.kr 계정(thfwysla) 2026-11-18 수집
+   - 저장: localStorage (원가/메모/실시간 수치/설정)
+   ============================================================ */
+const STORE_KEY = 'bigcell-clone-v1';
+
+/* ---------- 상품 마스터 (로켓그로스) ---------- */
+const PRODUCTS = [
+  {id:'8188501167', sku:'48219924', name:'리스페토 빨래건조대 튼튼한 접이식 건조대', short:'빨래건조대', icon:'🧺', mk:'RFM',
+   price:22990, disc:3000, fee:11.88, cost:9440, inout:1595, ship:2860,
+   stock:3354, stockValue:31661760, daily:73, soldout:'2026-12-30', returns:196, returnRate:9, adsVat:3237781, soldM:1378},
+  {id:'9701805278', sku:'59918188', name:'리스페토 1+1 한국트레킹학교 신발깔창 아치 쿠션 구름깔창', short:'신발깔창', icon:'👟', mk:'RFM',
+   price:10790, disc:800, fee:11.55, cost:2364, inout:1100, ship:1485,
+   stock:490, stockValue:1158360, daily:13, soldout:'2026-12-08', returns:39, returnRate:8, adsVat:750899, soldM:296},
+  {id:'9395470256', sku:'70114948', name:'리스페토 높이가 높은 접이식 다용도 좌식 테이블', short:'좌식테이블', icon:'🪑', mk:'RFM',
+   price:37990, disc:8000, fee:11.88, cost:9000, inout:2008, ship:3823,
+   stock:0, stockValue:0, daily:0, soldout:'-', returns:0, returnRate:0, adsVat:0, soldM:0},
+  {id:'9593565569', sku:'74898276', name:'리스페토 ALL 실리콘 미끄럼방지 접이식 노트북거치대', short:'노트북거치대', icon:'💻', mk:'RFM',
+   price:7990, disc:0, fee:6.4, cost:2850, inout:1265, ship:1925,
+   stock:9, stockValue:25650, daily:0, soldout:'-', returns:0, returnRate:0, adsVat:0, soldM:1},
+  {id:'9593584011', sku:'74899093', name:'리스페토 양면 스테인레스 발각질제거 풋케어', short:'풋케어', icon:'🦶', mk:'RFM',
+   price:7900, disc:0, fee:10.56, cost:2400, inout:1078, ship:1238,
+   stock:6, stockValue:14400, daily:0, soldout:'-', returns:0, returnRate:0, adsVat:0, soldM:3},
+  {id:'9595425253', sku:'74964850', name:'리스페토 원터치 휴지통 사무실 욕실 가정 쓰레기통 10L', short:'휴지통 10L', icon:'🗑️', mk:'RFM',
+   price:8900, disc:0, fee:11.88, cost:2220, inout:1293, ship:2310,
+   stock:0, stockValue:0, daily:0, soldout:'-', returns:0, returnRate:0, adsVat:0, soldM:0},
+  {id:'9636737924', sku:'75437998', name:'리스페토 공기주입식 손목보호대 (오른손)', short:'손목보호대 R', icon:'🖐️', mk:'RFM',
+   price:13800, disc:0, fee:11.88, cost:3600, inout:1045, ship:2035,
+   stock:0, stockValue:0, daily:0, soldout:'-', returns:0, returnRate:0, adsVat:0, soldM:0},
+  {id:'9611854991', sku:'75437997', name:'리스페토 공기주입식 손목보호대 (왼손)', short:'손목보호대 L', icon:'🤚', mk:'RFM',
+   price:13800, disc:0, fee:11.88, cost:3600, inout:1045, ship:2035,
+   stock:0, stockValue:0, daily:0, soldout:'-', returns:0, returnRate:0, adsVat:0, soldM:0}
+];
+
+/* ---------- 판매자배송(3P) 상품 ---------- */
+const PRODUCTS_3P = [
+  {id:'9595425253', name:'리스페토 원터치 휴지통 10L', short:'휴지통 10L', icon:'🗑️', price:14900, disc:0, fee:11.88, cost:2610},
+  {id:'9593584011', name:'리스페토 양면 스테인레스 발각질제거 풋케어', short:'풋케어', icon:'🦶', price:11300, disc:0, fee:10.56, cost:2400},
+  {id:'9593565569', name:'리스페토 ALL 실리콘 노트북거치대', short:'노트북거치대', icon:'💻', price:11390, disc:0, fee:6.4, cost:2850},
+  {id:'9395470256', name:'리스페토 높이가 높은 접이식 다용도 좌식 테이블', short:'좌식테이블', icon:'🪑', price:29990, disc:8000, fee:11.88, cost:9000}
+];
+
+/* ---------- 일별 실적 (11/1~11/17 확정, 11/18 실시간) ---------- */
+const DAILY = [
+  {d:'2026-11-01', sales:2498750, profit:504790, ad:283204},
+  {d:'2026-11-02', sales:2613950, profit:547658, ad:266901, settle:7009448},
+  {d:'2026-11-03', sales:2022880, profit:411118, ad:252173, settle:4054589},
+  {d:'2026-11-04', sales:1553940, profit:318699, ad:226030},
+  {d:'2026-11-05', sales:1593760, profit:309386, ad:222601},
+  {d:'2026-11-06', sales:1834840, profit:349101, ad:213265, settle:3663547},
+  {d:'2026-11-07', sales:1764700, profit:341707, ad:242637},
+  {d:'2026-11-08', sales:1956750, profit:396071, ad:256552},
+  {d:'2026-11-09', sales:1632160, profit:306771, ad:234767},
+  {d:'2026-11-10', sales:1836470, profit:376864, ad:214918, settle:2518511},
+  {d:'2026-11-11', sales:1522750, profit:320660, ad:203781},
+  {d:'2026-11-12', sales:1500470, profit:286501, ad:215245},
+  {d:'2026-11-13', sales:1429830, profit:262837, ad:226780, settle:4625607},
+  {d:'2026-11-14', sales:1495990, profit:292580, ad:251714},
+  {d:'2026-11-15', sales:1972540, profit:369321, ad:251844},
+  {d:'2026-11-16', sales:1450580, profit:274546, ad:215999},
+  {d:'2026-11-17', sales:1534340, profit:295593, ad:210269, qty:88},
+  {d:'2026-11-18', sales:1285010, coupon:175800, netSales:1109210, profit:null, ad:193563, qty:63, live:true}
+];
+
+/* ---------- 상품별 매출 변동 (11/17, 빅셀 대시보드) ---------- */
+const PRODUCT_DELTA = [
+  {id:'9701805278', prev:{sales:73960, profit:25111, qty:8}, now:{sales:184390, profit:64772, qty:19}},
+  {id:'8188501167', prev:{sales:1368630, profit:247282, qty:69}, now:{sales:1349950, profit:230821, qty:69}},
+  {id:'9593565569', prev:{sales:7990, profit:1439, qty:1}, now:{sales:0, profit:0, qty:0}}
+];
+
+/* ---------- 광고 캠페인 (11/17) ---------- */
+const CAMPAIGNS = [
+  {id:'105445710', name:'*26년 10월 31일 (620) 화이트', type:'매출최적화', start:'2026-10-30',
+   cost:86247, conv:491030, imp:50689, click:242, qty:25, profit:85321},
+  {id:'105445711', name:'*26년 10월 31일 (630) 크림', type:'매출최적화', start:'2026-10-30',
+   cost:91341, conv:325150, imp:84795, click:260, qty:17, profit:50307},
+  {id:'105328645', name:'깔창광고11 9/23', type:'매출최적화', start:'2026-09-22',
+   cost:32681, conv:86930, imp:27796, click:51, qty:9, profit:30919}
+];
+
+/* ---------- 정산 (11/17) ---------- */
+const SETTLE = [
+  {id:'8188501167', stock:2302, qty:69, sales:1532950, couponDl:180000, couponNow:0, fee:160744,
+   cost:651360, inout:119625, ship:214500, keep:0, returnFee:0, ad:177588, milk:0, loss:0},
+  {id:'9701805278', stock:512, qty:19, sales:197990, couponDl:13600, couponNow:0, fee:21300,
+   cost:44916, inout:8800, ship:11880, keep:0, returnFee:0, ad:32681, milk:0, loss:0},
+  {id:'9593565569', stock:9, qty:0, sales:0, couponDl:0, couponNow:0, fee:0,
+   cost:0, inout:1265, ship:1925, keep:0, returnFee:0, ad:0, milk:0, loss:0},
+  {id:'9593584011', stock:6, qty:0, sales:0, couponDl:0, couponNow:0, fee:0,
+   cost:0, inout:0, ship:0, keep:0, returnFee:0, ad:0, milk:0, loss:0}
+];
+
+/* ---------- 정산 입금 예정 ---------- */
+const SETTLE_DUE = [
+  {d:'2026-11-02', seller:23631, rfm:6985817},
+  {d:'2026-11-03', seller:0, rfm:4054589},
+  {d:'2026-11-06', seller:0, rfm:3663547},
+  {d:'2026-11-10', seller:0, rfm:2518511},
+  {d:'2026-11-13', seller:0, rfm:4625607},
+  {d:'2026-11-20', seller:0, rfm:1804508},
+  {d:'2026-11-27', seller:0, rfm:3829784},
+  {d:'2026-12-01', seller:0, rfm:7671944},
+  {d:'2026-12-04', seller:0, rfm:7922595}
+];
+
+/* ---------- 노출순위 (11/17) ---------- */
+const RANKS = [
+  {id:'90451193374', name:'리스페토 접이식 건조대 올화이트', kw:'접이식빨래건조대', prev:38, now:19},
+  {id:'90451193372', name:'리스페토 접이식 건조대 올블랙', kw:'접이식빨래건조대', prev:39, now:23},
+  {id:'92552270128', name:'리스페토 접이식 건조대 올크림', kw:'접이식빨래건조대', prev:18, now:14},
+  {id:'90451193370', name:'리스페토 원룸 빨래건조대 올블랙', kw:'원룸빨래건조대', prev:44, now:41},
+  {id:'90451193371', name:'리스페토 접이식 건조대 올블랙', kw:'빨래건조대', prev:48, now:47},
+  {id:'90451193373', name:'리스페토 원룸 빨래건조대 올크림', kw:'원룸빨래건조대', prev:38, now:38},
+  {id:'90451193369', name:'리스페토 접이식 건조대 올화이트', kw:'빨래건조대', prev:14, now:17},
+  {id:'92552270129', name:'리스페토 접이식 건조대 올크림', kw:'빨래건조대', prev:30, now:46}
+];
+
+/* ---------- 품절 상품 ---------- */
+const SOLDOUT = [
+  {id:'94862125697', name:'리스페토 좌식 테이블 올화이트 700x480x350', qty:0},
+  {id:'95587029996', name:'리스페토 원터치 휴지통 블랙 소', qty:0},
+  {id:'95587029997', name:'리스페토 원터치 휴지통 화이트 소', qty:0},
+  {id:'95587029993', name:'리스페토 원터치 휴지통 그레이 소', qty:0},
+  {id:'95638159401', name:'리스페토 손목보호대 오른손 FREE', qty:0},
+  {id:'95638159400', name:'리스페토 손목보호대 왼손 FREE', qty:0}
+];
+
+/* ---------- 쿠폰(할인) 기준 ---------- */
+/* 쿠팡 윙 > 로켓그로스 > 재고현황의 매출은 쿠폰·할인 적용 전 판매가 기준이다.
+   판매 수량 × 상품 비중으로 쿠폰 차감액을 산출해 '쿠폰 제외 실매출'을 함께 관리한다. */
+const COUPON_MIX = [
+  {id:'8188501167', coupon:3000},   // 빨래건조대 22,990원 / 쿠폰 3,000원
+  {id:'9701805278', coupon:800}     // 신발깔창 10,790원 / 쿠폰 800원
+];
+const COUPON_DEFAULT_MIX = {mix1:90, mix2:10};
+function couponNum(v){ return (v==null || v==='' || isNaN(Number(v))) ? null : Math.max(0, Math.round(Number(v))); }
+/* 판매 수량과 상품 비중 → 예상 쿠폰 차감액 */
+function estCoupon(qty, mix1, mix2){
+  const q = Math.max(0, Math.round(Number(qty)||0));
+  const w1 = Math.max(0, Number(mix1==null?COUPON_DEFAULT_MIX.mix1:mix1)||0);
+  const w2 = Math.max(0, Number(mix2==null?COUPON_DEFAULT_MIX.mix2:mix2)||0);
+  const tw = w1 + w2;
+  const q1 = tw ? Math.round(q*w1/tw) : 0;
+  const q2 = Math.max(0, q - q1);
+  return q1*COUPON_MIX[0].coupon + q2*COUPON_MIX[1].coupon;
+}
+/* {sales, coupon, netSales} 를 서로 모순 없게 정리 (쿠폰 우선, 실매출 = 매출 − 쿠폰) */
+function liveNumbers(live, mix1, mix2){
+  const o = Object.assign({}, live||{});
+  const sales = Math.max(0, Number(o.sales)||0);
+  const qty = Math.max(0, Number(o.qty)||0);
+  const c = couponNum(o.coupon), n = couponNum(o.netSales);
+  let coupon;
+  if(c!=null) coupon = Math.min(c, sales);
+  else if(n!=null) coupon = Math.max(0, Math.min(sales, sales-n));
+  else coupon = Math.min(sales, estCoupon(qty, mix1, mix2));
+  return Object.assign({}, o, {sales, qty, coupon, netSales:Math.max(0, sales-coupon)});
+}
+/* 자동 수집 응답(live) 반영: netSales·coupon 이 있으면 그대로, 없으면 수량·상품 비중으로 산출 */
+function applyLive(src, prev, mix1, mix2){
+  const s = src || {};
+  const merged = Object.assign({}, prev||{});
+  ['date','sales','qty','adExVat','at','profit'].forEach(k=>{ if(s[k]!=null && s[k]!=='') merged[k] = s[k]; });
+  delete merged.coupon; delete merged.netSales;
+  const c = couponNum(s.coupon), n = couponNum(s.netSales);
+  if(c!=null) merged.coupon = c;
+  else if(n!=null) merged.coupon = Math.max(0, (Number(merged.sales)||0) - n);
+  if(n!=null) merged.netSales = n;
+  return liveNumbers(merged, mix1, mix2);
+}
+
+/* ---------- 설정 기본값 ---------- */
+const DEFAULTS = {
+  rate:202,                 // 위안 환율
+  importCostRate:45,        // 한국 도착까지 비용 비율(%)
+  targetSales:1500000,      // 일 목표 매출
+  vat:1.1,
+  apiUrl:'https://raw.githubusercontent.com/jooyong00700-art/jy/main/bigcell-live.json', // 자동 수집 엔드포인트 (JSON)
+  live:{date:'2026-11-18', sales:1285010, coupon:175800, netSales:1109210, qty:63, adExVat:175966, at:'22:40'},
+  memos:{},
+  costOverrides:{},
+  dailyOverrides:{}
+};
+
+/* 저장된 live 값 복원: 예전 저장값에 쿠폰/실매출이 없으면 기본값의 쿠폰을 물려주지 않고
+   저장된 수량 기준으로 다시 산출한다 */
+function loadLive(saved){
+  const base = Object.assign({}, DEFAULTS.live);
+  if(!saved || typeof saved!=='object') return liveNumbers(base);
+  const merged = Object.assign({}, base, saved);
+  if(couponNum(saved.coupon)==null && couponNum(saved.netSales)==null){ delete merged.coupon; delete merged.netSales; }
+  return liveNumbers(merged);
+}
+
+/* ============================== 저장소 ============================== */
+function loadState(){
+  let s = {};
+  try{ s = JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); }catch(e){ s = {}; }
+  return Object.assign({}, DEFAULTS, s, {
+    apiUrl: (s.apiUrl && String(s.apiUrl).trim()) ? String(s.apiUrl).trim() : DEFAULTS.apiUrl,
+    live: loadLive(s.live),
+    memos: Object.assign({}, s.memos||{}),
+    costOverrides: Object.assign({}, s.costOverrides||{}),
+    dailyOverrides: Object.assign({}, s.dailyOverrides||{})
+  });
+}
+let S = loadState();
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(S)); }catch(e){} }
+
+/* ============================== 유틸 ============================== */
+const won = n => (n==null || isNaN(n)) ? '-' : Math.round(n).toLocaleString('ko-KR');
+const wonW = n => (n==null || isNaN(n)) ? '-' : '₩' + won(n);
+const pct1 = n => (n==null || isNaN(n)) ? '-' : n.toFixed(1);
+const clamp = (v,a,b) => Math.min(b, Math.max(a,v));
+const DOW = ['일','월','화','수','목','금','토'];
+const pad = n => String(n).padStart(2,'0');
+const ym = s => s.slice(0,7);
+const dnum = s => Number(s.slice(8,10));
+function dateObj(s){ const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); }
+function fmtDate(s){ const d = dateObj(s); return `${d.getMonth()+1}/${pad(d.getDate())}(${DOW[d.getDay()]})`; }
+function deltaPct(cur, prev){ if(prev==null || prev===0) return null; return (cur-prev)/Math.abs(prev)*100; }
+function deltaHTML(v, opts){
+  if(v==null || isNaN(v)) return '<span class="flat">-</span>';
+  const sign = v>0?'▲':(v<0?'▼':'');
+  const cls = v>0?'up':(v<0?'down':'flat');
+  const txt = Math.abs(v).toFixed(Math.abs(v)>=100?0:1);
+  return `<span class="${cls}">${txt}% ${sign}</span>`;
+}
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* 마진 계산 (빅셀 산식 검증 완료) */
+function margin(p){
+  const ov = S.costOverrides[p.id];
+  const price = ov && ov.price!=null ? ov.price : p.price;
+  const disc = ov && ov.disc!=null ? ov.disc : p.disc;
+  const fee = ov && ov.fee!=null ? ov.fee : p.fee;
+  const cost = ov && ov.cost!=null ? ov.cost : p.cost;
+  const inout = ov && ov.inout!=null ? ov.inout : (p.inout||0);
+  const ship = ov && ov.ship!=null ? ov.ship : (p.ship||0);
+  const base = price - disc;
+  const feeAmt = base * fee/100;
+  const profit = base - feeAmt - cost - inout - ship;
+  const rate = price ? profit/price*100 : 0;
+  return {price, disc, fee, cost, inout, ship, base, feeAmt, profit, rate};
+}
+function profitOf(p){ return margin(p).profit; }
+
+/* 실적 시리즈 (override 반영) */
+function dailySeries(){
+  return DAILY.map(r => {
+    const o = S.dailyOverrides[r.d] || {};
+    const sales = o.sales!=null? o.sales : r.sales;
+    const ad = o.ad!=null? o.ad : r.ad;
+    const qty = o.qty!=null? o.qty : r.qty;
+    let profit = o.profit!=null? o.profit : r.profit;
+    if(profit==null && sales!=null){
+      const blend = blendedMargin();
+      profit = Math.round(sales*blend);
+    }
+    return Object.assign({}, r, {sales, ad, qty, profit, net: (profit!=null && ad!=null) ? profit-ad : null, estimate: r.profit==null});
+  });
+}
+function blendedMargin(){
+  // 최근 7일 이익률 (매출 가중)
+  const rows = DAILY.filter(r=>r.profit!=null).slice(-7);
+  const sales = rows.reduce((a,r)=>a+r.sales,0);
+  const profit = rows.reduce((a,r)=>a+r.profit,0);
+  return sales ? profit/sales : 0.19;
+}
+function liveRow(){
+  const t = S.live || {};
+  const rows = dailySeries();
+  const row = rows.find(r=>r.d===t.date) || null;
+  const n = v => (v==null || v==='' || isNaN(Number(v))) ? null : Number(v);
+  const qty = n(t.qty)!=null ? Math.max(0, n(t.qty)) : (row && row.qty!=null ? row.qty : 0);
+  const sales = n(t.sales)!=null ? Math.max(0, n(t.sales)) : (row ? (row.sales||0) : 0);
+  const coupon = n(t.coupon)!=null ? Math.max(0, Math.min(sales, n(t.coupon)))
+                 : (row && n(row.coupon)!=null ? Math.max(0, n(row.coupon)) : Math.min(sales, estCoupon(qty)));
+  const netSales = Math.max(0, sales - coupon);
+  const ad = n(t.adExVat)!=null ? Math.round(n(t.adExVat)*(S.vat||1.1))
+             : (row && row.ad!=null ? row.ad : 0);
+  let profit = (row && row.profit!=null && row.sales===sales) ? row.profit : null;
+  if(profit==null) profit = Math.round(sales*blendedMargin());
+  return {d:t.date, sales, coupon, netSales, qty, ad, profit, net:profit-ad,
+    estimate: !(row && row.profit!=null && row.sales===sales)};
+}
+</script>
+<script>
+/* ============================== 차트 ============================== */
+const SERIES_COLOR = {sales:'#101b34', profit:'#12b886', ad:'#f59f00', net:'#2f6bff'};
+const CHARTS = {};
+let CHART_SEQ = 0;
+function lineChart(rows, keys, opts){
+  opts = opts || {};
+  const compact = !!opts.compact;
+  const W = 900, H = opts.h || 230, L = compact?6:56, R = 12, T = compact?8:12, B = compact?6:26;
+  const iw = W-L-R, ih = H-T-B;
+  const vals = [];
+  rows.forEach(r => keys.forEach(k => { if(r[k]!=null) vals.push(r[k]); }));
+  let max = Math.max.apply(null, vals.concat([1]));
+  const step = opts.step || 500000;
+  max = Math.ceil(max / step) * step;
+  if(max<=0) max = 1;
+  const x = i => L + (rows.length<=1 ? iw/2 : iw * i / (rows.length-1));
+  const y = v => T + ih - (v/max)*ih;
+  let g = '';
+  if(!compact){
+    const gy = 4;
+    for(let i=0;i<=gy;i++){
+      const v = max*i/gy, yy = y(v);
+      g += `<line x1="${L}" y1="${yy}" x2="${W-R}" y2="${yy}" stroke="#eef1f6"/>`;
+      g += `<text x="${L-8}" y="${yy+3.5}" text-anchor="end" font-size="10" fill="#93a0b6">${won(v)}</text>`;
+    }
+    rows.forEach((r,i) => {
+      if(rows.length>16 && i%2) return;
+      g += `<text x="${x(i)}" y="${H-8}" text-anchor="middle" font-size="10" fill="#93a0b6">${r.d.slice(5,10).replace('-','/')}</text>`;
+    });
+  }
+  keys.forEach(k => {
+    let d = '', started = false;
+    rows.forEach((r,i) => {
+      if(r[k]==null){ started = false; return; }
+      d += (started?'L':'M') + x(i).toFixed(1) + ' ' + y(r[k]).toFixed(1) + ' ';
+      started = true;
+    });
+    if(d) g += `<path d="${d}" fill="none" stroke="${SERIES_COLOR[k]||'#888'}" stroke-width="${compact?2.2:2}" stroke-linejoin="round" stroke-linecap="round"/>`;
+    if(!compact) rows.forEach((r,i)=>{ if(r[k]!=null) g += `<circle cx="${x(i).toFixed(1)}" cy="${y(r[k]).toFixed(1)}" r="2.4" fill="#fff" stroke="${SERIES_COLOR[k]||'#888'}" stroke-width="1.6"/>`; });
+  });
+  rows.forEach((r,i)=>{
+    const w = iw/Math.max(1,rows.length-1);
+    g += `<rect data-i="${i}" x="${(x(i)-w/2).toFixed(1)}" y="${T}" width="${w.toFixed(1)}" height="${ih}" fill="transparent" style="pointer-events:all" class="hit"/>`;
+  });
+  const cid = 'ch'+(++CHART_SEQ);
+  CHARTS[cid] = rows;
+  const par = compact ? 'none' : 'xMidYMid meet';
+  const style = compact ? `style="height:${opts.h||120}px"` : '';
+  return `<svg class="chart ${opts.cls||''}" ${style} viewBox="0 0 ${W} ${H}" preserveAspectRatio="${par}" data-chart="1" data-cid="${cid}">${g}</svg>`;
+}
+function legend(keys, labels){
+  return `<div class="legend">${keys.map((k,i)=>`<span><i style="background:${SERIES_COLOR[k]}"></i>${labels[i]}</span>`).join('')}</div>`;
+}
+function barChart(items, opts){
+  opts = opts||{};
+  const W=900,H=opts.h||190,L=8,R=8,T=14,B=34;
+  const iw=W-L-R, ih=H-T-B, n=items.length;
+  const max=Math.max.apply(null, items.map(i=>Math.abs(i.v)).concat([1]));
+  const bw = iw/n*0.52;
+  let g='';
+  items.forEach((it,i)=>{
+    const cx = L + iw*(i+0.5)/n;
+    const h = Math.abs(it.v)/max*ih;
+    const yy = T+ih-h;
+    g += `<rect x="${(cx-bw/2).toFixed(1)}" y="${yy.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(2,h).toFixed(1)}" rx="4" fill="${it.c||'#2f6bff'}"/>`;
+    g += `<text x="${cx.toFixed(1)}" y="${H-14}" text-anchor="middle" font-size="9.5" fill="#7b869a">${esc(it.l)}</text>`;
+    if(it.sub!=null) g += `<text x="${cx.toFixed(1)}" y="${H-3}" text-anchor="middle" font-size="9" fill="#93a0b6">${esc(it.sub)}</text>`;
+  });
+  return `<svg class="chart sm" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="height:${opts.h||190}px">${g}</svg>`;
+}
+function bindChartTips(root){
+  const tip = document.getElementById('tip');
+  root.querySelectorAll('svg[data-chart]').forEach(svg=>{
+    const rows = CHARTS[svg.dataset.cid];
+    if(!rows) return;
+    svg.querySelectorAll('.hit').forEach(h=>{
+      h.addEventListener('mouseenter', ev=>{
+        const i = +h.getAttribute('data-i');
+        const r = rows[i]; if(!r) return;
+        tip.innerHTML = `<b>${fmtDate(r.d)}</b><br>매출 ${wonW(r.sales)}<br>이익금 ${wonW(r.profit)}<br>광고비 ${wonW(r.ad)}<br>순이익 ${wonW(r.net)}`;
+        tip.classList.add('on');
+      });
+      h.addEventListener('mousemove', ev=>{ tip.style.left=(ev.clientX+14)+'px'; tip.style.top=(ev.clientY+14)+'px'; });
+      h.addEventListener('mouseleave', ()=> tip.classList.remove('on'));
+    });
+  });
+}
+
+/* ============================== 네비게이션 ============================== */
+const NAV = [
+  {g:'홈', items:[{id:'dashboard', ico:'🏠', label:'대시보드'}]},
+  {g:'분석', items:[
+    {id:'daily', ico:'📈', label:'일자별 실적'},
+    {id:'products', ico:'🧮', label:'상품·마진'},
+    {id:'ads', ico:'📣', label:'광고 캠페인'},
+    {id:'settle', ico:'💰', label:'정산·손익'}]},
+  {g:'관리', items:[
+    {id:'stock', ico:'📦', label:'재고·품절'},
+    {id:'rank', ico:'🔍', label:'노출순위'},
+    {id:'report', ico:'💬', label:'알림톡 리포트'}]},
+  {g:'설정', items:[{id:'settings', ico:'⚙️', label:'설정'}]}
+];
+const TABS = [
+  {id:'dashboard', ico:'🏠', label:'홈'},
+  {id:'daily', ico:'📈', label:'실적'},
+  {id:'products', ico:'🧮', label:'마진'},
+  {id:'settle', ico:'💰', label:'정산'},
+  {id:'report', ico:'💬', label:'리포트'}
+];
+let view = 'dashboard';
+function renderSide(){
+  const html = `<div class="brand"><span class="dot"></span>BIGCELL <small>통합 대시보드</small></div>` +
+    NAV.map(g=>`<div class="nav-group"><div class="nav-title">${g.g}</div>` +
+      g.items.map(it=>`<button class="nav-item ${view===it.id?'on':''}" data-nav="${it.id}"><span class="ico">${it.ico}</span>${it.label}</button>`).join('') +
+      `</div>`).join('') +
+    `<div style="padding:14px 18px; font-size:11px; color:#5d6d92; line-height:1.6">데이터 기준<br><b style="color:#9fb0d0">${esc(S.live.date)} ${esc(S.live.at||'')}</b><br>리스페토 · thfwysla</div>`;
+  const el = document.getElementById('side');
+  el.innerHTML = html;
+  el.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>go(b.dataset.nav));
+  const tb = document.getElementById('tabbar');
+  tb.innerHTML = TABS.map(t=>`<button class="${view===t.id?'on':''}" data-nav="${t.id}"><span class="i">${t.ico}</span>${t.label}</button>`).join('');
+  tb.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>go(b.dataset.nav));
+}
+function go(v){ view=v; window.scrollTo({top:0}); render(); }
+function render(){
+  renderSide();
+  const app = document.getElementById('app');
+  const fn = VIEWS[view] || VIEWS.dashboard;
+  app.innerHTML = fn();
+  afterRender(app);
+}
+function afterRender(app){
+  app.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>go(b.dataset.nav));
+  app.querySelectorAll('[data-act]').forEach(b=>{
+    const act = b.dataset.act;
+    if(b.tagName==='INPUT' || b.tagName==='SELECT' || b.tagName==='TEXTAREA'){
+      b.addEventListener('change', ev=>{ ACTIONS[act] && ACTIONS[act](b.dataset, b); });
+      if(b.type==='range' || b.type==='number'){
+        b.addEventListener('input', ()=>{ ACTIONS[act] && ACTIONS[act](b.dataset, b); });
+      }
+    } else {
+      b.onclick = (ev)=>{ ev.stopPropagation(); ACTIONS[act] && ACTIONS[act](b.dataset, b); };
+    }
+  });
+  bindChartTips(app);
+  if(VIEWS_BIND[view]) VIEWS_BIND[view](app);
+}
+</script>
+<script>
+/* ============================== 화면 옵션 상태 ============================== */
+let opt = {
+  repMode:'table', repUnit:'pct',
+  calMonth:'2026-11', calDelta:true, calSettle:true, calStock:true,
+  calMetric:{sales:true, profit:true, ad:true, net:true},
+  selDate:null,
+  dailyRange:'7',
+  settleRange:'day'
+};
+const VIEWS = {};
+const VIEWS_BIND = {};
+const ACTIONS = {};
+
+/* ============================== 공통 조각 ============================== */
+function topbar(title, sub, right){
+  return `<div class="topbar">
+    <div><h1>${title}</h1><div class="sub">${sub||''}</div></div>
+    <div class="spacer"></div>
+    ${right||''}
+    <span class="chip"><span class="live"></span>데이터 <b>${fmtDate(S.live.date).replace(/\(.\)$/,'')} ${esc(S.live.at||'')}</b></span>
+  </div>`;
+}
+function kpiCard(lab, val, delta, extra){
+  return `<div class="kpi ${extra&&extra.accent?'accent':''} ${extra&&extra.cls?extra.cls:''}">
+    <div class="lab">${lab}${extra&&extra.tag?` <span class="tag ${extra.tag.cls||''}">${extra.tag.txt}</span>`:''}</div>
+    <div class="val num">${val}</div>
+    <div class="delta">${delta||''}</div>
+  </div>`;
+}
+function sectionHead(t, note, right){
+  return `<div class="card-h"><h2>${t}</h2>${note?`<span class="note">${note}</span>`:''}<div class="spacer"></div>${right||''}</div>`;
+}
+function monthRowsOf(m){ return dailySeries().filter(r=>r.d.startsWith(m)); }
+function sumOf(rows,k){ return rows.reduce((a,r)=>a+(r[k]||0),0); }
+function netSalesOf(r){ return r && r.netSales!=null ? r.netSales : ((r&&r.sales)||0); }
+
+/* ============================== 1. 대시보드 ============================== */
+VIEWS.dashboard = function(){
+  const rows = dailySeries();
+  const live = liveRow();
+  const prev = rows[rows.length-2];
+  const m = opt.calMonth;
+  const mRows = monthRowsOf(m);
+  const monthSales = mRows.reduce((a,r)=>a+netSalesOf(r),0), monthCoupon = sumOf(mRows,'coupon'), monthProfit = sumOf(mRows,'profit'), monthAd = sumOf(mRows,'ad');
+  const todayNet = live.net;
+  const dToday = prev ? deltaPct(live.netSales, netSalesOf(prev)) : null;
+  const dNet = prev && prev.net!=null && todayNet!=null ? deltaPct(todayNet, prev.net) : null;
+  const avg7 = (()=>{ const r = rows.filter(x=>x.profit!=null).slice(-8,-1); return r.length? sumOf(r,'sales')/r.length : 0; })();
+
+  return topbar('대시보드', '리스페토 · 로켓그로스 전체 스토어',
+      `<span class="chip">기준일 <b>2026-11-17</b></span>`)
+  + `<div class="kpis" style="margin-bottom:14px">
+      <div class="kpi accent live-kpi">
+        <div class="live-h">
+          <div class="lab">오늘 매출 <span class="tag coup">쿠폰 제외</span> <span class="tag live">LIVE</span></div>
+          <button class="live-btn" type="button" data-act="liveOpen" aria-label="실시간 순수익 조회"><span class="bolt">⚡</span>실시간 순수익 조회</button>
+        </div>
+        <div class="val num">${won(live.netSales)}원</div>
+        <div class="coup-line"><span>쿠폰 전 <b>${won(live.sales)}원</b></span><span class="c2">쿠폰 −${won(live.coupon)}원</span></div>
+        <div class="delta">${deltaHTML(dToday)} <span class="flat">전일 대비 · ${live.qty}개 · 목표 ${Math.round(live.netSales/S.targetSales*100)}%</span></div>
+      </div>
+      ${kpiCard('오늘 광고비 <span class="tag">VAT포함</span>', won(live.ad)+'원',
+        `<span class="flat">VAT별도 ${won(S.live.adExVat)}원</span>`) }
+      ${kpiCard('오늘 순이익 <span class="tag estimate">추정</span>', won(todayNet)+'원',
+        `${deltaHTML(dNet)} <span class="flat">이익금 ${won(live.profit)}원</span>`) }
+      ${kpiCard('이번 달 매출 <span class="tag coup">쿠폰 제외</span>', won(monthSales)+'원',
+        `<span class="flat">11/1~${m==='2026-11'?'18':'말'} · 이익금 ${won(monthProfit)}원${monthCoupon>0?' · 오늘 쿠폰 −'+won(monthCoupon)+'원 제외':''}</span>`, {cls:'month-kpi'})}
+    </div>`
+  + `<div class="two" style="margin-bottom:14px">
+      ${reportCard(rows)}
+      ${deltaCard()}
+    </div>`
+  + `${calendarCard()}`
+  + `<div class="two" style="margin-top:14px">
+      ${soldoutCard()}
+      ${rankCard()}
+    </div>`
+  + `${stockMiniCard()}`;
+};
+
+/* ---- 매출 보고서 ---- */
+function reportCard(rows){
+  const list = rows.slice().reverse().slice(0, 14);
+  const keys = ['sales','profit','ad','net'];
+  const table = `<div class="tbl-wrap"><table class="tbl">
+    <thead><tr><th class="l">날짜</th><th>매출</th><th>이익금</th><th>광고비</th><th>순이익금</th></tr></thead>
+    <tbody>${list.map((r,i)=>{
+      const p = rows[rows.indexOf(r)-1];
+      const d = k => p ? deltaPct(k==='sales'?netSalesOf(r):r[k], k==='sales'?netSalesOf(p):p[k]) : null;
+      const cellDelta = k => {
+        const v = d(k);
+        if(opt.repUnit==='pct') return deltaHTML(v);
+        const rv = k==='sales'?netSalesOf(r):r[k], pv = p?(k==='sales'?netSalesOf(p):p[k]):null;
+        if(v==null || !p || rv==null || pv==null) return '<span class="flat">-</span>';
+        const diff = rv-pv;
+        return `<span class="${diff>0?'up':(diff<0?'down':'flat')}">${diff>0?'+':''}${won(diff)}</span>`;
+      };
+      return `<tr>
+        <td class="l"><b>${fmtDate(r.d)}</b>${r.live?' <span class="tag live">LIVE</span>':''}${r.estimate?' <span class="tag estimate">추정</span>':''}</td>
+        <td class="num">${wonW(netSalesOf(r))}<div style="font-size:11px">${cellDelta('sales')}</div></td>
+        <td class="num">${wonW(r.profit)}<div style="font-size:11px">${cellDelta('profit')}</div></td>
+        <td class="num">${wonW(r.ad)}<div style="font-size:11px">${cellDelta('ad')}</div></td>
+        <td class="num"><b>${wonW(r.net)}</b><div style="font-size:11px">${cellDelta('net')}</div></td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table></div>`;
+  const chart = legend(keys,['매출','이익금','광고비','순이익금']) + `<div data-rows="report">${lineChart(rows.slice(-14), keys, {step:500000})}</div>`;
+  return `<div class="card">
+    ${sectionHead('매출 보고서','최근 14일',
+      `<div class="seg" data-seg="repUnit"><button class="${opt.repUnit==='pct'?'on':''}" data-act="repUnit" data-v="pct">%</button><button class="${opt.repUnit==='amt'?'on':''}" data-act="repUnit" data-v="amt">금액</button></div>
+       <div class="seg" data-seg="repMode"><button class="${opt.repMode==='table'?'on':''}" data-act="repMode" data-v="table">표</button><button class="${opt.repMode==='chart'?'on':''}" data-act="repMode" data-v="chart">차트</button></div>`)}
+    <div class="card-b ${opt.repMode==='table'?'flush':''}">${opt.repMode==='table'?table:chart}</div>
+  </div>`;
+}
+
+/* ---- 상품별 매출 변동 ---- */
+function deltaCard(){
+  const rows = PRODUCT_DELTA.map(x=>{
+    const p = PRODUCTS.find(pp=>pp.id===x.id) || {short:x.id, icon:'📦'};
+    const diff = x.prev.sales ? (x.now.sales-x.prev.sales)/x.prev.sales*100 : (x.now.sales?-100:0);
+    return {p, x, diff};
+  });
+  return `<div class="card">
+    ${sectionHead('상품별 매출 변동','11월 17일 기준')}
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th class="l">상품</th><th>전일 매출</th><th>매출</th><th>변동</th></tr></thead>
+      <tbody>${rows.map(r=>`<tr>
+        <td class="l"><div class="prod"><span class="thumb">${r.p.icon}</span><div><div class="nm">${esc(r.p.short)}</div><div class="cd">${r.p.id} · ${esc(r.p.mk==='RFM'?'로켓그로스':'판매자배송')}</div></div></div></td>
+        <td class="num">${wonW(r.x.prev.sales)}<div style="font-size:11px" class="flat">${r.x.prev.qty}개</div></td>
+        <td class="num"><b>${wonW(r.x.now.sales)}</b><div style="font-size:11px" class="flat">${r.x.now.qty}개</div></td>
+        <td class="num">${deltaHTML(r.diff)}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>
+    <div class="card-b" style="border-top:1px solid var(--line2)">
+      <div class="alert info">📌 어제 대비 <b>신발깔창 +149.3%</b>(8→19개), 빨래건조대 -1.4% · 노트북거치대는 판매 0으로 품절 상태입니다.</div>
+    </div>
+  </div>`;
+}
+
+/* ---- 캘린더 ---- */
+function calendarCard(){
+  const rows = dailySeries();
+  const [y, mm] = opt.calMonth.split('-').map(Number);
+  const first = new Date(y, mm-1, 1);
+  const startDow = first.getDay();
+  const lastDay = new Date(y, mm, 0).getDate();
+  const prevLast = new Date(y, mm-1, 0).getDate();
+  const byDate = {}; rows.forEach(r=>byDate[r.d]=r);
+  const settleByDate = {}; SETTLE_DUE.forEach(s=>settleByDate[s.d]=s.seller+s.rfm);
+  const today = '2026-11-18';
+  let cells = '';
+  for(let i=0;i<startDow;i++){
+    cells += `<div class="day other"><div class="dn">${prevLast-startDow+1+i}</div></div>`;
+  }
+  for(let d=1; d<=lastDay; d++){
+    const ds = `${y}-${pad(mm)}-${pad(d)}`;
+    const r = byDate[ds];
+    const dow = new Date(y, mm-1, d).getDay();
+    const cls = ['day', dow===0?'sun':(dow===6?'sat':''), ds===today?'today':'', opt.selDate===ds?'sel':''].join(' ');
+    const prevR = rows[rows.indexOf(r)-1];
+    let body = '';
+    if(r){
+      const rs = netSalesOf(r);
+      const dv = prevR ? deltaPct(rs, netSalesOf(prevR)) : null;
+      body += `<div class="sales num"><span class="s-full">${won(rs)}원</span><span class="s-short">${Math.round(rs/10000)}만</span></div>`;
+      if(opt.calDelta) body += `<div class="delta">${deltaHTML(dv)}</div>`;
+      if(opt.calMetric.ad) body += `<div class="line hide-m"><span>광고</span><span class="v num">${won(r.ad)}</span></div>`;
+      if(opt.calMetric.net) body += `<div class="line hide-m"><span>순익</span><span class="v net num">${won(r.net)}</span></div>`;
+      if(r.estimate) body += `<div style="margin-top:2px"><span class="tag estimate" style="font-size:9px">추정</span></div>`;
+    } else {
+      body += `<div class="empty">매출 데이터 없음</div>`;
+    }
+    if(opt.calSettle && settleByDate[ds]) body += `<div class="settle"><span class="s-full">💳 ${won(settleByDate[ds])}</span><span class="s-short">💳${Math.round(settleByDate[ds]/10000)}만</span></div>`;
+    const hasMemo = Object.keys(S.memos).some(k=>k.startsWith(ds));
+    cells += `<div class="${cls}" data-act="dayOpen" data-d="${ds}">${hasMemo?'<span class="memo-dot"></span>':''}<div class="dn">${d}${ds===today?' · 오늘':''}</div>${body}</div>`;
+  }
+  const tail = (7 - ((startDow+lastDay)%7))%7;
+  for(let i=1;i<=tail;i++) cells += `<div class="day other"><div class="dn">${i}</div></div>`;
+  const mRows = monthRowsOf(opt.calMonth);
+  const settles = Object.keys(settleByDate).filter(k=>k.startsWith(opt.calMonth));
+  const calRows = mRows.slice(-14);
+  const mini = lineChart(calRows.length>1?calRows:mRows, ['sales','profit','ad','net'], {compact:true, h:130});
+  return `<div class="card">
+    ${sectionHead('월간 흐름 캘린더','',
+      `<div class="cal-legend">
+        <span><i style="background:#101b34"></i>매출</span><span><i style="background:#f59f00"></i>광고비</span><span><i style="background:#2f6bff"></i>순이익금</span>
+        <span><i style="background:#2158c9"></i>정산금 입금</span><span><i style="background:#f59f00;border-radius:50%"></i>메모</span></div>`)}
+    <div class="cal-wrap">
+      <div class="cal-side">
+        <div class="yearbar"><button data-act="yearMinus">‹</button><b>${y}년</b><button data-act="yearPlus">›</button></div>
+        <div class="months">${Array.from({length:12},(_,i)=>{
+          const mk = `${y}-${pad(i+1)}`;
+          return `<button class="${opt.calMonth===mk?'on':''}" data-act="monthPick" data-m="${mk}">${i+1}월</button>`;
+        }).join('')}</div>
+        <div class="cal-toggles">
+          <label class="switch"><input type="checkbox" ${opt.calDelta?'checked':''} data-act="calDelta"> 전날 대비 지표</label>
+          <label class="switch"><input type="checkbox" ${opt.calStock?'checked':''} data-act="calStock"> 입고 표시</label>
+          <label class="switch"><input type="checkbox" ${opt.calSettle?'checked':''} data-act="calSettle"> 정산 표시</label>
+        </div>
+        <div class="memo-box">
+          <div class="mh">나의 메모 <span class="d">2026년 11월 18일</span></div>
+          ${memoListFor('2026-11-18') || '<div class="memo-empty">등록된 메모가 없습니다.</div>'}
+          <button class="memo-add" data-act="memoAdd" data-d="2026-11-18">＋ 추가하기</button>
+        </div>
+        <div>
+          <div class="side-chart-lab">차트 항목 표시 설정</div>
+          <div class="toolbar" style="gap:5px;margin-bottom:6px">
+            ${[['sales','매출'],['profit','이익금'],['ad','광고비'],['net','순이익금']].map(([k,l])=>`<button class="btn ${opt.calMetric[k]?'primary':''}" style="padding:4px 9px;font-size:11.5px" data-act="calMetric" data-k="${k}">${l}</button>`).join('')}
+          </div>
+          ${mini}
+        </div>
+      </div>
+      <div>
+        <div class="grid-cal">
+          ${DOW.map((d,i)=>`<div class="dow ${i===0?'sun':(i===6?'sat':'')}">${d}</div>`).join('')}
+          ${cells}
+        </div>
+      </div>
+    </div>
+    <div class="cal-foot">
+      <div class="it"><span class="k">매출 월 총합</span><b>${won(sumOf(mRows,'sales'))}원</b></div>
+      <div class="it"><span class="k">이익금 월 총합</span><b>${won(sumOf(mRows,'profit'))}원</b></div>
+      <div class="it"><span class="k">광고비 월 총합</span><b>${won(sumOf(mRows,'ad'))}원</b></div>
+      <div class="it"><span class="k">순이익금 월 총합</span><b>${won(sumOf(mRows,'net'))}원</b></div>
+      <div class="it"><span class="k">구매대행 입고 예정</span><b>0건</b></div>
+      <div class="it"><span class="k">정산금 입금 예정</span><b>${settles.length}건</b></div>
+    </div>
+  </div>`;
+}
+function memoListFor(ds){
+  const keys = Object.keys(S.memos).filter(k=>k.startsWith(ds));
+  if(!keys.length) return '';
+  return keys.map(k=>`<div class="memo-item"><b>${esc(S.memos[k].title||'메모')}</b>${esc(S.memos[k].body||'')}</div>`).join('');
+}
+
+/* ---- 품절 ---- */
+function soldoutCard(){
+  return `<div class="card">
+    ${sectionHead('쿠팡 품절 상품','11월 17일 기준')}
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th class="l">상품</th><th>최근 7일 일평균</th><th>상태</th></tr></thead>
+      <tbody>${SOLDOUT.map(s=>`<tr>
+        <td class="l"><div class="prod"><span class="thumb">📦</span><div><div class="nm">${esc(s.name)}</div><div class="cd">${s.id}</div></div></div></td>
+        <td class="num">${s.qty}개</td>
+        <td><span class="pill warn">품절</span></td></tr>`).join('')}</tbody>
+    </table></div>
+    <div class="card-b" style="border-top:1px solid var(--line2)"><div class="alert warn">⚠️ 좌식테이블·휴지통·손목보호대 옵션이 품절 상태입니다. 입고 요청 후 재판매를 검토하세요.</div></div>
+  </div>`;
+}
+
+/* ---- 순위 ---- */
+function rankCard(){
+  const rows = RANKS.slice(0,6);
+  return `<div class="card">
+    ${sectionHead('상품별 순위 변동','11월 17일 기준', `<button class="btn ghost" data-act="gotoRank">전체 보기 ›</button>`)}
+    <div>${rows.map(r=>{
+      const diff = r.prev - r.now;
+      return `<div class="rank-row">
+        <div class="nm">${esc(r.name)}<div class="kw">${esc(r.kw)} · ${r.id}</div></div>
+        <div class="rank-badge num">${r.now}위</div>
+        <div class="delta-badge ${diff>0?'up':(diff<0?'down':'flat')}">${diff>0?'▲'+diff:(diff<0?'▼'+Math.abs(diff):'-')}</div>
+      </div>`;
+    }).join('')}</div>
+  </div>`;
+}
+
+/* ---- 재고 미니 ---- */
+function stockMiniCard(){
+  const list = PRODUCTS.filter(p=>p.stock>0 || p.soldout!=='-');
+  return `<div class="card" style="margin-top:14px">
+    ${sectionHead('재고 · 품절 예상','로켓그로스 재고 3,859개 · 재고금액 32,860,170원')}
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th class="l">상품</th><th>쿠팡재고</th><th>재고금액</th><th>일평균 판매</th><th>품절 예상일</th><th>보관비</th></tr></thead>
+      <tbody>${list.map(p=>{
+        const days = p.daily>0 ? Math.round(p.stock/p.daily) : null;
+        const color = days==null?'#c9d1e0':(days<14?'#e03e3e':(days<30?'#f08c00':'#0ea47a'));
+        return `<tr>
+          <td class="l"><div class="prod"><span class="thumb">${p.icon}</span><div><div class="nm">${esc(p.short)}</div><div class="cd">${p.id}</div></div></div></td>
+          <td class="num">${won(p.stock)}</td>
+          <td class="num">${wonW(p.stockValue)}</td>
+          <td class="num">${p.daily}개</td>
+          <td class="num">${p.soldout==='-'?'<span class="flat">-</span>':p.soldout.slice(5).replace('-','/')}<div style="font-size:10.5px;color:${color};font-weight:800">${days!=null?days+'일분':''}</div></td>
+          <td class="num">${p.id==='9701805278'?'₩95':'₩0'}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table></div>
+  </div>`;
+}
+</script>
+<script>
+/* ============================== 2. 일자별 실적 ============================== */
+VIEWS.daily = function(){
+  const all = dailySeries();
+  const n = opt.dailyRange==='all' ? all.length : Number(opt.dailyRange);
+  const rows = all.slice(-n);
+  const rate = sumOf(rows,'sales') ? sumOf(rows,'profit')/sumOf(rows,'sales')*100 : 0;
+  const adRate = sumOf(rows,'sales') ? sumOf(rows,'ad')/sumOf(rows,'sales')*100 : 0;
+  return topbar('일자별 실적','매출 · 이익금 · 광고비 · 순이익금 추이',
+    `<div class="seg">${[['7','7일'],['14','14일'],['30','30일'],['all','전체']].map(([v,l])=>`<button class="${opt.dailyRange===v?'on':''}" data-act="dailyRange" data-v="${v}">${l}</button>`).join('')}</div>`)
+  + `<div class="kpis" style="margin-bottom:14px">
+      ${kpiCard('기간 매출', won(sumOf(rows,'sales'))+'원', `<span class="flat">${rows.length}일</span>`)}
+      ${kpiCard('기간 이익금', won(sumOf(rows,'profit'))+'원', `<span class="flat">이익률 <b>${pct1(rate)}%</b></span>`)}
+      ${kpiCard('기간 광고비', won(sumOf(rows,'ad'))+'원', `<span class="flat">광고비율 <b>${pct1(adRate)}%</b></span>`)}
+      ${kpiCard('기간 순이익금', won(sumOf(rows,'net'))+'원', `<span class="flat">순이익률 <b>${pct1(rate-adRate)}%</b></span>`, {accent:true})}
+    </div>`
+  + `<div class="card">${sectionHead('매출 추이','', `<button class="btn" data-act="csvDaily">⬇ CSV</button>`)}
+      <div class="card-b">${legend(['sales','profit','ad','net'],['매출','이익금','광고비','순이익금'])}${lineChart(rows,['sales','profit','ad','net'],{step:500000})}</div>
+    </div>`
+  + `<div class="card" style="margin-top:14px">${sectionHead('일자별 데이터','빅셀 대시보드 매출 보고서와 동일 산식')}
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th class="l">날짜</th><th>요일</th><th>매출</th><th>전일대비</th><th>이익금</th><th>광고비</th><th>순이익금</th><th>이익률</th><th>광고비율</th></tr></thead>
+        <tbody>${rows.slice().reverse().map(r=>{
+          const i = all.indexOf(r), p = all[i-1];
+          const er = r.sales? r.profit/r.sales*100:0, ar = r.sales? r.ad/r.sales*100:0;
+          return `<tr>
+            <td class="l"><b>${r.d}</b>${r.live?' <span class="tag live">LIVE</span>':''}${r.estimate?' <span class="tag estimate">추정</span>':''}</td>
+            <td>${DOW[dateObj(r.d).getDay()]}</td>
+            <td class="num">${won(r.sales)}</td>
+            <td class="num">${deltaHTML(p?deltaPct(r.sales,p.sales):null)}</td>
+            <td class="num">${won(r.profit)}</td>
+            <td class="num">${won(r.ad)}</td>
+            <td class="num"><b>${won(r.net)}</b></td>
+            <td class="num">${pct1(er)}%</td>
+            <td class="num">${pct1(ar)}%</td>
+          </tr>`;
+        }).join('')}
+        <tr class="total"><td class="l">합계</td><td></td><td class="num">${won(sumOf(rows,'sales'))}</td><td></td><td class="num">${won(sumOf(rows,'profit'))}</td><td class="num">${won(sumOf(rows,'ad'))}</td><td class="num">${won(sumOf(rows,'net'))}</td><td class="num">${pct1(rate)}%</td><td class="num">${pct1(adRate)}%</td></tr>
+        </tbody>
+      </table></div>
+      <div class="card-b" style="border-top:1px solid var(--line2)"><div class="formula"><b>계산 산식</b><br>순이익금 = <code>이익금 − 광고비</code> · 이익률 = <code>이익금 ÷ 매출</code> · 광고비는 VAT 포함 금액</div></div>
+    </div>`
+  + monthlyCard(all);
+};
+function monthlyCard(all){
+  const g = {};
+  all.forEach(r=>{ const k = r.d.slice(0,7); if(!g[k]) g[k] = {m:k, sales:0, profit:0, ad:0, net:0, days:0}; g[k].sales += (r.sales||0); g[k].profit += (r.profit||0); g[k].ad += (r.ad||0); g[k].net += (r.net||0); g[k].days++; });
+  const ms = Object.keys(g).sort().reverse();
+  return `<div class="card" style="margin-top:14px">${sectionHead('월별 요약','월 단위 매출·이익금·광고비·순이익금')}
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th class="l">월</th><th>집계 일수</th><th>매출</th><th>일평균 매출</th><th>이익금</th><th>광고비</th><th>순이익금</th><th>이익률</th><th>광고비율</th></tr></thead>
+      <tbody>${ms.map(k=>{ const r = g[k]; return `<tr>
+        <td class="l"><b>${k.slice(0,4)}년 ${Number(k.slice(5))}월</b></td>
+        <td class="num">${r.days}일</td>
+        <td class="num">${wonW(r.sales)}</td>
+        <td class="num">${wonW(Math.round(r.sales/r.days))}</td>
+        <td class="num">${wonW(r.profit)}</td>
+        <td class="num">${wonW(r.ad)}</td>
+        <td class="num"><b>${wonW(r.net)}</b></td>
+        <td class="num">${pct1(r.sales?r.profit/r.sales*100:0)}%</td>
+        <td class="num">${pct1(r.sales?r.ad/r.sales*100:0)}%</td></tr>`; }).join('')}
+      </tbody></table></div>
+    <div class="card-b" style="border-top:1px solid var(--line2)"><div class="hint">현재는 11월 데이터만 수집되어 있습니다. 매달 아래에 자동으로 쓸립니다.</div></div>
+  </div>`;
+}
+
+/* ============================== 3. 상품 · 마진 ============================== */
+VIEWS.products = function(){
+  const rows = PRODUCTS.map(p=>({p, m: margin(p)}));
+  const totalProfit = rows.reduce((a,r)=>a+r.m.profit*r.p.soldM,0);
+  return topbar('상품 · 마진','원가를 바꾸면 이익금·마진이 즉시 다시 계산됩니다 (자동 저장)',
+    `<button class="btn primary" data-act="resetCosts">원가 초기화</button>`)
+  + `<div class="card">
+      ${sectionHead('로켓그로스 상품 마진표','11월 누적 판매량 기준', `<span class="note">클릭해서 수정 → 이익금 자동계산</span>`)}
+      <div class="tbl-wrap"><table class="tbl" id="marginTbl">
+        <thead><tr><th class="l">상품</th><th>판매가</th><th>할인</th><th>수수료%</th><th>원가</th><th>입출고</th><th>배송비</th><th>개당 이익금</th><th>이익률</th><th>월 판매</th><th>월 이익금</th></tr></thead>
+        <tbody>${rows.map(({p,m})=>`<tr>
+          <td class="l"><div class="prod"><span class="thumb">${p.icon}</span><div><div class="nm">${esc(p.short)}</div><div class="cd">SKU ${p.sku} · ${p.id}</div></div></div></td>
+          ${['price','disc','fee','cost','inout','ship'].map(f=>`<td class="num"><input class="inp num" style="width:${f==='price'?'84px':'68px'};padding:5px 7px" type="number" value="${m[f]}" data-cost-id="${p.id}" data-field="${f}" step="${f==='fee'?'0.01':'1'}"></td>`).join('')}
+          <td class="num"><b style="color:${m.profit>0?'var(--ink)':'var(--up)'}">${wonW(m.profit)}</b></td>
+          <td class="num">${pct1(m.rate)}%</td>
+          <td class="num">${won(p.soldM)}</td>
+          <td class="num"><b>${wonW(m.profit*p.soldM)}</b></td>
+        </tr>`).join('')}
+        <tr class="total"><td class="l">합계 (월 누적 판매량 기준)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="num">${won(PRODUCTS.reduce((a,p)=>a+p.soldM,0))}</td><td class="num">${wonW(totalProfit)}</td></tr>
+        </tbody>
+      </table></div>
+      <div class="card-b" style="border-top:1px solid var(--line2)">
+        <div class="formula">
+          <b>로켓그로스 산식 (빅셀 실데이터 검증 완료)</b><br>
+          이익금 = <code>(판매가 − 할인) × (1 − 수수료%)</code> − <code>원가</code> − <code>입출고비</code> − <code>배송비</code><br>
+          이익률 = <code>이익금 ÷ 판매가</code> · 입출고비·배송비는 VAT 포함<br>
+          <span class="hint">예: 신발깔장 (10,790−800)×0.8845 = 8,836 → −2,364 −1,100 −1,485 = <b>3,887원</b></div>
+        </div>
+    </div>`
+  + `<div class="two" style="margin-top:14px">${simulatorCard()}${calcCard()}</div>`
+  + `${p3pCard()}`;
+};
+
+function simulatorCard(){
+  const sel = PRODUCTS.find(p=>p.id===(opt.simId||PRODUCTS[0].id)) || PRODUCTS[0];
+  const m = margin(sel);
+  const maxP = Math.round(sel.price*1.6);
+  return `<div class="card">
+    ${sectionHead('마진 시뮬레이터','판매가·원가를 바꿔보면 이익금이 바로 나옵니다')}
+    <div class="card-b">
+      <div class="form-row"><label>상품</label>
+        <select class="inp" data-act="simPick">${PRODUCTS.map(p=>`<option value="${p.id}" ${p.id===sel.id?'selected':''}>${esc(p.short)} · ${wonW(margin(p).profit)}</option>`).join('')}</select>
+      </div>
+      <div class="form-row"><label>판매가 <b id="simPriceLab" class="num">${won(m.price)}원</b></label>
+        <input type="range" min="${Math.round(sel.price*0.6)}" max="${maxP}" step="100" value="${m.price}" data-act="simPrice" style="width:100%">
+      </div>
+      <div class="form-row"><label>원가 <b id="simCostLab" class="num">${won(m.cost)}원</b></label>
+        <input type="range" min="0" max="${Math.round(sel.price*0.8)}" step="50" value="${m.cost}" data-act="simCost" style="width:100%">
+      </div>
+      <div id="simStats">
+      <div class="stat-line"><span class="lb">할인 후 판매금액</span><span class="vl num">${wonW(m.base)}</span></div>
+      <div class="stat-line"><span class="lb">마켓 수수료 (${pct1(m.fee)}%)</span><span class="vl num">−${wonW(m.feeAmt)}</span></div>
+      <div class="stat-line"><span class="lb">원가 + 입출고 + 배송</span><span class="vl num">−${wonW(m.cost+m.inout+m.ship)}</span></div>
+      <div class="stat-line" style="border-top:2px solid var(--line);margin-top:4px;padding-top:10px"><span class="lb" style="font-weight:800;color:var(--ink)">개당 이익금</span><span class="vl num" style="font-size:18px;color:${m.profit>0?'var(--blue)':'var(--up)'}">${wonW(m.profit)} <span style="font-size:12px;color:var(--muted)">(${pct1(m.rate)}%)</span></span></div>
+      <div class="stat-line"><span class="lb">일 70개 판매 시 일 이익</span><span class="vl num">${wonW(m.profit*70)}</span></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function calcCard(){
+  const yuan = opt.calcYuan!=null? opt.calcYuan : 60;
+  const price = opt.calcPrice!=null? opt.calcPrice : 12900;
+  const fee = opt.calcFee!=null? opt.calcFee : 11.88;
+  const inoutShip = opt.calcInout!=null? opt.calcInout : 3500;
+  const goods = yuan * S.rate;
+  const extra = Math.round(goods * S.importCostRate/100);
+  const cost = goods + extra;
+  const feeAmt = Math.round(price * fee/100);
+  const profit = price - cost - feeAmt - inoutShip;
+  return `<div class="card">
+    ${sectionHead('쿠팡 수익 간편 계산기','빅셀 판매도구와 동일 구조 · 중국 소싱용')}
+    <div class="card-b">
+      <div style="font-size:12px;font-weight:800;color:var(--blue);margin-bottom:8px">STEP 1 · 상품 원가</div>
+      <div class="form-row"><label>중국 1688 단가 (위안)</label><input class="inp" type="number" value="${yuan}" data-act="calcYuan"></div>
+      <div class="stat-line"><span class="lb">환율</span><span class="vl num">${S.rate}원</span></div>
+      <div class="stat-line"><span class="lb">환율 적용 상품가격</span><span class="vl num" id="cGoods">${wonW(goods)}</span></div>
+      <div class="stat-line"><span class="lb">한국 도착까지 모든 비용 (${S.importCostRate}%)</span><span class="vl num" id="cExtra">${wonW(extra)}</span></div>
+      <div class="stat-line"><span class="lb"><b>상품 원가</b></span><span class="vl num" id="cCost">${wonW(cost)}</span></div>
+      <div style="font-size:12px;font-weight:800;color:var(--blue);margin:12px 0 8px">STEP 2 · 최종 개당 이익금</div>
+      <div class="form-row"><label>쿠팡 예상 판매가격</label><input class="inp" type="number" value="${price}" data-act="calcPrice"></div>
+      <div class="form-row"><label>카테고리 수수료율 (%)</label><select class="inp" data-act="calcFee">${[['5.8','가전/디지털 5.8%'],['6.4','컴퓨터/노트북 6.4%'],['8.58','생활용품 8.58%'],['10.56','뷰티/미용 10.56%'],['11','자동차·유아동 11%'],['11.55','패션의류잡화 11.55%'],['11.88','가구/홈데코·주방·스포츠 11.88%'],['11.99','식품 11.99%']].map(([v,l])=>`<option value="${v}" ${Number(v)===Number(fee)?'selected':''}>${l}</option>`).join('')}</select></div>
+      <div class="form-row"><label>입출고 배송요금 (VAT포함)</label><input class="inp" type="number" value="${inoutShip}" data-act="calcInout" step="10"></div>
+      <div class="stat-line"><span class="lb">쿠팡 판매 수수료</span><span class="vl num" id="cFee">−${wonW(feeAmt)}</span></div>
+      <div class="stat-line" style="border-top:2px solid var(--line);margin-top:4px;padding-top:10px"><span class="lb" style="font-weight:800;color:var(--ink)">최종 개당 이익금</span><span class="vl num" id="cProfit" style="font-size:18px;color:${profit>0?'var(--blue)':'var(--up)'}">${wonW(profit)} <span style="font-size:12px;color:var(--muted)" id="cRate">(${price?pct1(profit/price*100):0}%)</span></span></div>
+      <div class="hint" style="margin-top:10px">빅셀은 “한국 도착까지 모든 비용”을 상품가격의 45%로 자동 추정합니다. 설정에서 비율을 바꿀 수 있습니다.</div>
+    </div>
+  </div>`;
+}
+
+function p3pCard(){
+  const rows = PRODUCTS_3P.map(p=>{
+    const base = p.price - p.disc;
+    const feeAmt = base*p.fee/100;
+    const profit = base - feeAmt - p.cost;
+    return {p, base, feeAmt, profit, rate: profit/p.price*100};
+  });
+  return `<div class="card" style="margin-top:14px">
+    ${sectionHead('판매자배송(3P) 상품','입출고·배송비가 없는 구조 — 이익금 산식이 다릅니다')}
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th class="l">상품</th><th>판매가</th><th>할인</th><th>수수료%</th><th>원가</th><th>개당 이익금</th><th>이익률</th></tr></thead>
+      <tbody>${rows.map(r=>`<tr>
+        <td class="l"><div class="prod"><span class="thumb">${r.p.icon}</span><div><div class="nm">${esc(r.p.short)}</div><div class="cd">${r.p.id}</div></div></div></td>
+        <td class="num">${wonW(r.p.price)}</td><td class="num">${wonW(r.p.disc)}</td><td class="num">${pct1(r.p.fee)}%</td><td class="num">${wonW(r.p.cost)}</td>
+        <td class="num"><b>${wonW(r.profit)}</b></td><td class="num">${pct1(r.rate)}%</td></tr>`).join('')}
+      </tbody></table></div>
+    <div class="card-b" style="border-top:1px solid var(--line2)"><div class="formula">판매자배송 이익금 = <code>(판매가 − 할인) × (1 − 수수료%)</code> − <code>원가</code> <span class="hint">(입출고·배송비 없음)</span></div></div>
+  </div>`;
+}
+
+/* ============================== 4. 광고 ============================== */
+VIEWS.ads = function(){
+  const t = CAMPAIGNS.reduce((a,c)=>{
+    a.cost+=c.cost; a.conv+=c.conv; a.imp+=c.imp; a.click+=c.click; a.qty+=c.qty; a.profit+=c.profit; return a;
+  },{cost:0,conv:0,imp:0,click:0,qty:0,profit:0});
+  const roas = t.conv/t.cost*100, ctr = t.click/t.imp*100, cpc = t.cost/t.click, cvr = t.qty/t.click*100;
+  return topbar('광고 캠페인 분석','11월 17일 · 로켓그로스 광고 (VAT 별도 기준)', `<span class="chip">캠페인 <b>${CAMPAIGNS.length}</b>개</span>`)
+  + `<div class="kpis" style="margin-bottom:14px">
+      ${kpiCard('광고비', won(t.cost)+'원', `<span class="flat">전환매출 ${wonW(t.conv)}</span>`, {accent:true})}
+      ${kpiCard('광고수익률', pct1(roas)+'%', `<span class="flat">클릭당 비용 ${wonW(cpc)}</span>`)}
+      ${kpiCard('전환 판매량', won(t.qty)+'개', `<span class="flat">전환율 ${pct1(cvr)}%</span>`)}
+      ${kpiCard('광고 순이익금', wonW(t.profit-t.cost), `<span class="down">광고비가 이익금을 넘음</span>`)}
+    </div>`
+  + `<div class="card">${sectionHead('캠페인별 성과','광고비 · 전환매출 · 수익률 · 효율')}
+      <div class="tbl-wrap"><table class="tbl">
+        <thead><tr><th class="l">캠페인</th><th>광고비</th><th>전환매출</th><th>수익률</th><th>노출</th><th>클릭</th><th>클릭률</th><th>CPC</th><th>판매</th><th>전환율</th><th>이익금</th><th>순이익금</th></tr></thead>
+        <tbody>${CAMPAIGNS.slice().sort((a,b)=>b.cost-a.cost).map(c=>{
+          const r = c.conv/c.cost*100, ctr2 = c.click/c.imp*100, cpc2 = c.cost/c.click, cvr2 = c.qty/c.click*100, net = c.profit-c.cost;
+          return `<tr>
+            <td class="l"><b>${esc(c.name)}</b><div class="cd" style="font-size:11px;color:var(--muted)">${c.id} · ${c.type} · ${c.start.slice(5).replace('-','/')}~</div></td>
+            <td class="num">${won(c.cost)}</td>
+            <td class="num">${won(c.conv)}</td>
+            <td class="num"><b>${pct1(r)}%</b></td>
+            <td class="num">${won(c.imp)}</td>
+            <td class="num">${won(c.click)}</td>
+            <td class="num">${ctr2.toFixed(2)}%</td>
+            <td class="num">${wonW(cpc2)}</td>
+            <td class="num">${c.qty}</td>
+            <td class="num">${cvr2.toFixed(2)}%</td>
+            <td class="num">${won(c.profit)}</td>
+            <td class="num"><b class="${net<0?'down':''}">${net<0?'−':''}${won(Math.abs(net))}</b></td>
+          </tr>`;
+        }).join('')}
+        <tr class="total"><td class="l">합계</td><td class="num">${won(t.cost)}</td><td class="num">${won(t.conv)}</td><td class="num">${pct1(roas)}%</td><td class="num">${won(t.imp)}</td><td class="num">${won(t.click)}</td><td class="num">${ctr.toFixed(2)}%</td><td class="num">${wonW(cpc)}</td><td class="num">${t.qty}</td><td class="num">${cvr.toFixed(2)}%</td><td class="num">${won(t.profit)}</td><td class="num">${won(t.profit-t.cost)}</td></tr>
+      </tbody></table></div>
+      <div class="card-b" style="border-top:1px solid var(--line2)">
+        <div class="formula">광고수익률 = <code>전환매출 ÷ 광고비</code> · CPC = <code>광고비 ÷ 클릭</code> · 전환율 = <code>판매량 ÷ 클릭</code> · 광고 순이익 = <code>광고 이익금 − 광고비</code></div>
+        <div class="alert warn" style="margin-top:10px">⚠️ 11/17 광고비 210,269원으로 광고 순이익이 <b>-43,723원</b>입니다. ‘깔참광고11’은 수익률 266%로 양호, 크림 캠페인은 수익률 356%지만 손실(-41,034원). 광고비 분배 점검을 권장합니다.</div>
+      </div>
+    </div>`;
+};
+
+/* ============================== 5. 정산 · 손익 ============================== */
+function settleCalc(s){
+  const target = s.sales - s.couponNow - s.couponDl - s.fee;
+  const actual = target - (s.inout + s.ship + s.keep + s.returnFee + s.milk) + s.loss - s.ad;
+  const net = actual - s.cost;
+  return {target, actual, net};
+}
+VIEWS.settle = function(){
+  const rows = SETTLE.map(s=>{
+    const p = PRODUCTS.find(x=>x.id===s.id) || {short:s.id, icon:'📦'};
+    const c = settleCalc(s);
+    return {s, p, c};
+  });
+  const T = rows.reduce((a,r)=>({
+    stock:a.stock+r.s.stock, qty:a.qty+r.s.qty, sales:a.sales+r.s.sales, dl:a.dl+r.s.couponDl, fee:a.fee+r.s.fee,
+    target:a.target+r.c.target, cost:a.cost+r.s.cost, inout:a.inout+r.s.inout, ship:a.ship+r.s.ship, ad:a.ad+r.s.ad, actual:a.actual+r.c.actual, net:a.net+r.c.net
+  }),{stock:0,qty:0,sales:0,dl:0,fee:0,target:0,cost:0,inout:0,ship:0,ad:0,actual:0,net:0});
+  const dueSum = SETTLE_DUE.reduce((a,d)=>a+d.seller+d.rfm,0);
+  return topbar('정산 · 손익','11월 17일 로켓그로스 정산서 기준', `<div class="seg">${[['day','일별'],['due','입금 예정']].map(([v,l])=>`<button class="${opt.settleRange===v?'on':''}" data-act="settleRange" data-v="${v}">${l}</button>`).join('')}</div>`)
+  + `<div class="kpis" style="margin-bottom:14px">
+      ${kpiCard('정산대상액', won(T.target)+'원', `<span class="flat">판매액 ${wonT(T.sales)}</span>`)}
+      ${kpiCard('실정산액', won(T.actual)+'원', `<span class="flat">입출고+배송 ${won(T.inout+T.ship)}원</span>`) }
+      ${kpiCard('원가 차감 후 순이익', won(T.net)+'원', `<span class="flat">판매량 ${T.qty}개</span>`, {accent:true})}
+      ${kpiCard('입금 예정 합계', won(dueSum)+'원', `<span class="flat">${SETTLE_DUE.length}건</span>`)}
+    </div>`
+  + (opt.settleRange==='due' ? dueCard() : settleTable(rows, T))
+  + `<div class="card" style="margin-top:14px">${sectionHead('정산 산식 (빅셀 계산 검증 완료)')}
+      <div class="card-b"><div class="formula">
+        정산대상액 = <code>판매액 − 즉시할인쿠폰 − 다운로드쿠폰 − 판매수수료(VAT포함)</code><br>
+        실정산액 = <code>정산대상액 − (입출고비+배송비+보관비+반품회수비+반품재입고비+반출비+바코드비+FCL+밀크런비) + 재고손실보상 − 광고집행비</code><br>
+        순이익금 = <code>실정산액 − 원가</code><br>
+        <span class="hint">예) 빨래건조대: 1,192,206 − 119,625 − 214,500 − 177,588 = <b>680,493</b> → 680,493 − 651,360 = <b>29,133원</b></span>
+      </div>
+      <div class="alert info" style="margin-top:10px">ℹ️ 빅셀은 두 가지 순이익을 보여줍니다. <b>정산 기준 순이익(11/17 90,756원)</b>은 정산서 실제 공제액 기준이고, <b>매출분석 기준 순이익(85,324원)</b>은 이익금 − 광고비입니다. 금액 차이는 광고·수수료 집계 시점 차이이며 둘 다 빅셀 화면 값 그대로입니다.</div>
+      </div>
+    </div>`;
+};
+function wonT(n){ return won(n)+'원'; }
+function settleTable(rows, T){
+  return `<div class="card">${sectionHead('상품별 정산·손익','판매수량 0인 상품도 입출고·배송비는 발생합니다')}
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th class="l">상품</th><th>재고</th><th>판매량</th><th>판매액</th><th>다운로드쿠폰</th><th>수수료</th><th>정산대상액</th><th>원가</th><th>입출고</th><th>배송비</th><th>광고비</th><th>실정산액</th><th>순이익금</th></tr></thead>
+      <tbody>${rows.map(({s,p,c})=>`<tr>
+        <td class="l"><div class="prod"><span class="thumb">${p.icon}</span><div><div class="nm">${esc(p.short)}</div><div class="cd">${s.id}</div></div></div></td>
+        <td class="num">${won(s.stock)}</td><td class="num">${s.qty}</td><td class="num">${won(s.sales)}</td>
+        <td class="num">${won(s.couponDl)}</td><td class="num">${won(s.fee)}</td>
+        <td class="num"><b>${won(c.target)}</b></td>
+        <td class="num">${won(s.cost)}</td><td class="num">${won(s.inout)}</td><td class="num">${won(s.ship)}</td><td class="num">${won(s.ad)}</td>
+        <td class="num">${won(c.actual)}</td>
+        <td class="num"><b style="color:${c.net<0?'var(--up)':'var(--ink)'}">${won(c.net)}</b></td></tr>`).join('')}
+        <tr class="total"><td class="l">합계</td><td class="num">${won(T.stock)}</td><td class="num">${T.qty}</td><td class="num">${won(T.sales)}</td><td class="num">${won(T.dl)}</td><td class="num">${won(T.fee)}</td><td class="num">${won(T.target)}</td><td class="num">${won(T.cost)}</td><td class="num">${won(T.inout)}</td><td class="num">${won(T.ship)}</td><td class="num">${won(T.ad)}</td><td class="num">${won(T.actual)}</td><td class="num">${won(T.net)}</td></tr>
+      </tbody></table></div>
+    <div class="card-b" style="border-top:1px solid var(--line2)"><div class="alert info">💡 판매량이 0이어도 노트북거치대처럼 입출고·배송비가 발생해 순이익이 <b>-3,190원</b>이 되는 경우가 있습니다. 빅셀 정산서에 그대로 나오는 값입니다.</div></div>
+  </div>`;
+}
+function dueCard(){
+  const rows = SETTLE_DUE.slice();
+  const total = rows.reduce((a,d)=>a+d.seller+d.rfm,0);
+  return `<div class="card">${sectionHead('쿠팡 정산금 입금 일정','대시보드 캘린더의 💳 배지와 같은 데이터')}
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th class="l">입금일</th><th>요일</th><th>판매자배송</th><th>로켓그로스</th><th>합계</th><th>비중</th></tr></thead>
+      <tbody>${rows.map(d=>{
+        const sum = d.seller+d.rfm;
+        return `<tr><td class="l"><b>${d.d}</b></td><td>${DOW[dateObj(d.d).getDay()]}</td>
+          <td class="num">${won(d.seller)}</td><td class="num">${won(d.rfm)}</td>
+          <td class="num"><b>${wonW(sum)}</b></td>
+          <td class="num"><div class="inv-bar" style="display:inline-block;width:90px;vertical-align:middle"><i style="width:${sum/total*100*2.2>100?100:sum/total*100*2.2}%;background:#2f6bff"></i></div></td></tr>`;
+      }).join('')}
+      <tr class="total"><td class="l">합계</td><td></td><td class="num">${won(rows.reduce((a,d)=>a+d.seller,0))}</td><td class="num">${won(rows.reduce((a,d)=>a+d.rfm,0))}</td><td class="num">${won(total)}</td><td></td></tr>
+      </tbody></table></div>
+    <div class="card-b" style="border-top:1px solid var(--line2)"><div class="alert ok">✅ 11/20 입금 예정 <b>1,804,508원</b>, 11/27 <b>3,829,784원</b>, 12/1 <b>7,671,944원</b>. 12월 첫 주에 큰 입금이 몰립니다.</div></div>
+  </div>`;
+}
+</script>
+<script>
+/* ============================== 6. 재고 · 품절 ============================== */
+VIEWS.stock = function(){
+  const totalStock = PRODUCTS.reduce((a,p)=>a+p.stock,0);
+  const totalValue = PRODUCTS.reduce((a,p)=>a+p.stockValue,0);
+  return topbar('재고 · 품절','로켓그로스 재고 · 품절 예상일 · 입고 필요 수량', `<span class="chip">재고 <b>${won(totalStock)}</b>개</span>`)
+  + `<div class="kpis" style="margin-bottom:14px">
+      ${kpiCard('쿠팡 재고', won(totalStock)+'개', `<span class="flat">재고금액 ${wonW(totalValue)}</span>`)}
+      ${kpiCard('일평균 판매', '73개', `<span class="flat">빨래건조대 기준</span>`)}
+      ${kpiCard('품절 예상', '2종', `<span class="flat">12/8 · 12/30</span>`, {accent:true})}
+      ${kpiCard('반품율', '8~9%', `<span class="flat">반품 235건</span>`)}
+    </div>`
+  + `<div class="card">${sectionHead('상품별 재고 현황','11월 17일 기준')}
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th class="l">상품</th><th class="l">노출ID · SKU</th><th>재고</th><th>재고금액</th><th>일평균 판매</th><th>소진 예상</th><th>품절 예상일</th><th>반품</th><th>상태</th></tr></thead>
+      <tbody>${PRODUCTS.map(p=>{
+        const days = p.daily>0 ? Math.round(p.stock/p.daily) : null;
+        const status = p.stock===0 ? '<span class="pill warn">품절</span>' : (days!=null && days<20 ? '<span class="pill" style="background:#fff4e0;color:#a86000">부족</span>' : '<span class="pill ok">정상</span>');
+        return `<tr>
+          <td class="l"><div class="prod"><span class="thumb">${p.icon}</span><div><div class="nm">${esc(p.short)}</div></div></div></td>
+          <td class="l"><span class="cd" style="font-size:11px;color:var(--muted)">${p.id} · ${p.sku}</span></td>
+          <td class="num"><b>${won(p.stock)}</b></td><td class="num">${wonW(p.stockValue)}</td><td class="num">${p.daily}개</td>
+          <td class="num">${days==null?'<span class="flat">-</span>':days+'일분'}</td>
+          <td class="num">${p.soldout==='-'?'<span class="flat">-</span>':p.soldout}</td>
+          <td class="num">${p.returns}건${p.returns?' <span class="flat">('+p.returnRate+'%)</span>':''}</td>
+          <td>${status}</td></tr>`;
+      }).join('')}</tbody>
+    </table></div>
+  </div>`
+  + `<div class="two" style="margin-top:14px">
+      <div class="card">${sectionHead('쿠팡 품절 상품','11월 17일 기준 · '+SOLDOUT.length+'건')}
+        ${SOLDOUT.map(s=>`<div class="rank-row"><div class="nm">${esc(s.name)}<div class="kw">${s.id}</div></div><span class="pill warn">품절</span></div>`).join('')}
+        <div class="card-b"><div class="alert warn">판매가 계속 0이면 랭킹이 빨라지하여 순위가 떨어집니다. 빨리 입고 요청하세요.</div></div>
+      </div>
+      <div class="card">${sectionHead('입고 요청 · 발주 현황')}
+        <div class="card-b">
+          <div class="stat-line"><span class="lb">최근 1개월 입고요청</span><span class="vl">0건</span></div>
+          <div class="stat-line"><span class="lb">로켓 발주리스트(11/18)</span><span class="vl">0건</span></div>
+          <div class="stat-line"><span class="lb">쿠팡 입고예정</span><span class="vl">0개 (₩0)</span></div>
+          <div class="stat-line"><span class="lb">쿠팡 보관비(이번달)</span><span class="vl">₩95</span></div>
+          <div class="alert info" style="margin-top:12px">빅셀에서는 [로켓그로스 입고요청 목록]에서 일괄 입고를 신청합니다. 이 대시보드는 재고·소진 예상일을 보여줍니다.</div>
+        </div>
+      </div>
+    </div>`;
+};
+
+/* ============================== 7. 노출순위 ============================== */
+VIEWS.rank = function(){
+  const up = RANKS.filter(r=>r.now<r.prev).length, down = RANKS.filter(r=>r.now>r.prev).length;
+  const best = RANKS.slice().sort((a,b)=>a.now-b.now)[0];
+  return topbar('노출순위','쿠팡 자연 검색 순위 (광고 제외) · 11월 17일 기준',
+    `<span class="chip">추적 키워드 <b>17</b>/100</span>`)
+  + `<div class="kpis" style="margin-bottom:14px">
+      ${kpiCard('추적 상품', RANKS.length+'개', `<span class="flat">빨래건조대 옵션</span>`)}
+      ${kpiCard('상승', up+'개', `<span class="up">순위 개선</span>`)}
+      ${kpiCard('하락', down+'개', `<span class="down">순위 하락</span>`)}
+      ${kpiCard('최고 순위', best.now+'위', `<span class="flat">${esc(best.name)}</span>`, {accent:true})}
+    </div>`
+  + `<div class="card">${sectionHead('상품별 순위 변동','전일 대비')}
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th class="l">상품</th><th class="l">키워드</th><th>전일</th><th>현재</th><th>변동</th><th>페이지</th></tr></thead>
+      <tbody>${RANKS.map(r=>{
+        const diff = r.prev-r.now;
+        return `<tr>
+          <td class="l"><div class="prod"><span class="thumb">🧺</span><div><div class="nm">${esc(r.name)}</div><div class="cd">${r.id}</div></div></div></td>
+          <td class="l"><span class="pill rfm">${esc(r.kw)}</span></td>
+          <td class="num">${r.prev}위</td><td class="num"><b>${r.now}위</b></td>
+          <td class="num ${diff>0?'up':(diff<0?'down':'flat')}">${diff>0?'▲'+diff:(diff<0?'▼'+Math.abs(diff):'-')}</td>
+          <td class="num">${Math.ceil(r.now/36)}p</td></tr>`;
+      }).join('')}</tbody>
+    </table></div>
+    <div class="card-b" style="border-top:1px solid var(--line2)">
+      <div class="botn">${barChart(RANKS.map(r=>({l:r.kw.slice(0,4), v:100-r.now*2, sub:r.now+'위', c:r.now<=20?'#12b886':(r.now<=30?'#2f6bff':'#f59f00')})),{h:170})}</div>
+      <div class="hint" style="margin-top:6px">막대가 높을수록 상위 노출입니다. <b>접이식빨래건조대 올화이트 19위(+19)</b>, <b>올블랙 23위(+16)</b>가 크게 상승했습니다.</div>
+    </div>
+  </div>`;
+};
+
+/* ============================== 8. 알림톡 리포트 ============================== */
+VIEWS.report = function(){
+  const rows = dailySeries();
+  const y = rows.find(r=>r.d==='2026-11-17');
+  const p = rows.find(r=>r.d==='2026-11-16');
+  const txt = reportText(y, p);
+  return topbar('알림톡 리포트','매일 아침 9:30에 전날 실적을 알림톡으로 받는 화면과 같은 내용입니다',
+    `<button class="btn primary" data-act="copyReport">📋 내용 복사</button>`)
+  + `<div class="two">
+      <div class="card">${sectionHead('카카오 알림톡 미리보기','전날(11/17) 실적 자동 요약')}
+        <div class="card-b">
+          <div class="phone">
+            <div class="top"><span>9:30</span><span>리스페토 리포트</span></div>
+            <div class="talk">
+              <div class="th"><span class="av">B</span><div><b>빅셀 일일 리포트</b><div style="font-size:10.5px;color:#9ba6bb">@bigcell_alim · 지금</div></div></div>
+              <div class="talk-body">
+                <div style="font-weight:800;margin-bottom:4px">[리스페토] 11월 17일(화) 결산</div>
+                <div class="big">${won(y.sales)}원 <span style="font-size:12px;font-weight:700;color:#e03e3e">${y.sales>=p.sales?'▲':'▼'}${Math.abs((y.sales-p.sales)/p.sales*100).toFixed(1)}%</span></div>
+                <div style="font-size:11px;color:#8b96ab;margin-bottom:6px">전일 ${won(p.sales)}원 · ${y.qty||''}개 판매</div>
+                <hr>
+                <div class="row"><span>이익금</span><b>${won(y.profit)}원</b></div>
+                <div class="row"><span>광고비</span><b>${won(y.ad)}원</b></div>
+                <div class="row"><span>순이익금</span><b style="color:#2f6bff">${won(y.net)}원</b></div>
+                <hr>
+                <div class="row"><span>이익률</span><b>${pct1(y.profit/y.sales*100)}%</b></div>
+                <div class="row"><span>광고비율</span><b>${pct1(y.ad/y.sales*100)}%</b></div>
+                <div class="row"><span>이번달 누적 매출</span><b>${won(sumOf(monthRowsOf('2026-11').filter(r=>r.d<='2026-11-17'),'sales'))}원</b></div>
+                <hr>
+                <div style="font-size:11.5px;color:#5b6784;line-height:1.7">📌 신발깔창 +149% 급상승<br>📦 빨래건조대 재고 26/12/30 품절 예상<br>💳 정산금 입금 예정 11/20</div>
+              </div>
+              <div class="talk-btns"><button>대시보드 열기</button><button>상세 보기</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">${sectionHead('발송 텍스트 (그대로 복사/수정 가능)')}
+        <div class="card-b">
+          <textarea id="reportText" style="width:100%;min-height:330px;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:12.5px;line-height:1.7;font-family:ui-monospace,Menlo,monospace">${esc(txt)}</textarea>
+          <div class="alert info" style="margin-top:10px">이 리포트를 매일 오전 9:30에 자동 발송하도록 하려면 메인 화면에서 스케줄을 등록하면 됩니다. (초안: <b>scheduled-actions/daily-bigcell-report/action.md</b>)</div>
+        </div>
+      </div>
+    </div>`
+  + `<div class="card" style="margin-top:14px">${sectionHead('최근 7일 리포트 요약','모바일에서 한눈에')}
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th class="l">날짜</th><th>매출</th><th>이익금</th><th>광고비</th><th>순이익</th><th>이익률</th><th>한줄 평가</th></tr></thead>
+      <tbody>${rows.slice(-8).reverse().map(r=>{
+        const pr = r.sales?r.profit/r.sales*100:0;
+        const eq = pr>=20?'좋음':(pr>=15?'보통':'주의');
+        return `<tr><td class="l"><b>${fmtDate(r.d)}</b></td><td class="num">${won(r.sales)}</td><td class="num">${won(r.profit)}</td><td class="num">${won(r.ad)}</td><td class="num">${won(r.net)}</td><td class="num">${pct1(pr)}%</td><td><span class="pill ${pr>=20?'ok':(pr>=15?'':'warn')}">${eq}</span></td></tr>`;
+      }).join('')}</tbody>
+    </table></div>
+  </div>`;
+};
+function reportText(y, p){
+  const dv = (y.sales-p.sales)/p.sales*100;
+  return [
+    '[리스페토] 11월 17일(화) 결산 리포트',
+    '',
+    `· 매출: ${won(y.sales)}원 (전일 ${dv>=0?'▲':'▼'}${Math.abs(dv).toFixed(1)}%)`,
+    `· 이익금: ${won(y.profit)}원 (이익률 ${(y.profit/y.sales*100).toFixed(1)}%)`,
+    `· 광고비: ${won(y.ad)}원 (광고비율 ${(y.ad/y.sales*100).toFixed(1)}%)`,
+    `· 순이익금: ${won(y.net)}원`,
+    '',
+    `· 이번달 누적 매출: ${won(sumOf(monthRowsOf('2026-11').filter(r=>r.d<='2026-11-17'),'sales'))}원`,
+    '',
+    '[상품]',
+    '· 빨래건조대 69개 / 1,349,950원 (전일 -1.4%)',
+    '· 신발깔창 19개 / 184,390원 (전일 +149.3%)',
+    '· 좌식테이블·휴지통·손목보호대 판매 0',
+    '',
+    '[알림]',
+    '· 품절 6개 옵션 — 입고 필요',
+    '· 빨래건조대 재고 12/30 품절 예상',
+    '· 정산금 입금 11/20 1,804,508원',
+    '',
+    '발신: 빅셀 통합 대시보드'
+  ].join('\n');
+}
+
+/* ============================== 9. 설정 ============================== */
+VIEWS.settings = function(){
+  return topbar('설정','값을 바꾸면 모든 계산에 바로 반영됩니다')
+  + `<div class="card">${sectionHead('기본 값')}
+    <div class="card-b">
+      <div class="form-row"><label>위안 환율 (원/위안)</label><input class="inp" type="number" value="${S.rate}" data-act="setRate"></div>
+      <div class="form-row"><label>한국 도착까지 비용 비율 (%) — 빅셀 기본 45%</label><input class="inp" type="number" value="${S.importCostRate}" data-act="setImportRate"></div>
+      <div class="form-row"><label>부가세 포함 배수 (광고비 VAT)</label><input class="inp" type="number" step="0.01" value="${S.vat}" data-act="setVat"></div>
+      <div class="form-row"><label>일 목표 매출 (원)</label><input class="inp" type="number" value="${S.targetSales}" data-act="setTarget"></div>
+      <div class="form-row"><label>자동 수집 엔드포인트 (JSON) — 쿠팡 윙·광고센터 데이터를 이 URL에서 받아옵니다</label>
+        <input class="inp" type="url" placeholder="https://.../bigcell-today.json" value="${esc(S.apiUrl||'')}" data-act="setApi">
+      </div>
+      <div class="toolbar"><button class="btn primary" data-act="syncNow">지금 동기화</button><span class="hint">{"live":{"date":"2026-11-19","sales":1234567,"coupon":180000,"netSales":1054567,"qty":60,"adExVat":150000},"daily":[{"d":"2026-11-18","sales":1285010,"ad":193563}]} 형식</span></div>
+    </div>
+  </div>`
+  + `<div class="card" style="margin-top:14px">${sectionHead('오늘 실시간 수치 (쿠팡 윙에서 확인한 값 입력)','매일 수동 갱신 또는 자동 수집으로 채워집니다')}
+    <div class="card-b">
+      <div class="three" style="gap:10px">
+        <div class="form-row"><label>기준일</label><input class="inp" type="date" value="${S.live.date}" data-act="liveDate"></div>
+        <div class="form-row"><label>오늘 매출 (쿠폰 전, 원)</label><input class="inp" type="number" value="${S.live.sales}" data-act="liveSales"></div>
+        <div class="form-row"><label>쿠폰 차감액 (원)</label><input class="inp" type="number" value="${S.live.coupon}" data-act="liveCoupon"></div>
+        <div class="form-row"><label>판매 수량 (개)</label><input class="inp" type="number" value="${S.live.qty}" data-act="liveQty"></div>
+        <div class="form-row"><label>광고비 (VAT 별도, 원)</label><input class="inp" type="number" value="${S.live.adExVat}" data-act="liveAd"></div>
+        <div class="form-row"><label>기록 시각</label><input class="inp" type="text" value="${S.live.at}" data-act="liveAt"></div>
+      </div>
+      <div class="hint">쿠폰 제외 실매출 <b>${won(S.live.netSales)}원</b> (= 오늘 매출 ${won(S.live.sales)}원 − 쿠폰 ${won(S.live.coupon)}원)</div>
+      <div class="hint">${esc(S.live.date)} ${esc(S.live.at||'')} 쿠팡 윙 기준: 매출 ${won(S.live.sales)}원(쿠폰 전) / 쿠폰 ${won(S.live.coupon)}원 / ${won(S.live.qty)}개 / 광고비 ${won(S.live.adExVat)}원(VAT 별도) → VAT 포함 ${won(Math.round(S.live.adExVat*(S.vat||1.1)))}원</div>
+    </div>
+  </div>`
+  + `<div class="card" style="margin-top:14px">${sectionHead('데이터 백업')}
+    <div class="card-b">
+      <div class="toolbar">
+        <button class="btn" data-act="exportJson">JSON 내보내기</button>
+        <button class="btn" data-act="printPage">PDF/인쇄</button>
+        <button class="btn" data-act="resetAll" style="color:var(--up);border-color:#ffd6d6">저장된 수정값 모두 초기화</button>
+      </div>
+      <div class="hint" style="margin-top:10px">원가·메모·실시간 수치는 이 브라우저(localStorage)에 저장됩니다. 앱을 지우면 사라지니 주기적으로 JSON 백업을 권장합니다.</div>
+    </div>
+  </div>`
+  + `<div class="card" style="margin-top:14px">${sectionHead('이 대시보드의 데이터 출처')}
+    <div class="card-b">
+      <div class="stat-line"><span class="lb">일별 매출·이익금·광고비</span><span class="vl">빅셀 대시보드 매출 보고서 (11/1~11/17)</span></div>
+      <div class="stat-line"><span class="lb">상품 원가·수수료·입출고·배송비</span><span class="vl">빅셀 로켓그로스 상품 관리</span></div>
+      <div class="stat-line"><span class="lb">정산·손익</span><span class="vl">빅셀 로켓그로스 정산 분석</span></div>
+      <div class="stat-line"><span class="lb">캠페인 성과</span><span class="vl">빅셀 광고 캠페인 분석</span></div>
+      <div class="stat-line"><span class="lb">오늘 실시간</span><span class="vl">쿠팡 윙 ${esc(S.live.date)} ${esc(S.live.at||'')} 기준 (쿠폰 전 매출 · 쿠폰 분리)</span></div>
+      <div class="stat-line"><span class="lb">저장된 수정값</span><span class="vl">${Object.keys(S.costOverrides).length}개 원가 · ${Object.keys(S.memos).length}개 메모</span></div>
+    </div>
+  </div>`;
+};
+
+/* ============================== 액션 ============================== */
+function numVal(el, fb){ const v = parseFloat(String(el.value).replace(/,/g,'')); return isNaN(v)? fb : v; }
+ACTIONS.repUnit = (d)=>{ opt.repUnit=d.v; render(); };
+ACTIONS.repMode = (d)=>{ opt.repMode=d.v; render(); };
+ACTIONS.dailyRange = (d)=>{ opt.dailyRange=d.v; render(); };
+ACTIONS.settleRange = (d)=>{ opt.settleRange=d.v; render(); };
+ACTIONS.calMetric = (d)=>{ opt.calMetric[d.k]=!opt.calMetric[d.k]; render(); };
+ACTIONS.monthPick = (d)=>{ opt.calMonth=d.m; render(); };
+ACTIONS.yearMinus = ()=>{ const [y,m]=opt.calMonth.split('-').map(Number); opt.calMonth = `${y-1}-${pad(m)}`; render(); };
+ACTIONS.yearPlus = ()=>{ const [y,m]=opt.calMonth.split('-').map(Number); opt.calMonth = `${y+1}-${pad(m)}`; render(); };
+ACTIONS.calDelta = (d,el)=>{ opt.calDelta = el.checked; render(); };
+ACTIONS.calStock = (d,el)=>{ opt.calStock = el.checked; render(); };
+ACTIONS.calSettle = (d,el)=>{ opt.calSettle = el.checked; render(); };
+ACTIONS.resetCosts = ()=>{ S.costOverrides={}; save(); render(); };
+ACTIONS.resetAll = ()=>{ if(confirm('저장된 원가·메모·실시간 수치를 모두 초기화할까요?')){ localStorage.removeItem(STORE_KEY); S=loadState(); render(); } };
+ACTIONS.exportJson = ()=>{
+  const blob = new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'bigcell-settings.json'; a.click();
+};
+ACTIONS.printPage = ()=> window.print();
+ACTIONS.gotoRank = ()=> go('rank');
+ACTIONS.setRate = (d,el)=>{ S.rate = numVal(el, S.rate); save(); };
+ACTIONS.setImportRate = (d,el)=>{ S.importCostRate = numVal(el, 45); save(); };
+ACTIONS.setVat = (d,el)=>{ S.vat = numVal(el, 1.1); save(); };
+ACTIONS.setTarget = (d,el)=>{ S.targetSales = numVal(el, 1500000); save(); };
+ACTIONS.setApi = (d,el)=>{ S.apiUrl = el.value.trim(); save(); };
+ACTIONS.syncNow = ()=>{ fetchLatest(true); };
+async function fetchLatest(showMsg){
+  if(!S.apiUrl){ if(showMsg) alert('설정에서 자동 수집 엔드포인트를 먼저 입력하세요.'); return; }
+  try{
+    const sep = S.apiUrl.includes('?') ? '&' : '?';
+    const res = await fetch(S.apiUrl + sep + 't=' + Date.now(), {cache:'no-store'});
+    const j = await res.json();
+    if(j.live) S.live = applyLive(j.live, S.live);
+    if(Array.isArray(j.daily)) j.daily.forEach(x=>{ if(x && x.d){
+      const o = Object.assign({}, x);
+      const c = couponNum(o.coupon), n = couponNum(o.netSales);
+      if(c==null && n!=null) o.coupon = Math.max(0, (Number(o.sales)||0)-n);
+      if(n==null && c!=null) o.netSales = Math.max(0, (Number(o.sales)||0)-c);
+      S.dailyOverrides[x.d] = Object.assign({}, S.dailyOverrides[x.d], o);
+    } });
+    save(); render();
+    if(showMsg) alert('동기화 완료: ' + new Date().toLocaleTimeString('ko-KR'));
+  }catch(e){
+    if(showMsg) alert('동기화 실패: ' + e.message);
+  }
+}
+ACTIONS.liveDate = (d,el)=>{ S.live.date = el.value; save(); };
+ACTIONS.liveSales = (d,el)=>{ S.live = liveNumbers(Object.assign({}, S.live, {sales:numVal(el,0)})); save(); render(); };
+ACTIONS.liveCoupon = (d,el)=>{ S.live = liveNumbers(Object.assign({}, S.live, {coupon:numVal(el,0)})); save(); };
+ACTIONS.liveQty = (d,el)=>{ S.live = liveNumbers(Object.assign({}, S.live, {qty:numVal(el,0)})); save(); };
+ACTIONS.liveAd = (d,el)=>{ S.live.adExVat = numVal(el,0); save(); render(); };
+ACTIONS.liveAt = (d,el)=>{ S.live.at = el.value; save(); };
+ACTIONS.simPick = (d,el)=>{ opt.simId = el.value; render(); };
+function simStatsHTML(sel, m){
+  return `<div class="stat-line"><span class="lb">할인 후 판매금액</span><span class="vl num">${wonW(m.base)}</span></div>
+    <div class="stat-line"><span class="lb">마켓 수수료 (${pct1(m.fee)}%)</span><span class="vl num">−${wonW(m.feeAmt)}</span></div>
+    <div class="stat-line"><span class="lb">원가 + 입출고 + 배송</span><span class="vl num">−${wonW(m.cost+m.inout+m.ship)}</span></div>
+    <div class="stat-line" style="border-top:2px solid var(--line);margin-top:4px;padding-top:10px"><span class="lb" style="font-weight:800;color:var(--ink)">개당 이익금</span><span class="vl num" style="font-size:18px;color:${m.profit>0?'var(--blue)':'var(--up)'}">${wonW(m.profit)} <span style="font-size:12px;color:var(--muted)">(${pct1(m.rate)}%)</span></span></div>
+    <div class="stat-line"><span class="lb">일 70개 판매 시 일 이익</span><span class="vl num">${wonW(m.profit*70)}</span></div>`;
+}
+function refreshSim(){
+  const sel = PRODUCTS.find(p=>p.id===(opt.simId||PRODUCTS[0].id)) || PRODUCTS[0];
+  const m = margin(sel);
+  const a = document.getElementById('simPriceLab'); if(a) a.textContent = won(m.price)+'원';
+  const b = document.getElementById('simCostLab'); if(b) b.textContent = won(m.cost)+'원';
+  const c = document.getElementById('simStats'); if(c) c.innerHTML = simStatsHTML(sel, m);
+}
+function calcVals(){
+  const yuan = opt.calcYuan!=null?opt.calcYuan:60;
+  const price = opt.calcPrice!=null?opt.calcPrice:12900;
+  const fee = opt.calcFee!=null?opt.calcFee:11.88;
+  const inoutShip = opt.calcInout!=null?opt.calcInout:3500;
+  const goods = yuan*S.rate, extra = Math.round(goods*S.importCostRate/100), cost = goods+extra;
+  const feeAmt = Math.round(price*fee/100);
+  const profit = price - cost - feeAmt - inoutShip;
+  return {yuan, price, fee, inoutShip, goods, extra, cost, feeAmt, profit, rate: price?profit/price*100:0};
+}
+function refreshCalc(){
+  const v = calcVals();
+  const set = (id, html)=>{ const e = document.getElementById(id); if(e) e.innerHTML = html; };
+  set('cGoods', wonW(v.goods));
+  set('cExtra', wonW(v.extra));
+  set('cCost', wonW(v.cost));
+  set('cFee', '−'+wonW(v.feeAmt));
+  const p = document.getElementById('cProfit');
+  if(p){
+    p.style.color = v.profit>0?'var(--blue)':'var(--up)';
+    p.innerHTML = wonW(v.profit)+' <span style="font-size:12px;color:var(--muted)">('+pct1(v.rate)+'%)</span>';
+  }
+}
+ACTIONS.simPrice = (d,el)=>{ const id = opt.simId||PRODUCTS[0].id; S.costOverrides[id]=Object.assign({}, S.costOverrides[id], {price:numVal(el,0)}); save(); refreshSim(); };
+ACTIONS.simCost = (d,el)=>{ const id = opt.simId||PRODUCTS[0].id; S.costOverrides[id]=Object.assign({}, S.costOverrides[id], {cost:numVal(el,0)}); save(); refreshSim(); };
+ACTIONS.calcYuan = (d,el)=>{ opt.calcYuan = numVal(el,0); refreshCalc(); };
+ACTIONS.calcPrice = (d,el)=>{ opt.calcPrice = numVal(el,0); refreshCalc(); };
+ACTIONS.calcFee = (d,el)=>{ opt.calcFee = numVal(el,11.88); refreshCalc(); };
+ACTIONS.calcInout = (d,el)=>{ opt.calcInout = numVal(el,0); refreshCalc(); };
+ACTIONS.copyReport = ()=>{
+  const rows = dailySeries();
+  const y = rows.find(r=>r.d==='2026-11-17'), p = rows.find(r=>r.d==='2026-11-16');
+  const t = reportText(y,p);
+  const ta = document.getElementById('reportText'); if(ta) ta.value = t;
+  const manual = ()=>{ if(!ta) return; ta.focus(); ta.select(); try{ document.execCommand('copy'); alert('리포트 내용을 복사했습니다.'); }catch(e){ alert('자동 복사가 안 됩니다. 텍스트를 길게 눌러 직접 복사하세요.'); } };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(()=>alert('리포트 내용을 복사했습니다.')).catch(manual);
+  } else { manual(); }
+};
+ACTIONS.csvDaily = ()=>{
+  const rows = dailySeries();
+  const lines = ['날짜,매출,이익금,광고비,순이익금'];
+  rows.forEach(r=>lines.push([r.d,r.sales,r.profit,r.ad,r.net].join(',')));
+  const blob = new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='bigcell-daily.csv'; a.click();
+};
+
+/* 원가 입력 (표) */
+document.addEventListener('change', ev=>{
+  const el = ev.target;
+  if(el && el.dataset && el.dataset.costId){
+    const id = el.dataset.costId, f = el.dataset.field;
+    S.costOverrides[id] = Object.assign({}, S.costOverrides[id], {[f]: numVal(el, 0)});
+    save(); render();
+  }
+});
+
+/* ============================== 날짜 상세 모달 ============================== */
+function openDay(ds){
+  const rows = dailySeries();
+  const r = rows.find(x=>x.d===ds);
+  const p = r ? rows[rows.indexOf(r)-1] : null;
+  const due = SETTLE_DUE.find(x=>x.d===ds);
+  const settleRows = ds==='2026-11-17' ? SETTLE.filter(s=>s.qty>0 || s.inout>0) : [];
+  const prodRows = ds==='2026-11-17' ? PRODUCT_DELTA.map(x=>{
+    const pp = PRODUCTS.find(p=>p.id===x.id) || {icon:'📦', short:x.id};
+    const st = SETTLE.find(s=>s.id===x.id) || {ad:0};
+    return {pp, x, ad: st.ad};
+  }) : [];
+  const memos = Object.keys(S.memos).filter(k=>k.startsWith(ds));
+  const d = dateObj(ds);
+  const html = `<div class="mask" id="mask"><div class="modal">
+    <div class="mh"><h3>${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일 (${DOW[d.getDay()]})</h3>
+      <button class="x" data-close="1">✕</button></div>
+    <div class="mb">
+      ${r ? `
+      <div class="kv">
+        <div class="b"><div class="l">매출</div><div class="n num">${wonW(r.sales)}</div><div class="d num">${deltaHTML(p?deltaPct(r.sales,p.sales):null)} 전날 대비</div></div>
+        <div class="b"><div class="l">광고비</div><div class="n num">${wonW(r.ad)}</div><div class="d num">${deltaHTML(p?deltaPct(r.ad,p.ad):null)} 전날 대비</div></div>
+        <div class="b"><div class="l">순이익금</div><div class="n num" style="color:var(--blue)">${wonW(r.net)}</div><div class="d num">${deltaHTML(p?deltaPct(r.net,p.net):null)} 전날 대비</div></div>
+      </div>
+      <div class="stat-line"><span class="lb">이익금</span><span class="vl num">${wonW(r.profit)}</span></div>
+      <div class="stat-line"><span class="lb">이익률 / 광고비율</span><span class="vl num">${pct1(r.profit/r.sales*100)}% / ${pct1(r.ad/r.sales*100)}%</span></div>
+      <div class="stat-line"><span class="lb">순이익률</span><span class="vl num">${pct1((r.net)/r.sales*100)}%</span></div>
+      ` : `<div class="blank" style="margin-bottom:12px">${fmtDate(ds)} 매출 데이터가 아직 없습니다.</div>`}
+
+      <div class="sec-t">구매대행 입고 예정 <span class="cnt">0건</span></div>
+      <div class="blank">이 날짜에는 구매대행 입고 데이터가 없습니다.</div>
+
+      <div class="sec-t">쿠팡 정산금 입금 일정</div>
+      ${due ? `<div class="stat-line"><span class="lb">판매자배송 정산금</span><span class="vl num">${wonW(due.seller)}</span></div>
+               <div class="stat-line"><span class="lb">로켓그로스 정산금</span><span class="vl num">${wonW(due.rfm)}</span></div>
+               <div class="stat-line"><span class="lb"><b>합계</b></span><span class="vl num">${wonW(due.seller+due.rfm)}</span></div>
+               <div class="hint" style="margin-top:6px">쿠팡 정산 주기에 따라 입금되는 금액입니다.</div>`
+        : `<div class="blank">이 날짜에는 정산금 입금 데이터가 없습니다.</div>`}
+
+      ${prodRows.length?`<div class="sec-t">상품별 매출·이익금</div>
+        <div class="tbl-wrap"><table class="tbl"><thead><tr><th class="l">상품</th><th>판매량</th><th>매출</th><th>이익금</th><th>광고비</th><th>순이익</th></tr></thead><tbody>
+        ${prodRows.map(r=>`<tr><td class="l">${r.pp.icon} ${esc(r.pp.short)}</td><td class="num">${r.x.now.qty}</td><td class="num">${won(r.x.now.sales)}</td><td class="num">${won(r.x.now.profit)}</td><td class="num">${won(r.ad)}</td><td class="num"><b>${won(r.x.now.profit-r.ad)}</b></td></tr>`).join('')}
+        </tbody></table></div>`:''}
+
+      <div class="sec-t">메모</div>
+      ${memos.length ? memos.map(k=>`<div class="memo-item"><b>${esc(S.memos[k].title||'메모')}</b>${esc(S.memos[k].body||'')}<div style="margin-top:6px"><button class="btn ghost" data-act="memoEdit" data-k="${k}">수정</button><button class="btn ghost" style="color:var(--up)" data-act="memoDel" data-k="${k}">삭제</button></div></div>`).join('') : `<div class="blank">등록된 메모가 없습니다.</div>`}
+      <div class="mfoot"><button class="btn" data-act="memoAdd" data-d="${ds}">＋ 메모 추가</button><button class="btn primary" data-close="1">닫기</button></div>
+    </div>
+  </div></div>`;
+  const root = document.getElementById('modalRoot') || (()=>{const d=document.createElement('div'); d.id='modalRoot'; document.body.appendChild(d); return d;})();
+  root.innerHTML = html;
+  root.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeModal);
+  root.querySelectorAll('[data-act]').forEach(b=>b.onclick=()=>{ const f=ACTIONS[b.dataset.act]; if(f) f(Object.assign({},b.dataset),b); });
+  document.getElementById('mask').onclick = ev=>{ if(ev.target.id==='mask') closeModal(); };
+}
+function closeModal(){ const r = document.getElementById('modalRoot'); if(r) r.innerHTML=''; }
+ACTIONS.dayOpen = (d)=>{ opt.selDate=d.d; openDay(d.d); };
+ACTIONS.memoAdd = (d)=>{ closeModal(); memoForm(d.d); };
+ACTIONS.memoEdit = (d)=>{ closeModal(); memoForm(d.k.split('#')[0], d.k); };
+ACTIONS.memoDel = (d)=>{ delete S.memos[d.k]; save(); closeModal(); render(); };
+function memoForm(ds, key){
+  const k = key || (ds+'#'+Date.now());
+  const cur = S.memos[k] || {date:ds, title:'', body:'', alarm:false};
+  const html = `<div class="mask" id="mask"><div class="modal" style="width:min(520px,100%)">
+    <div class="mh"><h3>메모 추가</h3><button class="x" id="mClose">✕</button></div>
+    <div class="mb">
+      <div class="form-row"><label>메모 일자</label><input type="date" id="mDate" value="${cur.date||ds}"></div>
+      <div class="form-row"><label>메모 제목</label><input type="text" id="mTitle" value="${esc(cur.title||'')}" placeholder="예) 광고비 점검"></div>
+      <div class="form-row"><label>메모 내용</label><textarea id="mBody" placeholder="내용을 입력하세요">${esc(cur.body||'')}</textarea></div>
+      <label class="switch" style="margin-bottom:12px"><input type="checkbox" id="mAlarm" ${cur.alarm?'checked':''}> 이 메모 알림 받기</label>
+      <div class="mfoot"><button class="btn" id="mCancel">취소</button><button class="btn primary" id="mSave">저장</button></div>
+    </div></div></div>`;
+  const root = document.getElementById('modalRoot') || (()=>{ const d = document.createElement('div'); d.id='modalRoot'; document.body.appendChild(d); return d; })();
+  root.innerHTML = html;
+  const close = ()=> root.innerHTML='';
+  document.getElementById('mClose').onclick = ()=>{ close(); render(); };
+  document.getElementById('mCancel').onclick = ()=>{ close(); render(); };
+  document.getElementById('mSave').onclick = ()=>{
+    const nd = document.getElementById('mDate').value || ds;
+    const title = document.getElementById('mTitle').value.trim();
+    const body = document.getElementById('mBody').value.trim();
+    if(!title && !body){ alert('제목이나 내용을 입력하세요.'); return; }
+    if(key && !nd.startsWith(key.split('#')[0])){ delete S.memos[key]; }
+    S.memos[nd+'#'+(key?key.split('#')[1]:Date.now())] = {date:nd, title, body, alarm:document.getElementById('mAlarm').checked};
+    save(); close(); render();
+  };
+}
+
+/* ============================== ⚡ 실시간 순수익 조회 & 즉시 반영 ============================== */
+const LP_MIX = [{id:'8188501167'}, {id:'9701805278'}];   // 건조대 · 신발깔창
+let LP = null;
+
+function lpNow(){ const d = new Date(); return pad(d.getHours())+':'+pad(d.getMinutes()); }
+function lpDefaults(){
+  const l = S.live || {};
+  const qty = Number(l.qty) || 0;
+  const est = estCoupon(qty, COUPON_DEFAULT_MIX.mix1, COUPON_DEFAULT_MIX.mix2);
+  const hasC = couponNum(l.coupon)!=null;
+  return {
+    date: l.date || '2026-11-18',
+    sales: Number(l.sales) || 0,
+    qty: qty,
+    adExVat: Number(l.adExVat) || 0,
+    vatMode: 'ex',          // ex = VAT 별도 입력 / inc = VAT 포함 입력
+    rateMode: 'mix',        // mix = 상품 비중 가중 / avg = 평균 마진율 직접
+    mix1: COUPON_DEFAULT_MIX.mix1, mix2: COUPON_DEFAULT_MIX.mix2,
+    coupon: hasC ? couponNum(l.coupon) : est,
+    couponAuto: !hasC || couponNum(l.coupon) === est,   // 수량·비중으로 자동 산출
+    avgRate: Math.round(blendedMargin()*10000)/100,
+    at: l.at || ''
+  };
+}
+function lpProducts(){
+  return LP_MIX.map(x=>{
+    const p = PRODUCTS.find(pp=>pp.id===x.id) || PRODUCTS[0];
+    const m = margin(p);
+    return {p, m, rate: m.price ? m.profit/m.price : 0};
+  });
+}
+function lpBlendRate(){
+  if(LP.rateMode==='avg') return clamp(LP.avgRate||0, 0, 90)/100;
+  const ps = lpProducts();
+  const w1 = Math.max(0, LP.mix1||0), w2 = Math.max(0, LP.mix2||0);
+  const tw = w1 + w2;
+  if(!tw) return 0;
+  return ps.reduce((a,x,i)=> a + ((i===0?w1:w2)/tw) * x.rate, 0);
+}
+function lpAdInc(){ return Math.round((LP.adExVat||0) * (S.vat||1.1)); }
+/* 쿠폰 차감액: 자동이면 판매 수량 × 상품 비중으로, 직접 모드에서는 입력값 */
+function lpCouponVal(){
+  const c = LP.couponAuto ? estCoupon(LP.qty||0, LP.mix1, LP.mix2) : Math.max(0, Number(LP.coupon)||0);
+  LP.coupon = c;
+  return c;
+}
+function lpCalc(){
+  const sales = Math.max(0, LP.sales||0);
+  const qty = Math.max(0, LP.qty||0);
+  const rate = lpBlendRate();
+  const adInc = lpAdInc();
+  const coupon = Math.min(lpCouponVal(), sales);
+  const netSales = Math.max(0, sales - coupon);
+  const profit = Math.round(sales*rate);   // 이익률은 쿠폰 전 판매가 기준 → 쿠폰 전 매출에 적용
+  const net = profit - adInc;
+  return {sales, qty, rate, adInc, coupon, netSales,
+    couponRate: sales ? coupon/sales*100 : 0,
+    profit, net,
+    netRate: sales ? net/sales*100 : 0,
+    aov: qty ? sales/qty : null,
+    unitProfit: qty ? profit/qty : null,
+    unitNetSales: qty ? netSales/qty : null};
+}
+function lpCouponSumHTML(){
+  const c = lpCalc();
+  const w = n => won(n);
+  return `<div class="l">쿠폰 제외 실매출</div>
+    <div class="n num">${w(c.netSales)}원</div>
+    <div class="d">쿠폰 전 ${w(c.sales)}원 − 쿠폰 ${w(c.coupon)}원 (${pct1(c.couponRate)}%)</div>`;
+}
+function lpResultInner(){
+  const c = lpCalc();
+  const goal = S.targetSales ? Math.round(c.sales/S.targetSales*100) : null;
+  const money = n => (n<0 ? '−₩'+won(Math.abs(n)) : '₩'+won(n));
+  return `<div class="lp-resgrid">
+    <div class="lp-res lp-sales">
+      <div class="l">쿠폰 제외 실매출</div>
+      <div class="n num">${won(c.netSales)}원</div>
+      <div class="d">쿠폰 전 ${won(c.sales)}원 − 쿠폰 ${won(c.coupon)}원 (쿠폰 반영률 ${pct1(c.couponRate)}%)</div>
+    </div>
+    <div class="lp-res">
+      <div class="l">예상 이익금</div>
+      <div class="n num">${money(c.profit)} <span style="font-size:12px;font-weight:700;color:var(--muted)">(${pct1(c.rate*100)}%)</span></div>
+      <div class="d">쿠폰 전 ${won(c.sales)}원 × 이익률 ${pct1(c.rate*100)}%</div>
+    </div>
+    <div class="lp-res">
+      <div class="l">VAT포함 광고비</div>
+      <div class="n num">${wonW(c.adInc)}</div>
+      <div class="d">VAT별도 ${won(LP.adExVat)}원 × ${S.vat||1.1}</div>
+    </div>
+    <div class="lp-res lp-net">
+      <div class="l">추정 실시간 순이익금</div>
+      <div class="n num ${c.net<0?'neg':''}">${money(c.net)}</div>
+      <div class="d">이익금 − 광고비 = ${won(c.profit)} − ${won(c.adInc)}</div>
+    </div>
+    <div class="lp-res lp-rate">
+      <div class="l">순이익률</div>
+      <div class="n num" style="color:${c.net>=0?'var(--blue)':'var(--up)'}">${pct1(c.netRate)}%</div>
+      <div class="d" style="margin:0">순이익 ÷ 쿠폰 전 매출</div>
+    </div>
+  </div>
+  <div class="lp-hint">객단가(쿠폰 전) <b>${c.aov==null?'-':wonW(Math.round(c.aov))}</b> · 개당 이익 <b>${c.unitProfit==null?'-':wonW(Math.round(c.unitProfit))}</b> · 개당 실매출 <b>${c.unitNetSales==null?'-':wonW(Math.round(c.unitNetSales))}</b>${goal!=null?` · 일 목표 ₩${won(S.targetSales)} 달성 <b>${goal}%</b>`:''}</div>
+  <div class="lp-hint" style="margin-top:3px">대시보드에 지금 표시 중인 순이익은 <b>${won(liveRow().net)}원</b>(최근 7일 이익률 기준) — 반영하면 위 값으로 바뀝니다.</div>`;
+}
+function lpRateHintHTML(){
+  const ps = lpProducts();
+  const a = ps[0], b = ps[1];
+  if(LP.rateMode==='avg'){
+    return `최근 7일 실제 이익률 <b>${pct1(blendedMargin()*100)}%</b> · 상품 이론 마진은 ${esc(a.p.short)} <b>${pct1(a.rate*100)}%</b>, ${esc(b.p.short)} <b>${pct1(b.rate*100)}%</b>`;
+  }
+  return `개당 이익 <b>${esc(a.p.short)} ${wonW(a.m.profit)}</b> (${pct1(a.rate*100)}%) · <b>${esc(b.p.short)} ${wonW(b.m.profit)}</b> (${pct1(b.rate*100)}%) — 원가·수수료·입출고비·배송비 반영 · 매출 비중 가중 이익률 <b class="ok">${pct1(lpBlendRate()*100)}%</b>`;
+}
+function lpRateCtlHTML(){
+  const ps = lpProducts();
+  if(LP.rateMode==='avg'){
+    return `<div class="form-row" style="margin:0"><label>평균 마진율 (%) — 매출 대비 이익금 비율</label>
+      <input class="inp" type="number" step="0.1" min="0" max="90" id="lpAvg" value="${LP.avgRate}"></div>`;
+  }
+  return `<div class="lp-mix">
+    <div class="form-row" style="margin:0"><label>${esc(ps[0].p.short)} 비중 (%)</label><input class="inp" type="number" step="1" min="0" max="100" id="lpMix1" value="${LP.mix1}"></div>
+    <div class="form-row" style="margin:0"><label>${esc(ps[1].p.short)} 비중 (%)</label><input class="inp" type="number" step="1" min="0" max="100" id="lpMix2" value="${LP.mix2}"></div>
+  </div>`;
+}
+function openLivePanel(keep, noSync){
+  if(!keep || !LP) LP = lpDefaults();
+  const adShown = LP.vatMode==='inc' ? lpAdInc() : LP.adExVat;
+  const coupShown = LP.couponAuto ? estCoupon(LP.qty||0, LP.mix1, LP.mix2) : Math.max(0, Number(LP.coupon)||0);
+  LP.coupon = coupShown;
+  const badge = S.apiUrl
+    ? '<span class="tag live">자동 수집</span>'
+    : '<span class="tag">저장된 값</span>';
+  const html = `<div class="mask" id="mask"><div class="modal" style="width:min(600px,100%)">
+    <div class="mh"><h3>⚡ 실시간 순수익 조회</h3>${badge}<button class="x" id="lpX" aria-label="닫기">✕</button></div>
+    <div class="mb">
+      <div class="lp-src">
+        <span>기준일 <b>${LP.date}</b> · 기록 <b>${esc(LP.at||'-')}</b></span>
+        <span class="spacer"></span>
+        <button class="btn" id="lpSync" type="button">↻ 지금 불러오기</button>
+      </div>
+      <div class="lp-hint" id="lpSyncMsg">${S.apiUrl?`자동 수집 엔드포인트 <b>${esc(S.apiUrl)}</b>${LP.at?' · 마지막 기록 '+esc(LP.at):''}`:'자동 수집 엔드포인트가 설정되지 않아 <b>저장된 오늘 실시간 값</b>을 불러왔습니다.'}</div>
+
+      <div class="sec-t">① 오늘 값 입력 <span class="cnt">쿠팡 윙 · 광고센터</span></div>
+      <div class="lp-grid">
+        <div class="form-row"><label>오늘 매출 (쿠폰 전, 원)</label><input class="inp num" type="number" inputmode="numeric" min="0" step="10" id="lpSales" value="${LP.sales}"></div>
+        <div class="form-row"><label>판매 수량 (개)</label><input class="inp num" type="number" inputmode="numeric" min="0" step="1" id="lpQty" value="${LP.qty}"></div>
+        <div class="form-row"><label>광고비 (원)</label><input class="inp num" type="number" inputmode="numeric" min="0" step="10" id="lpAd" value="${adShown}"></div>
+      </div>
+      <div class="lp-coup">
+        <div class="form-row">
+          <div class="clab"><label for="lpCoupon">쿠폰 차감액 (원)</label><button type="button" class="mini ${LP.couponAuto?'':'off'}" id="lpCouponAuto" title="판매 수량 × 상품 비중으로 자동 계산">${LP.couponAuto?'자동':'직접'}</button></div>
+          <input class="inp num" type="number" inputmode="numeric" min="0" step="10" id="lpCoupon" value="${coupShown}">
+        </div>
+        <div class="lp-csum" id="lpCoupSum">${lpCouponSumHTML()}</div>
+      </div>
+      <div class="lp-hint">쿠팡 윙 재고현황 매출은 <b>쿠폰 적용 전 판매가</b> 기준입니다. 판매 수량과 상품 비중(건조대 ${won(COUPON_MIX[0].coupon)}원 · 깔창 ${won(COUPON_MIX[1].coupon)}원)으로 쿠폰을 자동 산출하며, 입력칸에서 직접 고칠 수 있습니다.</div>
+      <div class="toolbar" style="margin-top:9px">
+        <span class="hint">광고비 기준</span>
+        <div class="seg" id="lpVatSeg">
+          <button type="button" data-vat="ex" class="${LP.vatMode==='ex'?'on':''}">VAT 별도</button>
+          <button type="button" data-vat="inc" class="${LP.vatMode==='inc'?'on':''}">VAT 포함</button>
+        </div>
+        <span class="hint" id="lpAdNote">VAT 포함 <b>${wonW(lpAdInc())}</b></span>
+      </div>
+
+      <div class="sec-t">② 이익률 기준 <span class="cnt">상품별 원가·수수료·입출고비·배송비</span></div>
+      <div class="seg" id="lpRateSeg">
+        <button type="button" data-rate="mix" class="${LP.rateMode==='mix'?'on':''}">최근 상품 비중</button>
+        <button type="button" data-rate="avg" class="${LP.rateMode==='avg'?'on':''}">평균 마진율 직접</button>
+      </div>
+      <div style="margin-top:9px" id="lpRateCtl">${lpRateCtlHTML()}</div>
+      <div class="lp-hint" id="lpRateHint">${lpRateHintHTML()}</div>
+
+      <div class="sec-t">③ 계산 결과 <span class="cnt">입력하면 바로 계산</span></div>
+      <div id="lpResult">${lpResultInner()}</div>
+      <div class="alert info" style="margin-top:11px">💡 [오늘 실적에 반영]을 누르면 대시보드 KPI · 캘린더 · 알림톡 미리보기가 한 번에 다시 그려지고 이 브라우저(localStorage)에 저장됩니다.</div>
+      <textarea id="lpCopyText" style="display:none;width:100%;min-height:130px;margin-top:10px;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:12px;line-height:1.6;font-family:ui-monospace,Menlo,monospace"></textarea>
+      <div class="mfoot" style="flex-wrap:wrap">
+        <button class="btn" id="lpCopy" type="button" style="margin-right:auto">📋 마쭈에게 최신값 요청 문구 복사</button>
+        <button class="btn" id="lpClose" type="button">닫기</button>
+        <button class="btn primary" id="lpApply" type="button">오늘 실적에 반영</button>
+      </div>
+    </div>
+  </div></div>`;
+  const root = document.getElementById('modalRoot') || (()=>{ const d = document.createElement('div'); d.id='modalRoot'; document.body.appendChild(d); return d; })();
+  root.innerHTML = html;
+  bindLivePanel(root);
+  if(S.apiUrl && !noSync) lpSync(true);
+}
+function bindLivePanel(root){
+  const $ = id => document.getElementById(id);
+  const refresh = ()=>{
+    const c = lpCalc();
+    const ci = $('lpCoupon'); if(ci && LP.couponAuto) ci.value = c.coupon;
+    const cs = $('lpCoupSum'); if(cs) cs.innerHTML = lpCouponSumHTML();
+    const r = $('lpResult'); if(r) r.innerHTML = lpResultInner();
+    const h = $('lpRateHint'); if(h) h.innerHTML = lpRateHintHTML();
+    const n = $('lpAdNote'); if(n) n.innerHTML = `VAT 포함 <b>${wonW(lpAdInc())}</b>`;
+  };
+  const nSales = $('lpSales'), nQty = $('lpQty'), nAd = $('lpAd'), nCoupon = $('lpCoupon');
+  const numPaste = el => {
+    if(!el || !el.addEventListener) return;
+    el.addEventListener('paste', ev => {
+      const t = (ev.clipboardData && ev.clipboardData.getData('text')) || '';
+      if(!/[,.\s₩원]/.test(t)) return;
+      ev.preventDefault();
+      const v = t.replace(/[^0-9.]/g, '');
+      el.value = v;
+      el.dispatchEvent(new Event('input'));
+    });
+  };
+  numPaste(nSales); numPaste(nQty); numPaste(nAd); numPaste(nCoupon);
+  if(nSales) nSales.oninput = ()=>{ LP.sales = Math.max(0, parseFloat(nSales.value)||0); refresh(); };
+  if(nQty) nQty.oninput = ()=>{ LP.qty = Math.max(0, parseFloat(nQty.value)||0); refresh(); };
+  const autoBtn = $('lpCouponAuto');
+  function syncAutoBtn(){ if(!autoBtn) return; autoBtn.textContent = LP.couponAuto?'자동':'직접'; autoBtn.classList.toggle('off', !LP.couponAuto); }
+  if(nCoupon) nCoupon.oninput = ()=>{ LP.coupon = Math.max(0, parseFloat(nCoupon.value)||0); LP.couponAuto = false; syncAutoBtn(); refresh(); };
+  if(autoBtn) autoBtn.onclick = ()=>{ LP.couponAuto = true; LP.coupon = estCoupon(LP.qty||0, LP.mix1, LP.mix2); if(nCoupon) nCoupon.value = LP.coupon; syncAutoBtn(); refresh(); };
+  if(nAd) nAd.oninput = ()=>{
+    const v = Math.max(0, parseFloat(nAd.value)||0);
+    LP.adExVat = LP.vatMode==='inc' ? Math.round(v/(S.vat||1.1)) : Math.round(v);
+    refresh();
+  };
+  root.querySelectorAll('#lpVatSeg [data-vat]').forEach(b=>{
+    b.onclick = ()=>{
+      const m = b.dataset.vat;
+      if(m===LP.vatMode) return;
+      LP.vatMode = m;
+      root.querySelectorAll('#lpVatSeg [data-vat]').forEach(x=>x.classList.toggle('on', x.dataset.vat===m));
+      if(nAd) nAd.value = m==='inc' ? lpAdInc() : LP.adExVat;
+      refresh();
+    };
+  });
+  function bindRateInputs(){
+    const m1 = $('lpMix1'), m2 = $('lpMix2'), av = $('lpAvg');
+    if(m1) m1.oninput = ()=>{ LP.mix1 = clamp(parseFloat(m1.value)||0, 0, 100); LP.mix2 = Math.round(100-LP.mix1); if(m2) m2.value = LP.mix2; refresh(); };
+    if(m2) m2.oninput = ()=>{ LP.mix2 = clamp(parseFloat(m2.value)||0, 0, 100); LP.mix1 = Math.round(100-LP.mix2); if(m1) m1.value = LP.mix1; refresh(); };
+    if(av) av.oninput = ()=>{ LP.avgRate = clamp(parseFloat(av.value)||0, 0, 90); refresh(); };
+  }
+  bindRateInputs();
+  root.querySelectorAll('#lpRateSeg [data-rate]').forEach(b=>{
+    b.onclick = ()=>{
+      LP.rateMode = b.dataset.rate;
+      root.querySelectorAll('#lpRateSeg [data-rate]').forEach(x=>x.classList.toggle('on', x.dataset.rate===LP.rateMode));
+      const ctl = $('lpRateCtl'); if(ctl){ ctl.innerHTML = lpRateCtlHTML(); bindRateInputs(); }
+      refresh();
+    };
+  });
+  const x = $('lpX'), cl = $('lpClose'), ap = $('lpApply'), cp = $('lpCopy'), sy = $('lpSync');
+  if(x) x.onclick = closeModal;
+  if(cl) cl.onclick = closeModal;
+  if(ap) ap.onclick = lpApply;
+  if(cp) cp.onclick = lpCopy;
+  if(sy) sy.onclick = ()=> lpSync(false);
+  const mask = $('mask'); if(mask) mask.onclick = ev=>{ if(ev.target.id==='mask') closeModal(); };
+}
+function lpNote(html){ const m = document.getElementById('lpSyncMsg'); if(m) m.innerHTML = html; }
+function lpToast(txt){
+  const d = document.createElement('div');
+  d.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#101b34;color:#fff;font-size:12.5px;font-weight:700;padding:10px 16px;border-radius:12px;box-shadow:0 12px 30px rgba(9,17,33,.35);z-index:120;max-width:90vw;text-align:center';
+  d.textContent = txt;
+  document.body.appendChild(d);
+  setTimeout(()=>{ d.style.transition='opacity .3s'; d.style.opacity='0'; setTimeout(()=>{ if(d.parentNode) d.parentNode.removeChild(d); }, 320); }, 2200);
+}
+async function lpSync(auto){
+  if(!S.apiUrl){
+    lpNote('자동 수집 엔드포인트가 설정되지 않아 <b>저장된 오늘 실시간 값</b>을 불러왔습니다. 설정 탭에서 JSON 엔드포인트를 등록하면 열 때 자동으로 받아옵니다.');
+    if(!auto) lpToast('자동 수집 엔드포인트가 없어 저장된 값을 사용합니다.');
+    return;
+  }
+  lpNote('⏳ 자동 수집 중…');
+  try{
+    const sep = S.apiUrl.includes('?') ? '&' : '?';
+    const res = await fetch(S.apiUrl + sep + 't=' + Date.now(), {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const j = await res.json();
+    let src = j.live || null;
+    if(!src && Array.isArray(j.daily)) src = j.daily.find(x=>x && x.d===LP.date) || j.daily[j.daily.length-1] || null;
+    if(!src) throw new Error('응답에 live/daily 값이 없습니다');
+    if(!src.date && src.d) src.date = src.d;
+    if(/^\d{4}-\d{2}-\d{2}$/.test(String(src.date||''))) LP.date = src.date;
+    if(src.sales!=null) LP.sales = Math.max(0, Number(src.sales)||0);
+    if(src.qty!=null) LP.qty = Math.max(0, Number(src.qty)||0);
+    const srcC = couponNum(src.coupon), srcN = couponNum(src.netSales);
+    if(srcC!=null){ LP.coupon = srcC; LP.couponAuto = false; }
+    else if(srcN!=null){ LP.coupon = Math.max(0, LP.sales - srcN); LP.couponAuto = false; }
+    else { LP.coupon = estCoupon(LP.qty, LP.mix1, LP.mix2); LP.couponAuto = true; }
+    let adEx = null;
+    if(src.adExVat!=null) adEx = Number(src.adExVat);
+    else if(src.ad!=null) adEx = Number(src.ad)/(S.vat||1.1);
+    if(adEx!=null && !isNaN(adEx)) LP.adExVat = Math.round(adEx);
+    LP.at = lpNow();
+    openLivePanel(true, true);
+    lpNote(`✅ 자동 수집 완료 · <b>${lpNow()}</b> <span class="flat">${esc(S.apiUrl)}</span>`);
+    if(!auto) lpToast('최신 값을 불러왔습니다. 반영하려면 [오늘 실적에 반영]을 누르세요.');
+  }catch(e){
+    lpNote(`⚠️ 자동 수집 실패: ${esc(e.message)} — 저장된 값을 그대로 사용합니다.`);
+    if(!auto) lpToast('자동 수집 실패: ' + e.message);
+  }
+}
+function lpApply(){
+  const c = lpCalc();
+  const date = LP.date;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(String(date))){ alert('기준일을 확인하세요.'); return; }
+  const at = lpNow();
+  S.live = Object.assign({}, S.live, {date, sales:c.sales, coupon:c.coupon, netSales:c.netSales, qty:c.qty, adExVat:LP.adExVat, at});
+  if(!DAILY.some(r=>r.d===date)){
+    DAILY.push({d:date, sales:0, profit:null, ad:0, live:true});
+    DAILY.sort((a,b)=> a.d<b.d ? -1 : (a.d>b.d ? 1 : 0));
+  }
+  S.dailyOverrides[date] = Object.assign({}, S.dailyOverrides[date], {
+    sales:c.sales, coupon:c.coupon, netSales:c.netSales, qty:c.qty, ad:c.adInc, profit:c.profit
+  });
+  save();
+  closeModal();
+  render();
+  const row = dailySeries().find(r=>r.d===date);
+  lpToast(`✓ ${fmtDate(date)} 실적에 반영 — 실매출 ${won(c.netSales)}원 · 순이익 ${won(row?row.net:c.net)}원 · 순이익률 ${pct1(c.netRate)}%`);
+}
+function lpRequestText(){
+  const c = lpCalc();
+  const d = dateObj(LP.date);
+  return [
+    '[리스페토 대시보드 · 실시간 순수익 조회]',
+    `${d.getMonth()+1}/${d.getDate()} 기준 최신 값 알려주세요.`,
+    '',
+    '1) 쿠팡 윙 > 오늘 매출(쿠폰 전, 원) · 판매수량(개) · 쿠폰 할인 금액(원)',
+    '2) 쿠팡 광고센터 > 오늘 광고비(원, VAT 별도)',
+    '',
+    `지금 입력된 값: 매출 ${won(LP.sales)}원(쿠폰 전) / 쿠폰 ${won(LP.coupon)}원 / ${LP.qty}개 / 광고비 ${won(LP.adExVat)}원(VAT 별도)`,
+    `현재 추정: 쿠폰 제외 실매출 ${won(c.netSales)}원 · 이익금 ${won(c.profit)}원 · VAT포함 광고비 ${won(c.adInc)}원 · 순이익 ${won(c.net)}원 (순이익률 ${pct1(c.netRate)}%)`,
+    '',
+    '값만 알려주시면 대시보드에 입력해서 반영할게요.'
+  ].join('\n');
+}
+function lpCopy(){
+  const t = lpRequestText();
+  const ta = document.getElementById('lpCopyText');
+  const done = ()=>{
+    if(ta) ta.style.display = 'none';
+    lpNote('📋 최신값 요청 문구를 복사했습니다. 채팅창에 붙여넣기만 하면 됩니다.');
+    lpToast('요청 문구를 복사했습니다.');
+  };
+  const manual = ()=>{
+    if(!ta) return;
+    ta.value = t; ta.style.display = 'block';
+    ta.focus(); ta.select();
+    let ok = false;
+    try{ ok = document.execCommand('copy'); }catch(e){ ok = false; }
+    if(ok) done();
+    else lpNote('자동 복사가 안 됩니다. 아래 문구를 길게 눌러 직접 복사하세요.');
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(done).catch(manual);
+  } else { manual(); }
+}
+ACTIONS.liveOpen = ()=> openLivePanel();
+
+/* ============================== 시작 ============================== */
+render();
+if(S.apiUrl) setTimeout(()=>fetchLatest(false), 300);
+</script>
+</body>
+</html>
