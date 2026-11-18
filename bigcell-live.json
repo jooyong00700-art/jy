@@ -1,23 +1,24 @@
 {
-  "updatedAt": "2026-11-19 06:39",
+  "updatedAt": "2026-11-19 08:23",
   "live": {
     "date": "2026-11-19",
-    "sales": 171720,
-    "coupon": 21800,
-    "netSales": 149920,
-    "qty": 8,
-    "adExVat": 13124,
-    "profit": 28559,
-    "at": "06:32",
+    "sales": 245040,
+    "coupon": 31600,
+    "netSales": 213440,
+    "qty": 12,
+    "adExVat": 27909,
+    "profit": 42238,
+    "at": "08:07",
     "options": [
       { "name": "건조대 올크림", "qty": 6, "sales": 137940, "margin": 22320 },
-      { "name": "건조대 올화이트", "qty": 1, "sales": 22990, "margin": 3720 },
-      { "name": "깔창 270-275mm", "qty": 1, "sales": 10790, "margin": 2519 }
+      { "name": "건조대 올화이트", "qty": 4, "sales": 85520, "margin": 14880 },
+      { "name": "깔창 270-275mm", "qty": 1, "sales": 10790, "margin": 2519 },
+      { "name": "깔창 240-245mm", "qty": 1, "sales": 10790, "margin": 2519 }
     ],
     "campaigns": [
-      { "name": "★11월 19일 올크림 ★", "status": "운영 중", "spendExVat": 4763, "spendVat": 5239, "margin": 22320, "profit": 17081, "note": "올크림 6개 기준" },
-      { "name": "★11월 19일 올화이트 ★", "status": "운영 중", "spendExVat": 4981, "spendVat": 5479, "margin": 3720, "profit": -1759, "note": "올화이트 1개 기준" },
-      { "name": "깔창광고11 9/23", "status": "운영 중", "spendExVat": 3279, "spendVat": 3607, "margin": 2519, "profit": -1088, "note": "깔창 1개 기준" },
+      { "name": "★11월 19일 올크림 ★", "status": "운영 중", "spendExVat": 8356, "spendVat": 9192, "margin": 22320, "profit": 13128, "note": "올크림 6개 기준" },
+      { "name": "★11월 19일 올화이트 ★", "status": "운영 중", "spendExVat": 16072, "spendVat": 17679, "margin": 14880, "profit": -2799, "note": "올화이트 4개 기준" },
+      { "name": "오늘의 Pick 깔창광고11 9/23", "status": "운영 중", "spendExVat": 3380, "spendVat": 3718, "margin": 5038, "profit": 1320, "note": "깔창 2개 기준" },
       { "name": "★11월 19일 올블랙★", "status": "운영 중", "spendExVat": 101, "spendVat": 111, "margin": 0, "profit": -111, "note": "올블랙 0개 기준" }
     ]
   },
@@ -30,6 +31,15 @@
       "qty": 66,
       "ad": 197602,
       "profit": 229907
+    },
+    {
+      "d": "2026-11-19",
+      "sales": 245040,
+      "netSales": 213440,
+      "coupon": 31600,
+      "qty": 12,
+      "ad": 30700,
+      "profit": 11538
     }
   ]
 }
