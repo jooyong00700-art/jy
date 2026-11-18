@@ -556,7 +556,7 @@ function liveNumbers(live, mix1, mix2){
 function applyLive(src, prev, mix1, mix2){
   const s = src || {};
   const merged = Object.assign({}, prev||{});
-  ['date','sales','qty','adExVat','at','profit'].forEach(k=>{ if(s[k]!=null && s[k]!=='') merged[k] = s[k]; });
+  ['date','sales','qty','adExVat','at','profit','options','campaigns'].forEach(k=>{ if(s[k]!=null && s[k]!=='') merged[k] = s[k]; });
   delete merged.coupon; delete merged.netSales;
   const c = couponNum(s.coupon), n = couponNum(s.netSales);
   if(c!=null) merged.coupon = c;
@@ -572,7 +572,25 @@ const DEFAULTS = {
   targetSales:1500000,      // 일 목표 매출
   vat:1.1,
   apiUrl:'https://raw.githubusercontent.com/jooyong00700-art/jy/main/bigcell-live.json', // 자동 수집 엔드포인트 (JSON)
-  live:{date:'2026-11-18', sales:1285010, coupon:175800, netSales:1109210, qty:63, adExVat:175966, at:'22:40'},
+  live:{
+    date:'2026-11-18', sales:1330990, coupon:166400, netSales:1164590, qty:65, adExVat:176755, profit:226187, at:'23:10',
+    options:[
+      {name:'건조대 올화이트',qty:31,sales:705330,margin:115320},
+      {name:'건조대 올크림',qty:17,sales:393430,margin:63240},
+      {name:'건조대 올블랙',qty:4,sales:91960,margin:14880},
+      {name:'깔창 240-245mm',qty:4,sales:43160,margin:10076},
+      {name:'깔창 270-275mm',qty:3,sales:32370,margin:7557},
+      {name:'깔창 260-265mm',qty:2,sales:21580,margin:5038},
+      {name:'깔창 250-255mm',qty:2,sales:21580,margin:5038},
+      {name:'깔창 230-235mm',qty:1,sales:10790,margin:2519},
+      {name:'깔창 280-285mm',qty:1,sales:10790,margin:2519}
+    ],
+    campaigns:[
+      {name:'*26년 10월 31일 (620) 화이트',status:'예산 소진 중지',spendExVat:80159,spendVat:88175,margin:115320,profit:27145,note:'올화이트 31개 기준'},
+      {name:'*26년 10월 31일 (630) 크림',status:'예산 소진 중지',spendExVat:69699,spendVat:76669,margin:63240,profit:-13429,note:'올크림 17개 기준'},
+      {name:'오늘의 Pick 깔창광고11 9/23',status:'운영 중',spendExVat:26897,spendVat:29587,margin:32747,profit:3160,note:'깔창 13개 기준'}
+    ]
+  },
   memos:{},
   costOverrides:{},
   dailyOverrides:{}
@@ -897,7 +915,11 @@ VIEWS.dashboard = function(){
       ${kpiCard('오늘 순이익 <span class="tag estimate">추정</span>', won(todayNet)+'원',
         `${deltaHTML(dNet)} <span class="flat">광고비(VAT포함) ${won(live.ad)}원 제외</span>`) }
       ${kpiCard('이번 달 매출 <span class="tag coup">쿠폰 제외</span>', won(monthSales)+'원',
-        `<span class="flat">11/1~${m==='2026-11'?'18':'말'} · 순이익(광고비 제외) ${won(monthNet)}원${monthCoupon>0?' · 오늘 쿠폰 −'+won(monthCoupon)+'원 제외':''}</span>`, {cls:'month-kpi'})}
+        `<span class="flat">11/1~${m==='2026-11'?'18':'말'} · 순이익(광고비 제외) ${won(monthNet)}원</span>`, {cls:'month-kpi'})}
+    </div>`
+  + `<div class="two" style="margin-bottom:14px">
+      ${todayOptionsCard(live)}
+      ${todayCampaignsCard()}
     </div>`
   + `<div class="two" style="margin-bottom:14px">
       ${reportCard(rows)}
@@ -910,6 +932,52 @@ VIEWS.dashboard = function(){
     </div>`
   + `${stockMiniCard()}`;
 };
+
+/* ---- 오늘 옵션별 판매 & 운영 중 광고 실시간 이익 ---- */
+function todayOptionsCard(live){
+  const opts = Array.isArray(S.live.options) && S.live.options.length ? S.live.options : DEFAULTS.live.options;
+  const rows = opts.map(o=>`<tr>
+    <td class="l"><b>${esc(o.name)}</b></td>
+    <td class="num"><b>${o.qty}개</b></td>
+    <td class="num">${won(o.sales)}원</td>
+    <td class="num">${won(o.margin)}원</td>
+  </tr>`).join('');
+  return `<div class="card">
+    <div class="card-h">
+      <div><h2>📦 오늘 옵션별 판매</h2><div class="sub">${esc(S.live.at||'실시간')} 기준 · 총 ${live.qty}개</div></div>
+      <span class="pill">옵션명 = 갯수</span>
+    </div>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th class="l">옵션명</th><th>판매수량</th><th>매출(쿠폰전)</th><th>광고전 마진</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>
+  </div>`;
+}
+function todayCampaignsCard(){
+  const camps = Array.isArray(S.live.campaigns) && S.live.campaigns.length ? S.live.campaigns : DEFAULTS.live.campaigns;
+  const totalP = camps.reduce((a,c)=>a+(Number(c.profit)||0), 0);
+  const rows = camps.map(c=>{
+    const p = Number(c.profit)||0;
+    const stCls = String(c.status||'').includes('운영') ? 'up' : 'flat';
+    return `<tr>
+      <td class="l"><b>${esc(c.name)}</b><div class="sub" style="margin:2px 0 0">${esc(c.note||'')} · <span class="${stCls}">${esc(c.status||'')}</span></div></td>
+      <td class="num">${won(c.spendVat)}원</td>
+      <td class="num">${won(c.margin)}원</td>
+      <td class="num"><b class="${p>=0?'up':'down'}">${p>=0?'+':''}${won(p)}원</b></td>
+    </tr>`;
+  }).join('');
+  return `<div class="card">
+    <div class="card-h">
+      <div><h2>📣 광고 실시간 이익</h2><div class="sub">캠페인별 당일 옵션 마진 − 오늘 광고비(VAT포함)</div></div>
+      <span class="pill">합계 ${totalP>=0?'+':''}${won(totalP)}원</span>
+    </div>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th class="l">캠페인</th><th>광고비(VAT포함)</th><th>옵션 마진</th><th>실시간 이익</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>
+    <div class="note" style="margin-top:8px">※ 쿠팡 광고센터 당일 전환매출은 익일 확정되어, 당일 해당 옵션 실판매 마진에서 오늘 누적광고비(VAT포함)를 빼서 산출했어요.</div>
+  </div>`;
+}
 
 /* ---- 매출 보고서 ---- */
 function reportCard(rows){
