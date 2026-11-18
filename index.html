@@ -874,7 +874,7 @@ VIEWS.dashboard = function(){
   const prev = rows[rows.length-2];
   const m = opt.calMonth;
   const mRows = monthRowsOf(m);
-  const monthSales = mRows.reduce((a,r)=>a+netSalesOf(r),0), monthCoupon = sumOf(mRows,'coupon'), monthProfit = sumOf(mRows,'profit'), monthAd = sumOf(mRows,'ad');
+  const monthSales = mRows.reduce((a,r)=>a+netSalesOf(r),0), monthCoupon = sumOf(mRows,'coupon'), monthProfit = sumOf(mRows,'profit'), monthAd = sumOf(mRows,'ad'), monthNet = monthProfit - monthAd;
   const todayNet = live.net;
   const dToday = prev ? deltaPct(live.netSales, netSalesOf(prev)) : null;
   const dNet = prev && prev.net!=null && todayNet!=null ? deltaPct(todayNet, prev.net) : null;
@@ -895,9 +895,9 @@ VIEWS.dashboard = function(){
       ${kpiCard('오늘 광고비 <span class="tag">VAT포함</span>', won(live.ad)+'원',
         `<span class="flat">VAT별도 ${won(S.live.adExVat)}원</span>`) }
       ${kpiCard('오늘 순이익 <span class="tag estimate">추정</span>', won(todayNet)+'원',
-        `${deltaHTML(dNet)} <span class="flat">이익금 ${won(live.profit)}원</span>`) }
+        `${deltaHTML(dNet)} <span class="flat">광고비(VAT포함) ${won(live.ad)}원 제외</span>`) }
       ${kpiCard('이번 달 매출 <span class="tag coup">쿠폰 제외</span>', won(monthSales)+'원',
-        `<span class="flat">11/1~${m==='2026-11'?'18':'말'} · 이익금 ${won(monthProfit)}원${monthCoupon>0?' · 오늘 쿠폰 −'+won(monthCoupon)+'원 제외':''}</span>`, {cls:'month-kpi'})}
+        `<span class="flat">11/1~${m==='2026-11'?'18':'말'} · 순이익(광고비 제외) ${won(monthNet)}원${monthCoupon>0?' · 오늘 쿠폰 −'+won(monthCoupon)+'원 제외':''}</span>`, {cls:'month-kpi'})}
     </div>`
   + `<div class="two" style="margin-bottom:14px">
       ${reportCard(rows)}
@@ -916,7 +916,7 @@ function reportCard(rows){
   const list = rows.slice().reverse().slice(0, 14);
   const keys = ['sales','profit','ad','net'];
   const table = `<div class="tbl-wrap"><table class="tbl">
-    <thead><tr><th class="l">날짜</th><th>매출</th><th>이익금</th><th>광고비</th><th>순이익금</th></tr></thead>
+    <thead><tr><th class="l">날짜</th><th>매출(쿠폰제외)</th><th>광고전 마진</th><th>광고비(VAT포함)</th><th>순이익금</th></tr></thead>
     <tbody>${list.map((r,i)=>{
       const p = rows[rows.indexOf(r)-1];
       const d = k => p ? deltaPct(k==='sales'?netSalesOf(r):r[k], k==='sales'?netSalesOf(p):p[k]) : null;
