@@ -1051,8 +1051,8 @@ function calendarCard(){
       </div>
     </div>
     <div class="cal-foot">
-      <div class="it"><span class="k">매출 월 총합</span><b>${won(sumOf(mRows,'sales'))}원</b></div>
-      <div class="it"><span class="k">이익금 월 총합</span><b>${won(sumOf(mRows,'profit'))}원</b></div>
+      <div class="it"><span class="k">매출 월 총합(쿠폰제외)</span><b>${won(mRows.reduce((a,r)=>a+netSalesOf(r),0))}원</b></div>
+      <div class="it"><span class="k">광고전 마진 총합</span><b>${won(sumOf(mRows,'profit'))}원</b></div>
       <div class="it"><span class="k">광고비 월 총합</span><b>${won(sumOf(mRows,'ad'))}원</b></div>
       <div class="it"><span class="k">순이익금 월 총합</span><b>${won(sumOf(mRows,'net'))}원</b></div>
       <div class="it"><span class="k">구매대행 입고 예정</span><b>0건</b></div>
@@ -1647,12 +1647,30 @@ ACTIONS.setVat = (d,el)=>{ S.vat = numVal(el, 1.1); save(); };
 ACTIONS.setTarget = (d,el)=>{ S.targetSales = numVal(el, 1500000); save(); };
 ACTIONS.setApi = (d,el)=>{ S.apiUrl = el.value.trim(); save(); };
 ACTIONS.syncNow = ()=>{ fetchLatest(true); };
+async function fetchSyncJson(url){
+  const m = String(url||'').match(/^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/(.+?)(?:\?.*)?$/);
+  if(m){
+    try{
+      const api = `https://api.github.com/repos/${m[1]}/${m[2]}/contents/${m[4]}?ref=${encodeURIComponent(m[3])}&t=${Date.now()}`;
+      const r = await fetch(api, {cache:'no-store'});
+      if(r.ok){
+        const meta = await r.json();
+        if(meta && meta.content){
+          const txt = decodeURIComponent(escape(atob(String(meta.content).replace(/\s+/g,''))));
+          return JSON.parse(txt);
+        }
+      }
+    }catch(_){}
+  }
+  const sep = url.includes('?') ? '&' : '?';
+  const res = await fetch(url + sep + 't=' + Date.now(), {cache:'no-store'});
+  if(!res.ok) throw new Error('HTTP '+res.status);
+  return await res.json();
+}
 async function fetchLatest(showMsg){
   if(!S.apiUrl){ if(showMsg) alert('설정에서 자동 수집 엔드포인트를 먼저 입력하세요.'); return; }
   try{
-    const sep = S.apiUrl.includes('?') ? '&' : '?';
-    const res = await fetch(S.apiUrl + sep + 't=' + Date.now(), {cache:'no-store'});
-    const j = await res.json();
+    const j = await fetchSyncJson(S.apiUrl);
     if(j.live) S.live = applyLive(j.live, S.live);
     if(Array.isArray(j.daily)) j.daily.forEach(x=>{ if(x && x.d){
       const o = Object.assign({}, x);
@@ -2104,10 +2122,7 @@ async function lpSync(auto){
   }
   lpNote('⏳ 자동 수집 중…');
   try{
-    const sep = S.apiUrl.includes('?') ? '&' : '?';
-    const res = await fetch(S.apiUrl + sep + 't=' + Date.now(), {cache:'no-store'});
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const j = await res.json();
+    const j = await fetchSyncJson(S.apiUrl);
     let src = j.live || null;
     if(!src && Array.isArray(j.daily)) src = j.daily.find(x=>x && x.d===LP.date) || j.daily[j.daily.length-1] || null;
     if(!src) throw new Error('응답에 live/daily 값이 없습니다');
