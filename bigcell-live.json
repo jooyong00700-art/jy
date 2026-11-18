@@ -1,14 +1,14 @@
 {
-  "updatedAt": "2026-11-18 23:15",
+  "updatedAt": "2026-11-18 23:28",
   "live": {
     "date": "2026-11-18",
     "sales": 1330990,
     "coupon": 166400,
     "netSales": 1164590,
     "qty": 65,
-    "adExVat": 176755,
+    "adExVat": 177048,
     "profit": 226187,
-    "at": "23:10",
+    "at": "23:20",
     "options": [
       { "name": "건조대 올화이트", "qty": 31, "sales": 705330, "margin": 115320 },
       { "name": "건조대 올크림", "qty": 17, "sales": 393430, "margin": 63240 },
@@ -23,7 +23,7 @@
     "campaigns": [
       { "name": "*26년 10월 31일 (620) 화이트", "status": "예산 소진 중지", "spendExVat": 80159, "spendVat": 88175, "margin": 115320, "profit": 27145, "note": "올화이트 31개 기준" },
       { "name": "*26년 10월 31일 (630) 크림", "status": "예산 소진 중지", "spendExVat": 69699, "spendVat": 76669, "margin": 63240, "profit": -13429, "note": "올크림 17개 기준" },
-      { "name": "오늘의 Pick 깔창광고11 9/23", "status": "운영 중", "spendExVat": 26897, "spendVat": 29587, "margin": 32747, "profit": 3160, "note": "깔창 13개 기준" }
+      { "name": "오늘의 Pick 깔창광고11 9/23", "status": "운영 중", "spendExVat": 27190, "spendVat": 29909, "margin": 32747, "profit": 2838, "note": "깔창 13개 기준" }
     ]
   },
   "daily": [
@@ -33,7 +33,7 @@
       "netSales": 1164590,
       "coupon": 166400,
       "qty": 65,
-      "ad": 194431,
+      "ad": 194753,
       "profit": 226187
     }
   ]
