@@ -1047,6 +1047,8 @@ footer a{color:var(--blue-ink); font-weight:700}
       const start = Math.max(1, parseInt($('#fStart').value,10) || 1);
       const date = $('#fDate').value || todayStr();
       state.items = items.map((it, i) => Object.assign({}, it, {no: start + i, date: date}));
+      state.projId = null;
+      markLocalProject();
       checkDuplicates();
       renderItems();
       setStatus('#genStatus', state.items.length + '건 생성됨', 'ok');
@@ -1234,6 +1236,15 @@ footer a{color:var(--blue-ink); font-weight:700}
       items: items
     };
   }
+  function markLocalProject(){
+    const sel = $('#projSelect');
+    Array.prototype.slice.call(sel.querySelectorAll('option[value="__local"]')).forEach(o => o.remove());
+    const opt = document.createElement('option');
+    opt.value = '__local';
+    opt.textContent = '내가 만든 원고 · ' + state.items.length + '건';
+    sel.insertBefore(opt, sel.firstChild);
+    sel.value = '__local';
+  }
   function buildProjectSelect(){
     const sel = $('#projSelect');
     if(!state.projects.length){
@@ -1327,7 +1338,7 @@ footer a{color:var(--blue-ink); font-weight:700}
   });
   $('#btnParsePaste').addEventListener('click', loadPaste);
   $('#btnSharedRefresh').addEventListener('click', () => loadShared(false));
-  $('#projSelect').addEventListener('change', e => { if(e.target.value) selectProject(e.target.value); });
+  $('#projSelect').addEventListener('change', e => { if(e.target.value && e.target.value !== '__local') selectProject(e.target.value); });
 
   $$('#segType button').forEach(b => b.addEventListener('click', () => setType(b.dataset.type)));
   $('#fCountQ').addEventListener('input', () => {
