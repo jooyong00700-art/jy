@@ -216,7 +216,8 @@ footer.ft code{background:#e9edf5; border-radius:4px; padding:1px 5px; font-size
   .i-thumb{width:52px; height:52px; border-radius:11px}
   .i-main{gap:11px}
   .i-price,.i-cost,.i-rev,.i-pur{text-align:left; font-size:14px; display:flex; flex-direction:column; gap:1px; white-space:nowrap}
-  .i-cost{font-size:13px}
+  .i-cost{font-size:13px; line-height:1.3}
+  .i-cost .sep{display:none}
   .lbl{display:block; font-size:10.5px; font-weight:700; color:var(--muted); letter-spacing:0}
   .i-price.null,.i-cost.null,.i-rev.null,.i-pur.null{font-size:13px}
   .i-btn{display:flex; gap:7px; align-items:stretch; justify-content:stretch}
@@ -657,7 +658,8 @@ function rowHTML(r){
   var cost = (r.cny1688 == null && r.krw1688 == null)
     ? '<div class="i-cost null"><span class="lbl">1688</span>–</div>'
     : '<div class="i-cost"><span class="lbl">1688 원가</span>' +
-        (r.cny1688 == null ? "" : "¥" + fmtCny(r.cny1688) + (r.krw1688 == null ? "" : " · ")) +
+        (r.cny1688 == null ? "" : '<span class="cny">¥' + fmtCny(r.cny1688) + "</span>") +
+        (r.cny1688 != null && r.krw1688 != null ? '<span class="sep"> · </span>' : "") +
         (r.krw1688 == null ? "" : '<span class="won">' + nf.format(Math.round(r.krw1688)) + "원</span>") +
       "</div>";
   var rev = r.rev == null
