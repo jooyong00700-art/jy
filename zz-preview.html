@@ -14,7 +14,11 @@
   <div class="col"><div class="lbl">MOBILE 390</div><div class="box m-box"><iframe class="m" data-base="https://raw.githack.com/jooyong00700-art/jy/55a9a57/wing.html"></iframe></div></div>
   <div class="col"><div class="lbl">DESKTOP 1280</div><div class="box d-box"><iframe class="d" data-base="https://raw.githack.com/jooyong00700-art/jy/55a9a57/wing.html"></iframe></div></div>
 <script>
-  const hash = location.hash || '';
-  document.querySelectorAll('iframe').forEach(f => { f.src = f.dataset.base + hash; });
+  function sync(){
+    const h = location.hash || '';
+    document.querySelectorAll('iframe').forEach(f => { f.src = f.dataset.base + h; });
+  }
+  addEventListener('hashchange', sync);
+  sync();
 </script>
 </body></html>
