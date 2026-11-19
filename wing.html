@@ -577,6 +577,9 @@ footer{position:relative;z-index:1;padding:60px 0 130px;border-top:1px solid rgb
   .hc2{left:7%}
   .hc4{right:8%}
 }
+@media (max-width:1420px){
+  .side{display:none}
+}
 @media (max-width:1360px){
   .hc1{left:-9%}.hc3{right:-9%}
 }
@@ -962,7 +965,7 @@ footer{position:relative;z-index:1;padding:60px 0 130px;border-top:1px solid rgb
 </section>
 
 <!-- ===== JOURNAL ===== -->
-<section class="sec">
+<section class="sec" id="journal">
   <div class="wrap">
     <div class="reveal">
       <span class="eyebrow">Wing Journal</span>
@@ -1032,7 +1035,7 @@ footer{position:relative;z-index:1;padding:60px 0 130px;border-top:1px solid rgb
 </section>
 
 <!-- ===== SOLUTION ===== -->
-<section class="sec">
+<section class="sec" id="solution">
   <div class="wrap">
     <div class="reveal">
       <span class="eyebrow">Total Marketing Solution</span>
@@ -1140,7 +1143,7 @@ footer{position:relative;z-index:1;padding:60px 0 130px;border-top:1px solid rgb
 </section>
 
 <!-- ===== REASON ===== -->
-<section class="sec reason">
+<section class="sec reason" id="reason">
   <div class="wrap">
     <div class="reveal" style="text-align:center">
       <span class="eyebrow">The Reason For Using</span>
@@ -1246,7 +1249,7 @@ footer{position:relative;z-index:1;padding:60px 0 130px;border-top:1px solid rgb
           </div>
           <div class="field" data-field="name">
             <label for="f-name">담당자명 <span class="req">*</span></label>
-            <input id="f-name" name="name" type="text" placeholder="예) 이주용" autocomplete="name">
+            <input id="f-name" name="name" type="text" placeholder="예) 홍길동" autocomplete="name">
             <span class="fmsg">담당자 성함을 입력해 주세요.</span>
           </div>
           <div class="field" data-field="phone">
