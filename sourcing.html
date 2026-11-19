@@ -702,6 +702,16 @@ $("chips").addEventListener("click", function(e){
   paintList();
 });
 
+/* 좁은 화면에서는 검색 안내문을 짧게 */
+(function(){
+  var q = $("q");
+  var long = "상품명 · 판매자 · 카테고리 검색";
+  var short = "상품명·판매자 검색";
+  var fit = function(){ q.placeholder = (window.innerWidth <= 430) ? short : long; };
+  fit();
+  window.addEventListener("resize", fit);
+})();
+
 var qTimer = null;
 $("q").addEventListener("input", function(e){
   var v = e.target.value;
