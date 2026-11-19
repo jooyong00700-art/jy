@@ -499,10 +499,12 @@ footer a{color:var(--blue-ink); font-weight:700}
     }
     if(hi < 0) return [];
     const head = (rows[hi]||[]).map(c => firstLine(c));
-    const iNo = head.indexOf('No');
+    let iNo = head.indexOf('No');
+    if(iNo < 0) iNo = 0;   // 머리행이 병합돼 No가 첫 칸 안에 들어있는 경우
     const iTitle = head.indexOf('제목');
     const iBody = head.indexOf('내용');
     const iType = Math.max(head.indexOf('원고성향'), head.indexOf('원고 성향'));
+    if(iTitle < 0) return [];
     const out = [];
     for(let r=hi+1;r<rows.length;r++){
       const row = rows[r] || [];
@@ -513,7 +515,7 @@ footer a{color:var(--blue-ink); font-weight:700}
       out.push({
         no: no.replace(/\.0$/,''),
         title: title,
-        body: clean(row[iBody] || ''),
+        body: iBody > -1 ? clean(row[iBody] || '') : '',
         type: iType > -1 ? clean(row[iType]) : ''
       });
     }
@@ -627,7 +629,7 @@ footer a{color:var(--blue-ink); font-weight:700}
         checkDuplicates();
         setStatus('#guideStatus', '가이드 + 기존 ' + ex.length + '건', 'ok');
       }else{
-        setStatus('#guideStatus', '가이드 불러옴', 'ok');
+        setStatus('#guideStatus', '가이드 불러옴 (기존 원고 없음)', 'ok');
       }
     }catch(e){
       setStatus('#guideStatus', '불러오기 실패', 'err');
