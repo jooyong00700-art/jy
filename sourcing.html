@@ -87,6 +87,7 @@ header.top{
   border-radius:99px; padding:4px 10px; font-size:11px; font-weight:800; letter-spacing:-.2px;
 }
 .sched .cd.hot{background:rgba(240,140,0,.20); border-color:rgba(255,190,90,.45); color:#ffe6bd}
+.sched .cd.gold{background:linear-gradient(135deg,rgba(255,179,0,.30),rgba(255,138,0,.24)); border-color:rgba(255,196,90,.62); color:#ffe6bd}
 .sched .row{display:flex; gap:6px; overflow-x:auto; margin-top:9px; padding-bottom:2px; scrollbar-width:none}
 .sched .row::-webkit-scrollbar{display:none}
 .schip{
@@ -97,6 +98,10 @@ header.top{
 .schip.done{background:rgba(14,164,122,.22); border-color:rgba(24,205,155,.48); color:#8ff0cf}
 .schip.wait{background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.16); color:#a7b6d3}
 .schip.miss{background:rgba(240,140,0,.18); border-color:rgba(255,180,70,.42); color:#ffd79a}
+.schip.next{box-shadow:0 0 0 2px rgba(120,160,255,.55); background:rgba(47,107,255,.20); border-color:rgba(120,160,255,.5); color:#e6efff}
+.schip.gold{background:linear-gradient(135deg,rgba(255,179,0,.30),rgba(255,138,0,.20)); border-color:rgba(255,196,90,.6); color:#ffe6bd}
+.schip.gold.done{background:linear-gradient(135deg,rgba(255,179,0,.34),rgba(255,138,0,.24)); border-color:rgba(255,196,90,.7); color:#fff0cd}
+.schip.gold.miss{background:linear-gradient(135deg,rgba(255,179,0,.26),rgba(255,138,0,.18)); border-color:rgba(255,196,90,.55); color:#ffe6bd}
 .sched .note{margin-top:7px; font-size:10.5px; color:#8b9ab8; font-weight:600}
 
 /* ---------- 🏆 오늘의 골드박스 (판매자로켓) ---------- */
@@ -182,6 +187,10 @@ select.sort:focus{border-color:var(--blue)}
 .chip b{font-size:11px; color:var(--muted); font-variant-numeric:tabular-nums; font-weight:800}
 .chip[aria-pressed="true"]{background:var(--navy); border-color:var(--navy); color:#fff}
 .chip[aria-pressed="true"] b{color:#9fb2d6}
+.chip.honey{background:linear-gradient(180deg,#fff6df,#ffe7b3); border-color:#efc05a; color:#8a5200; font-weight:800}
+.chip.honey b{color:#a9700f}
+.chip.honey[aria-pressed="true"]{background:linear-gradient(180deg,#ffb300,#ef8c00); border-color:#dd8200; color:#fff; box-shadow:0 3px 10px -4px rgba(220,120,0,.8)}
+.chip.honey[aria-pressed="true"] b{color:#fff1d6}
 .countline{display:flex; align-items:center; gap:8px; padding:8px 12px; background:var(--card2); border-bottom:1px solid var(--line2); font-size:12px; color:var(--ink2); font-weight:600}
 .countline b{color:var(--navy); font-variant-numeric:tabular-nums}
 .countline .r{margin-left:auto; color:var(--muted); font-weight:600; font-size:11.5px}
@@ -226,6 +235,27 @@ select.sort:focus{border-color:var(--blue)}
 .i-rev,.i-pur{text-align:right; font-size:13px; font-weight:700; font-variant-numeric:tabular-nums; color:var(--ink2); white-space:nowrap}
 .i-rev.null,.i-pur.null{color:#b6bfd0; font-weight:600}
 .i-btn{grid-area:btn; display:flex; gap:6px; align-items:center}
+
+/* ---------- 🔥 꿀템 (저리뷰·고판매) 강조 ---------- */
+.item.honey{
+  background:linear-gradient(90deg,#fff7d6 0%,#fffcf0 40%,#fffdf8 100%);
+  box-shadow:inset 5px 0 0 #f0a000;
+  border-bottom-color:#ffe2a1;
+}
+.item.honey:hover{background:linear-gradient(90deg,#fff1c2 0%,#fffbe6 40%,#fffdf8 100%)}
+.item.honey .i-name{color:#5f3700}
+.item.honey .i-rev,.item.honey .i-pur{color:#8a5200}
+.hbadge{
+  display:inline-flex; align-items:center; gap:3px; vertical-align:middle; margin-left:6px;
+  padding:2px 7px; border-radius:99px; background:linear-gradient(180deg,#ffb300,#ff8a00); color:#fff;
+  font-size:10.5px; font-weight:900; letter-spacing:-.3px; white-space:nowrap;
+  box-shadow:0 2px 7px -3px rgba(214,120,0,.85);
+}
+.i-pur .hbadge.sm{
+  margin:3px 0 0; padding:1px 5px; border-radius:6px; font-size:9.5px; line-height:1.25;
+  white-space:normal; word-break:keep-all; text-align:center; max-width:100%; box-shadow:none;
+}
+body.force-pc .i-pur .hbadge.sm{margin-left:auto; white-space:nowrap}
 .btn-go{
   display:flex; align-items:center; justify-content:center; gap:4px; height:34px; border-radius:9px;
   background:var(--blue); color:#fff !important; font-size:12.5px; font-weight:800; white-space:nowrap; width:100%;
@@ -359,11 +389,11 @@ body.force-pc .btn-go{width:auto !important; height:34px !important; padding:0 6
   <div class="sched" id="sched">
     <div class="sh">
       <span>🏆 <b>골드박스 매일 07:00</b></span><span class="sep">·</span>
-      <span>🔍 <b>정기 소싱 09:00~21:59</b> (2시간마다)</span>
+      <span>🔍 <b>정기 소싱 24시간</b> (2시간마다 · 무알림 자동 반영)</span>
       <span class="cd" id="schedCd">계산 중…</span>
     </div>
     <div class="row" id="schedChips"></div>
-    <div class="note" id="schedNote">야간 22:00~06:59는 휴식 시간입니다. (골드박스만 07:00 자동 오픈)</div>
+    <div class="note" id="schedNote">24시간 자동 수집 · 알림 없이 조용히 반영됩니다</div>
   </div>
 
   <div class="summary">
@@ -438,6 +468,7 @@ var state = {
   q: "",
   cat: "ALL",
   sort: "idx",
+  honey: false,
   rows: null,
   raw:  null,
   src:  null,
@@ -526,6 +557,34 @@ function num(s){
 }
 function txt(s){ return String(s == null ? "" : s).trim(); }
 
+/* 월 구매수·리뷰수 파싱
+   "1,000명 이상" → 1000 · "2,000명+" → 2000 · "800명+" → 800
+   "1천명+" → 1000 · "1.2천" → 1200 · "1만" → 10000 · "1.5만명" → 15000 */
+function parseMonthlyNum(s){
+  if(s == null) return null;
+  var t = String(s)
+    .replace(/[０-９]/g, function(c){ return String.fromCharCode(c.charCodeAt(0) - 0xFEE0); })
+    .replace(/\s+/g, "");
+  if(!t) return null;
+  var m = t.match(/([0-9][0-9,]*(?:\.[0-9]+)?)(만|천|k|K)?/);
+  if(!m) return null;
+  var base = parseFloat(m[1].replace(/,/g, ""));
+  if(!isFinite(base)) return null;
+  var u = m[2];
+  if(u === "만") return Math.round(base * 10000);
+  if(u === "천" || u === "k" || u === "K") return Math.round(base * 1000);
+  return base;
+}
+
+/* 🔥 꿀템 기준: 리뷰 300개 미만 + 월 구매 1,000명 이상 */
+var HONEY_REV_MAX = 300;
+var HONEY_PUR_MIN = 1000;
+function isHoney(r){
+  if(!r) return false;
+  var rv = r.rev, mv = r.pur;
+  return rv != null && rv > 0 && rv < HONEY_REV_MAX && mv != null && mv >= HONEY_PUR_MIN;
+}
+
 function toRows(csvText){
   var grid = parseCSV(csvText);
   if(!grid.length) return [];
@@ -557,9 +616,9 @@ function toRows(csvText){
       cat: get(cells, "cat") || "미분류",
       name: get(cells, "name"),
       price: num(get(cells, "price")),
-      pur: num(get(cells, "pur")),
+      pur: parseMonthlyNum(get(cells, "pur")),
       purRaw: get(cells, "pur"),
-      rev: num(get(cells, "rev")),
+      rev: parseMonthlyNum(get(cells, "rev")),
       seller: get(cells, "seller"),
       ship: get(cells, "ship"),
       url: url,
@@ -753,16 +812,15 @@ function paintGB(){
 /* ============================================================
    ⏰ 오늘 소싱 스케줄 (KST 기준)
    ============================================================ */
-var SCHED_ROUNDS = [
-  {min: 420,  label: "🏆 07:00 골드박스", gold: true},
-  {min: 540,  label: "09:00"},
-  {min: 660,  label: "11:00"},
-  {min: 780,  label: "13:00"},
-  {min: 900,  label: "15:00"},
-  {min: 1020, label: "17:00"},
-  {min: 1140, label: "19:00"},
-  {min: 1260, label: "21:00"}
-];
+var SCHED_ROUNDS = (function(){
+  var out = [];
+  for(var m = 60; m < 1440; m += 120){
+    out.push(m === 420
+      ? {min: m, label: "🏆 07:00 골드박스", gold: true}
+      : {min: m, label: pad(m / 60) + ":00"});
+  }
+  return out;
+})();
 
 function kstNow(){
   var fmt = new Intl.DateTimeFormat("en-CA", {
@@ -797,42 +855,43 @@ function paintSched(){
   var box = $("schedChips");
   if(!box) return;
   var now = kstNow();
+  var cd = $("schedCd"), note = $("schedNote");
   if(state.rows === null && !state.err && !GB.items.length){
     box.innerHTML = '<span class="schip wait">⏳ 불러오는 중…</span>';
-    $("schedCd").className = "cd";
-    $("schedCd").textContent = "계산 중…";
-    $("schedNote").textContent = "지금 " + now.hhmm + " (KST) · 야간 22:00~06:59는 휴식 시간입니다. (골드박스만 07:00 자동 오픈)";
+    cd.className = "cd";
+    cd.textContent = "계산 중…";
+    note.textContent = "지금 " + now.hhmm + " (KST) · 24시간 자동 수집";
     return;
   }
   var goldDone = (GB.date === now.date) && GB.items.length > 0;
   var maxMin = csvTodayMaxMin(now.date);
+
+  /* 다음 회차 — 23:00 이후에는 다음날 01:00 */
+  var next = null, wrap = false;
+  for(var i = 0; i < SCHED_ROUNDS.length; i++){
+    if(SCHED_ROUNDS[i].min > now.min){ next = SCHED_ROUNDS[i]; break; }
+  }
+  if(!next){ next = SCHED_ROUNDS[0]; wrap = true; }
+
   var html = "";
   SCHED_ROUNDS.forEach(function(r){
     var done = r.gold ? goldDone : (maxMin >= r.min);
-    if(now.min < r.min){
-      html += '<span class="schip wait" title="예정">⏳ ' + esc(r.label) + "</span>";
-    } else if(done){
-      html += '<span class="schip done" title="완료">✅ ' + esc(r.label) + "</span>";
-    } else {
-      html += '<span class="schip miss" title="미수집">⚠️ ' + esc(r.label) + "</span>";
-    }
+    var cls = "schip" + (r.gold ? " gold" : "");
+    var mark, tip;
+    if(now.min < r.min){ cls += " wait"; mark = "⏳ "; tip = "예정"; }
+    else if(done){ cls += " done"; mark = "✅ "; tip = "완료"; }
+    else { cls += " miss"; mark = "⚠️ "; tip = "미수집"; }
+    if(r === next){ cls += " next"; tip += " · 다음 회차"; }
+    html += '<span class="' + cls + '" title="' + esc(tip) + ' · 24시간 2시간 간격">' + mark + esc(r.label) + "</span>";
   });
   box.innerHTML = html;
 
-  var starts = [420, 540, 660, 780, 900, 1020, 1140, 1260];
-  var next = null;
-  for(var i = 0; i < starts.length; i++){ if(starts[i] > now.min){ next = starts[i]; break; } }
-  var cd = $("schedCd");
-  if(next === null){
-    cd.className = "cd hot";
-    cd.textContent = "오늘 소싱 마감 · 내일 07:00 골드박스 예정";
-  } else {
-    var diff = next - now.min, hh = Math.floor(diff / 60), mm = diff % 60;
-    cd.className = "cd";
-    cd.textContent = (next === 420 ? "다음 07:00 골드박스까지 " : "다음 소싱까지 ") +
-      (hh > 0 ? hh + "시간 " : "") + (mm > 0 ? mm + "분 " : "") + "남음";
-  }
-  $("schedNote").textContent = "지금 " + now.hhmm + " (KST) · 야간 22:00~06:59는 휴식 시간입니다. (골드박스만 07:00 자동 오픈)";
+  var diff = (next.min + (wrap ? 1440 : 0)) - now.min;
+  var hh = Math.floor(diff / 60), mm = diff % 60;
+  cd.className = "cd" + (next.gold ? " gold" : "");
+  cd.textContent = (next.gold ? "다음 07:00 골드박스까지 약 " : "다음 소싱까지 약 ") +
+    (hh > 0 ? hh + "시간 " : "") + (mm > 0 ? mm + "분 " : "") + "남음";
+  note.textContent = "지금 " + now.hhmm + " (KST) · 2시간마다 자동 수집(알림 없음)" + (wrap ? " · 자정 넘으면 01:00부터" : "");
 }
 
 $("gbToggle").addEventListener("click", function(){
@@ -855,6 +914,7 @@ function visibleRows(){
   var q = state.q.trim().toLowerCase();
   var out = rows.filter(function(r){
     if(state.cat !== "ALL" && r.cat !== state.cat) return false;
+    if(state.honey && !isHoney(r)) return false;
     if(!q) return true;
     return (r.name + " " + r.seller + " " + r.cat + " " + r.ship).toLowerCase().indexOf(q) >= 0;
   });
@@ -915,7 +975,9 @@ function checkedParts(s){
 function paintChips(){
   var rows = state.rows || [];
   var cats = categories(rows);
-  var html = '<button class="chip" type="button" data-cat="ALL" aria-pressed="' + (state.cat === "ALL") + '">전체 <b>' + rows.length + "</b></button>";
+  var honeyN = rows.filter(isHoney).length;
+  var html = '<button class="chip honey" type="button" data-honey="1" aria-pressed="' + (state.honey === true) + '" title="리뷰 300개 미만 + 월 구매 1,000명 이상만 보기">🔥 저리뷰(300↓)·월1000↑ (<b>' + honeyN + '</b>개)</button>';
+  html += '<button class="chip" type="button" data-cat="ALL" aria-pressed="' + (state.cat === "ALL") + '">전체 <b>' + rows.length + "</b></button>";
   cats.forEach(function(c){
     html += '<button class="chip" type="button" data-cat="' + esc(c.name) + '" aria-pressed="' + (state.cat === c.name) + '">' + esc(c.name) + " <b>" + c.n + "</b></button>";
   });
@@ -939,6 +1001,8 @@ function emptyState(){
 }
 
 function rowHTML(r){
+  var honey = isHoney(r);
+  var hBadge = '<span class="hbadge">🔥 저리뷰·월1000↑</span>';
   var price = r.price == null
     ? '<div class="i-price null"><span class="lbl">판매가</span>–</div>'
     : '<div class="i-price"><span class="lbl">판매가</span>' + nf.format(Math.round(r.price)) + "원</div>";
@@ -954,7 +1018,8 @@ function rowHTML(r){
     : '<div class="i-rev"><span class="lbl">리뷰</span>' + nf.format(Math.round(r.rev)) + "</div>";
   var pur = r.pur == null
     ? '<div class="i-pur null" title="' + esc(r.purRaw) + '"><span class="lbl">월구매</span>' + (r.purRaw ? esc(r.purRaw) : "–") + "</div>"
-    : '<div class="i-pur"><span class="lbl">월구매</span>' + nf.format(Math.round(r.pur)) + "명</div>";
+    : '<div class="i-pur"><span class="lbl">월구매</span>' + nf.format(Math.round(r.pur)) + "명" +
+      (honey ? '<span class="hbadge sm">🔥 저리뷰·월1000↑</span>' : "") + "</div>";
   var sub = '<span class="cat">' + esc(r.cat) + "</span>";
   if(r.seller) sub += '<span class="sep">·</span><span>' + esc(r.seller) + "</span>";
   if(r.ship)   sub += '<span class="sep">·</span><span>' + esc(r.ship) + "</span>";
@@ -971,10 +1036,10 @@ function rowHTML(r){
   var thumbHTML = r.thumb
     ? '<img class="i-thumb" src="' + esc(r.thumb) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility=&quot;hidden&quot;">'
     : "";
-  return '<article class="item">' +
+  return '<article class="item' + (honey ? " honey" : "") + '">' +
     '<div class="i-idx num">' + esc(r.idx) + ckHTML + "</div>" +
     '<div class="i-main">' + thumbHTML +
-      '<div class="i-txt"><div class="i-name">' + esc(r.name) + '</div><div class="i-sub">' + sub + "</div></div></div>" +
+      '<div class="i-txt"><div class="i-name">' + esc(r.name) + (honey ? hBadge : "") + '</div><div class="i-sub">' + sub + "</div></div></div>" +
     price + cost + rev + pur +
     '<div class="i-btn">' + btn + "</div>" +
     "</article>";
@@ -1031,7 +1096,8 @@ $("btnView").addEventListener("click", function(){
 $("chips").addEventListener("click", function(e){
   var c = e.target.closest ? e.target.closest(".chip") : null;
   if(!c) return;
-  state.cat = c.dataset.cat;
+  if(c.dataset.honey){ state.honey = !state.honey; }
+  else { state.cat = c.dataset.cat; }
   paintChips();
   paintList();
 });
