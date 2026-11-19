@@ -609,11 +609,26 @@ footer a{color:var(--blue-ink); font-weight:700}
       setStatus('#guideStatus', '가이드 불러옴', 'ok');
       toast('가이드를 불러왔어요');
 
-      // 기존 원고 제목 (중복 방지) — 실패해도 무시
-      fetchText(gvizUrl(id, '원고 현황'), 12000).then(t2 => {
-        const ex = parseExistingTable(parseCSV(t2));
-        if(ex.length){ state.existing = ex; updateGuideSummary(); checkDuplicates(); }
-      }).catch(() => {});
+      // 기존 원고 제목 (중복 방지) — 실패해도 가이드는 유지
+      setStatus('#guideStatus', '기존 원고 확인 중…', 'busy');
+      await new Promise(res => setTimeout(res, 800));
+      let ex = [];
+      for(let attempt=0; attempt<2 && !ex.length; attempt++){
+        try{
+          const t2 = await fetchText(gvizUrl(id, '원고 현황'), 15000);
+          ex = parseExistingTable(parseCSV(t2));
+        }catch(e){
+          if(attempt === 0) await new Promise(res => setTimeout(res, 1500));
+        }
+      }
+      if(ex.length){
+        state.existing = ex;
+        updateGuideSummary();
+        checkDuplicates();
+        setStatus('#guideStatus', '가이드 + 기존 ' + ex.length + '건', 'ok');
+      }else{
+        setStatus('#guideStatus', '가이드 불러옴', 'ok');
+      }
     }catch(e){
       setStatus('#guideStatus', '불러오기 실패', 'err');
       $('#guideSummary').innerHTML = '시트를 읽지 못했어요. <b>「링크가 있는 모든 사용자」</b> 공유인지 확인하거나, 위 <b>CSV 붙여넣기</b>로 넣어주세요.';
