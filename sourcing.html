@@ -110,7 +110,7 @@ select.sort:focus{border-color:var(--blue)}
 
 /* ---------- list ---------- */
 .listhead{
-  display:grid; grid-template-columns:44px minmax(0,1fr) 104px 84px 96px 118px; gap:10px;
+  display:grid; grid-template-columns:44px minmax(0,1fr) 104px 116px 84px 96px 140px; gap:10px;
   padding:8px 14px; background:#f7f9fd; border-bottom:1px solid var(--line);
   font-size:11px; font-weight:800; color:var(--muted); letter-spacing:.02em;
 }
@@ -119,32 +119,47 @@ select.sort:focus{border-color:var(--blue)}
 .item{
   display:grid; gap:10px; align-items:center; padding:11px 14px; background:#fff;
   border-bottom:1px solid var(--line2);
-  grid-template-columns:44px minmax(0,1fr) 104px 84px 96px 118px;
-  grid-template-areas:"idx main price rev pur btn";
+  grid-template-columns:44px minmax(0,1fr) 104px 116px 84px 96px 140px;
+  grid-template-areas:"idx main price cost rev pur btn";
 }
 .item:last-child{border-bottom:0}
 .item:hover{background:#fcfdff}
 .i-idx{grid-area:idx; font-size:12px; font-weight:800; color:#9aa5ba; font-variant-numeric:tabular-nums; line-height:1.2}
 .i-date{color:#aab4c7; font-weight:600; font-size:10px; letter-spacing:0; margin-top:3px; white-space:nowrap; font-variant-numeric:tabular-nums}
 .i-date .tm{display:block; color:#bcc4d3}
-.i-main{grid-area:main; min-width:0}
+.i-main{grid-area:main; min-width:0; display:flex; gap:10px; align-items:flex-start}
+.i-thumb{
+  width:48px; height:48px; border-radius:10px; flex:0 0 auto; object-fit:cover;
+  background:#eef1f7; border:1px solid var(--line); display:block;
+}
+.i-thumb.ph{display:flex; align-items:center; justify-content:center; color:#c2cadb; font-size:10px; font-weight:800}
+.i-txt{min-width:0; flex:1 1 auto}
 .i-name{font-size:13.5px; font-weight:700; color:var(--ink); letter-spacing:-.2px; line-height:1.35; word-break:keep-all; overflow-wrap:anywhere}
 .i-sub{display:flex; align-items:center; gap:5px; flex-wrap:wrap; margin-top:4px; font-size:11.5px; color:var(--muted)}
 .i-sub .cat{background:var(--blue-weak); color:var(--blue-ink); border-radius:5px; padding:1px 6px; font-weight:800; font-size:11px}
 .i-sub .sep{color:#cfd6e4}
 .i-price{grid-area:price; text-align:right; font-size:14px; font-weight:800; letter-spacing:-.4px; font-variant-numeric:tabular-nums; white-space:nowrap}
 .i-price.null{color:var(--muted); font-weight:600; font-size:12px}
+.i-cost{grid-area:cost; text-align:right; font-size:12.5px; font-weight:800; letter-spacing:-.3px; font-variant-numeric:tabular-nums; white-space:nowrap; color:#c2410c}
+.i-cost .won{color:#0b7d5d}
+.i-cost.null{color:#b6bfd0; font-weight:600; font-size:12px}
 .i-rev{grid-area:rev}
 .i-pur{grid-area:pur}
 .i-rev,.i-pur{text-align:right; font-size:13px; font-weight:700; font-variant-numeric:tabular-nums; color:var(--ink2); white-space:nowrap}
 .i-rev.null,.i-pur.null{color:#b6bfd0; font-weight:600}
-.i-btn{grid-area:btn}
+.i-btn{grid-area:btn; display:flex; gap:6px; align-items:center}
 .btn-go{
   display:flex; align-items:center; justify-content:center; gap:4px; height:34px; border-radius:9px;
   background:var(--blue); color:#fff !important; font-size:12.5px; font-weight:800; white-space:nowrap; width:100%;
 }
 .btn-go:hover{background:#1b57e8}
 .btn-go:active{transform:translateY(1px)}
+.i-btn .btn-go{flex:1 1 0; min-width:0; padding:0 6px; font-size:11.5px}
+.btn-go.btn-1688{background:#ff6a00}
+.btn-go.btn-1688:hover{background:#e85f00}
+.btn-go.off{background:#e7ebf3; color:#98a3b7 !important; cursor:default; pointer-events:none}
+.btn-go.off:hover{background:#e7ebf3}
+.btn-go.off:active{transform:none}
 .lbl{display:none}
 
 /* skeleton / states */
@@ -190,18 +205,22 @@ footer.ft code{background:#e9edf5; border-radius:4px; padding:1px 5px; font-size
     grid-template-columns:1fr 1fr 1fr 1fr;
     grid-template-areas:
       "main main main idx"
-      "price rev pur btn";
+      "price cost rev pur"
+      "btn btn btn btn";
     row-gap:9px; padding:13px 13px 12px; align-items:stretch;
     border-bottom:8px solid var(--bg);
   }
   .i-idx{display:block; text-align:right; align-self:start; font-size:12.5px; padding-top:1px}
   .i-idx .i-date{text-align:right; margin-top:2px; font-size:10.5px}
   .i-name{font-size:14px}
-  .i-price,.i-rev,.i-pur{text-align:left; font-size:14px; display:flex; flex-direction:column; gap:1px}
+  .i-thumb{width:52px; height:52px; border-radius:11px}
+  .i-main{gap:11px}
+  .i-price,.i-cost,.i-rev,.i-pur{text-align:left; font-size:14px; display:flex; flex-direction:column; gap:1px; white-space:nowrap}
+  .i-cost{font-size:13px}
   .lbl{display:block; font-size:10.5px; font-weight:700; color:var(--muted); letter-spacing:0}
-  .i-price.null,.i-rev.null,.i-pur.null{font-size:13px}
-  .i-btn{display:flex; align-items:flex-end; justify-content:flex-end}
-  .btn-go{height:36px; width:auto; padding:0 12px; border-radius:9px; align-self:end; font-size:12px}
+  .i-price.null,.i-cost.null,.i-rev.null,.i-pur.null{font-size:13px}
+  .i-btn{display:flex; gap:7px; align-items:stretch; justify-content:stretch}
+  .btn-go{height:36px; width:auto; padding:0 12px; border-radius:9px; align-self:auto; font-size:12px; flex:1 1 0}
   .stat .v{font-size:18px}
 }
 @media (max-width:520px){
@@ -220,19 +239,20 @@ body.force-pc .brand small{display:block !important}
 body.force-pc .linkbtn{height:36px !important; padding:0 12px !important; font-size:12.5px !important}
 body.force-pc .listhead{display:grid !important}
 body.force-pc .item{
-  grid-template-columns:44px minmax(0,1fr) 104px 84px 96px 118px !important;
-  grid-template-areas:"idx main price rev pur btn" !important;
+  grid-template-columns:44px minmax(0,1fr) 104px 116px 84px 96px 140px !important;
+  grid-template-areas:"idx main price cost rev pur btn" !important;
   row-gap:10px !important; padding:11px 14px !important; align-items:center !important;
   border-bottom:1px solid var(--line2) !important;
 }
 body.force-pc .i-idx{display:block !important; text-align:left !important; font-size:12px !important}
 body.force-pc .i-idx .i-date{text-align:left !important; font-size:10px !important}
 body.force-pc .i-name{font-size:13.5px !important}
-body.force-pc .i-price,body.force-pc .i-rev,body.force-pc .i-pur{display:block !important; text-align:right !important; font-size:13px !important}
+body.force-pc .i-price,body.force-pc .i-cost,body.force-pc .i-rev,body.force-pc .i-pur{display:block !important; text-align:right !important; font-size:13px !important; white-space:nowrap !important}
 body.force-pc .i-price{font-size:14px !important; font-weight:800 !important}
+body.force-pc .i-cost{font-size:12.5px !important; font-weight:800 !important}
 body.force-pc .lbl{display:none !important}
-body.force-pc .i-btn{display:block !important}
-body.force-pc .btn-go{width:100% !important; height:34px !important; padding:0 !important; font-size:12.5px !important; align-self:auto !important}
+body.force-pc .i-btn{display:flex !important; gap:6px !important; align-items:center !important}
+body.force-pc .btn-go{width:auto !important; height:34px !important; padding:0 6px !important; font-size:11.5px !important; align-self:auto !important; flex:1 1 0 !important}
 @media print{
   header.top,.tools,.totop,footer.ft{display:none !important}
   body{background:#fff}
@@ -282,7 +302,7 @@ body.force-pc .btn-go{width:100% !important; height:34px !important; padding:0 !
       <div class="chips" id="chips"></div>
     </div>
     <div class="countline"><span>표시 <b id="shown">0</b> / <b id="tot">0</b>개</span><span class="r" id="fileInfo"></span></div>
-    <div class="listhead"><span>#</span><span>상품명</span><span>판매가</span><span>리뷰</span><span>월구매</span><span>링크</span></div>
+    <div class="listhead"><span>#</span><span>상품명</span><span>판매가</span><span>1688 원가</span><span>리뷰</span><span>월구매</span><span>링크</span></div>
     <div class="list" id="list"></div>
   </div>
 
@@ -333,6 +353,11 @@ var esc = function(s){
   });
 };
 var nf = new Intl.NumberFormat("ko-KR");
+/* 위안 표기: 정수는 그대로, 소수는 둘째 자리까지 (3.1 → 3.10) */
+function fmtCny(v){
+  var n = Math.round(v * 100) / 100;
+  return (Math.abs(n - Math.round(n)) < 0.001) ? String(Math.round(n)) : n.toFixed(2);
+}
 
 /* ---------- CSV 파서 (따옴표/줄바꿈/CRLF 대응) ---------- */
 function parseCSV(text){
@@ -371,6 +396,10 @@ var FIELDS = [
   ["ship",    /배송\s*유형|배송/],
   ["pid",     /product\s*id|상품\s*id/i],
   ["vid",     /vendor\s*item\s*id/i],
+  ["thumb",   /^썸네일\s*(url|이미지|링크)?$/i],
+  ["url1688", /^1688\s*(url|링크)$/i],
+  ["cny1688", /^1688\s*위안$/],
+  ["krw1688", /^1688\s*원화$/],
   ["url",     /url|링크|주소/i],
   ["checked", /확인\s*일시|확인일|수집일|업데이트/]
 ];
@@ -419,6 +448,9 @@ function toRows(csvText){
       else url = "";
     }
     var idx = num(get(cells, "idx"));
+    var cny = num(get(cells, "cny1688"));
+    var krw = num(get(cells, "krw1688"));
+    if(krw == null && cny != null) krw = Math.round(cny * 300);
     return {
       n: n + 1,
       idx: (idx === null ? n + 1 : idx),
@@ -431,6 +463,10 @@ function toRows(csvText){
       seller: get(cells, "seller"),
       ship: get(cells, "ship"),
       url: url,
+      thumb: get(cells, "thumb"),
+      cny1688: cny,
+      krw1688: krw,
+      url1688: get(cells, "url1688"),
       checked: get(cells, "checked")
     };
   }).filter(function(r){ return r.name || r.idx; });
@@ -618,6 +654,12 @@ function rowHTML(r){
   var price = r.price == null
     ? '<div class="i-price null"><span class="lbl">판매가</span>–</div>'
     : '<div class="i-price"><span class="lbl">판매가</span>' + nf.format(Math.round(r.price)) + "원</div>";
+  var cost = (r.cny1688 == null && r.krw1688 == null)
+    ? '<div class="i-cost null"><span class="lbl">1688</span>–</div>'
+    : '<div class="i-cost"><span class="lbl">1688 원가</span>' +
+        (r.cny1688 == null ? "" : "¥" + fmtCny(r.cny1688) + (r.krw1688 == null ? "" : " · ")) +
+        (r.krw1688 == null ? "" : '<span class="won">' + nf.format(Math.round(r.krw1688)) + "원</span>") +
+      "</div>";
   var rev = r.rev == null
     ? '<div class="i-rev null"><span class="lbl">리뷰</span>–</div>'
     : '<div class="i-rev"><span class="lbl">리뷰</span>' + nf.format(Math.round(r.rev)) + "</div>";
@@ -633,11 +675,18 @@ function rowHTML(r){
     : "";
   var btn = r.url
     ? '<a class="btn-go" href="' + esc(r.url) + '" target="_blank" rel="noopener noreferrer">쿠팡 ↗</a>'
-    : '<span class="btn-go" style="background:#c9d0dd; cursor:default">링크없음</span>';
+    : '<span class="btn-go off">링크없음</span>';
+  btn += r.url1688
+    ? '<a class="btn-go btn-1688" href="' + esc(r.url1688) + '" target="_blank" rel="noopener noreferrer">1688 ↗</a>'
+    : '<span class="btn-go btn-1688 off">1688</span>';
+  var thumbHTML = r.thumb
+    ? '<img class="i-thumb" src="' + esc(r.thumb) + '" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility=&quot;hidden&quot;">'
+    : "";
   return '<article class="item">' +
     '<div class="i-idx num">' + esc(r.idx) + ckHTML + "</div>" +
-    '<div class="i-main"><div class="i-name">' + esc(r.name) + '</div><div class="i-sub">' + sub + "</div></div>" +
-    price + rev + pur +
+    '<div class="i-main">' + thumbHTML +
+      '<div class="i-txt"><div class="i-name">' + esc(r.name) + '</div><div class="i-sub">' + sub + "</div></div></div>" +
+    price + cost + rev + pur +
     '<div class="i-btn">' + btn + "</div>" +
     "</article>";
 }
