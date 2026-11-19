@@ -136,7 +136,7 @@ body.menu-open{overflow:hidden}
 .hero-globe::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(closest-side at 50% 46%,rgba(3,6,12,0) 38%,rgba(3,6,12,.55) 62%,rgba(3,6,12,.92) 78%)}
 .hero-glow{
   position:absolute;left:50%;bottom:-2%;transform:translateX(-50%);width:min(1500px,120vw);height:420px;z-index:0;pointer-events:none;
-  background:radial-gradient(50% 50% at 50% 50%,rgba(46,136,245,.26),rgba(20,70,160,.08) 48%,transparent 72%);
+  background:radial-gradient(50% 50% at 50% 50%,rgba(46,136,245,.32),rgba(20,70,160,.1) 48%,transparent 72%);
   filter:blur(14px);
 }
 .hero-copy{position:relative;z-index:3;text-align:center;padding:0 24px;max-width:1080px}
@@ -205,8 +205,8 @@ h1.hero-title .hl{
 .t1::before{content:"";position:absolute;inset:0;background:conic-gradient(from 220deg at 70% 20%,rgba(120,220,255,.35),transparent 40%),repeating-linear-gradient(60deg,rgba(255,255,255,.05) 0 1px,transparent 1px 14px)}
 .t2{background:radial-gradient(120% 90% at 80% 15%,#185f7e,#0a1a2c 62%,#050b16)}
 .t2::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 60% at 30% 70%,rgba(90,235,220,.28),transparent 70%),repeating-linear-gradient(-45deg,rgba(255,255,255,.045) 0 1px,transparent 1px 16px)}
-.t3{background:radial-gradient(120% 90% at 30% 20%,#3a2a7a,#101033 60%,#050b16)}
-.t3::before{content:"";position:absolute;inset:0;background:radial-gradient(50% 60% at 75% 55%,rgba(255,140,220,.28),transparent 70%),repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px 18px)}
+.t3{background:radial-gradient(120% 90% at 30% 20%,#1d4f7a,#0a1a2c 60%,#050b16)}
+.t3::before{content:"";position:absolute;inset:0;background:radial-gradient(50% 60% at 75% 55%,rgba(120,220,255,.26),transparent 70%),repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px 18px)}
 .t4{background:radial-gradient(120% 90% at 60% 15%,#14547a,#0a1c2e 62%,#050b16)}
 .t4::before{content:"";position:absolute;inset:0;background:radial-gradient(55% 55% at 25% 60%,rgba(90,200,255,.3),transparent 70%),repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 12px)}
 .hc-body{padding:13px 15px 15px;position:relative;z-index:2}
@@ -231,10 +231,10 @@ h1.hero-title .hl{
 .wcard-art::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,8,15,0) 45%,rgba(4,8,15,.85))}
 .a1{background:radial-gradient(120% 100% at 25% 10%,#2a5fa8,#0b1c33 62%,#050b16)}
 .a2{background:radial-gradient(120% 100% at 75% 12%,#14657f,#0a1e2c 62%,#050b16)}
-.a3{background:radial-gradient(120% 100% at 35% 15%,#5a2b74,#160d28 62%,#050b16)}
+.a3{background:radial-gradient(120% 100% at 35% 15%,#1b5c7a,#0a1c2c 62%,#050b16)}
 .a4{background:radial-gradient(120% 100% at 65% 10%,#1a4f86,#0a1a2c 62%,#050b16)}
 .a5{background:radial-gradient(120% 100% at 30% 20%,#1b5f64,#071e21 62%,#050b16)}
-.a6{background:radial-gradient(120% 100% at 70% 18%,#3b3a86,#0d0f26 62%,#050b16)}
+.a6{background:radial-gradient(120% 100% at 70% 18%,#24406e,#0a1226 62%,#050b16)}
 .wnum{position:absolute;left:22px;bottom:14px;font-family:var(--latin);font-size:52px;font-weight:800;color:rgba(255,255,255,.1);line-height:1;letter-spacing:-.03em}
 .mock{position:absolute;left:14%;top:16%;width:66%;padding:11px 13px 13px;border-radius:11px;background:rgba(5,13,24,.6);border:1px solid rgba(150,210,255,.2);backdrop-filter:blur(4px);z-index:2;display:grid;gap:6px;box-shadow:0 14px 30px rgba(0,0,0,.35)}
 .mock-bar{display:flex;gap:4px;margin-bottom:2px}
@@ -718,13 +718,13 @@ footer{position:relative;z-index:1;padding:48px 0 132px;border-top:1px solid rgb
         </radialGradient>
         <linearGradient id="rim" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stop-color="#7fe4ff" stop-opacity="0"/>
-          <stop offset="42%" stop-color="#5fcbff" stop-opacity=".42"/>
-          <stop offset="100%" stop-color="#2a7bff" stop-opacity=".05"/>
+          <stop offset="42%" stop-color="#5fcbff" stop-opacity=".55"/>
+          <stop offset="100%" stop-color="#2a7bff" stop-opacity=".06"/>
         </linearGradient>
         <clipPath id="globeClip"><circle cx="600" cy="600" r="596"/></clipPath>
       </defs>
       <circle cx="600" cy="600" r="596" fill="url(#globeFill)"/>
-      <g clip-path="url(#globeClip)" fill="none" stroke="rgba(88,175,255,.055)" stroke-width="1.2">
+      <g clip-path="url(#globeClip)" fill="none" stroke="rgba(88,175,255,.075)" stroke-width="1.2">
         <ellipse cx="600" cy="600" rx="596" ry="30"/>
         <ellipse cx="600" cy="430" rx="571" ry="28"/>
         <ellipse cx="600" cy="270" rx="496" ry="26"/>
