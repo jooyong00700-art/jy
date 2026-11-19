@@ -557,6 +557,8 @@ function applyLive(src, prev, mix1, mix2){
   const s = src || {};
   const merged = Object.assign({}, prev||{});
   ['date','sales','qty','adExVat','at','profit','options','campaigns'].forEach(k=>{ if(s[k]!=null && s[k]!=='') merged[k] = s[k]; });
+  if(s.profit==null || s.profit==='') delete merged.profit;   // 전날 추정치가 오늘로 넘어오지 않게
+  else delete merged.profitEstimate;                          // 수집된 실제 마진은 추정치가 아니다
   delete merged.coupon; delete merged.netSales;
   const c = couponNum(s.coupon), n = couponNum(s.netSales);
   if(c!=null) merged.coupon = c;
@@ -659,19 +661,31 @@ function margin(p){
 }
 function profitOf(p){ return margin(p).profit; }
 
-/* 실적 시리즈 (override 반영) */
+/* 실적 시리즈 (override 반영)
+   - 하드코딩 DAILY + 자동 수집(bigcell-live.json)의 daily 값을 날짜(d) 기준으로 병합
+   - DAILY 에 없는 새 날짜(예: 오늘 실시간 행)도 빠짐없이 포함해 보고서·캘린더·이번 달 합계에 반영 */
 function dailySeries(){
-  return DAILY.map(r => {
+  const extra = Object.keys(S.dailyOverrides||{})
+    .filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d) && !DAILY.some(r=>r.d===d));
+  const base = DAILY.concat(extra.map(d=>({d, live:true})));
+  base.sort((a,b)=> a.d<b.d ? -1 : (a.d>b.d ? 1 : 0));
+  const liveDate = (S.live && S.live.date) || null;
+  return base.map(r => {
     const o = S.dailyOverrides[r.d] || {};
-    const sales = o.sales!=null? o.sales : r.sales;
-    const ad = o.ad!=null? o.ad : r.ad;
-    const qty = o.qty!=null? o.qty : r.qty;
-    let profit = o.profit!=null? o.profit : r.profit;
-    if(profit==null && sales!=null){
-      const blend = blendedMargin();
-      profit = Math.round(sales*blend);
+    const sales = o.sales!=null? Number(o.sales) : r.sales;
+    const ad = o.ad!=null? Number(o.ad) : r.ad;
+    const qty = o.qty!=null? Number(o.qty) : r.qty;
+    const coupon = o.coupon!=null? Number(o.coupon) : r.coupon;
+    const netSales = o.netSales!=null? Number(o.netSales)
+      : (sales!=null ? sales - (coupon||0) : r.netSales);
+    let profit = o.profit!=null? Number(o.profit) : r.profit;
+    const estimate = profit==null;
+    if(estimate && sales!=null){
+      profit = Math.round(sales*blendedMargin());
     }
-    return Object.assign({}, r, {sales, ad, qty, profit, net: (profit!=null && ad!=null) ? profit-ad : null, estimate: r.profit==null});
+    return Object.assign({}, r, {sales, ad, qty, coupon, netSales, profit,
+      net: (profit!=null && ad!=null) ? profit-ad : null,
+      live: r.d === liveDate, estimate});
   });
 }
 function blendedMargin(){
@@ -693,10 +707,13 @@ function liveRow(){
   const netSales = Math.max(0, sales - coupon);
   const ad = n(t.adExVat)!=null ? Math.round(n(t.adExVat)*(S.vat||1.1))
              : (row && row.ad!=null ? row.ad : 0);
-  let profit = (row && row.profit!=null && row.sales===sales) ? row.profit : null;
-  if(profit==null) profit = Math.round(sales*blendedMargin());
-  return {d:t.date, sales, coupon, netSales, qty, ad, profit, net:profit-ad,
-    estimate: !(row && row.profit!=null && row.sales===sales)};
+  /* 실제 옵션별 마진 합계(live.profit)가 있으면 추정치(blendedMargin)보다 우선 사용 */
+  let profit = null, estimate = false;
+  if(n(t.profit)!=null) profit = n(t.profit);
+  else if(row && row.profit!=null && row.sales===sales) profit = row.profit;
+  if(profit==null){ profit = Math.round(sales*blendedMargin()); estimate = true; }
+  if(t.profitEstimate) estimate = true;
+  return {d:t.date, sales, coupon, netSales, qty, ad, profit, net:profit-ad, estimate};
 }
 </script>
 <script>
@@ -897,9 +914,12 @@ VIEWS.dashboard = function(){
   const dToday = prev ? deltaPct(live.netSales, netSalesOf(prev)) : null;
   const dNet = prev && prev.net!=null && todayNet!=null ? deltaPct(todayNet, prev.net) : null;
   const avg7 = (()=>{ const r = rows.filter(x=>x.profit!=null).slice(-8,-1); return r.length? sumOf(r,'sales')/r.length : 0; })();
+  const lastRow = rows.length ? rows[rows.length-1] : null;
+  const mLast = mRows.length ? mRows[mRows.length-1] : null;
+  const mRange = mLast ? `${Number(mRows[0].d.slice(5,7))}/${dnum(mRows[0].d)}~${Number(mLast.d.slice(5,7))}/${dnum(mLast.d)}` : '데이터 없음';
 
   return topbar('대시보드', '리스페토 · 로켓그로스 전체 스토어',
-      `<span class="chip">기준일 <b>2026-11-17</b></span>`)
+      `<span class="chip">기준일 <b>${lastRow ? fmtDate(lastRow.d) : '-'}</b>${lastRow&&lastRow.live?' <span class="live"></span>':''}</span>`)
   + `<div class="kpis" style="margin-bottom:14px">
       <div class="kpi accent live-kpi">
         <div class="live-h">
@@ -912,14 +932,14 @@ VIEWS.dashboard = function(){
       </div>
       ${kpiCard('오늘 광고비 <span class="tag">VAT포함</span>', won(live.ad)+'원',
         `<span class="flat">VAT별도 ${won(S.live.adExVat)}원</span>`) }
-      ${kpiCard('오늘 순이익 <span class="tag estimate">추정</span>', won(todayNet)+'원',
+      ${kpiCard(`오늘 순이익${live.estimate?' <span class="tag estimate">추정</span>':''}`, won(todayNet)+'원',
         `${deltaHTML(dNet)} <span class="flat">광고비(VAT포함) ${won(live.ad)}원 제외</span>`) }
       ${kpiCard('이번 달 매출 <span class="tag coup">쿠폰 제외</span>', won(monthSales)+'원',
-        `<span class="flat">11/1~${m==='2026-11'?'18':'말'} · 순이익(광고비 제외) ${won(monthNet)}원</span>`, {cls:'month-kpi'})}
+        `<span class="flat">${mRange} · 순이익(광고비 제외) ${won(monthNet)}원</span>`, {cls:'month-kpi'})}
     </div>`
   + `<div class="two" style="margin-bottom:14px">
       ${todayOptionsCard(live)}
-      ${todayCampaignsCard()}
+      ${todayCampaignsCard(live)}
     </div>`
   + `<div class="two" style="margin-bottom:14px">
       ${reportCard(rows)}
@@ -953,16 +973,28 @@ function todayOptionsCard(live){
     </table></div>
   </div>`;
 }
-function todayCampaignsCard(){
+function todayCampaignsCard(live){
   const camps = Array.isArray(S.live.campaigns) && S.live.campaigns.length ? S.live.campaigns : DEFAULTS.live.campaigns;
-  const totalP = camps.reduce((a,c)=>a+(Number(c.profit)||0), 0);
-  const rows = camps.map(c=>{
-    const p = Number(c.profit)||0;
+  /* 캠페인별 광고비(VAT포함)를 상단 '오늘 광고비'와 같은 총액(live.ad)에 맞춰 1원 단위로 배분한다.
+     캠페인별 반올림 합계가 총액과 1원 어긋나 '오늘 순이익'과 '합계'가 달라 보이던 문제를 없앤다. */
+  const exSum = camps.reduce((a,c)=>a+(Number(c.spendExVat)||0), 0);
+  const vatTotal = (live && live.ad!=null) ? Math.round(live.ad) : Math.round(exSum*(S.vat||1.1));
+  const parts = camps.map((c,i)=>{
+    const exact = (Number(c.spendExVat)||0)*(S.vat||1.1);
+    return {i, v:Math.floor(exact), frac:exact-Math.floor(exact)};
+  });
+  let rest = vatTotal - parts.reduce((a,p)=>a+p.v, 0);
+  parts.slice().sort((a,b)=> (b.frac-a.frac) || (b.v-a.v)).forEach(p=>{ if(rest>0){ p.v++; rest--; } });
+  if(rest<0) parts.slice().sort((a,b)=> (a.frac-b.frac) || (b.v-a.v)).forEach(p=>{ if(rest<0 && p.v>0){ p.v--; rest++; } });
+  const vatOf = {}; parts.forEach(p=>{ vatOf[p.i] = p.v; });
+  const calcs = camps.map((c,i)=>({c, vat:vatOf[i], margin:Number(c.margin)||0, profit:(Number(c.margin)||0)-vatOf[i]}));
+  const totalP = calcs.reduce((a,x)=>a+x.profit, 0);
+  const rows = calcs.map(({c,vat,margin,profit:p})=>{
     const stCls = String(c.status||'').includes('운영') ? 'up' : 'flat';
     return `<tr>
       <td class="l"><b>${esc(c.name)}</b><div class="sub" style="margin:2px 0 0">${esc(c.note||'')} · <span class="${stCls}">${esc(c.status||'')}</span></div></td>
-      <td class="num">${won(c.spendVat)}원</td>
-      <td class="num">${won(c.margin)}원</td>
+      <td class="num">${won(vat)}원</td>
+      <td class="num">${won(margin)}원</td>
       <td class="num"><b class="${p>=0?'up':'down'}">${p>=0?'+':''}${won(p)}원</b></td>
     </tr>`;
   }).join('');
@@ -975,7 +1007,7 @@ function todayCampaignsCard(){
       <thead><tr><th class="l">캠페인</th><th>광고비(VAT포함)</th><th>옵션 마진</th><th>실시간 이익</th></tr></thead>
       <tbody>${rows}</tbody>
     </table></div>
-    <div class="note" style="margin-top:8px">※ 쿠팡 광고센터 당일 전환매출은 익일 확정되어, 당일 해당 옵션 실판매 마진에서 오늘 누적광고비(VAT포함)를 빼서 산출했어요.</div>
+    <div class="note" style="margin-top:8px">※ 쿠팡 광고센터 당일 전환매출은 익일 확정되어, 당일 해당 옵션 실판매 마진에서 오늘 누적광고비(VAT포함)를 빼서 산출했어요. 캠페인별 광고비는 총 광고비(${won(vatTotal)}원)에 맞춰 1원 단위로 배분해 합계가 위 '오늘 순이익'과 같습니다.</div>
   </div>`;
 }
 
@@ -1048,7 +1080,7 @@ function calendarCard(){
   const prevLast = new Date(y, mm-1, 0).getDate();
   const byDate = {}; rows.forEach(r=>byDate[r.d]=r);
   const settleByDate = {}; SETTLE_DUE.forEach(s=>settleByDate[s.d]=s.seller+s.rfm);
-  const today = '2026-11-18';
+  const today = (S.live && S.live.date) || (rows.length ? rows[rows.length-1].d : '');
   let cells = '';
   for(let i=0;i<startDow;i++){
     cells += `<div class="day other"><div class="dn">${prevLast-startDow+1+i}</div></div>`;
@@ -1099,9 +1131,9 @@ function calendarCard(){
           <label class="switch"><input type="checkbox" ${opt.calSettle?'checked':''} data-act="calSettle"> 정산 표시</label>
         </div>
         <div class="memo-box">
-          <div class="mh">나의 메모 <span class="d">2026년 11월 18일</span></div>
-          ${memoListFor('2026-11-18') || '<div class="memo-empty">등록된 메모가 없습니다.</div>'}
-          <button class="memo-add" data-act="memoAdd" data-d="2026-11-18">＋ 추가하기</button>
+          <div class="mh">나의 메모 <span class="d">${today.slice(0,4)}년 ${Number(today.slice(5,7))}월 ${Number(today.slice(8,10))}일</span></div>
+          ${memoListFor(today) || '<div class="memo-empty">등록된 메모가 없습니다.</div>'}
+          <button class="memo-add" data-act="memoAdd" data-d="${today}">＋ 추가하기</button>
         </div>
         <div>
           <div class="side-chart-lab">차트 항목 표시 설정</div>
@@ -2220,7 +2252,7 @@ function lpApply(){
   const date = LP.date;
   if(!/^\d{4}-\d{2}-\d{2}$/.test(String(date))){ alert('기준일을 확인하세요.'); return; }
   const at = lpNow();
-  S.live = Object.assign({}, S.live, {date, sales:c.sales, coupon:c.coupon, netSales:c.netSales, qty:c.qty, adExVat:LP.adExVat, at});
+  S.live = Object.assign({}, S.live, {date, sales:c.sales, coupon:c.coupon, netSales:c.netSales, qty:c.qty, adExVat:LP.adExVat, at, profit:c.profit, profitEstimate:true});
   if(!DAILY.some(r=>r.d===date)){
     DAILY.push({d:date, sales:0, profit:null, ad:0, live:true});
     DAILY.sort((a,b)=> a.d<b.d ? -1 : (a.d>b.d ? 1 : 0));
