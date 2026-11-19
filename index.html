@@ -1566,7 +1566,7 @@ function adOrganicCard(){
     const items = byItemFor(r.d) || [];
     const chips = items.length ? `<tr class="ao-items"><td colspan="5"><div class="ao-chipwrap">${
       items.map(x=>`<span class="ao-chip"><b>${esc(String(x.name).replace(/\s*특가\(.*\)/,''))}</b> <span class="q">${x.qty}개</span>${
-        (x.adQty!=null) ? ` <i class="c-ad">광고 ${x.adQty}</i> <i class="c-og">자연 ${x.organicQty}</i>` : ' <i class="c-pend">광고/자연 미집계</i>`}</span>`).join('')
+        (x.adQty!=null) ? ` <i class="c-ad">광고 ${x.adQty}</i> <i class="c-og">자연 ${x.organicQty}</i>` : ' <i class="c-pend">광고/자연 미집계</i>'}</span>`).join('')
     }</div></td></tr>` : '';
     return `<tr class="${isToday?'today':''}">
       <td class="l"><b class="ao-d">${fmtDate(r.d)}</b>${isToday?' <span class="tag live">오늘</span>':''}</td>
