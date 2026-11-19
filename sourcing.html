@@ -249,7 +249,6 @@ body.force-pc .btn-go{width:100% !important; height:34px !important; padding:0 !
       </div>
       <span class="pill" id="srcPill"><i></i><span id="srcText">불러오는 중…</span></span>
       <span class="spacer"></span>
-      <a class="linkbtn" id="dashLink" href="index.html">📊 통합 대시보드</a>
       <button class="linkbtn" id="btnRefresh" type="button" title="최신 CSV 다시 불러오기">↻ 새로고침</button>
       <button class="linkbtn primary" id="btnDownload" type="button">⬇ CSV</button>
     </div>
@@ -752,17 +751,6 @@ $("btnDownload").addEventListener("click", function(){
   a.click();
   setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); }, 1500);
 });
-
-/* 대시보드 링크: htmlpreview로 열린 경우 raw가 아닌 미리보기 링크로 */
-(function(){
-  var a = $("dashLink");
-  if(location.hostname.indexOf("htmlpreview.github.io") >= 0){
-    a.href = "https://htmlpreview.github.io/?https://raw.githubusercontent.com/" + OWNER + "/" + REPO + "/" + BRANCH + "/index.html";
-    a.target = "_blank"; a.rel = "noopener";
-  } else if(location.protocol === "file:"){
-    a.href = "index.html";
-  }
-})();
 
 /* 맨 위로 */
 window.addEventListener("scroll", function(){
