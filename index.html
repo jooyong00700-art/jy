@@ -1107,7 +1107,7 @@ function qtySplitTotalCell(rows){
   const all = withAd.length===rows.filter(r=>r.qty!=null).length && withAd.length>0;
   return `<td class="num"><b>${qt}개</b><div class="qsplit">${all
     ? `<span class="qa">광고 ${aq}</span><span class="qo">자연 ${oq}</span>`
-    : `<span class="qa">광고 ${aq}+</span><span class="qp">집계 전 ${rows.length-withAd.length}일</span>`}</div></td>`;
+    : `<span class="qa">광고 ${aq}</span><span class="qp">집계 전 ${rows.length-withAd.length}일 제외</span>`}</div></td>`;
 }
 function qtySplitCell(r){
   if(r.qty==null) return '<td class="num flat">-</td>';
@@ -1895,8 +1895,8 @@ ACTIONS.copyReport = ()=>{
 };
 ACTIONS.csvDaily = ()=>{
   const rows = dailySeries();
-  const lines = ['날짜,매출,이익금,광고비,순이익금'];
-  rows.forEach(r=>lines.push([r.d,r.sales,r.profit,r.ad,r.net].join(',')));
+  const lines = ['날짜,판매수,광고판매수,자연판매수,매출,이익금,광고비,순이익금'];
+  rows.forEach(r=>lines.push([r.d,(r.qty==null?'':r.qty),(r.adQty==null?'':r.adQty),(r.organicQty==null?'':r.organicQty),r.sales,r.profit,r.ad,r.net].join(',')));
   const blob = new Blob(['\ufeff'+lines.join('\n')],{type:'text/csv;charset=utf-8'});
   const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='bigcell-daily.csv'; a.click();
 };
