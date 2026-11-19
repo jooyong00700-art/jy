@@ -1208,6 +1208,15 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       const m = all.match(t[0]);
       if(m){ hits.push(t[1] + '「' + m[0] + '」'); score -= t[2]; }
     });
+    // 작성자 대댓글이 댓글1에 없는 말을 꺼내면 문맥이 끊긴 것
+    // (댓글1은 가격 얘기인데 대댓글이 "오 그런 기능??" 하고 새 정보에 놀라는 사고)
+    const replyTx = String(it.reply || '');
+    const NEW_TERMS = /기능|스펙|옵션|사양|소재|원단|성능|인증/g;
+    const knownTerms = {};
+    (String(it.comment1 || '').match(NEW_TERMS) || []).forEach(function(w){ knownTerms[w] = 1; });
+    const freshTerms = (replyTx.match(NEW_TERMS) || []).filter(function(w){ return !knownTerms[w]; });
+    if(freshTerms.length){ hits.push('대댓글 문맥 이탈「' + freshTerms[0] + '」'); score -= 25; }
+
     // 다른 업종 단어가 섞이면 문맥이 깨진 것 (샴푸·두피가 가방 글에 나오는 사고)
     const myTopic = topicKeyOf(industryOf(guideFields()).name);
     const CROSS_TOPIC = [
@@ -1997,7 +2006,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
             got = parseJsonLoose(raw).map(polishItem);
             const avg = got.length ? got.reduce((s, it) => s + it.ai.score, 0) / got.length : 0;
             // 점수가 높아도 치명 패턴(형식적 추천 멘트·다른 업종 단어·설명서 말투)이 있으면 다시 쓴다
-            const fatal = got.some(it => (it.ai.hits || []).some(h => /형식적 추천|상호명\+추천|다른 업종 단어|설명서 말투|스펙 번역투|격식 추천/.test(h)));
+            const fatal = got.some(it => (it.ai.hits || []).some(h => /형식적 추천|상호명\+추천|다른 업종 단어|설명서 말투|스펙 번역투|격식 추천|대댓글 문맥 이탈/.test(h)));
             if((avg >= 62 && !fatal) || round === 1 || got.length === 0) break;
             // 사람티 점수가 낮으면 지적된 부분을 알려주고 한 번만 다시 쓴다
             const worst = [];
