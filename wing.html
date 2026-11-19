@@ -37,7 +37,7 @@ html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{
   margin:0;background:var(--bg);color:var(--text);font-family:var(--head);
   font-size:16px;line-height:1.7;letter-spacing:-.012em;
-  overflow-x:hidden;-webkit-font-smoothing:antialiased;
+  overflow-x:hidden;-webkit-font-smoothing:antialiased;word-break:keep-all;
 }
 img,svg{display:block;max-width:100%}
 a{color:inherit;text-decoration:none}
@@ -577,8 +577,11 @@ footer{position:relative;z-index:1;padding:60px 0 130px;border-top:1px solid rgb
   .hc2{left:7%}
   .hc4{right:8%}
 }
+@media (max-width:1360px){
+  .hc1{left:-9%}.hc3{right:-9%}
+}
 @media (max-width:1320px){
-  .hc1{left:-3%}.hc2{left:1%}.hc3{right:-3%}.hc4{right:1%}
+  .hc1{left:-12%}.hc2{left:-2%}.hc3{right:-12%}.hc4{right:-2%}
   .hero-copy{max-width:860px}
 }
 @media (max-width:1180px){
@@ -602,7 +605,14 @@ footer{position:relative;z-index:1;padding:60px 0 130px;border-top:1px solid rgb
   .burger{display:flex}
   .hero{padding:120px 0 90px;min-height:auto}
   .hero-globe{width:190vw;bottom:-70vw}
-  h1.hero-title{font-size:clamp(28px,7.4vw,44px);line-height:1.32}
+  h1.hero-title{font-size:clamp(27px,7.1vw,40px);line-height:1.36}
+  h1.hero-title .hl{display:inline}
+  .hero-strip{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:24px 0 0;overflow:visible}
+  .hero-strip .hcard{width:auto;flex:none}
+  .hero-strip .hc-thumb{height:96px}
+  .hero-strip .hc-body{padding:11px 12px 13px}
+  .hero-strip .hc-body h3{font-size:12.5px}
+  .hero-strip .hc-body p{font-size:11px}
   .hero-sub{font-size:14px;margin-top:20px}
   .hero-actions .btn-primary,.hero-actions .btn-ghost{height:52px;font-size:14.5px;padding:0 24px}
   .sec-title{font-size:clamp(26px,6.6vw,38px)}
@@ -641,7 +651,8 @@ footer{position:relative;z-index:1;padding:60px 0 130px;border-top:1px solid rgb
   .toast{bottom:80px}
 }
 @media (max-width:560px){
-  .hero-strip .hcard{width:170px;flex:0 0 170px}
+  .hero-strip{gap:8px}
+  .hero-strip .hcard{width:auto;flex:none}
   .proc{width:100%}
   .proc:nth-child(1),.proc:nth-child(3){transform:rotate(-1.2deg)}
   .proc:nth-child(2),.proc:nth-child(4){transform:rotate(1.2deg)}
