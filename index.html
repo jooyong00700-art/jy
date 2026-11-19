@@ -1294,7 +1294,7 @@ VIEWS.dashboard = function(){
   const rows = dailySeries();
   const live = liveRow();
   const prev = rows[rows.length-2];
-  const m = opt.calMonth;
+  const m = (S.live && S.live.date ? String(S.live.date).slice(0,7) : opt.calMonth); /* 이번 달 KPI는 캘린더 선택과 무관하게 현재 월 고정 */
   const mRows = monthRowsOf(m);
   const monthSales = mRows.reduce((a,r)=>a+netSalesOf(r),0), monthCoupon = sumOf(mRows,'coupon'), monthProfit = sumOf(mRows,'profit'), monthAd = sumOf(mRows,'ad'), monthNet = monthProfit - monthAd;
   const todayNet = live.net;
