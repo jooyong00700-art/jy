@@ -1,25 +1,29 @@
 {
-  "updatedAt": "2026-11-19 08:23",
+  "updatedAt": "2026-11-19 09:48",
   "live": {
     "date": "2026-11-19",
-    "sales": 245040,
-    "coupon": 31600,
-    "netSales": 213440,
-    "qty": 12,
-    "adExVat": 27909,
-    "profit": 42238,
-    "at": "08:07",
+    "sales": 342600,
+    "coupon": 49420,
+    "netSales": 293180,
+    "qty": 18,
+    "adExVat": 36814,
+    "profit": 14793,
+    "at": "09:45",
     "options": [
-      { "name": "건조대 올크림", "qty": 6, "sales": 137940, "margin": 22320 },
-      { "name": "건조대 올화이트", "qty": 4, "sales": 85520, "margin": 14880 },
-      { "name": "깔창 270-275mm", "qty": 1, "sales": 10790, "margin": 2519 },
-      { "name": "깔창 240-245mm", "qty": 1, "sales": 10790, "margin": 2519 }
+      { "name": "건조대 올크림", "qty": 10, "sales": 229900, "coupon": 30000, "margin": 37200 },
+      { "name": "건조대 올화이트", "qty": 2, "sales": 45980, "coupon": 6000, "margin": 7440 },
+      { "name": "건조대 올화이트 특가(16,550)", "qty": 1, "sales": 16550, "coupon": 6440, "margin": 689 },
+      { "name": "깔창 260-265mm", "qty": 1, "sales": 10790, "coupon": 800, "margin": 2519 },
+      { "name": "깔창 250-255mm", "qty": 1, "sales": 10790, "coupon": 800, "margin": 2519 },
+      { "name": "깔창 270-275mm", "qty": 1, "sales": 10790, "coupon": 800, "margin": 2519 },
+      { "name": "깔창 240-245mm", "qty": 1, "sales": 10790, "coupon": 800, "margin": 2519 },
+      { "name": "깔창 240-245mm 특가(7,010)", "qty": 1, "sales": 7010, "coupon": 3780, "margin": -117 }
     ],
     "campaigns": [
-      { "name": "★11월 19일 올크림 ★", "status": "운영 중", "spendExVat": 8356, "spendVat": 9192, "margin": 22320, "profit": 13128, "note": "올크림 6개 기준" },
-      { "name": "★11월 19일 올화이트 ★", "status": "운영 중", "spendExVat": 16072, "spendVat": 17679, "margin": 14880, "profit": -2799, "note": "올화이트 4개 기준" },
-      { "name": "오늘의 Pick 깔창광고11 9/23", "status": "운영 중", "spendExVat": 3380, "spendVat": 3718, "margin": 5038, "profit": 1320, "note": "깔창 2개 기준" },
-      { "name": "★11월 19일 올블랙★", "status": "운영 중", "spendExVat": 101, "spendVat": 111, "margin": 0, "profit": -111, "note": "올블랙 0개 기준" }
+      { "name": "★11월 19일 올크림 ★", "status": "운영 중(학습 중)", "spendExVat": 9677, "spendVat": 10645, "margin": 37200, "profit": 26555, "note": "올크림 10개 기준" },
+      { "name": "★11월 19일 올화이트 ★", "status": "운영 중(학습 중)", "spendExVat": 18777, "spendVat": 20655, "margin": 8129, "profit": -12526, "note": "올화이트 2개 + 특가 1개 기준" },
+      { "name": "오늘의 Pick 깔창광고11 9/23", "status": "운영 중(학습 중)", "spendExVat": 7033, "spendVat": 7736, "margin": 9959, "profit": 2223, "note": "깔창 4개 + 특가 1개 기준" },
+      { "name": "★11월 19일 올블랙★", "status": "운영 중(학습 중)", "spendExVat": 1327, "spendVat": 1460, "margin": 0, "profit": -1460, "note": "올블랙 0개 기준" }
     ]
   },
   "daily": [
@@ -34,12 +38,12 @@
     },
     {
       "d": "2026-11-19",
-      "sales": 245040,
-      "netSales": 213440,
-      "coupon": 31600,
-      "qty": 12,
-      "ad": 30700,
-      "profit": 11538
+      "sales": 342600,
+      "netSales": 293180,
+      "coupon": 49420,
+      "qty": 18,
+      "ad": 40495,
+      "profit": 14793
     }
   ]
 }
