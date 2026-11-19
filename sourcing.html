@@ -252,10 +252,11 @@ select.sort:focus{border-color:var(--blue)}
   box-shadow:0 2px 7px -3px rgba(214,120,0,.85);
 }
 .i-pur .hbadge.sm{
-  display:block; width:fit-content; max-width:100%; margin:3px 0 0 auto;
-  padding:2px 5px; border-radius:6px; font-size:9px; line-height:1.2; letter-spacing:-.2px;
-  white-space:normal; word-break:keep-all; text-align:center; box-shadow:none;
+  display:inline-flex; flex-direction:column; align-items:center; justify-content:center; gap:0;
+  width:auto; max-width:100%; margin:3px 0 0 auto; padding:2px 5px; border-radius:6px;
+  font-size:9px; line-height:1.15; letter-spacing:-.3px; white-space:nowrap; box-shadow:none;
 }
+.i-pur .hbadge.sm span{display:block}
 @media (max-width:820px){ .i-pur .hbadge.sm{margin-left:0} }
 .btn-go{
   display:flex; align-items:center; justify-content:center; gap:4px; height:34px; border-radius:9px;
@@ -1020,7 +1021,7 @@ function rowHTML(r){
   var pur = r.pur == null
     ? '<div class="i-pur null" title="' + esc(r.purRaw) + '"><span class="lbl">월구매</span>' + (r.purRaw ? esc(r.purRaw) : "–") + "</div>"
     : '<div class="i-pur"><span class="lbl">월구매</span>' + nf.format(Math.round(r.pur)) + "명" +
-      (honey ? '<span class="hbadge sm">🔥 저리뷰·월1000↑</span>' : "") + "</div>";
+      (honey ? '<span class="hbadge sm"><span>🔥 저리뷰</span><span>월1000↑</span></span>' : "") + "</div>";
   var sub = '<span class="cat">' + esc(r.cat) + "</span>";
   if(r.seller) sub += '<span class="sep">·</span><span>' + esc(r.seller) + "</span>";
   if(r.ship)   sub += '<span class="sep">·</span><span>' + esc(r.ship) + "</span>";
