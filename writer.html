@@ -451,7 +451,7 @@ footer a{color:var(--blue-ink); font-weight:700}
     for(const d of LABELS){
       for(const n of d.names){
         const nn = n.replace(/\s+/g,'');
-        if(norm === nn || norm.indexOf(nn) === 0) return d;
+        if(norm === nn || norm.indexOf(nn) > -1) return d;
       }
     }
     return null;
@@ -465,7 +465,6 @@ footer a{color:var(--blue-ink); font-weight:700}
         const d = matchLabel(rows[r][c]);
         if(!d) continue;
         hits.push({def:d, r, c});
-        break;
       }
     }
     const labelRows = new Set(hits.map(h => h.r));
