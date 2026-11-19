@@ -1519,7 +1519,7 @@ const WING_CONTACT = {
       if(d>n/2) d -= n;
       if(d<-n/2) d += n;
       const abs = Math.abs(d);
-      const x = abs>2 ? Math.sign(d)*w*2.1 : d*(w*0.96);
+      const x = abs>2 ? Math.sign(d)*w*2.1 : d*(w*0.76);
       const scale = abs===0?1.06 : abs===1?0.84 : 0.74;
       c.style.transform = `translateX(${x}px) scale(${scale})`;
       c.style.opacity = abs>2?0 : (abs===0?1: abs===1?0.8:0.5);
