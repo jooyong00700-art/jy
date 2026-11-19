@@ -1099,12 +1099,17 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     return (code - 0xAC00) % 28 !== 0;
   }
   function josa(w, a, b){ return String(w) + (hasJong(w) ? a : b); }
+  function copula(w){ return String(w) + (hasJong(w) ? '이에요' : '예요'); }
   function pointPhrase(p){
     let s = String(p || '').trim().replace(/[.。]$/, '');
     if(/함$/.test(s)) s = s.replace(/함$/, '한 점');
     if(/점$/.test(s)) return s;
     if(/부분$/.test(s)) return s;
     return s + ' 부분';
+  }
+  function meritList(list){
+    const m = (list || []).filter(Boolean).slice(0, 2);
+    return m.join(', ');
   }
 
   function detectIndustry(g){
@@ -1122,6 +1127,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     const ind = detectIndustry(g);
     const pts = splitPoints(g.merits);
     const P = i => pts[i] || ind.points[i] || ind.points[0];
+    const M = meritList(pts.length ? pts : ind.points);
     const item = ind.item;
     const out = [];
     for(let i=0;i<q;i++){
@@ -1135,7 +1141,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
           title: item + ' 고르는 게 늘 어려워요ㅠ',
           body: [
             s,
-            '그때마다 ' + josa(item, '을', '를') + ' 하나 제대로 준비해두려고 하는데',
+            '그래서 ' + josa(item, '을', '를') + ' 하나 제대로 준비해두려고 하는데',
             w,
             '검색해보면 다 좋다고만 하고 실제로 써본 얘기는 잘 없더라고요',
             chk + ' 위주로 보면 될까요? 다들 어떻게 고르세요?'
@@ -1184,15 +1190,14 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
           body: [
             s,
             '그동안은 ' + w,
-            '이번에 ' + brand + '를 이용해보게 됐어요',
-            '그중에서도 ' + pointPhrase(P(0)) + '이 좋았어요',
-            '그리고 ' + pointPhrase(P(1)) + '도 마음에 들었고요',
+            '이번에 ' + josa(brand, '을', '를') + ' 이용해보게 됐어요',
+            '특히 ' + M + ' 같은 점이 좋았어요',
             '요즘은 매일 쓰고 있어요',
             '한두 달 써보니 ' + ind.gain + ' 확실히 편해졌어요',
             '주변에도 괜찮다고 말하고 다니는 중이에요'
           ].join('\n'),
           comment1: item + ' 후기 잘 봤어요~ 혹시 ' + brand + ' 쪽이에요? 저도 알아보고 있었거든요',
-          reply: '네 ' + brand + '예요ㅎㅎ ' + pointPhrase(P(0)) + '이 제일 만족스러워요'
+          reply: '네 ' + copula(brand) + 'ㅎㅎ ' + pointPhrase(P(0)) + '이 제일 만족스러워요'
         });
       }else{
         out.push({
@@ -1201,14 +1206,13 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
           body: [
             s,
             '원래는 ' + w,
-            brand + '를 써보고 생각이 좀 달라졌어요',
-            '그중에서도 ' + pointPhrase(P(0)) + '이 좋았어요',
-            '그리고 ' + pointPhrase(P(1)) + '도 마음에 들었고요',
+            josa(brand, '을', '를') + ' 써보고 생각이 좀 달라졌어요',
+            '특히 ' + M + ' 같은 점이 좋았어요',
             '이제는 자연스럽게 이용하게 됐어요',
             '같은 걸 고민하시는 분들께도 권하고 싶어요'
           ].join('\n'),
           comment1: item + ' 어떤 건지 궁금했는데~ ' + brand + ' 제품인가요?',
-          reply: '네 ' + brand + ' 거예요ㅎㅎ ' + pointPhrase(P(1)) + '이 좋더라고요'
+          reply: '네 ' + brand + ' 거예요ㅎㅎ ' + pointPhrase(P(0)) + '이 좋더라고요'
         });
       }
     }
