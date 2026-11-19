@@ -611,16 +611,17 @@ function num(s){
 function txt(s){ return String(s == null ? "" : s).trim(); }
 
 /* ============================================================
-   쿠팡 상품 링크 — 앱 바로열기(intent://) + 모바일/PC 분기 + 리퍼러 완전 제거
-   - Android: intent://www.coupang.com/vp/products/<pid>[?vendorItemId=<vid>]
-              #Intent;scheme=https;package=com.coupang.mobile;
+   쿠팡 상품 링크 — 앱 검색 직행(intent://search) + 모바일/PC 분기 + 리퍼러 완전 제거
+   - Android: intent://search?q=<핵심검색어>
+              #Intent;scheme=coupang;package=com.coupang.mobile;
               S.browser_fallback_url=<웹URL>;end
-       → 쿠팡 앱 공식 App Link(scheme=https)를 그대로 넘긴다. 앱이 https://www.coupang.com/vp/products/..
-         경로를 직접 받으므로 "앱만 열리고 홈으로 뜨는" 문제가 없다.
-         (예전 scheme=coupang + product?productId=.. 형식은 앱이 상품 경로를 못 잡아 홈이 떴다)
+       → 쿠팡 앱이 실제로 인식하는 커스텀 스킴은 coupang://search?q=<상품명> 이다.
+         앱이 바로 실행되며 해당 상품 검색 결과 화면으로 직행한다(삼성 인터넷 웹 403을 거치지 않음).
+         · scheme=https(공식 App Link) 방식은 앱이 인텐트를 받지 못해 fallback 웹(403)으로 빠졌다.
+         · scheme=coupang + product?productId=.. 는 앱이 상품 경로를 못 잡아 홈만 떴다.
        → 삼성 인터넷/크롬은 새 탭·about:blank 경유가 아니라 "현재 탭에서 이동"해야
          쿠팡 앱(com.coupang.mobile)이 확실히 뜬다. 앱이 없으면 브라우저가 웹으로 넘긴다.
-   - iOS: coupang://product?productId=.. 호출 후 앱이 안 뜨면(문서가 계속 보이면) 웹으로.
+   - iOS: coupang://search?q=<핵심검색어> 호출 후 앱이 안 뜨면(문서가 계속 보이면) 웹으로.
    - PC·데스크톱 모드: 기존처럼 www.coupang.com 을 새 탭으로.
    - <a href>는 데스크톱/미지원 대비 웹 URL 그대로 두고, 클릭 핸들러가
      preventDefault 후 앱으로 넘긴다(우클릭·Ctrl/⌘ 클릭은 기본 동작 유지).
@@ -668,13 +669,34 @@ function cpUrl(pid, vid, rawUrl){
     ? "https://m.coupang.com/vm/products/"
     : "https://www.coupang.com/vp/products/") + ids.pid + q;
 }
-/* <a> 속성 문자열: 리퍼러 차단 + 새 탭 + 클릭 시점 재계산용 data 속성 */
-function cpAttrs(pid, vid, rawUrl){
+/* 상품명 → 앱 검색어(query)
+   옵션·쉼표·괄호 같은 불필요한 뒷부분을 정리해 쿠팡 앱 검색이 잘 걸리는 핵심어만 남긴다
+   예) "대한명도 4세대 3단 두께조절 채칼 슬라이서 만능 국민템 (1개 바이오화이트)"
+       → "대한명도 4세대 3단 두께조절 채칼 슬라이서 만능 국민템" */
+function cpQuery(name){
+  var s = txt(name);
+  if(!s) return "";
+  s = s.replace(/[\(\[\{][^\)\]\}]*[\)\]\}]/g, " ");   /* 괄호 안 옵션 제거 */
+  s = s.split(/[,，、|｜\/·•]/)[0];                       /* 쉼표 등 구분자 앞 첫 덩어리 */
+  s = s.replace(/[^0-9A-Za-z가-힣ㄱ-ㅎㅏ-ㅣ\s\+\-]/g, " ");  /* 특수문자 정리 */
+  s = s.replace(/\s+/g, " ").trim();
+  s = s.replace(/\s*(옵션|색상|컬러|사이즈|수량|구성)\s*$/i, "").trim();
+  if(s.length > 40){                                    /* 40자 이내(가능하면 단어 경계) */
+    var cut = s.slice(0, 40);
+    var sp = cut.lastIndexOf(" ");
+    s = (sp > 20 ? cut.slice(0, sp) : cut).trim();
+  }
+  return s;
+}
+/* <a> 속성 문자열: 리퍼러 차단 + 새 탭 + 클릭 시점 재계산용 data 속성(pid·vid·검색어) */
+function cpAttrs(pid, vid, rawUrl, name){
   var ids = cpIds(rawUrl, pid, vid);
+  var q = cpQuery(name);
   return ' href="' + esc(cpUrl(ids.pid, ids.vid, rawUrl)) + '"' +
     ' target="_blank" rel="noreferrer noopener" referrerpolicy="no-referrer"' +
     ' data-cp-pid="' + esc(ids.pid) + '" data-cp-vid="' + esc(ids.vid) + '"' +
-    (ids.pid ? ' data-cp-link="1"' : "");
+    ' data-cp-q="' + esc(q) + '"' +
+    ((ids.pid || q) ? ' data-cp-link="1"' : "");
 }
 /* iOS 딥링크 경로: product?productId=..[&vendorItemId=..] (coupang:// 뒤에 붙는 부분) */
 function cpAppPath(ids){
@@ -687,18 +709,27 @@ function cpAppLinkPath(ids){
   return "www.coupang.com/vp/products/" + ids.pid +
     (ids.vid ? "?vendorItemId=" + ids.vid : "");
 }
-/* Android intent:// — scheme=https(공식 App Link)로 앱 상품 화면까지 직행.
+/* Android intent:// — 검증된 coupang://search?q= 스킴으로 앱 검색 결과 화면까지 직행.
+   검색어가 없으면 예전처럼 공식 App Link(상품 URL) 인텐트로 떨어진다.
    앱이 없거나 못 열면 브라우저가 S.browser_fallback_url 로 넘긴다 */
-function cpIntentUrl(ids, webUrl){
+function cpIntentUrl(ids, webUrl, query){
+  var q = txt(query);
+  if(q){
+    return "intent://search?q=" + encodeURIComponent(q) +
+      "#Intent;scheme=coupang;package=com.coupang.mobile" +
+      ";S.browser_fallback_url=" + encodeURIComponent(webUrl) + ";end";
+  }
   var path = cpAppLinkPath(ids);
   if(!path) return "";
   return "intent://" + path + "#Intent;scheme=https;package=com.coupang.mobile" +
     ";S.browser_fallback_url=" + encodeURIComponent(webUrl) + ";end";
 }
-/* iOS coupang:// — 앱이 뜨면 문서가 숨겨지므로 그때 fallback 타이머를 끈다 */
-function cpOpenIOS(ids, webUrl){
-  var path = cpAppPath(ids);
-  if(!path){ window.location.href = webUrl; return; }
+/* iOS coupang://search?q=.. — 앱이 뜨면 문서가 숨겨지므로 그때 fallback 타이머를 끈다 */
+function cpOpenIOS(ids, webUrl, query){
+  var q = txt(query);
+  var scheme = q ? ("coupang://search?q=" + encodeURIComponent(q))
+                 : (cpAppPath(ids) ? "coupang://" + cpAppPath(ids) : "");
+  if(!scheme){ window.location.href = webUrl; return; }
   var fired = false;
   var timer = setTimeout(function(){
     if(fired) return;
@@ -712,12 +743,12 @@ function cpOpenIOS(ids, webUrl){
     });
     window.addEventListener("pagehide", stop);
   }catch(e){}
-  window.location.href = "coupang://" + path;
+  window.location.href = scheme;
 }
 /* 링크 클릭 시점 처리
    1) 클릭 순간의 화면(모바일/PC)으로 URL 재계산
-   2) Android → 현재 탭에서 intent:// (쿠팡 앱 com.coupang.mobile)
-      iOS     → coupang:// (앱 미설치면 2초 뒤 웹)
+   2) Android → 현재 탭에서 intent://search?q=<검색어>#Intent;scheme=coupang (쿠팡 앱 com.coupang.mobile)
+      iOS     → coupang://search?q=<검색어> (앱 미설치면 2초 뒤 웹)
    3) PC → 빈 탭(about:blank)을 먼저 열고 그 탭을 쿠팡으로 이동
       → 주소창에 직접 입력한 것과 같은 요청이 되어 Referer·Sec-Fetch-Site 같은
         "다른 사이트에서 넘어왔다"는 표시가 남지 않는다(403 차단의 실제 원인)
@@ -727,6 +758,7 @@ document.addEventListener("click", function(e){
   var a = (t && t.closest) ? t.closest("a[data-cp-link]") : null;
   if(!a) return;
   var ids = { pid: txt(a.getAttribute("data-cp-pid")), vid: txt(a.getAttribute("data-cp-vid")) };
+  var q = cpQuery(a.getAttribute("data-cp-q"));
   var url = cpUrl(ids.pid, ids.vid, "");
   if(!url) return;
   a.setAttribute("href", url);
@@ -734,11 +766,11 @@ document.addEventListener("click", function(e){
   a.setAttribute("referrerpolicy", "no-referrer");
   /* 새 탭으로 열기(오른쪽 버튼·Ctrl/⌘/Shift 클릭)는 브라우저 기본 동작에 맡긴다 */
   if(e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-  /* productId 없는 예외 링크는 웹 URL 그대로 */
-  if(!ids.pid){ e.preventDefault(); window.location.href = url; return; }
+  /* productId·검색어가 모두 없는 예외 링크는 웹 URL 그대로 */
+  if(!ids.pid && !q){ e.preventDefault(); window.location.href = url; return; }
   /* 1) Android — 새 탭이 아니라 현재 탭에서 intent:// 를 호출해야 앱이 확실히 뜬다 */
   if(cpIsAndroid()){
-    var intentUrl = cpIntentUrl(ids, url);
+    var intentUrl = cpIntentUrl(ids, url, q);
     if(intentUrl){
       e.preventDefault();
       try{ window.location.href = intentUrl; }
@@ -749,7 +781,7 @@ document.addEventListener("click", function(e){
   /* 2) iOS — coupang:// 호출, 앱이 없으면 웹으로 */
   if(cpIsIOS()){
     e.preventDefault();
-    cpOpenIOS(ids, url);
+    cpOpenIOS(ids, url, q);
     return;
   }
   /* 3) PC·데스크톱 모드 — 기존과 동일하게 새 탭 */
@@ -1038,7 +1070,7 @@ function gbCardHTML(it){
     ? '<div class="cny null">1688 원가 조사 전</div>'
     : '<div class="cny">¥' + (it.cny != null ? fmtCny(it.cny) : "–") +
       (it.krw != null ? '<span class="won"> · ' + nf.format(Math.round(it.krw)) + "원</span>" : "") + "</div>";
-  var btns = (it.url ? '<a class="gb-btn"' + cpAttrs(it.pid, "", it.url) + '>쿠팡 ↗</a>' : "") +
+  var btns = (it.url ? '<a class="gb-btn"' + cpAttrs(it.pid, "", it.url, it.name) + '>쿠팡 ↗</a>' : "") +
              (it.url1688 ? '<a class="gb-btn g1688" href="' + esc(it.url1688) + '" target="_blank" rel="noreferrer noopener" referrerpolicy="no-referrer">1688 ↗</a>' : "");
   if(!btns) btns = '<span class="gb-btn off">링크 없음</span>';
   var tm = it.time ? '<div class="tm">' + esc(it.time) + "</div>" : "";
@@ -1302,7 +1334,7 @@ function rowHTML(r){
     ? '<div class="i-date" title="확인 ' + esc(r.checked) + '">' + esc(ck.d) + (ck.t ? '<span class="tm">' + esc(ck.t) + "</span>" : "") + "</div>"
     : "";
   var btn = r.url
-    ? '<a class="btn-go"' + cpAttrs(r.pid, r.vid, r.url) + '>쿠팡 ↗</a>'
+    ? '<a class="btn-go"' + cpAttrs(r.pid, r.vid, r.url, r.name) + '>쿠팡 ↗</a>'
     : '<span class="btn-go off">링크없음</span>';
   btn += r.url1688
     ? '<a class="btn-go btn-1688" href="' + esc(r.url1688) + '" target="_blank" rel="noreferrer noopener" referrerpolicy="no-referrer">1688 ↗</a>'
