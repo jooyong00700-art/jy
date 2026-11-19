@@ -610,7 +610,7 @@ footer{position:relative;z-index:1;padding:48px 0 132px;border-top:1px solid rgb
   .burger{display:flex}
   .hero{padding:120px 0 90px;min-height:auto}
   .hero-globe{width:190vw;bottom:-70vw}
-  h1.hero-title{font-size:clamp(27px,7.1vw,40px);line-height:1.36}
+  h1.hero-title{font-size:clamp(27px,7.1vw,40px);line-height:1.36;text-wrap:balance}
   h1.hero-title .hl{display:inline}
   .hero-strip{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:24px 0 0;overflow:visible}
   .hero-strip .hcard{width:auto;flex:none}
@@ -658,6 +658,10 @@ footer{position:relative;z-index:1;padding:48px 0 132px;border-top:1px solid rgb
 @media (max-width:560px){
   .hero-strip{gap:8px}
   .hero-strip .hcard{width:auto;flex:none}
+  .quickbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px;border-radius:20px;bottom:10px}
+  .quickbar .qb-label{display:none}
+  .quickbar input{height:40px;font-size:12.5px;padding:0 13px;width:100%}
+  .quickbar button{grid-column:1/-1;height:42px;justify-content:center;font-size:13px}
   .proc{width:100%}
   .proc:nth-child(1),.proc:nth-child(3){transform:rotate(-1.2deg)}
   .proc:nth-child(2),.proc:nth-child(4){transform:rotate(1.2deg)}
