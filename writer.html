@@ -757,7 +757,13 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     const eng = state.engine;
     if(eng === 'local') return;
     const v = ($('#fKey').value || '').trim();
-    if(!v){ toast('API 키를 먼저 입력해 주세요'); $('#fKey').focus(); return; }
+    if(!v){
+      localStorage.removeItem(LS.key + eng);
+      localStorage.removeItem(LS.conn + eng);
+      setStatus('#connStatus', '연결 전', '');
+      if(!quiet) toast('저장된 키를 지웠어요');
+      return;
+    }
     localStorage.setItem(LS.key + eng, v);
     localStorage.removeItem(LS.conn + eng);
     localStorage.setItem(LS.model + eng, $('#fModel').value);
