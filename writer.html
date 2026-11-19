@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1a30">
+<meta name="color-scheme" content="light">
+<title>맘카페 원고 작성기 · 리스페토</title>
+<style>
+:root{
+  --navy:#0f1a30; --navy2:#18294a;
+  --ink:#16202f; --ink2:#43506a; --muted:#7b869a;
+  --line:#e6eaf1; --line2:#eef1f6;
+  --bg:#f3f5fa; --card:#fff; --card2:#fafbfe;
+  --blue:#2f6bff; --blue-weak:#eef3ff; --blue-ink:#1b4fd8;
+  --green:#0ea47a; --green-weak:#e6f7f1;
+  --amber:#f08c00; --amber-weak:#fff5e6;
+  --red:#e03e3e; --red-weak:#fdecec;
+  --radius:14px;
+  --shadow:0 1px 2px rgba(16,27,48,.05), 0 8px 24px -14px rgba(16,27,48,.18);
+}
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+  background:var(--bg); color:var(--ink); font-size:14px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:calc(28px + env(safe-area-inset-bottom));
+}
+button{font-family:inherit; font-size:inherit; cursor:pointer; border:0; background:none; color:inherit}
+input,select,textarea{font-family:inherit; font-size:inherit; color:inherit}
+a{color:inherit; text-decoration:none}
+.wrap{max-width:1200px; margin:0 auto; padding:0 16px}
+.num{font-variant-numeric:tabular-nums}
+
+/* header */
+header.top{background:var(--navy); color:#fff; padding:calc(10px + env(safe-area-inset-top)) 0 12px; border-bottom:1px solid #22314f}
+.toprow{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.brand{display:flex; align-items:center; gap:9px; font-weight:800; letter-spacing:-.3px; font-size:17px; min-width:0}
+.brand .dot{width:9px;height:9px;border-radius:50%;background:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.25); flex:0 0 auto}
+.brand small{display:block; font-weight:600; font-size:11px; color:#8c9cbf; letter-spacing:0; margin-top:1px}
+.spacer{flex:1 1 auto}
+.linkbtn{display:inline-flex; align-items:center; gap:6px; height:36px; padding:0 12px; border-radius:9px;
+  background:rgba(255,255,255,.09); color:#dbe4f5; font-size:12.5px; font-weight:700; white-space:nowrap; border:1px solid rgba(255,255,255,.1)}
+.linkbtn:hover{background:rgba(255,255,255,.16); color:#fff}
+.linkbtn.primary{background:var(--blue); border-color:var(--blue); color:#fff}
+.linkbtn:active{transform:translateY(1px)}
+
+/* cards */
+main{padding-top:16px; display:flex; flex-direction:column; gap:14px}
+.card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden}
+.cardhead{display:flex; align-items:center; gap:10px; padding:13px 16px; border-bottom:1px solid var(--line2); flex-wrap:wrap}
+.cardhead h2{margin:0; font-size:14.5px; font-weight:800; letter-spacing:-.2px}
+.cardhead .sub{font-size:12px; color:var(--muted); font-weight:600}
+.cardbody{padding:16px}
+.status{font-size:11.5px; font-weight:700; color:var(--muted); background:var(--card2); border:1px solid var(--line); border-radius:99px; padding:3px 10px; margin-left:auto}
+.status.ok{color:#0b7a5b; background:var(--green-weak); border-color:#c9ede1}
+.status.err{color:#a92a2a; background:var(--red-weak); border-color:#f7d4d4}
+.status.busy{color:var(--blue-ink); background:var(--blue-weak); border-color:#d5e2ff}
+
+/* form */
+.row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
+.grow{flex:1 1 320px; min-width:0}
+input[type=text],input[type=url],input[type=password],input[type=number],input[type=date],select,textarea{
+  width:100%; min-height:42px; padding:9px 11px; border:1px solid #dfe4ee; border-radius:10px; background:#fff; outline:none;
+  transition:border-color .15s, box-shadow .15s;
+}
+textarea{resize:vertical; line-height:1.55}
+input:focus,select:focus,textarea:focus{border-color:#9db9ff; box-shadow:0 0 0 3px rgba(47,107,255,.12)}
+.btn{display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:42px; padding:0 14px; border-radius:10px;
+  background:#fff; border:1px solid #dfe4ee; font-weight:700; font-size:13px; color:var(--ink2); white-space:nowrap}
+.btn:hover{background:#f7f9fd; border-color:#ccd5e4; color:var(--ink)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--blue); border-color:var(--blue); color:#fff}
+.btn.primary:hover{background:#1f5df0}
+.btn.ghost{background:var(--card2)}
+.btn:disabled{opacity:.5; cursor:default; transform:none}
+.btn.sm{min-height:34px; padding:0 10px; font-size:12.5px}
+
+.grid{display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:10px; margin-top:12px}
+.fld{display:flex; flex-direction:column; gap:5px; min-width:0}
+.fld > span{font-size:11.5px; font-weight:800; color:var(--muted); letter-spacing:.1px}
+.c2{grid-column:span 2} .c3{grid-column:span 3} .c4{grid-column:span 4} .c6{grid-column:span 6}
+.hintline{font-size:11.5px; color:var(--muted); margin-top:8px; line-height:1.6}
+details.paste{margin-top:10px; border:1px dashed #d9e0ee; border-radius:10px; padding:10px 12px; background:var(--card2)}
+details.paste summary{font-size:12.5px; font-weight:700; color:var(--ink2); cursor:pointer}
+details.paste textarea{margin-top:9px}
+details.paste .row{margin-top:8px}
+
+/* segmented */
+.seg{display:inline-flex; background:#eef1f7; border-radius:11px; padding:3px; gap:3px}
+.seg button{padding:8px 14px; border-radius:8px; font-weight:700; font-size:13px; color:var(--ink2); min-height:36px}
+.seg button[aria-pressed="true"]{background:#fff; color:var(--navy); box-shadow:0 1px 3px rgba(16,27,48,.16)}
+
+/* result */
+.resbar{display:flex; gap:8px; align-items:center; flex-wrap:wrap; padding:12px 16px; border-bottom:1px solid var(--line2); background:var(--card2)}
+.resbar select{width:auto; min-width:200px; flex:1 1 220px; min-height:38px}
+.sum{font-size:12px; font-weight:700; color:var(--ink2); background:#fff; border:1px solid var(--line); border-radius:99px; padding:4px 11px}
+.sum b{color:var(--navy)}
+.tablewrap{overflow-x:auto}
+table{width:100%; border-collapse:collapse; font-size:13px}
+thead th{background:#f7f9fd; color:var(--ink2); font-size:11.5px; font-weight:800; text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); white-space:nowrap; position:sticky; top:0; z-index:1}
+tbody td{padding:10px; border-bottom:1px solid var(--line2); vertical-align:top}
+tbody tr:hover{background:#fbfcff}
+td.cell{position:relative; padding-right:26px}
+td.cell .txt{white-space:pre-wrap; word-break:break-word}
+td.nocell{white-space:nowrap; width:52px}
+.mini{position:absolute; top:6px; right:6px; width:26px; height:26px; border-radius:7px; border:1px solid var(--line);
+  background:#fff; color:var(--muted); font-size:12px; line-height:1; display:inline-flex; align-items:center; justify-content:center; opacity:.55}
+.mini:hover{opacity:1; color:var(--blue-ink); border-color:#bcd0ff; background:var(--blue-weak)}
+tr:hover .mini{opacity:1}
+.no{display:inline-flex; align-items:center; justify-content:center; min-width:26px; height:24px; padding:0 6px; border-radius:7px; background:#eef1f7; color:var(--ink2); font-weight:800; font-size:12px}
+.type{display:inline-flex; align-items:center; height:24px; padding:0 9px; border-radius:99px; font-size:11.5px; font-weight:800; white-space:nowrap}
+.type.q{background:var(--blue-weak); color:var(--blue-ink)}
+.type.r{background:var(--green-weak); color:#0b7a5b}
+.dates{color:var(--muted); font-size:12px; white-space:nowrap}
+.flag{display:inline-block; margin-top:4px; font-size:10.5px; font-weight:800; color:#a26200; background:var(--amber-weak); border-radius:6px; padding:1px 6px}
+.copyall{margin-top:7px; font-size:11.5px; font-weight:800; color:var(--blue-ink); background:var(--blue-weak); border-radius:8px; padding:5px 9px; border:1px solid #d9e5ff}
+.copyall:hover{background:#e3edff}
+.empty{padding:44px 20px; text-align:center; color:var(--muted); font-size:13px; line-height:1.8}
+.empty b{color:var(--ink2)}
+
+/* progress */
+.prog{display:none; margin-top:12px}
+.prog.on{display:block}
+.bar{height:7px; border-radius:99px; background:#e9edf5; overflow:hidden}
+.bar > i{display:block; height:100%; width:0%; background:linear-gradient(90deg,#2f6bff,#5b90ff); border-radius:99px; transition:width .3s}
+.progtxt{font-size:11.5px; color:var(--muted); margin-top:6px; font-weight:600}
+
+/* modal-ish note */
+.note{display:flex; gap:8px; align-items:flex-start; background:var(--amber-weak); border:1px solid #f6e2c0; color:#6b4a00; border-radius:10px; padding:10px 12px; font-size:12.5px; line-height:1.6; margin-top:12px}
+.note.blue{background:var(--blue-weak); border-color:#d8e4ff; color:#1c3f8f}
+
+/* toast */
+#toast{position:fixed; left:50%; bottom:calc(22px + env(safe-area-inset-bottom)); transform:translateX(-50%) translateY(12px);
+  background:#0f1a30; color:#fff; font-size:12.5px; font-weight:700; padding:10px 16px; border-radius:99px; opacity:0;
+  pointer-events:none; transition:opacity .18s, transform .18s; z-index:60; box-shadow:0 8px 24px rgba(0,0,0,.25); max-width:88vw}
+#toast.on{opacity:1; transform:translateX(-50%) translateY(0)}
+
+footer{padding:22px 16px 8px; text-align:center; font-size:11.5px; color:var(--muted); line-height:1.8}
+footer a{color:var(--blue-ink); font-weight:700}
+
+@media (max-width:860px){
+  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .c3,.c4{grid-column:span 2}
+  .c2{grid-column:span 1}
+  .brand{font-size:16px}
+}
+@media (max-width:760px){
+  .cardbody{padding:14px}
+  table.res thead{display:none}
+  table.res, table.res tbody, table.res tr, table.res td{display:block; width:100%}
+  table.res tr{border:1px solid var(--line); border-radius:12px; padding:10px 12px; margin:0 0 10px; background:#fff}
+  table.res td{border:0; padding:5px 26px 5px 0; position:relative}
+  table.res td::before{content:attr(data-label); display:block; font-size:10.5px; font-weight:800; color:var(--muted); margin-bottom:2px}
+  table.res td.nocell{padding-right:0; display:flex; align-items:center; gap:7px}
+  table.res td.nocell::before{display:none}
+  table.res td.cell{padding-right:30px}
+  .tablewrap{padding:12px}
+  .mini{top:22px}
+  table.res tbody td:last-child{border-bottom:0}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap toprow">
+    <div class="brand"><span class="dot"></span>
+      <div>맘카페 원고 작성기<small>가이드 시트 → 원고 자동 작성·공유</small></div>
+    </div>
+    <div class="spacer"></div>
+    <a class="linkbtn" href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/jooyong00700-art/jy/main/index.html" target="_blank" rel="noopener">📊 통합 대시보드</a>
+    <a class="linkbtn" href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/jooyong00700-art/jy/main/sourcing.html" target="_blank" rel="noopener">📦 소싱시트</a>
+    <button class="linkbtn primary" id="btnSharedRefresh" type="button">↻ 공유 원고</button>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- 1. 가이드 -->
+  <section class="card">
+    <div class="cardhead">
+      <h2>1. 가이드 불러오기</h2>
+      <span class="sub">구글 시트 「원고작성가이드」 탭을 그대로 읽어옵니다</span>
+      <span class="status" id="guideStatus">대기</span>
+    </div>
+    <div class="cardbody">
+      <div class="row">
+        <input class="grow" id="sheetUrl" type="text" inputmode="url" placeholder="구글 스프레드시트 URL 또는 시트 ID (docs.google.com/spreadsheets/d/…)" autocomplete="off">
+        <button class="btn primary" id="btnLoadGuide" type="button">가이드 불러오기</button>
+        <button class="btn ghost" id="btnSample" type="button">샘플 URL</button>
+      </div>
+      <div class="hintline">시트가 <b>「링크가 있는 모든 사용자 · 뷰어」</b>로 공유돼 있으면 바로 읽힙니다. 비공개 시트는 아래에 CSV를 붙여넣어 주세요.</div>
+
+      <details class="paste">
+        <summary>시트가 비공개일 때 · CSV 붙여넣기</summary>
+        <textarea id="pasteCsv" rows="5" placeholder="구글 시트에서 「원고작성가이드」 탭 전체를 복사(Ctrl+C)해서 그대로 붙여넣으세요. 탭으로 구분된 텍스트도 인식합니다."></textarea>
+        <div class="row">
+          <button class="btn sm" id="btnParsePaste" type="button">붙여넣은 내용 분석</button>
+          <span class="hintline" style="margin:0">엑셀에서 복사한 값도 그대로 붙여넣으면 됩니다.</span>
+        </div>
+      </details>
+
+      <div class="grid">
+        <label class="fld c2"><span>상호명</span><input id="fBrand" type="text" placeholder="예: 비어앳홈"></label>
+        <label class="fld c2"><span>사진 첨부 여부</span>
+          <select id="fPhoto"><option>있음</option><option>없음</option></select>
+        </label>
+        <label class="fld c2"><span>업체 관련 URL</span><input id="fUrl" type="text" placeholder="https://…"></label>
+
+        <label class="fld c2"><span>총 진행 수량</span><input id="fTotal" type="text" placeholder="예: 100"></label>
+        <label class="fld c2"><span>질문형 수량</span><input id="fQ" type="text" placeholder="예: 40 / 40"></label>
+        <label class="fld c2"><span>후기형 수량</span><input id="fR" type="text" placeholder="예: 60 / 60"></label>
+
+        <label class="fld c6"><span>업체 특장점</span><textarea id="fMerits" rows="2" placeholder="예: 에어프라이어 조리, 기름 없이 바삭, 매콤해서 소스 없이 안 물림"></textarea></label>
+        <label class="fld c6"><span>특이사항</span><textarea id="fNotes" rows="2" placeholder="예: 30일 내외 발행, 링크는 댓글에 노출"></textarea></label>
+        <label class="fld c6"><span>원고 작성 가이드 (본문)</span><textarea id="fGuide" rows="7" placeholder="원고에 들어갔으면 하는 내용을 그대로 붙여넣으세요."></textarea></label>
+      </div>
+
+      <div class="hintline" id="guideSummary">가이드를 불러오면 상호명·URL·특장점·가이드 본문이 자동으로 채워집니다. 모든 칸은 직접 수정할 수 있어요.</div>
+    </div>
+  </section>
+
+  <!-- 2. 옵션 -->
+  <section class="card">
+    <div class="cardhead">
+      <h2>2. 제작 옵션</h2>
+      <span class="sub">성향 · 건수 · 생성 방식</span>
+      <span class="status" id="genStatus">준비</span>
+    </div>
+    <div class="cardbody">
+      <div class="row" style="gap:14px">
+        <div class="seg" id="segType" role="group" aria-label="원고 성향">
+          <button type="button" data-type="질의형" aria-pressed="true">질문형(질의형)</button>
+          <button type="button" data-type="후기형" aria-pressed="false">후기형</button>
+          <button type="button" data-type="혼합" aria-pressed="false">혼합</button>
+        </div>
+        <div class="fld" style="flex:0 0 120px"><span>시작 No</span><input id="fStart" type="number" min="1" step="1" value="1"></div>
+        <div class="fld" style="flex:0 0 165px"><span>작성 일자</span><input id="fDate" type="date"></div>
+      </div>
+
+      <div class="grid" id="countWrap">
+        <label class="fld c2"><span id="lbCount">제작 건수</span><input id="fCount" type="number" min="1" max="100" step="1" value="4"></label>
+        <label class="fld c2" id="wrapQ" style="display:none"><span>질문형 건수</span><input id="fCountQ" type="number" min="0" max="100" step="1" value="2"></label>
+        <label class="fld c2" id="wrapR" style="display:none"><span>후기형 건수</span><input id="fCountR" type="number" min="0" max="100" step="1" value="2"></label>
+        <label class="fld c2"><span>생성 방식</span>
+          <select id="fEngine">
+            <option value="local">초안 (오프라인 · 키 불필요)</option>
+            <option value="openai">AI · OpenAI (키 필요)</option>
+            <option value="gemini">AI · Gemini (키 필요)</option>
+          </select>
+        </label>
+        <label class="fld c2" id="wrapModel"><span>모델</span>
+          <select id="fModel"></select>
+        </label>
+      </div>
+
+      <div class="grid" id="keyWrap" style="display:none">
+        <label class="fld c6"><span>API 키 <em style="font-style:normal;color:var(--muted);font-weight:600">— 이 브라우저(localStorage)에만 저장됩니다</em></span>
+          <input id="fKey" type="password" placeholder="sk-… 또는 AIza…" autocomplete="off">
+        </label>
+      </div>
+
+      <div class="row" style="margin-top:14px">
+        <button class="btn primary" id="btnGen" type="button">✍️ 원고 생성</button>
+        <button class="btn" id="btnRequest" type="button">📋 마쭈에게 보낼 요청문 복사</button>
+        <button class="btn ghost" id="btnClear" type="button">목록 비우기</button>
+      </div>
+
+      <div class="prog" id="prog">
+        <div class="bar"><i id="barFill"></i></div>
+        <div class="progtxt" id="progTxt"></div>
+      </div>
+
+      <div class="note blue" id="engineNote">키 없이도 <b>초안</b>으로 바로 뽑을 수 있고, AI 키를 넣으면 가이드에 맞춘 원고를 <b>AI가 직접 생성</b>합니다. 생성 결과는 아래 표에서 바로 복사·다운로드할 수 있어요.</div>
+    </div>
+  </section>
+
+  <!-- 3. 결과 -->
+  <section class="card">
+    <div class="cardhead">
+      <h2>3. 원고 목록</h2>
+      <span class="sub">No · 작성 일자 · 성향 · 제목 · 내용 · 댓글1 · 작성자 대댓글</span>
+    </div>
+    <div class="resbar">
+      <select id="projSelect" aria-label="공유 원고 프로젝트"></select>
+      <span class="sum" id="sumChip">0건</span>
+      <div class="spacer"></div>
+      <button class="btn sm" id="btnTsv" type="button" title="구글 시트에 바로 붙여넣기">⊞ 시트용 복사</button>
+      <button class="btn sm" id="btnCsv" type="button">⬇ CSV</button>
+      <button class="btn sm" id="btnJsonOut" type="button">⬇ JSON</button>
+      <button class="btn sm" id="btnJsonIn" type="button">⬆ JSON 가져오기</button>
+      <input type="file" id="fileJson" accept=".json,application/json" hidden>
+    </div>
+    <div class="tablewrap">
+      <table class="res">
+        <thead>
+          <tr>
+            <th style="width:56px">No</th>
+            <th style="width:96px">작성 일자</th>
+            <th style="width:86px">성향</th>
+            <th style="width:21%">제목</th>
+            <th>내용</th>
+            <th style="width:23%">댓글1</th>
+            <th style="width:21%">작성자 대댓글</th>
+          </tr>
+        </thead>
+        <tbody id="resBody"></tbody>
+      </table>
+      <div class="empty" id="emptyBox">불러오는 중…</div>
+    </div>
+  </section>
+
+  <footer>
+    리스페토 · 맘카페 원고 작성기 · <span id="sharedMeta">공유 목록 확인 중</span><br>
+    공유 목록 파일: <a id="dataLink" href="https://raw.githubusercontent.com/jooyong00700-art/jy/main/manuscripts-data.json" target="_blank" rel="noopener">manuscripts-data.json</a>
+  </footer>
+</main>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+(function(){
+  /* ================= 공통 ================= */
+  const REPO = 'jooyong00700-art/jy';
+  const BRANCH = 'main';
+  const RAW = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH;
+  const DATA_URL = RAW + '/manuscripts-data.json';
+  const SAMPLE_SHEET = '1xTTbhVDvJTJXrrFjX3xhSrI_ZkUDzbsygLb9toqdHX4';
+  const PREVIEW = 'https://htmlpreview.github.io/?';
+  const LS = { key: 'writer.apiKey.', model:'writer.model.' };
+
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.prototype.slice.call(document.querySelectorAll(s));
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const clean = s => String(s == null ? '' : s).replace(/\r/g,'').replace(/[ \t]+$/gm,'').trim();
+
+  const state = {
+    guide: {},
+    existing: [],
+    items: [],
+    projects: [],
+    projId: null,
+    engine: 'local',
+    type: '질의형',
+    busy: false
+  };
+
+  let toastTimer = null;
+  function toast(msg){
+    const t = $('#toast');
+    t.textContent = msg;
+    t.classList.add('on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('on'), 1900);
+  }
+  async function copyText(text, label){
+    if(!text){ toast('복사할 내용이 없어요'); return; }
+    try{
+      await navigator.clipboard.writeText(text);
+    }catch(e){
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); }catch(_){}
+      ta.remove();
+    }
+    toast((label || '복사') + ' 완료');
+  }
+  function todayStr(){
+    const d = new Date();
+    const p = n => String(n).padStart(2,'0');
+    return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate());
+  }
+  function setStatus(id, text, kind){
+    const el = $(id);
+    el.textContent = text;
+    el.className = 'status' + (kind ? ' ' + kind : '');
+  }
+
+  /* ================= CSV ================= */
+  function parseCSV(text){
+    const rows = [];
+    let row = [], cell = '', q = false;
+    const s = String(text || '').replace(/\r\n/g,'\n').replace(/\r/g,'\n');
+    for(let i=0;i<s.length;i++){
+      const ch = s[i];
+      if(q){
+        if(ch === '"'){
+          if(s[i+1] === '"'){ cell += '"'; i++; }
+          else q = false;
+        } else cell += ch;
+      } else {
+        if(ch === '"') q = true;
+        else if(ch === ','){ row.push(cell); cell = ''; }
+        else if(ch === '\n'){ row.push(cell); rows.push(row); row = []; cell = ''; }
+        else cell += ch;
+      }
+    }
+    if(cell.length || row.length){ row.push(cell); rows.push(row); }
+    return rows;
+  }
+  function parseTSV(text){
+    return String(text||'').replace(/\r\n/g,'\n').split('\n').map(line => line.split('\t'));
+  }
+  function detectTable(text){
+    const firstLine = String(text||'').split('\n')[0] || '';
+    return firstLine.indexOf('\t') > -1 && firstLine.indexOf(',') < 0 ? parseTSV(text) : parseCSV(text);
+  }
+  function csvCell(v){
+    const s = String(v == null ? '' : v);
+    return /[",\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s;
+  }
+  function toCSV(rows){
+    return rows.map(r => r.map(csvCell).join(',')).join('\r\n');
+  }
+  function download(name, text, mime){
+    const blob = new Blob([text], {type: mime || 'text/plain;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 800);
+  }
+
+  /* ================= 가이드 파싱 ================= */
+  const LABELS = [
+    {key:'_region',  names:['희망 지역','희망지역'], ignore:true},
+    {key:'_cafe',    names:['전국활성화 카페','전체 카페','전국 카페'], ignore:true},
+    {key:'_publish', names:['발행 요청사항','발행요청사항'], ignore:true},
+    {key:'brand',  names:['상호명','상호']},
+    {key:'photo',  names:['사진 첨부']},
+    {key:'url',    names:['업체 관련 URL','업체 URL','업체 관련']},
+    {key:'total',  names:['총 진행 수량','총 수량']},
+    {key:'q',      names:['질문형 수량','질의형 수량']},
+    {key:'r',      names:['후기형 수량']},
+    {key:'merits', names:['업체 특장점','특장점']},
+    {key:'notes',  names:['특이사항']},
+    {key:'guide',  names:['원고 작성 가이드','원고작성가이드']}
+  ];
+
+  function firstLine(v){ return clean(v).split('\n')[0].replace(/\s+/g,'').replace(/[:：]$/,''); }
+  function stripHint(v){
+    return clean(v).split('\n').filter(l => !/^\s*※/.test(l)).join('\n').trim();
+  }
+  function matchLabel(txt){
+    const norm = firstLine(txt);
+    if(!norm || norm.length > 24) return null;
+    for(const d of LABELS){
+      for(const n of d.names){
+        const nn = n.replace(/\s+/g,'');
+        if(norm === nn || norm.indexOf(nn) === 0) return d;
+      }
+    }
+    return null;
+  }
+
+  function parseGuideTable(rows){
+    // 라벨 셀 위치를 모두 수집 (탭 제목 줄과 실제 라벨이 같은 이름일 수 있음)
+    const hits = [];
+    for(let r=0;r<rows.length;r++){
+      for(let c=0;c<(rows[r]||[]).length;c++){
+        const d = matchLabel(rows[r][c]);
+        if(!d) continue;
+        hits.push({def:d, r, c});
+        break;
+      }
+    }
+    const labelRows = new Set(hits.map(h => h.r));
+    const valueOf = h => {
+      let val = clean((rows[h.r]||[])[h.c+1]);
+      if(!val){
+        const parts = [];
+        for(let r=h.r+1; r<Math.min(rows.length, h.r+9); r++){
+          if(labelRows.has(r)) break;
+          const joined = (rows[r]||[]).map(clean).filter(Boolean).join(' ').trim();
+          if(joined) parts.push(joined);
+        }
+        val = parts.join('\n');
+      }
+      return stripHint(val);
+    };
+    const out = {};
+    hits.forEach(h => {
+      if(h.def.ignore) return;
+      const v = valueOf(h);
+      // 같은 라벨이 여러 번 나오면 값이 있는 셀을 우선 (뒤쪽 우선)
+      if(v || out[h.def.key] === undefined) out[h.def.key] = v;
+    });
+    return out;
+  }
+
+  function parseExistingTable(rows){
+    let hi = -1;
+    for(let r=0;r<rows.length;r++){
+      const cells = (rows[r]||[]).map(c => firstLine(c));
+      if(cells.indexOf('제목') > -1){ hi = r; break; }
+    }
+    if(hi < 0) return [];
+    const head = (rows[hi]||[]).map(c => firstLine(c));
+    const iNo = head.indexOf('No');
+    const iTitle = head.indexOf('제목');
+    const iBody = head.indexOf('내용');
+    const iType = Math.max(head.indexOf('원고성향'), head.indexOf('원고 성향'));
+    const out = [];
+    for(let r=hi+1;r<rows.length;r++){
+      const row = rows[r] || [];
+      const no = clean(row[iNo]);
+      const title = clean(row[iTitle]);
+      if(!/^\d+$/.test(no.replace(/\.0$/,''))) continue;
+      if(!title) continue;
+      out.push({
+        no: no.replace(/\.0$/,''),
+        title: title,
+        body: clean(row[iBody] || ''),
+        type: iType > -1 ? clean(row[iType]) : ''
+      });
+    }
+    return out;
+  }
+
+  function sheetIdFrom(v){
+    const s = String(v||'').trim();
+    let m = s.match(/\/d\/([a-zA-Z0-9_-]{20,})/);
+    if(m) return m[1];
+    m = s.match(/^([a-zA-Z0-9_-]{20,})$/);
+    return m ? m[1] : '';
+  }
+  function gvizUrl(id, sheetName){
+    return 'https://docs.google.com/spreadsheets/d/' + id + '/gviz/tq?tqx=out:csv&sheet=' + encodeURIComponent(sheetName);
+  }
+
+  async function fetchText(url, timeoutMs){
+    const builders = [
+      u => u,
+      u => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u),
+      u => 'https://corsproxy.io/?' + encodeURIComponent(u),
+      u => 'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(u)
+    ];
+    let lastErr = null;
+    for(const b of builders){
+      const ctrl = new AbortController();
+      const to = setTimeout(() => ctrl.abort(), timeoutMs || 12000);
+      try{
+        const res = await fetch(b(url), {signal: ctrl.signal, cache:'no-store'});
+        clearTimeout(to);
+        if(!res.ok) throw new Error('HTTP ' + res.status);
+        const txt = await res.text();
+        if(!txt || !txt.trim() || /^\s*</.test(txt)) throw new Error('CSV 형식이 아님');
+        return txt;
+      }catch(e){
+        clearTimeout(to);
+        lastErr = e;
+      }
+    }
+    throw lastErr || new Error('불러오기 실패');
+  }
+
+  function fillGuide(g){
+    if(g.brand !== undefined) $('#fBrand').value = g.brand || '';
+    if(g.photo) $('#fPhoto').value = /있/.test(g.photo) ? '있음' : '없음';
+    if(g.url !== undefined) $('#fUrl').value = g.url || '';
+    if(g.total !== undefined) $('#fTotal').value = g.total || '';
+    if(g.q !== undefined) $('#fQ').value = g.q || '';
+    if(g.r !== undefined) $('#fR').value = g.r || '';
+    if(g.merits !== undefined) $('#fMerits').value = g.merits || '';
+    if(g.notes !== undefined) $('#fNotes').value = g.notes || '';
+    if(g.guide !== undefined) $('#fGuide').value = g.guide || '';
+    state.guide = Object.assign({}, state.guide, g);
+    updateGuideSummary();
+  }
+
+  function splitCount(v){
+    // "40 / 40" → {done:40, total:40}
+    const m = String(v||'').match(/(\d+)\s*\/\s*(\d+)/);
+    if(m) return {done:+m[1], total:+m[2]};
+    const n = parseInt(String(v||'').replace(/[^\d]/g,''), 10);
+    return isNaN(n) ? null : {done:null, total:n};
+  }
+
+  function updateGuideSummary(){
+    const brand = $('#fBrand').value.trim();
+    const total = splitCount($('#fTotal').value);
+    const q = splitCount($('#fQ').value);
+    const r = splitCount($('#fR').value);
+    const parts = [];
+    if(brand) parts.push('상호명 <b>' + esc(brand) + '</b>');
+    if(total) parts.push('총 ' + total.total + '건');
+    if(q) parts.push('질문형 ' + (q.done != null ? q.done + '/' + q.total : q.total));
+    if(r) parts.push('후기형 ' + (r.done != null ? r.done + '/' + r.total : r.total));
+    if(state.existing.length) parts.push('기존 원고 <b>' + state.existing.length + '건</b> 학습');
+    $('#guideSummary').innerHTML = parts.length
+      ? parts.join(' · ') + ' — 생성 시 이 가이드와 기존 원고 제목을 함께 참고해 중복을 피합니다.'
+      : '가이드를 불러오면 상호명·URL·특장점·가이드 본문이 자동으로 채워집니다. 모든 칸은 직접 수정할 수 있어요.';
+  }
+
+  async function loadGuide(){
+    const id = sheetIdFrom($('#sheetUrl').value);
+    if(!id){ toast('시트 URL이나 ID를 먼저 넣어주세요'); $('#sheetUrl').focus(); return; }
+    $('#btnLoadGuide').disabled = true;
+    setStatus('#guideStatus', '불러오는 중…', 'busy');
+    try{
+      const txt = await fetchText(gvizUrl(id, '원고작성가이드'));
+      const rows = parseCSV(txt);
+      const g = parseGuideTable(rows);
+      if(!g.brand && !g.guide) throw new Error('가이드 값을 찾지 못했습니다');
+      fillGuide(g);
+      setStatus('#guideStatus', '가이드 불러옴', 'ok');
+      toast('가이드를 불러왔어요');
+
+      // 기존 원고 제목 (중복 방지) — 실패해도 무시
+      fetchText(gvizUrl(id, '원고 현황'), 12000).then(t2 => {
+        const ex = parseExistingTable(parseCSV(t2));
+        if(ex.length){ state.existing = ex; updateGuideSummary(); checkDuplicates(); }
+      }).catch(() => {});
+    }catch(e){
+      setStatus('#guideStatus', '불러오기 실패', 'err');
+      $('#guideSummary').innerHTML = '시트를 읽지 못했어요. <b>「링크가 있는 모든 사용자」</b> 공유인지 확인하거나, 위 <b>CSV 붙여넣기</b>로 넣어주세요.';
+      toast('가이드를 읽지 못했어요');
+    }finally{
+      $('#btnLoadGuide').disabled = false;
+    }
+  }
+
+  function loadPaste(){
+    const txt = $('#pasteCsv').value;
+    if(!txt.trim()){ toast('붙여넣은 내용이 없어요'); return; }
+    const rows = detectTable(txt);
+    const g = parseGuideTable(rows);
+    if(!g.brand && !g.guide){ toast('가이드 형식을 찾지 못했어요'); return; }
+    fillGuide(g);
+    setStatus('#guideStatus', '붙여넣기로 불러옴', 'ok');
+    toast('가이드를 채웠어요');
+  }
+
+  /* ================= 옵션 UI ================= */
+  const MODELS = {
+    openai: ['gpt-4o-mini','gpt-4o','gpt-4.1-mini'],
+    gemini: ['gemini-2.5-flash','gemini-2.5-pro','gemini-2.0-flash']
+  };
+  function refreshModels(){
+    const eng = $('#fEngine').value;
+    state.engine = eng;
+    const sel = $('#fModel');
+    if(eng === 'local'){
+      $('#wrapModel').style.display = 'none';
+      $('#keyWrap').style.display = 'none';
+    }else{
+      $('#wrapModel').style.display = '';
+      $('#keyWrap').style.display = '';
+      sel.innerHTML = MODELS[eng].map(m => '<option>' + m + '</option>').join('');
+      const saved = localStorage.getItem(LS.model + eng);
+      if(saved && MODELS[eng].indexOf(saved) > -1) sel.value = saved;
+      $('#fKey').value = localStorage.getItem(LS.key + eng) || '';
+    }
+    $('#engineNote').innerHTML = eng === 'local'
+      ? '키 없이도 <b>초안</b>으로 바로 뽑을 수 있어요. 초안은 상황 문장을 조합한 빠른 버전이라, 실제 발행용은 <b>AI 생성</b>이나 마쭈에게 요청을 권합니다.'
+      : '입력한 가이드와 기존 원고 말투로 <b>' + (eng === 'openai' ? 'OpenAI' : 'Gemini') + '</b>가 원고를 씁니다. 키는 이 브라우저에만 저장되고 서버로 보내지 않습니다.';
+  }
+  function setType(t){
+    state.type = t;
+    $$('#segType button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.type === t)));
+    const mixed = t === '혼합';
+    $('#lbCount').textContent = mixed ? '총 건수 (자동)' : '제작 건수';
+    $('#wrapQ').style.display = mixed ? '' : 'none';
+    $('#wrapR').style.display = mixed ? '' : 'none';
+    if(mixed){
+      const q = +$('#fCountQ').value || 0, r = +$('#fCountR').value || 0;
+      $('#fCount').value = q + r;
+    }
+  }
+  function currentCounts(){
+    if(state.type === '혼합'){
+      const q = Math.max(0, Math.min(100, parseInt($('#fCountQ').value,10) || 0));
+      const r = Math.max(0, Math.min(100, parseInt($('#fCountR').value,10) || 0));
+      return {q, r};
+    }
+    const n = Math.max(1, Math.min(100, parseInt($('#fCount').value,10) || 1));
+    return {q: state.type === '질의형' ? n : 0, r: state.type === '후기형' ? n : 0};
+  }
+
+  /* ================= 프롬프트 ================= */
+  function guideFields(){
+    return {
+      brand: $('#fBrand').value.trim(),
+      photo: $('#fPhoto').value,
+      url: $('#fUrl').value.trim(),
+      merits: $('#fMerits').value.trim(),
+      notes: $('#fNotes').value.trim(),
+      guide: $('#fGuide').value.trim()
+    };
+  }
+  function pickExamples(){
+    const q = state.existing.filter(e => e.type.indexOf('질의') > -1 && e.body.length > 60).slice(-1)[0];
+    const r = state.existing.filter(e => e.type.indexOf('후기') > -1 && e.body.length > 60).slice(-1)[0];
+    return {q, r};
+  }
+  function buildSystemPrompt(){
+    const g = guideFields();
+    const ex = pickExamples();
+    const titles = state.existing.map(e => e.title).filter(Boolean);
+    const lines = [];
+    lines.push('너는 네이버 맘카페에 글을 올리는 한국인 맘카페 회원이다. 실제 회원이 쓴 것처럼 자연스러운 구어체로 원고를 쓴다.');
+    lines.push('');
+    lines.push('[업체 정보]');
+    lines.push('- 상호명: ' + (g.brand || '(미정)'));
+    if(g.url) lines.push('- 업체 관련 URL: ' + g.url);
+    lines.push('- 사진 첨부: ' + g.photo);
+    if(g.merits) lines.push('- 업체 특장점: ' + g.merits);
+    if(g.notes) lines.push('- 특이사항: ' + g.notes);
+    if(g.guide) lines.push('- 원고 작성 가이드:\n' + g.guide);
+    lines.push('');
+    lines.push('[원고 유형 규칙]');
+    lines.push('■ 질의형(질문형)');
+    lines.push('- 제목: 궁금증이 드러나는 짧은 질문 (10~26자)');
+    lines.push('- 내용: 4~6줄. 요리·기름 정리, 소스 준비, 배달비, 육퇴 후 야식, 손님 초대 같은 일상의 불편이나 고민을 구체적으로 쓴다.');
+    lines.push('- 브랜드명은 본문에 절대 쓰지 않는다.');
+    lines.push('- 마지막 줄은 다른 회원에게 자연스럽게 묻는 질문으로 끝낸다.');
+    lines.push('- 댓글1: 다른 회원 말투로 자기 경험을 말하며 "' + (g.brand || '상호명') + '"를 자연스럽게 추천한다.');
+    lines.push('- 작성자 대댓글: 작성자가 고마워하며 반응한다.');
+    lines.push('■ 후기형');
+    lines.push('- 제목: 어떤 상황이었는지 드러나는 짧은 후기 제목');
+    lines.push('- 내용: 6~8줄. 구체적인 일상 에피소드(야근, 비 오는 날, 집들이, 캠핑, 혼술, 아이 간식, 시험 기간, 김장 등)와 제품의 장점(에어프라이어로 간편, 기름 안 씀, 매콤해서 안 물림, 바삭함)을 자연스럽게 풀어쓴다.');
+    lines.push('- 브랜드명은 본문에 쓰지 않는다.');
+    lines.push('- 댓글1: 제품이나 브랜드를 묻는 다른 회원 댓글.');
+    lines.push('- 작성자 대댓글: "' + (g.brand || '상호명') + '"를 알려준다.');
+    lines.push('');
+    lines.push('[말투]');
+    lines.push('ㅋㅋ, ㅎㅎ, ㅠㅠ, ~, ^^ 같은 표현을 자연스럽게 섞은 구어체. 맞춤법은 살짝 흐트러져도 되지만 읽기 불편할 정도로 흐트러뜨리지 않는다. 이모지는 0~1개. 광고 문구·과장·효능 표현·가격 흥정 유도는 쓰지 않는다. 줄바꿈은 \\n 으로 구분하고 각 줄은 20~45자 정도로 짧게 끊는다.');
+    if(ex.q || ex.r){
+      lines.push('');
+      lines.push('[톤 예시 — 문장 길이와 말투만 참고하고 상황은 절대 베끼지 말 것]');
+      if(ex.q) lines.push('질의형 예시 제목: ' + ex.q.title + ' / 본문: ' + ex.q.body.replace(/\n/g,' ').slice(0,220));
+      if(ex.r) lines.push('후기형 예시 제목: ' + ex.r.title + ' / 본문: ' + ex.r.body.replace(/\n/g,' ').slice(0,220));
+    }
+    if(titles.length){
+      lines.push('');
+      lines.push('[이미 쓴 원고 제목 — 같은 상황·비슷한 문장 금지]');
+      lines.push(titles.slice(-80).join(' / '));
+    }
+    lines.push('');
+    lines.push('[출력]');
+    lines.push('설명 없이 JSON만 출력한다: {"items":[{"type":"질의형","title":"...","body":"...","comment1":"...","reply":"..."}]}');
+    return lines.join('\n');
+  }
+  function buildUserPrompt(plan){
+    const q = plan.filter(t => t === '질의형').length;
+    const r = plan.filter(t => t === '후기형').length;
+    const parts = [];
+    if(q) parts.push('질의형 ' + q + '건');
+    if(r) parts.push('후기형 ' + r + '건');
+    return parts.join(', ') + '을 작성해라. 각 원고는 서로 완전히 다른 일상 상황이어야 하고, 기존 제목과 겹치면 안 된다. type 값은 정확히 "질의형" 또는 "후기형"으로 쓴다.';
+  }
+
+  function parseJsonLoose(text){
+    let s = String(text||'').trim();
+    s = s.replace(/^```(?:json)?/i,'').replace(/```$/,'').trim();
+    const a = s.indexOf('{'), b = s.lastIndexOf('}');
+    if(a > -1 && b > a) s = s.slice(a, b+1);
+    const obj = JSON.parse(s);
+    let items = obj.items || obj.manuscripts || obj.data || (Array.isArray(obj) ? obj : null);
+    if(!items) throw new Error('items 없음');
+    return items.map(normalizeItem).filter(it => it.title || it.body);
+  }
+  function normalizeItem(o){
+    const typeRaw = String(o.type || o['원고 성향'] || o.kind || '').trim();
+    const type = /후기/.test(typeRaw) ? '후기형' : '질의형';
+    return {
+      type: type,
+      title: clean(o.title || o['제목'] || ''),
+      body: clean(o.body || o.content || o['내용'] || ''),
+      comment1: clean(o.comment1 || o.comment || o['댓글1'] || ''),
+      reply: clean(o.reply || o.reauthor || o['작성자 대댓글'] || o['대댓글'] || '')
+    };
+  }
+
+  /* ================= AI 호출 ================= */
+  async function callOpenAI(key, model, system, user){
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method:'POST',
+      headers: {'Content-Type':'application/json', 'Authorization':'Bearer ' + key},
+      body: JSON.stringify({
+        model: model,
+        temperature: 0.95,
+        response_format: {type:'json_object'},
+        messages: [{role:'system', content:system}, {role:'user', content:user}]
+      })
+    });
+    if(!res.ok){
+      const t = await res.text();
+      throw new Error('OpenAI ' + res.status + ' · ' + t.slice(0,260));
+    }
+    const j = await res.json();
+    return (j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content) || '';
+  }
+  async function callGemini(key, model, system, user){
+    const url = 'https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(model) + ':generateContent?key=' + encodeURIComponent(key);
+    const res = await fetch(url, {
+      method:'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        systemInstruction: {parts:[{text:system}]},
+        contents: [{role:'user', parts:[{text:user}]}],
+        generationConfig: {temperature:0.95, responseMimeType:'application/json', maxOutputTokens: 4096},
+        safetySettings: []
+      })
+    });
+    if(!res.ok){
+      const t = await res.text();
+      throw new Error('Gemini ' + res.status + ' · ' + t.slice(0,260));
+    }
+    const j = await res.json();
+    const cand = (j.candidates && j.candidates[0]) || null;
+    const parts = cand && cand.content && cand.content.parts ? cand.content.parts : [];
+    return parts.map(p => p.text || '').join('');
+  }
+
+  function chunkPlan(plan, size){
+    const out = [];
+    for(let i=0;i<plan.length;i+=size) out.push(plan.slice(i, i+size));
+    return out;
+  }
+  function interleave(q, r){
+    const plan = [];
+    let qi = 0, ri = 0;
+    while(qi < q || ri < r){
+      if(qi < q){ plan.push('질의형'); qi++; }
+      if(ri < r){ plan.push('후기형'); ri++; }
+    }
+    return plan;
+  }
+
+  function setProgress(pct, text){
+    $('#prog').classList.add('on');
+    $('#barFill').style.width = Math.max(0, Math.min(100, pct)) + '%';
+    $('#progTxt').textContent = text || '';
+  }
+
+  /* ================= 초안(로컬) 생성 ================= */
+  const QT = [
+    {t:'남편 퇴근 전에 간단히 내놓을 안주 뭐가 좋을까요?',
+     l:['남편이 오늘 조금 늦게 들어온다고 해서요','저녁은 회사에서 먹고 온다는데 맥주는 마시고 싶대요ㅋㅋ','그때마다 뭐 접시 하나 내놔야 하나 고민이에요','과자는 이제 뻔하고 만들어 놓기도 애매하고요','10분 안에 내놓을 만한 안주 있을까요?'],
+     c:'저는 {brand} 새우튀김 에프에 돌려서 내놔요ㅎㅎ 기름 안 써서 뒷정리도 없고 남편도 매콤한 걸 좋아하더라고요',
+     r:'오 그거면 되겠네요ㅋㅋ 저는 매번 과자로 때웠는데 다음엔 그렇게 해봐야겠어요'},
+    {t:'아이 학원 끝나고 저녁 전에 뭐 먹이세요?',
+     l:['초등 딸이 학원 끝나고 오면 저녁 먹기 전에 꼭 출출하다고 해요','그렇다고 빵이나 과자를 계속 주기도 그렇고','저녁을 잘 먹어야 하는데 입맛이 떨어질까 봐 신경 쓰이네요','가볍게 먹이면서 속도 편한 간식 뭐가 있을까요?'],
+     c:'저는 {brand} 새우튀김 조금씩 돌려서 주는데 애가 좋아해요~ 에프라서 제가 손 댈 것도 없고요',
+     r:'아이들이 그런 걸 좋아하죠ㅋㅋ 저도 하나 사다 놔야겠어요'},
+    {t:'시험 기간에 애 야식 뭐 챙겨주세요ㅠ',
+     l:['중학생 아이가 다음 주부터 시험이라 늦게까지 앉아 있어요','옆에서 뭐라도 챙겨줘야 할 것 같아 자꾸 부엌에 가게 되네요','밤 10시 넘어 밥을 차리기도 그렇고','과자만 주자니 애가 물린다고 하고요','속은 든든하고 손은 안 가는 야식 뭐가 좋을까요?'],
+     c:'저희도 시험 기간엔 {brand} 새우튀김 에프에 돌려줘요ㅎㅎ 애가 과자보다 잘 먹더라고요',
+     r:'그런 게 있었네요ㅠ 저는 늘 김밥만 생각했어요ㅋㅋ 한번 챙겨줘야겠어요'},
+    {t:'마트 냉동코너 가면 늘 같은 것만 사요ㅠㅠ',
+     l:['장 보러 가면 냉동코너도 꼭 들르는데','손에 잡히는 건 만두랑 감자튀김이랑 아이스크림뿐이에요ㅋㅋ','새로 사볼까 해도 이름만 보고는 잘 모르겠고','실패하면 냉동실 한쪽에 그대로 쌓여 있더라고요','남편이랑 저녁에 가볍게 먹을 만한 걸로 다들 뭐 사세요?'],
+     c:'저는 {brand} 새우튀김 쟁여놔요ㅎㅎ 에프에 돌리기만 하면 돼서 남편 맥주 안주로도 좋아요',
+     r:'아 그런 게 있었네요~ 다음 장 볼 때 찾아봐야겠어요ㅋㅋ'},
+    {t:'시댁 다녀온 날 저녁은 뭐 해드세요?',
+     l:['주말에 시댁 다녀오면 집에 오자마자 아무것도 하기 싫어요','이동만 해도 진이 빠지는데 저녁까지 차리려니 막막하네요','그렇다고 배달을 시키자니 왠지 아깝고요ㅋㅋ','이런 날 간단히 먹을 만한 거 뭐가 좋을까요?'],
+     c:'저는 그런 날 {brand} 새우튀김 에프에 돌려서 남편이랑 나눠 먹어요ㅎㅎ 10분이면 끝나서 편해요',
+     r:'이동한 날은 진짜 아무것도 못 하죠ㅠㅠ 저도 그렇게 해봐야겠네요'},
+    {t:'애들 다 자고 나면 저만 출출한데 어떻게 하세요?',
+     l:['애들 재우고 나면 저만 배가 고프더라고요','그때 밥을 먹자니 부담되고 그냥 자자니 아쉽고요ㅋㅋ','요즘은 남편이랑 조금씩 나눠 먹을 걸 찾고 있어요','늦은 밤에 부담 없이 먹을 안주 있을까요?'],
+     c:'저희는 {brand} 새우튀김 조금씩 돌려 먹어요~ 기름 안 써서 늦은 밤에도 부담 없더라고요',
+     r:'그거 좋네요ㅋㅋ 밤에 기름 냄비 꺼내는 건 진짜 싫잖아요'},
+    {t:'장마철에 집에서 애들이랑 뭐 해먹으세요?',
+     l:['비가 계속 오니까 주말에 나가질 못하네요','애들은 집에서 심심하다고 난리고요ㅋㅋ','간식거리 만들어주자니 밀가루 반죽은 엄두가 안 나요','집에 있는 걸로 간단히 해줄 만한 간식 뭐가 있을까요?'],
+     c:'비 오는 날엔 {brand} 새우튀김 돌려서 애들이랑 먹어요ㅎㅎ 접시에 담아주면 간식 같아서 좋아하더라고요',
+     r:'비 오는 날엔 그게 최고죠ㅋㅋ 저도 다음에 그렇게 해줘야겠어요'},
+    {t:'남편 휴무일 점심엔 뭐 드세요?',
+     l:['남편이 쉬는 날이면 점심을 집에서 먹게 되는데요','평일엔 대충 먹다가 같이 먹으려니 메뉴가 고민이에요','배달은 자주 시키기 그렇고 간단히 차려주고 싶고요','집에 있는 걸로 뚝딱 해먹을 만한 거 있을까요?'],
+     c:'저는 {brand} 새우튀김 돌려서 밥이랑 같이 내놔요ㅎㅎ 남편이 안주처럼 먹어서 좋아해요',
+     r:'오 그거 괜찮네요ㅋㅋ 저희 남편도 그런 걸 좋아해서요'},
+    {t:'김장 준비하는 주말에 간단히 먹을 거 추천해주세요',
+     l:['이번 주말에 김장 준비 때문에 하루 종일 부엌에 있어요','점심 챙겨 먹을 시간도 없이 바쁘고요ㅠ','그래도 남편이랑 저녁엔 뭐라도 먹어야 하는데','이런 날 손 안 가는 메뉴 뭐가 좋을까요?'],
+     c:'김장날은 {brand} 새우튀김 에프에 돌려서 먹어요ㅋㅋ 다른 요리할 힘도 없는데 이건 금방이라 좋아요',
+     r:'김장날엔 진짜 그게 최고예요ㅋㅋ 저도 이번에 그렇게 해볼게요'},
+    {t:'친구가 집에 놀러 오면 간식 뭐 내놓으세요?',
+     l:['오랜만에 친구가 집에 놀러 오기로 했어요','커피만 내놓기엔 뭔가 아쉽고 케이크를 사자니 부담이고요','집에 있는 걸로 그럴듯하게 내놓을 게 없을까 찾는 중이에요','다들 친구 올 때 뭐 준비하세요?'],
+     c:'저는 {brand} 새우튀김 돌려서 작은 접시에 담아 내놔요ㅎㅎ 커피보다는 맥주가 더 잘 어울리더라고요',
+     r:'그거 좋네요ㅋㅋ 접시에 담으면 진짜 그럴듯해 보여요'},
+    {t:'요즘 남편이랑 집에서 한잔하는 날이 늘었는데 안주 고민이에요',
+     l:['남편이 술을 자주는 아니고 주말에 한두 잔 하는 편이에요','그때마다 안주를 뭘 준비해야 할지 모르겠어요','과자나 마른안주만 계속 먹으니 저도 질리고요','집에서 간단히 만들 수 있는 안주 뭐가 있을까요?'],
+     c:'저희는 {brand} 새우튀김 에프에 돌려서 먹어요~ 기름 안 써서 준비도 금방이고 매콤해서 안 질려요',
+     r:'그런 게 있으면 홈술이 훨씬 편하겠네요ㅋㅋ 저도 찾아봐야겠어요'},
+    {t:'아이 친구들 놀러 오는 날 간식 어떻게 준비하세요?',
+     l:['아이 친구 두 명이 집에 놀러 온다고 해서요','애들 간식 챙기면서 어른 입에도 맞을 걸 준비하고 싶은데','과자랑 음료만 내놓기엔 좀 아쉬워서요ㅋㅋ','아이들도 어른도 먹을 만한 간식 뭐가 좋을까요?'],
+     c:'저는 {brand} 새우튀김 돌려서 내놔요ㅎㅎ 아이들은 간식으로, 남편은 안주로 먹어서 좋더라고요',
+     r:'일석이조네요ㅋㅋ 저도 다음에 그렇게 준비해봐야겠어요'}
+  ];
+
+  const RT = [
+    {t:'김장 끝났으니 이제 좀 살 것 같네요ㅋㅋ',
+     l:['어제 친정엄마랑 김장하고 왔는데 허리가 다 아프네요ㅠ','배추 절이고 양념 버무리고 나니 하루가 다 갔어요','씻고 앉으니까 남편이 맥주 한잔 하자고 하더라고요','저는 김치통만 정리하고 싶었는데ㅋㅋ','뭘 또 만들기는 싫어서 냉동실에 있던 새우튀김을 에프에 돌렸어요','기름 냄비 꺼낼 힘도 없었는데 에프라서 다행이었네요','매콤해서 소스도 안 만들어도 됐고요','김장날은 역시 이렇게 간단한 게 최고예요'],
+     c:'김장하고 나면 진짜 아무것도 못 하죠ㅠㅠ 그 새우튀김은 어디 제품이에요? 저도 김장날 대비해두게요!',
+     r:'{brand} 새우튀김이에요ㅋㅋ 김장 끝나고 이게 제일 반가웠네요'},
+    {t:'남편 생일인데 케이크 대신 안주 챙겼어요ㅎㅎ',
+     l:['남편 생일이 평일이라 외식은 못 하고','애들 재우고 집에서 조촐하게 맥주 한잔 하기로 했어요','케이크를 사자니 다들 한 조각씩 먹고 남을 것 같고','그냥 안주를 괜찮게 차려주자 싶었거든요','새우튀김을 에프에 돌려 예쁜 접시에 담고','집에 있던 하이볼이랑 같이 내놨는데','남편이 오마카세에서 먹던 안주 같다고 좋아하더라고요ㅋㅋ','별거 아닌데도 분위기 있어 보여서 저도 뿌듯했네요'],
+     c:'생일상에 이런 안주 좋네요~ 혹시 어떤 제품인지 알려주실 수 있나요?',
+     r:'{brand} 새우튀김이에요ㅎㅎ 에프만 돌렸는데 남편이 좋아해서 저도 놀랐어요'},
+    {t:'아이 기말고사 끝난 날 저녁은 이렇게 했어요',
+     l:['아이가 기말고사 끝나고 오자마자 누워버렸어요','며칠 긴장했는지 얼굴이 다 상해서 왔더라고요','저녁은 아이가 좋아하는 걸로 해주고 싶었는데','본인은 아무것도 안 먹고 자겠다고 해서ㅋㅋ','그래도 간단히 먹고 자라고 새우튀김을 돌렸어요','에프에 넣고 기다리기만 하면 되니까 편했고','매콤한 맛이라 소스 없이도 잘 먹더라고요','시험 끝난 애한테는 이런 게 제일 좋은 것 같아요'],
+     c:'시험 끝나면 애들 진이 다 빠지죠ㅠ 이건 어디 제품이에요? 저도 시험 끝나는 날 챙겨주려고요',
+     r:'{brand} 새우튀김이에요ㅎㅎ 소스 없이도 잘 먹어서 저는 애 먹이기 편했어요'},
+    {t:'시댁에서 돌아온 날은 간단하게 먹게 되네요',
+     l:['주말에 시댁 다녀왔는데 차에서만 네 시간이었어요','집에 오자마자 애들부터 씻기고 눕히고 나니','저도 남편도 말할 힘만 남은 상태였어요ㅋㅋ','저녁을 또 차리기는 정말 싫어서','냉동실에 있던 새우튀김을 에프에 돌렸거든요','접시에 담아 맥주 한잔 곁들이니까','이동한 피로가 좀 풀리는 느낌이었어요','이런 날은 진짜 간단한 게 최고예요'],
+     c:'시댁 다녀온 날은 아무것도 못 하죠ㅠ 그 새우튀김 어디서 사셨어요? 저도 쟁여두려고요',
+     r:'{brand} 거예요ㅎㅎ 이동하는 날은 이게 제일 편하더라고요'},
+    {t:'주말 대청소 끝나고 남편이랑 한잔했어요',
+     l:['주말에 남편이랑 대청소를 작정하고 했어요','이불 빨고 창틀 닦고 옷장 정리까지 하니까','허리는 아픈데 집은 깨끗해서 기분은 좋더라고요ㅋㅋ','저녁에 뭐 해먹을 힘은 없어서','새우튀김을 에프에 돌려서 맥주랑 먹었어요','기름 안 쓰니까 정리한 부엌이 그대로 유지돼서 좋았고요','바삭하고 매콤해서 손이 계속 갔네요','청소한 보람은 이런 데서 느끼는 것 같아요'],
+     c:'대청소하고 나면 부엌까지 정리하기 싫죠ㅋㅋ 이건 어느 제품이에요?',
+     r:'{brand} 새우튀김이에요ㅋㅋ 기름 안 써서 부엌 그대로인 게 제일 좋았어요'},
+    {t:'애들 학원 보내고 남은 둘이 먹은 저녁',
+     l:['애들 학원 시간이 겹치는 날이라 집에 남편이랑 저만 있었어요','둘이 먹자니 차리기도 애매하고 해서','냉동실에 있던 새우튀김을 꺼냈어요','에프에 돌리는 동안 남편이 하이볼을 만들어줬고','접시에 담아 마주 앉으니 괜히 분위기가 나더라고요ㅋㅋ','평소엔 애들 챙기느라 정신없는데','이런 날도 있어야겠다는 생각이 들었어요','다음에도 이렇게 해먹으려고요'],
+     c:'둘만 있는 날 이런 저녁 좋네요~ 혹시 어떤 제품인지 알려주세요!',
+     r:'{brand} 새우튀김이에요ㅎㅎ 하이볼이랑 잘 어울려서 남편도 좋아했어요'},
+    {t:'남편 당직 끝나고 온 날 야식 챙겼어요',
+     l:['남편이 당직 끝나고 밤 11시가 넘어서 들어왔어요','저녁을 못 먹었다고 해서 뭐라도 챙겨주려고 했는데','밥을 차리기엔 너무 늦은 시간이라','새우튀김을 에프에 돌려서 내놨어요','기름에 튀기는 게 아니라서 밤에도 냄새가 안 났고요','매콤해서 맥주 한잔이랑 잘 맞더라고요','남편이 이게 뭐냐고 물어보길래 알려줬어요','늦은 시간에 이만한 게 없네요'],
+     c:'당직 끝나고 온 날엔 야식이 필요하죠ㅠ 그거 어디 제품이에요?',
+     r:'{brand} 새우튀김이에요ㅋㅋ 밤에 기름 안 써서 좋았어요'},
+    {t:'장 보고 온 날 바로 돌려 먹어봤어요',
+     l:['장 보러 갔다가 냉동코너에서 새우튀김을 처음 사봤어요','집에 오자마자 궁금해서 한 봉지 돌려봤는데','에프에 넣고 시간만 기다리면 되니까 간편하더라고요','튀김옷이 얇아서 바삭하고','매콤한 맛이라 소스를 따로 안 만들어도 됐어요','남편이 안주로 먹겠다고 해서 결국 다 먹었네요ㅋㅋ','다음에 장 볼 때 더 사와야겠어요'],
+     c:'장 보고 바로 해먹는 거 저도 하는데ㅋㅋ 이건 어느 제품이에요?',
+     r:'{brand} 새우튀김이에요~ 저도 이번에 처음 사봤는데 만족했어요'},
+    {t:'아이 하원 늦어서 저녁이 밀린 날',
+     l:['아이 학원이 늦게 끝나는 날이라 저녁이 계속 밀렸어요','집에 오니까 8시가 넘었고 애는 배고프다고 난리고요ㅋㅋ','밥을 새로 하기엔 시간이 애매해서','새우튀김을 먼저 돌려서 애 입부터 달랬어요','에프라서 금방 나오니까 애 기다리는 시간도 짧았고','저는 그사이 밥을 데워서 같이 먹었네요','이런 날 간단한 게 있으면 정말 든든해요'],
+     c:'저희도 학원 늦는 날엔 순서가 꼬여요ㅠ 이건 어디 제품이에요?',
+     r:'{brand} 새우튀김이에요ㅎㅎ 애 입부터 달래기 딱 좋았어요'},
+    {t:'영화 보면서 간단히 먹으려고 준비했어요',
+     l:['주말에 남편이랑 집에서 영화 보기로 했어요','팝콘만 먹자니 입이 심심할 것 같아서','냉동실에 있던 새우튀김을 돌렸거든요','기름 안 쓰니까 거실에서 먹어도 부담이 없고','매콤해서 소스 없이 집어먹기 좋더라고요','영화 시작 전에 준비 끝나서 편했어요','남편은 영화보다 안주에 더 집중했지만요ㅋㅋ','다음 영화 볼 때도 이렇게 해야겠어요'],
+     c:'영화 볼 때 이런 안주 있으면 좋죠~ 어느 제품인지 궁금해요!',
+     r:'{brand} 새우튀김이에요ㅋㅋ 거실에서 먹기 편해서 좋았어요'},
+    {t:'갑자기 추워져서 집에서만 있었어요',
+     l:['어제부터 갑자기 추워져서 나가기 싫더라고요','애들도 집에만 있겠다고 해서 하루 종일 집콕했어요','저녁에 뭐 해먹을까 고민하다가','냉동실에 있던 새우튀김을 에프에 돌렸어요','따뜻한 방에서 바삭한 거 먹으니 왜 이렇게 맛있는지ㅋㅋ','남편도 맥주 한잔 하겠다고 해서 같이 먹었고요','추운 날 집에서 먹는 게 제일인 것 같아요'],
+     c:'추워지니까 집콕이 최고죠ㅎㅎ 이건 어떤 제품이에요?',
+     r:'{brand} 새우튀김이에요~ 추운 날 방에서 먹으니 더 맛있더라고요'},
+    {t:'아이 생일파티 끝나고 남은 음식 대신 먹었어요',
+     l:['주말에 아이 생일파티를 집에서 했어요','애들 친구들 오니까 정신이 하나도 없더라고요','파티 끝나고 나니 저녁에 뭘 먹을 힘이 없었고','남은 음식은 애들이 다 먹어서 없었어요ㅋㅋ','그래서 새우튀김을 에프에 돌려서 남편이랑 먹었네요','기름 안 써서 파티 끝난 부엌이 그대로여서 다행이었고요','매콤해서 맥주가 술술 넘어갔어요'],
+     c:'파티 끝나면 진이 빠지죠ㅠ 이건 어디 제품이에요? 저도 다음 파티 때 준비하려고요',
+     r:'{brand} 새우튀김이에요ㅋㅋ 파티 끝나고 이게 제일 편했어요'}
+  ];
+
+  function localGenerate(q, r){
+    const g = guideFields();
+    const brand = g.brand || '해당 제품';
+    const out = [];
+    for(let i=0;i<q;i++){
+      const t = QT[i % QT.length];
+      out.push({
+        type:'질의형',
+        title: t.t,
+        body: t.l.join('\n'),
+        comment1: t.c.replace(/\{brand\}/g, brand),
+        reply: t.r
+      });
+    }
+    for(let i=0;i<r;i++){
+      const t = RT[i % RT.length];
+      out.push({
+        type:'후기형',
+        title: t.t,
+        body: t.l.join('\n'),
+        comment1: t.c.replace(/\{brand\}/g, brand),
+        reply: t.r.replace(/\{brand\}/g, brand)
+      });
+    }
+    return out;
+  }
+
+  /* ================= 생성 실행 ================= */
+  async function generate(){
+    if(state.busy) return;
+    const g = guideFields();
+    if(!g.brand){ toast('상호명을 먼저 입력해 주세요'); $('#fBrand').focus(); return; }
+    if(!g.guide){ toast('원고 작성 가이드(본문)를 먼저 채워주세요'); $('#fGuide').focus(); return; }
+    const {q, r} = currentCounts();
+    const total = q + r;
+    if(!total){ toast('건수를 1건 이상으로 입력해 주세요'); return; }
+
+    state.busy = true;
+    $('#btnGen').disabled = true;
+    setStatus('#genStatus', '생성 중…', 'busy');
+    setProgress(3, '준비 중…');
+
+    try{
+      let items = [];
+      if(state.engine === 'local'){
+        setProgress(45, '초안 작성 중…');
+        items = localGenerate(q, r);
+        setProgress(100, '완료');
+      }else{
+        const key = ($('#fKey').value || '').trim();
+        if(!key){ throw new Error('API 키를 입력해 주세요 (이 브라우저에만 저장됩니다)'); }
+        localStorage.setItem(LS.key + state.engine, key);
+        localStorage.setItem(LS.model + state.engine, $('#fModel').value);
+        const model = $('#fModel').value;
+        const system = buildSystemPrompt();
+        const plan = interleave(q, r);
+        const batches = chunkPlan(plan, 4);
+        let done = 0;
+        for(let bi=0;bi<batches.length;bi++){
+          const batchPlan = batches[bi];
+          setProgress(Math.round((bi / batches.length) * 90) + 5,
+            (bi+1) + '/' + batches.length + ' 배치 생성 중 · ' + done + '/' + total + '건 완료');
+          const user = buildUserPrompt(batchPlan);
+          let raw = '';
+          let lastErr = null;
+          for(let attempt=0; attempt<2; attempt++){
+            try{
+              raw = state.engine === 'openai'
+                ? await callOpenAI(key, model, system, user)
+                : await callGemini(key, model, system, user);
+              lastErr = null;
+              break;
+            }catch(e){
+              lastErr = e;
+              if(attempt === 0) await new Promise(res => setTimeout(res, 1600));
+            }
+          }
+          if(lastErr) throw lastErr;
+          const got = parseJsonLoose(raw);
+          items = items.concat(got);
+          done += got.length;
+          setProgress(Math.round(((bi+1) / batches.length) * 90) + 5, (bi+1) + '/' + batches.length + ' 배치 완료 · ' + items.length + '건');
+        }
+        // 요청한 유형 수에 맞게 정리
+        items = fitTypes(items, q, r);
+      }
+
+      if(!items.length) throw new Error('원고를 만들지 못했어요. 다시 시도해 주세요.');
+
+      const start = Math.max(1, parseInt($('#fStart').value,10) || 1);
+      const date = $('#fDate').value || todayStr();
+      state.items = items.map((it, i) => Object.assign({}, it, {no: start + i, date: date}));
+      checkDuplicates();
+      renderItems();
+      setStatus('#genStatus', state.items.length + '건 생성됨', 'ok');
+      setProgress(100, state.items.length + '건 생성 완료');
+      toast(state.items.length + '건 생성 완료');
+
+      if(state.engine === 'local'){
+        $('#engineNote').innerHTML = '초안 ' + state.items.length + '건을 만들었어요. 문장이 비슷한 틀이 보이면 <b>AI 생성</b>이나 <b>마쭈에게 요청</b>으로 다듬는 걸 권합니다.';
+      }
+    }catch(e){
+      setStatus('#genStatus', '실패', 'err');
+      $('#engineNote').innerHTML = '<b>생성 실패:</b> ' + esc(String(e.message || e)).slice(0,300);
+      setProgress(0, '');
+      toast('생성에 실패했어요');
+    }finally{
+      state.busy = false;
+      $('#btnGen').disabled = false;
+    }
+  }
+
+  function fitTypes(items, q, r){
+    const qs = items.filter(i => i.type === '질의형');
+    const rs = items.filter(i => i.type === '후기형');
+    const out = [];
+    for(let i=0;i<q;i++) if(qs[i]) out.push(qs[i]);
+    for(let i=0;i<r;i++) if(rs[i]) out.push(rs[i]);
+    // 부족분은 남은 것으로 채움
+    if(out.length < q + r){
+      const used = new Set(out.map(o => o.title + '|' + o.body));
+      items.forEach(it => { if(out.length < q + r && !used.has(it.title + '|' + it.body)) out.push(it); });
+    }
+    return out;
+  }
+
+  /* ================= 렌더 ================= */
+  function checkDuplicates(){
+    const seen = new Map();
+    state.existing.forEach(e => {
+      const k = normTitle(e.title);
+      if(k) seen.set(k, (seen.get(k) || 0) + 1);
+    });
+    state.items.forEach(it => {
+      const k = normTitle(it.title);
+      it.dup = !!(k && seen.has(k));
+      if(k) seen.set(k, (seen.get(k) || 0) + 1);
+    });
+  }
+  function normTitle(s){
+    return String(s||'').replace(/[\s~!?.,ㅋㅎㅠ^…·:'"()\[\]]/g,'').toLowerCase();
+  }
+
+  function setTextFor(it, field){
+    if(field === 'all'){
+      return '[' + it.type + '] ' + it.title + '\n\n' + it.body + '\n\n· 댓글1\n' + it.comment1 + '\n\n· 작성자 대댓글\n' + it.reply;
+    }
+    return it[field] || '';
+  }
+  function fieldLabel(f){
+    return {title:'제목', body:'내용', comment1:'댓글1', reply:'대댓글', all:'전체 세트'}[f] || f;
+  }
+
+  function renderItems(){
+    const body = $('#resBody');
+    const empty = $('#emptyBox');
+    if(!state.items.length){
+      body.innerHTML = '';
+      empty.style.display = '';
+      empty.innerHTML = '아직 원고가 없어요.<br><b>가이드를 불러오고 [원고 생성]</b>을 누르거나, 위에서 공유 원고를 선택해 주세요.';
+      updateSum();
+      return;
+    }
+    empty.style.display = 'none';
+    body.innerHTML = state.items.map((it, idx) => {
+      const t = it.type === '후기형' ? 'r' : 'q';
+      return '<tr>' +
+        '<td class="nocell" data-label="No"><span class="no">' + esc(it.no) + '</span>' +
+          (it.dup ? '<span class="flag">중복?</span>' : '') + '</td>' +
+        '<td class="dates" data-label="작성 일자">' + esc(it.date || '') + '</td>' +
+        '<td data-label="성향"><span class="type ' + t + '">' + esc(it.type) + '</span></td>' +
+        '<td class="cell" data-label="제목"><div class="txt" style="font-weight:700">' + esc(it.title) + '</div>' +
+          '<button class="mini" type="button" data-copy-field="title" data-idx="' + idx + '" title="제목 복사">⧉</button></td>' +
+        '<td class="cell" data-label="내용"><div class="txt">' + esc(it.body) + '</div>' +
+          '<button class="mini" type="button" data-copy-field="body" data-idx="' + idx + '" title="내용 복사">⧉</button></td>' +
+        '<td class="cell" data-label="댓글1"><div class="txt">' + esc(it.comment1) + '</div>' +
+          '<button class="mini" type="button" data-copy-field="comment1" data-idx="' + idx + '" title="댓글1 복사">⧉</button></td>' +
+        '<td class="cell" data-label="작성자 대댓글"><div class="txt">' + esc(it.reply) + '</div>' +
+          '<button class="mini" type="button" data-copy-field="reply" data-idx="' + idx + '" title="대댓글 복사">⧉</button>' +
+          '<button class="copyall" type="button" data-copy-field="all" data-idx="' + idx + '">전체 세트 복사</button></td>' +
+      '</tr>';
+    }).join('');
+    updateSum();
+  }
+
+  function updateSum(){
+    const q = state.items.filter(i => i.type === '질의형').length;
+    const r = state.items.filter(i => i.type === '후기형').length;
+    const dup = state.items.filter(i => i.dup).length;
+    $('#sumChip').innerHTML = '<b>' + state.items.length + '건</b> · 질의 ' + q + ' · 후기 ' + r + (dup ? ' · 중복 의심 ' + dup : '');
+  }
+
+  $('#resBody').addEventListener('click', e => {
+    const btn = e.target.closest('[data-copy-field]');
+    if(!btn) return;
+    const idx = +btn.dataset.idx;
+    const it = state.items[idx];
+    if(!it) return;
+    copyText(setTextFor(it, btn.dataset.copyField), fieldLabel(btn.dataset.copyField));
+  });
+
+  /* ================= 내보내기 ================= */
+  function currentBrand(){
+    return $('#fBrand').value.trim() || (state.projects.find(p => p.id === state.projId) || {}).brand || '원고';
+  }
+  function exportRows(){
+    const useBigo = $('#chkBigo') ? $('#chkBigo').checked : true;
+    const head = ['No','작성 일자'];
+    if(useBigo) head.push('비고');
+    head.push('원고 성향','제목','내용','댓글1','작성자 대댓글');
+    const rows = [head];
+    state.items.forEach(it => {
+      const r = [String(it.no), it.date || ''];
+      if(useBigo) r.push('사용');
+      r.push(it.type, it.title, it.body, it.comment1, it.reply);
+      rows.push(r);
+    });
+    return rows;
+  }
+  function exportCSV(){
+    if(!state.items.length){ toast('내보낼 원고가 없어요'); return; }
+    const csv = '\ufeff' + toCSV(exportRows());
+    download('원고_' + currentBrand() + '_' + todayStr() + '.csv', csv, 'text/csv;charset=utf-8');
+    toast('CSV 다운로드');
+  }
+  function copyTSV(){
+    if(!state.items.length){ toast('복사할 원고가 없어요'); return; }
+    const tsv = exportRows().map(r => r.map(c => String(c).replace(/\t/g,' ')).join('\t')).join('\n');
+    copyText(tsv, '시트용 데이터');
+  }
+  function exportJSON(){
+    if(!state.items.length){ toast('내보낼 원고가 없어요'); return; }
+    const proj = {
+      id: 'local-' + Date.now(),
+      name: currentBrand() + ' · ' + state.items.length + '건 (' + todayStr() + ')',
+      brand: currentBrand(),
+      productUrl: $('#fUrl').value.trim(),
+      photo: $('#fPhoto').value,
+      createdAt: todayStr(),
+      items: state.items.map(it => ({no: it.no, date: it.date, type: it.type, title: it.title, body: it.body, comment1: it.comment1, reply: it.reply}))
+    };
+    download('manuscripts_' + currentBrand() + '_' + todayStr() + '.json',
+      JSON.stringify({version:1, projects:[proj]}, null, 2), 'application/json');
+    toast('JSON 다운로드');
+  }
+  function importJSON(file){
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const data = JSON.parse(String(reader.result));
+        let projs = data.projects || (data.items ? [{name:'가져온 원고', brand:data.brand||'', items:data.items}] : null);
+        if(!projs || !projs.length) throw new Error('projects/items 없음');
+        projs.forEach(p => state.projects.push(normalizeProject(p)));
+        buildProjectSelect();
+        selectProject(state.projects[state.projects.length-1].id);
+        toast('JSON을 가져왔어요');
+      }catch(e){
+        toast('JSON을 읽지 못했어요');
+      }
+    };
+    reader.readAsText(file, 'utf-8');
+  }
+
+  /* ================= 공유 목록 ================= */
+  function normalizeProject(p){
+    const items = (p.items || p.manuscripts || []).map((it, i) => {
+      const n = normalizeItem(it);
+      return {no: it.no != null ? it.no : i+1, date: it.date || '', type: n.type, title: n.title, body: n.body, comment1: n.comment1, reply: n.reply};
+    });
+    return {
+      id: p.id || ('p-' + Math.random().toString(36).slice(2,8)),
+      name: p.name || p.title || '원고 프로젝트',
+      brand: p.brand || '',
+      productUrl: p.productUrl || '',
+      updatedAt: p.updatedAt || p.createdAt || '',
+      note: p.note || p.guideSummary || '',
+      items: items
+    };
+  }
+  function buildProjectSelect(){
+    const sel = $('#projSelect');
+    if(!state.projects.length){
+      sel.innerHTML = '<option value="">공유 원고 없음</option>';
+      return;
+    }
+    sel.innerHTML = state.projects.map(p =>
+      '<option value="' + esc(p.id) + '">' + esc(p.name) + ' · ' + p.items.length + '건</option>'
+    ).join('');
+    if(state.projId) sel.value = state.projId;
+  }
+  function selectProject(id){
+    const p = state.projects.find(x => x.id === id);
+    if(!p) return;
+    state.projId = id;
+    state.items = p.items.map(it => Object.assign({}, it, {dup:false}));
+    checkDuplicates();
+    renderItems();
+    if(p.brand && !$('#fBrand').value.trim()) $('#fBrand').value = p.brand;
+    if(p.productUrl && !$('#fUrl').value.trim()) $('#fUrl').value = p.productUrl;
+    updateGuideSummary();
+    $('#sharedMeta').textContent = '공유 프로젝트: ' + p.name + (p.updatedAt ? ' · ' + p.updatedAt.slice(0,10) : '');
+    $('#projSelect').value = id;
+  }
+
+  async function loadShared(quiet){
+    if(!quiet) setStatus('#genStatus', '공유 목록 불러오는 중…', 'busy');
+    let data = null;
+    // 1) raw (무캐시)
+    try{
+      const res = await fetch(DATA_URL + '?t=' + Date.now(), {cache:'no-store'});
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      data = JSON.parse(await res.text());
+    }catch(e1){
+      // 2) GitHub Contents API
+      try{
+        const res = await fetch('https://api.github.com/repos/' + REPO + '/contents/manuscripts-data.json?ref=' + BRANCH + '&t=' + Date.now(), {
+          headers: {'Accept':'application/vnd.github.raw'}, cache:'no-store'
+        });
+        if(!res.ok) throw new Error('HTTP ' + res.status);
+        data = JSON.parse(await res.text());
+      }catch(e2){
+        if(quiet){ $('#sharedMeta').textContent = '공유 목록을 불러오지 못함'; }
+        else toast('공유 목록을 불러오지 못했어요');
+        return;
+      }
+    }
+    try{
+      const list = (data.projects || []).map(normalizeProject);
+      if(!list.length) return;
+      state.projects = list;
+      buildProjectSelect();
+      selectProject(list[0].id);
+      $('#sharedMeta').textContent = '공유 프로젝트 ' + list.length + '개 · 최근 업데이트 ' + (data.updatedAt ? data.updatedAt.slice(0,16).replace('T',' ') : '-');
+      if(!quiet) toast('공유 원고를 불러왔어요');
+    }catch(e){
+      toast('공유 데이터 형식이 올바르지 않아요');
+    }
+  }
+
+  /* ================= 마쭈 요청문 ================= */
+  function buildRequestText(){
+    const g = guideFields();
+    const {q, r} = currentCounts();
+    const ex = state.existing.length;
+    const lines = [];
+    lines.push('[맘카페 원고 제작 요청]');
+    lines.push('· 상호명: ' + (g.brand || '(미입력)'));
+    if(g.url) lines.push('· 업체 URL: ' + g.url);
+    lines.push('· 사진 첨부: ' + g.photo);
+    const total = splitCount($('#fTotal').value);
+    if(total) lines.push('· 총 진행 수량: ' + total.total + '건');
+    lines.push('· 이번 요청: ' + [q ? '질문형 ' + q + '건' : '', r ? '후기형 ' + r + '건' : ''].filter(Boolean).join(' + ') + ' (총 ' + (q+r) + '건)');
+    lines.push('· 작성 일자: ' + ($('#fDate').value || todayStr()) + ' / 시작 No: ' + ($('#fStart').value || '1'));
+    if(g.merits) lines.push('· 업체 특장점: ' + g.merits.replace(/\n/g, ' / '));
+    if(g.notes) lines.push('· 특이사항: ' + g.notes.replace(/\n/g, ' / '));
+    lines.push('· 원고 작성 가이드:');
+    lines.push((g.guide || '(미입력)').slice(0, 700));
+    if(ex) lines.push('· 기존 원고 ' + ex + '건 제목과 겹치지 않게 해주세요.');
+    lines.push('');
+    lines.push('요청: 위 가이드로 원고 ' + (q+r) + '건 작성해서 manuscripts-data.json에 올려주세요.');
+    return lines.join('\n');
+  }
+
+  /* ================= 이벤트 ================= */
+  $('#btnLoadGuide').addEventListener('click', loadGuide);
+  $('#sheetUrl').addEventListener('keydown', e => { if(e.key === 'Enter') loadGuide(); });
+  $('#btnSample').addEventListener('click', () => {
+    $('#sheetUrl').value = 'https://docs.google.com/spreadsheets/d/' + SAMPLE_SHEET + '/edit?usp=sharing';
+    toast('샘플 URL 입력 — [가이드 불러오기]를 눌러주세요');
+  });
+  $('#btnParsePaste').addEventListener('click', loadPaste);
+  $('#btnSharedRefresh').addEventListener('click', () => loadShared(false));
+  $('#projSelect').addEventListener('change', e => { if(e.target.value) selectProject(e.target.value); });
+
+  $$('#segType button').forEach(b => b.addEventListener('click', () => setType(b.dataset.type)));
+  $('#fCountQ').addEventListener('input', () => {
+    const q = parseInt($('#fCountQ').value,10) || 0;
+    const r = parseInt($('#fCountR').value,10) || 0;
+    $('#fCount').value = q + r;
+  });
+  $('#fCountR').addEventListener('input', () => {
+    const q = parseInt($('#fCountQ').value,10) || 0;
+    const r = parseInt($('#fCountR').value,10) || 0;
+    $('#fCount').value = q + r;
+  });
+  $('#fEngine').addEventListener('change', refreshModels);
+  $('#fModel').addEventListener('change', () => {
+    if(state.engine !== 'local') localStorage.setItem(LS.model + state.engine, $('#fModel').value);
+  });
+  $('#fKey').addEventListener('change', () => {
+    if(state.engine !== 'local') localStorage.setItem(LS.key + state.engine, $('#fKey').value.trim());
+  });
+  $('#btnGen').addEventListener('click', generate);
+  $('#btnRequest').addEventListener('click', () => copyText(buildRequestText(), '요청문'));
+  $('#btnClear').addEventListener('click', () => {
+    state.items = [];
+    renderItems();
+    setStatus('#genStatus', '비었음');
+    toast('목록을 비웠어요');
+  });
+  $('#btnCsv').addEventListener('click', exportCSV);
+  $('#btnTsv').addEventListener('click', copyTSV);
+  $('#btnJsonOut').addEventListener('click', exportJSON);
+  $('#btnJsonIn').addEventListener('click', () => $('#fileJson').click());
+  $('#fileJson').addEventListener('change', e => {
+    const f = e.target.files && e.target.files[0];
+    if(f) importJSON(f);
+    e.target.value = '';
+  });
+
+  /* ================= 시작 ================= */
+  $('#fDate').value = todayStr();
+  setType('질의형');
+  refreshModels();
+  // CSV 비고 열 옵션 (시트 붙여넣기 호환)
+  const bigo = document.createElement('label');
+  bigo.style.cssText = 'display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);font-weight:700;margin-left:2px';
+  bigo.innerHTML = '<input type="checkbox" id="chkBigo" checked style="width:16px;height:16px;min-height:0"> 비고(사용) 열 포함';
+  document.querySelector('.resbar').insertBefore(bigo, document.querySelector('#btnTsv'));
+
+  loadShared(true);
+  setTimeout(() => { if(!state.projects.length) renderItems(); }, 1500);
+  setTimeout(() => { if(!state.items.length) renderItems(); }, 4000);
+})();
+</script>
+</body>
+</html>
