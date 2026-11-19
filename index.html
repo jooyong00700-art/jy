@@ -378,6 +378,10 @@ input.inp[type=number]{text-align:right}
   .day .line{font-size:9px}
   .day .line.hide-m{display:none}
   .day .settle{font-size:8.5px; padding:0 3px}
+  .ao-tbl th, .ao-tbl td{padding:9px 7px; font-size:12px}
+  .ao-tbl .ao-w, .ao-tbl .ao-sub{display:none}
+  .ao-tbl .ao-bar{width:62px; margin-top:5px}
+  .ao-lg{display:none}
   .months{grid-template-columns:repeat(4,1fr)}
   .cal-wrap{padding:11px}
   .kv{grid-template-columns:1fr 1fr}
@@ -1230,7 +1234,7 @@ function adOrganicCard(){
     ${sectionHead('📊 날짜별 광고 · 자연 판매수', `${fmtDate(AO_START)} 이후 · 최신순 자동 갱신`,
       `<div class="ao-lg"><span><i class="ad"></i>광고</span><span><i class="og"></i>자연</span></div>`)}
     <div class="tbl-wrap"><table class="tbl ao-tbl">
-      <thead><tr><th class="l">날짜</th><th>총 판매수</th><th>광고 판매수 (비중)</th><th>자연 판매수 (비중)</th><th>상태</th></tr></thead>
+      <thead><tr><th class="l">날짜</th><th>총 판매수</th><th>광고<span class="ao-w"> 판매수</span><span class="ao-sub"> (비중)</span></th><th>자연<span class="ao-w"> 판매수</span><span class="ao-sub"> (비중)</span></th><th>상태</th></tr></thead>
       <tbody>${body || '<tr><td class="l" colspan="5"><span class="flat">표시할 판매수 데이터가 없습니다.</span></td></tr>'}${totalRow}</tbody>
     </table></div>
     <div class="card-b" style="border-top:1px solid var(--line2)"><div class="hint">광고 판매수 = 쿠팡 광고센터 <b>광고 전환 판매수</b>(익일 확정) · 자연 판매수 = 총 판매수 − 광고 판매수 · <code>bigcell-live.json</code>의 daily 데이터가 늘어나면 이 칸도 자동으로 늘어납니다.</div></div>
