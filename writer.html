@@ -137,6 +137,39 @@ tr:hover .mini{opacity:1}
   pointer-events:none; transition:opacity .18s, transform .18s; z-index:60; box-shadow:0 8px 24px rgba(0,0,0,.25); max-width:88vw}
 #toast.on{opacity:1; transform:translateX(-50%) translateY(0)}
 
+/* 로그인 게이트 */
+#gate{position:fixed; inset:0; z-index:100; overflow-y:auto; display:flex; align-items:center; justify-content:center;
+  padding:26px 16px calc(26px + env(safe-area-inset-bottom));
+  background:radial-gradient(120% 80% at 50% 0%, #1d3157 0%, #0f1a30 58%, #0a1223 100%)}
+#gate[hidden]{display:none}
+.gatecard{width:100%; max-width:352px; background:#fff; border-radius:18px; padding:26px 22px 20px;
+  box-shadow:0 26px 60px -22px rgba(0,0,0,.6)}
+.gatebrand{display:flex; align-items:center; gap:9px; font-size:17px; font-weight:800; letter-spacing:-.3px; color:var(--navy)}
+.gatebrand .dot{width:9px;height:9px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 3px rgba(47,107,255,.2);flex:0 0 auto}
+.gatesub{margin:9px 0 18px; font-size:12.5px; color:var(--muted); font-weight:600; line-height:1.6}
+.gatecard .fld{margin-bottom:10px}
+.gateerr{min-height:17px; font-size:12px; font-weight:700; color:var(--red); margin:2px 0 6px; line-height:1.45}
+.gatebtn{width:100%; min-height:46px; font-size:14px; margin-top:2px}
+.gatehint{margin:14px 0 0; font-size:11px; color:var(--muted); text-align:center; line-height:1.6}
+#appRoot[hidden]{display:none}
+
+/* 생성 방식 선택 */
+.engpick{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:7px}
+.eng{display:flex; flex-direction:column; gap:4px; align-items:flex-start; text-align:left; padding:12px 13px;
+  border:1.5px solid #dfe4ee; border-radius:12px; background:#fff; min-height:auto}
+.eng b{font-size:13px; font-weight:800; color:var(--ink); display:flex; align-items:center; gap:6px; flex-wrap:wrap}
+.eng span{font-size:11.5px; color:var(--muted); font-weight:600; line-height:1.45}
+.eng .rec{font-size:10px; font-weight:800; color:#fff; background:var(--blue); border-radius:99px; padding:2px 7px; letter-spacing:0}
+.eng:hover{border-color:#c6d4f2; background:#fafbff}
+.eng[aria-pressed="true"]{border-color:var(--blue); background:var(--blue-weak); box-shadow:0 0 0 3px rgba(47,107,255,.12)}
+.eng[aria-pressed="true"] b{color:var(--blue-ink)}
+.aiPanel{margin-top:12px; border:1px solid #d8e4ff; background:#f8faff; border-radius:12px; padding:13px 14px}
+.aiPanel[hidden]{display:none}
+.aihead{display:flex; align-items:center; gap:9px; flex-wrap:wrap}
+.aihead h3{margin:0; font-size:13px; font-weight:800; color:var(--ink); letter-spacing:-.2px}
+.aihead .status{margin-left:auto}
+@media (max-width:760px){ .engpick{grid-template-columns:1fr} }
+
 footer{padding:22px 16px 8px; text-align:center; font-size:11.5px; color:var(--muted); line-height:1.8}
 footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:underline}
 .flink{background:none; border:0; padding:0; font-size:11.5px; cursor:pointer}
@@ -164,15 +197,29 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
 </head>
 <body>
 
+<!-- 로그인 -->
+<div id="gate">
+  <form class="gatecard" id="loginForm" autocomplete="off" novalidate>
+    <div class="gatebrand"><span class="dot"></span> 리스페토 원고 스튜디오</div>
+    <p class="gatesub">맘카페 원고 작성기 · 내부용 화면입니다.<br>아이디와 비밀번호를 입력해 주세요.</p>
+    <label class="fld"><span>아이디</span><input id="loginId" type="text" inputmode="text" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="아이디"></label>
+    <label class="fld"><span>비밀번호</span><input id="loginPw" type="password" autocomplete="current-password" placeholder="비밀번호"></label>
+    <div class="gateerr" id="loginErr" role="alert" aria-live="assertive"></div>
+    <button class="btn primary gatebtn" id="btnLogin" type="submit">로그인</button>
+    <p class="gatehint">로그인하면 이 브라우저에 상태가 저장됩니다.<br>공용 기기에서는 [로그아웃]을 눌러 주세요.</p>
+  </form>
+</div>
+
+<div id="appRoot" hidden>
+
 <header class="top">
   <div class="wrap toprow">
     <div class="brand"><span class="dot"></span>
       <div>맘카페 원고 작성기<small>가이드 시트 → 원고 자동 작성·공유</small></div>
     </div>
     <div class="spacer"></div>
-    <button class="linkbtn" id="navDash" type="button">📊 통합 대시보드</button>
-    <button class="linkbtn" id="navSrc" type="button">📦 소싱시트</button>
     <button class="linkbtn primary" id="btnSharedRefresh" type="button">↻ 공유 원고</button>
+    <button class="linkbtn" id="btnLogout" type="button">로그아웃</button>
   </div>
 </header>
 
@@ -244,22 +291,42 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
         <label class="fld c2"><span id="lbCount">제작 건수</span><input id="fCount" type="number" min="1" max="100" step="1" value="4"></label>
         <label class="fld c2" id="wrapQ" style="display:none"><span>질문형 건수</span><input id="fCountQ" type="number" min="0" max="100" step="1" value="2"></label>
         <label class="fld c2" id="wrapR" style="display:none"><span>후기형 건수</span><input id="fCountR" type="number" min="0" max="100" step="1" value="2"></label>
-        <label class="fld c2"><span>생성 방식</span>
-          <select id="fEngine">
-            <option value="local">초안 (오프라인 · 키 불필요)</option>
-            <option value="openai">AI · OpenAI (키 필요)</option>
-            <option value="gemini">AI · Gemini (키 필요)</option>
-          </select>
-        </label>
-        <label class="fld c2" id="wrapModel"><span>모델</span>
-          <select id="fModel"></select>
-        </label>
       </div>
 
-      <div class="grid" id="keyWrap" style="display:none">
-        <label class="fld c6"><span>API 키 <em style="font-style:normal;color:var(--muted);font-weight:600">— 이 브라우저(localStorage)에만 저장됩니다</em></span>
-          <input id="fKey" type="password" placeholder="sk-… 또는 AIza…" autocomplete="off">
-        </label>
+      <div class="fld" style="margin-top:14px"><span>생성 방식</span></div>
+      <div class="engpick" id="enginePick" role="radiogroup" aria-label="생성 방식">
+        <button class="eng" type="button" data-engine="openai" aria-pressed="true">
+          <b>ChatGPT (OpenAI API) <span class="rec">기본</span></b>
+          <span>키를 한 번 저장하면 버튼 한 번으로 바로 생성</span>
+        </button>
+        <button class="eng" type="button" data-engine="gemini" aria-pressed="false">
+          <b>Gemini API</b>
+          <span>구글 AI Studio 키를 쓰는 경우</span>
+        </button>
+        <button class="eng" type="button" data-engine="local" aria-pressed="false">
+          <b>오프라인 초안</b>
+          <span>키 없이 빠른 뼈대만 뽑기</span>
+        </button>
+      </div>
+
+      <div class="aiPanel" id="aiPanel">
+        <div class="aihead">
+          <h3 id="aiTitle">ChatGPT (OpenAI) 연결</h3>
+          <span class="status" id="connStatus">연결 전</span>
+        </div>
+        <div class="grid" style="margin-top:8px">
+          <label class="fld c4"><span id="keyLabel">OpenAI API 키</span>
+            <input id="fKey" type="password" placeholder="sk-…" autocomplete="off" spellcheck="false">
+          </label>
+          <label class="fld c2" id="wrapModel"><span>모델</span>
+            <select id="fModel"></select>
+          </label>
+        </div>
+        <div class="row" style="margin-top:10px; gap:8px">
+          <button class="btn sm" id="btnSaveKey" type="button">키 저장</button>
+          <button class="btn sm" id="btnTestKey" type="button">연결 테스트</button>
+          <span class="hintline" style="margin:0" id="keyHint">키는 이 브라우저(localStorage)에만 저장되고, 서버로는 전송되지 않습니다.</span>
+        </div>
       </div>
 
       <div class="row" style="margin-top:14px">
@@ -273,7 +340,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
         <div class="progtxt" id="progTxt"></div>
       </div>
 
-      <div class="note blue" id="engineNote">키 없이도 <b>초안</b>으로 바로 뽑을 수 있고, AI 키를 넣으면 가이드에 맞춘 원고를 <b>AI가 직접 생성</b>합니다. 생성 결과는 아래 표에서 바로 복사·다운로드할 수 있어요.</div>
+      <div class="note blue" id="engineNote"><b>ChatGPT(OpenAI) API 키를 한 번 저장하면(브라우저에만 저장) 버튼 한 번으로 바로 생성됩니다.</b> 키가 없으면 <b>오프라인 초안</b>으로도 뼈대를 뽑을 수 있어요.</div>
     </div>
   </section>
 
@@ -317,6 +384,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     공유 목록 파일: <button type="button" class="flink" id="dataLink">manuscripts-data.json</button>
   </footer>
 </main>
+</div><!-- /appRoot -->
 
 <div id="toast" role="status" aria-live="polite"></div>
 
@@ -329,8 +397,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
   const RAW = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH;
   const DATA_URL = RAW + '/manuscripts-data.json';
   const SAMPLE_SHEET = '1xTTbhVDvJTJXrrFjX3xhSrI_ZkUDzbsygLb9toqdHX4';
-  const PREVIEW = 'https://htmlpreview.github.io/?';
-  const LS = { key: 'writer.apiKey.', model:'writer.model.' };
+  const LS = { key: 'writer.apiKey.', model:'writer.model.', conn:'writer.conn.' };
 
   const $ = s => document.querySelector(s);
   const $$ = s => Array.prototype.slice.call(document.querySelectorAll(s));
@@ -343,7 +410,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     items: [],
     projects: [],
     projId: null,
-    engine: 'local',
+    engine: 'openai',
     type: '질의형',
     busy: false
   };
@@ -656,24 +723,94 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     openai: ['gpt-4o-mini','gpt-4o','gpt-4.1-mini'],
     gemini: ['gemini-2.5-flash','gemini-2.5-pro','gemini-2.0-flash']
   };
-  function refreshModels(){
-    const eng = $('#fEngine').value;
+  function savedKey(eng){ return (localStorage.getItem(LS.key + eng) || '').trim(); }
+  function setEngine(eng){
     state.engine = eng;
-    const sel = $('#fModel');
+    $$('#enginePick .eng').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.engine === eng)));
     if(eng === 'local'){
-      $('#wrapModel').style.display = 'none';
-      $('#keyWrap').style.display = 'none';
-    }else{
-      $('#wrapModel').style.display = '';
-      $('#keyWrap').style.display = '';
-      sel.innerHTML = MODELS[eng].map(m => '<option>' + m + '</option>').join('');
-      const saved = localStorage.getItem(LS.model + eng);
-      if(saved && MODELS[eng].indexOf(saved) > -1) sel.value = saved;
-      $('#fKey').value = localStorage.getItem(LS.key + eng) || '';
+      $('#aiPanel').hidden = true;
+      $('#engineNote').innerHTML = '키 없이 <b>오프라인 초안</b>을 만듭니다. 문장 틀이 비슷해 보이면 <b>ChatGPT 생성</b>이나 <b>마쭈에게 요청</b>으로 다듬는 걸 권합니다.';
+      return;
     }
-    $('#engineNote').innerHTML = eng === 'local'
-      ? '키 없이도 <b>초안</b>으로 바로 뽑을 수 있어요. 초안은 상황 문장을 조합한 빠른 버전이라, 실제 발행용은 <b>AI 생성</b>이나 마쭈에게 요청을 권합니다.'
-      : '입력한 가이드와 기존 원고 말투로 <b>' + (eng === 'openai' ? 'OpenAI' : 'Gemini') + '</b>가 원고를 씁니다. 키는 이 브라우저에만 저장되고 서버로 보내지 않습니다.';
+    $('#aiPanel').hidden = false;
+    const isOa = eng === 'openai';
+    $('#aiTitle').textContent = isOa ? 'ChatGPT (OpenAI) 연결' : 'Gemini 연결';
+    $('#keyLabel').textContent = isOa ? 'OpenAI API 키' : 'Gemini API 키';
+    $('#fKey').placeholder = isOa ? 'sk-…' : 'AIza…';
+    $('#keyHint').textContent = isOa
+      ? '키는 이 브라우저(localStorage)에만 저장되고, OpenAI 외 다른 곳으로는 전송되지 않습니다.'
+      : '키는 이 브라우저(localStorage)에만 저장되고, Google 외 다른 곳으로는 전송되지 않습니다.';
+    const sel = $('#fModel');
+    sel.innerHTML = MODELS[eng].map(m => '<option>' + m + '</option>').join('');
+    const saved = localStorage.getItem(LS.model + eng);
+    if(saved && MODELS[eng].indexOf(saved) > -1) sel.value = saved;
+    $('#fKey').value = savedKey(eng);
+    const hasKey = !!savedKey(eng);
+    const verified = localStorage.getItem(LS.conn + eng) === '1';
+    setStatus('#connStatus', hasKey ? (verified ? '연결 확인됨' : '키 저장됨') : '연결 전',
+      hasKey ? (verified ? 'ok' : 'busy') : '');
+    $('#engineNote').innerHTML = isOa
+      ? '<b>ChatGPT(OpenAI) API 키를 한 번 저장하면(브라우저에만 저장) 버튼 한 번으로 바로 생성됩니다.</b> 모델은 <b>' + $('#fModel').value + '</b>이며, 필요하면 [연결 테스트]로 키를 확인하세요.'
+      : 'Gemini 키를 저장하면 가이드에 맞춘 원고를 <b>Gemini</b>가 집필합니다. 키는 이 브라우저에만 저장됩니다.';
+  }
+  function saveKey(quiet){
+    const eng = state.engine;
+    if(eng === 'local') return;
+    const v = ($('#fKey').value || '').trim();
+    if(!v){ toast('API 키를 먼저 입력해 주세요'); $('#fKey').focus(); return; }
+    localStorage.setItem(LS.key + eng, v);
+    localStorage.removeItem(LS.conn + eng);
+    localStorage.setItem(LS.model + eng, $('#fModel').value);
+    setStatus('#connStatus', '키 저장됨', 'busy');
+    if(!quiet) toast('키를 저장했어요 · [연결 테스트]로 확인할 수 있어요');
+  }
+  async function testKey(){
+    const eng = state.engine;
+    if(eng === 'local'){ toast('오프라인 초안은 키가 필요 없어요'); return; }
+    const key = ($('#fKey').value || '').trim() || savedKey(eng);
+    if(!key){ toast('API 키를 먼저 입력해 주세요'); $('#fKey').focus(); return; }
+    const btn = $('#btnTestKey');
+    btn.disabled = true;
+    setStatus('#connStatus', '확인 중…', 'busy');
+    try{
+      if(eng === 'openai'){
+        const res = await fetch('https://api.openai.com/v1/models', {headers:{'Authorization':'Bearer ' + key}});
+        if(!res.ok){
+          const t = await res.text();
+          throw new Error(res.status === 401 ? '키가 올바르지 않습니다 (401)' : 'OpenAI ' + res.status + ' · ' + t.slice(0,140));
+        }
+        const j = await res.json();
+        const ids = ((j && j.data) || []).map(m => m.id);
+        const model = $('#fModel').value;
+        const hasModel = ids.indexOf(model) > -1;
+        localStorage.setItem(LS.key + eng, key);
+        localStorage.setItem(LS.conn + eng, '1');
+        localStorage.setItem(LS.model + eng, model);
+        if(hasModel){
+          setStatus('#connStatus', '연결됨 · ' + model, 'ok');
+          toast('연결 성공 · ' + model + ' 사용 가능');
+        }else{
+          setStatus('#connStatus', '연결됨 · 모델 확인 필요', 'busy');
+          toast('키는 정상인데 모델 목록에 ' + model + '이 없어요');
+        }
+      }else{
+        const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models?key=' + encodeURIComponent(key));
+        if(!res.ok){
+          const t = await res.text();
+          throw new Error('Gemini ' + res.status + ' · ' + t.slice(0,140));
+        }
+        localStorage.setItem(LS.key + eng, key);
+        localStorage.setItem(LS.conn + eng, '1');
+        setStatus('#connStatus', '연결됨', 'ok');
+        toast('Gemini 연결 성공');
+      }
+    }catch(e){
+      localStorage.removeItem(LS.conn + eng);
+      setStatus('#connStatus', '연결 실패', 'err');
+      toast(String(e.message || e).slice(0,120));
+    }finally{
+      btn.disabled = false;
+    }
   }
   function setType(t){
     state.type = t;
@@ -1009,9 +1146,11 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
         setProgress(100, '완료');
       }else{
         const key = ($('#fKey').value || '').trim();
-        if(!key){ throw new Error('API 키를 입력해 주세요 (이 브라우저에만 저장됩니다)'); }
+        if(!key){ throw new Error(state.engine === 'openai' ? 'ChatGPT(OpenAI) API 키를 입력하거나 [키 저장]을 눌러 주세요' : 'Gemini API 키를 입력하거나 [키 저장]을 눌러 주세요'); }
+        const prevKey = localStorage.getItem(LS.key + state.engine) || '';
         localStorage.setItem(LS.key + state.engine, key);
         localStorage.setItem(LS.model + state.engine, $('#fModel').value);
+        if(prevKey !== key) localStorage.removeItem(LS.conn + state.engine);
         const model = $('#fModel').value;
         const system = buildSystemPrompt();
         const plan = interleave(q, r);
@@ -1342,14 +1481,6 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
   });
   $('#btnParsePaste').addEventListener('click', loadPaste);
   $('#btnSharedRefresh').addEventListener('click', () => loadShared(false));
-  const openPreview = file => {
-    const url = PREVIEW + RAW + '/' + file;
-    let w = null;
-    try{ w = window.open(url, '_blank'); }catch(e){}
-    if(!w) location.href = url;   // 팝업이 막히면 같은 창에서 이동
-  };
-  $('#navDash').addEventListener('click', () => openPreview('index.html'));
-  $('#navSrc').addEventListener('click', () => openPreview('sourcing.html'));
   $('#dataLink').addEventListener('click', () => {
     let w = null;
     try{ w = window.open(DATA_URL, '_blank'); }catch(e){}
@@ -1368,12 +1499,20 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     const r = parseInt($('#fCountR').value,10) || 0;
     $('#fCount').value = q + r;
   });
-  $('#fEngine').addEventListener('change', refreshModels);
+  $$('#enginePick .eng').forEach(b => b.addEventListener('click', () => setEngine(b.dataset.engine)));
   $('#fModel').addEventListener('change', () => {
     if(state.engine !== 'local') localStorage.setItem(LS.model + state.engine, $('#fModel').value);
   });
-  $('#fKey').addEventListener('change', () => {
-    if(state.engine !== 'local') localStorage.setItem(LS.key + state.engine, $('#fKey').value.trim());
+  $('#fKey').addEventListener('change', () => { if(state.engine !== 'local') saveKey(true); });
+  $('#btnSaveKey').addEventListener('click', () => saveKey(false));
+  $('#btnTestKey').addEventListener('click', testKey);
+  $('#btnLogout').addEventListener('click', () => {
+    try{ localStorage.removeItem(AUTH.store); }catch(e){}
+    $('#loginId').value = '';
+    $('#loginPw').value = '';
+    $('#loginErr').textContent = '';
+    showGate('');
+    toast('로그아웃했습니다');
   });
   $('#btnGen').addEventListener('click', generate);
   $('#btnRequest').addEventListener('click', () => copyText(buildRequestText(), '요청문'));
@@ -1393,19 +1532,58 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     e.target.value = '';
   });
 
-  /* ================= 시작 ================= */
-  $('#fDate').value = todayStr();
-  setType('질의형');
-  refreshModels();
-  // CSV 비고 열 옵션 (시트 붙여넣기 호환)
-  const bigo = document.createElement('label');
-  bigo.style.cssText = 'display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);font-weight:700;margin-left:2px';
-  bigo.innerHTML = '<input type="checkbox" id="chkBigo" checked style="width:16px;height:16px;min-height:0"> 비고(사용) 열 포함';
-  document.querySelector('.resbar').insertBefore(bigo, document.querySelector('#btnTsv'));
+  /* ================= 로그인 게이트 ================= */
+  const AUTH = { id:'win33', hash:'ffj6dq', store:'writer.auth.v1' };
+  function authHash(s){
+    let x = 5381;
+    for(let i=0;i<s.length;i++) x = (x * 33 + s.charCodeAt(i)) >>> 0;
+    return x.toString(36);
+  }
+  let started = false;
+  function startApp(){
+    if(started) return;
+    started = true;
+    $('#gate').hidden = true;
+    $('#appRoot').hidden = false;
+    document.title = '맘카페 원고 작성기 · 리스페토';
+    $('#fDate').value = todayStr();
+    setType('질의형');
+    setEngine('openai');
+    // CSV 비고 열 옵션 (시트 붙여넣기 호환)
+    const bigo = document.createElement('label');
+    bigo.style.cssText = 'display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);font-weight:700;margin-left:2px';
+    bigo.innerHTML = '<input type="checkbox" id="chkBigo" checked style="width:16px;height:16px;min-height:0"> 비고(사용) 열 포함';
+    document.querySelector('.resbar').insertBefore(bigo, document.querySelector('#btnTsv'));
 
-  loadShared(true);
-  setTimeout(() => { if(!state.projects.length) renderItems(); }, 1500);
-  setTimeout(() => { if(!state.items.length) renderItems(); }, 4000);
+    loadShared(true);
+    setTimeout(() => { if(!state.projects.length) renderItems(); }, 1500);
+    setTimeout(() => { if(!state.items.length) renderItems(); }, 4000);
+  }
+  function showGate(msg){
+    $('#appRoot').hidden = true;
+    $('#gate').hidden = false;
+    $('#loginErr').textContent = msg || '';
+    setTimeout(() => { try{ $('#loginId').focus(); }catch(e){} }, 40);
+  }
+  $('#loginForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const id = $('#loginId').value.trim();
+    const pw = $('#loginPw').value;
+    if(id === AUTH.id && authHash(id + '|' + pw) === AUTH.hash){
+      try{ localStorage.setItem(AUTH.store, '1'); }catch(_){}
+      $('#loginErr').textContent = '';
+      $('#loginPw').value = '';
+      startApp();
+      toast('로그인했습니다');
+    }else{
+      $('#loginErr').textContent = '아이디 또는 비밀번호가 올바르지 않습니다.';
+      $('#loginPw').focus();
+      $('#loginPw').select();
+    }
+  });
+  let authed = false;
+  try{ authed = localStorage.getItem(AUTH.store) === '1'; }catch(e){}
+  if(authed) startApp(); else showGate('');
 })();
 </script>
 </body>
