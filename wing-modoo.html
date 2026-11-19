@@ -202,13 +202,13 @@ body.menu-open .mobile-menu{max-height:440px}
 .svc-text h3{margin-top:8px;font-size:36px;font-weight:900;letter-spacing:-1.8px;line-height:1.2;color:#1b1b1b}
 .svc-text h3 em{font-style:normal;color:var(--green)}
 .svc-text p{margin-top:12px;font-size:14.5px;line-height:1.65;color:#5f6862;letter-spacing:-.25px;word-break:keep-all}
-.svc-art{flex:0 0 45%;position:relative;overflow:hidden;display:grid;place-items:center}
+.svc-art{flex:0 0 45%;position:relative;overflow:hidden;display:grid;place-items:center;padding:18px 16px}
 /* 01 Q&A */
 .art-qa{background:linear-gradient(140deg,#E9F1EC,#F6FAF7)}
-.art-qa .qmark{position:absolute;font-size:190px;font-weight:900;color:#DCE8E0;right:-6px;bottom:-56px;line-height:1}
-.bubble{position:relative;z-index:2;background:#fff;border-radius:14px 14px 14px 4px;padding:10px 14px;font-size:12px;font-weight:800;color:#2a2a2a;box-shadow:0 12px 22px -16px rgba(0,0,0,.5)}
-.bubble.a{background:var(--green);color:#fff;border-radius:14px 14px 4px 14px;margin-top:8px}
-.art-qa .stack{display:grid;justify-items:start}
+.art-qa .qmark{position:absolute;font-size:160px;font-weight:900;color:#DFEAE3;right:-4px;bottom:-46px;line-height:1}
+.bubble{position:relative;z-index:2;background:#fff;border-radius:14px 14px 14px 4px;padding:9px 13px;font-size:11.5px;font-weight:800;color:#2a2a2a;box-shadow:0 12px 22px -16px rgba(0,0,0,.5);white-space:normal;max-width:100%}
+.bubble.a{background:var(--green);color:#fff;border-radius:14px 14px 4px 14px;margin-top:7px}
+.art-qa .stack{display:grid;justify-items:start;max-width:100%}
 /* 02 후기형 */
 .art-review{background:linear-gradient(150deg,#F3F7F4,#E7F1EA)}
 .review-card{width:82%;background:#fff;border-radius:12px;padding:12px 12px 10px;box-shadow:0 18px 30px -22px rgba(0,0,0,.6)}
@@ -307,7 +307,7 @@ body.menu-open .mobile-menu{max-height:440px}
 .pkg-head .unit{font-size:12px;font-weight:700;padding:5px 11px;border-radius:20px;background:rgba(255,255,255,.24);white-space:nowrap}
 .pkg.basic .pkg-head{background:linear-gradient(100deg,#22C93F,#0FA63A)}
 .pkg.std .pkg-head{background:linear-gradient(100deg,#14A97A,#0C7F63)}
-.pkg-body{padding:8px 24px 6px;flex:1}
+.pkg-body{padding:8px 24px 6px;flex:1;display:flex;flex-direction:column;justify-content:center}
 .pkg-row{display:grid;grid-template-columns:1fr auto auto auto;align-items:center;gap:14px;padding:16px 10px;border-bottom:1px solid #EDF2EE}
 .pkg-row:last-child{border-bottom:0}
 .pkg-row .qty{font-size:30px;font-weight:900;color:var(--green-d);letter-spacing:-1.4px}
@@ -444,6 +444,8 @@ body.menu-open .mobile-menu{max-height:440px}
 /* ---------- 리빌 애니메이션 ---------- */
 .js [data-reveal]{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
 .js [data-reveal].in{opacity:1;transform:none}
+.no-anim [data-reveal],.no-anim [data-reveal].in{opacity:1!important;transform:none!important;transition:none!important}
+@media print{.js [data-reveal]{opacity:1!important;transform:none!important}}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .js [data-reveal]{opacity:1!important;transform:none!important;transition:none!important}
@@ -545,6 +547,7 @@ body.menu-open .mobile-menu{max-height:440px}
   .svc-art{display:none}
   .svc-card::after{content:"";position:absolute;right:-40px;bottom:-46px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(0,199,60,.16),rgba(0,199,60,0) 70%)}
   .steps{grid-template-columns:1fr 1fr;gap:22px 12px;margin-top:36px}
+  .step:nth-child(5){grid-column:1 / -1;max-width:52%;margin:0 auto}
   .step .dot{width:58px;height:58px;margin-bottom:12px}
   .step .dot b{font-size:17px}
   .step h4{font-size:15.5px}
@@ -725,8 +728,8 @@ body.menu-open .mobile-menu{max-height:440px}
             <circle cx="70" cy="70" r="44" stroke="#202020" stroke-width="11"/>
             <circle cx="70" cy="70" r="21" fill="#00C73C"/>
             <circle cx="70" cy="70" r="21" stroke="#202020" stroke-width="9"/>
-            <path d="M92 92l34 34" stroke="#202020" stroke-width="11" stroke-linecap="round"/>
-            <path d="M112 126l14-14 14 14-14 14-14-14z" fill="#00C73C" stroke="#202020" stroke-width="6"/>
+            <path d="M96 84l32-32" stroke="#202020" stroke-width="10" stroke-linecap="round"/>
+            <path d="M108 48h22v22" fill="none" stroke="#202020" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M18 132l18-16 14 10 20-26" stroke="#00C73C" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
@@ -1009,7 +1012,7 @@ body.menu-open .mobile-menu{max-height:440px}
 <section class="sec contact" id="section06">
   <div class="container">
     <p class="kicker" data-reveal>contact us</p>
-    <h2 data-reveal><em>무료 상담</em>해보세요!<br class="br-m"> 자세하게 안내해드립니다.</h2>
+    <h2 data-reveal><em>무료 상담</em>해보세요!<br> 자세하게 안내해드립니다.</h2>
     <p class="c-sub" data-reveal>계약하지 않으셔도 됩니다. 궁금하신 게 있다면 편하게 남겨주세요!</p>
     <div class="c-btns" data-reveal>
       <a class="btn" href="#inqForm">신청서 작성하기 <span class="ar">→</span></a>
@@ -1210,6 +1213,7 @@ const CONFIG = {
   const $ = (s, el) => (el || document).querySelector(s);
   const $$ = (s, el) => Array.from((el || document).querySelectorAll(s));
   const body = document.body;
+  if (location.search.indexOf("still") > -1) document.documentElement.classList.add("no-anim");
 
   /* ---------- 네비 : 스크롤 축소 / 모바일 메뉴 ---------- */
   const navToggle = $("#navToggle");
