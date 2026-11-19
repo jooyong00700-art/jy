@@ -1342,10 +1342,19 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
   });
   $('#btnParsePaste').addEventListener('click', loadPaste);
   $('#btnSharedRefresh').addEventListener('click', () => loadShared(false));
-  const openPreview = file => window.open(PREVIEW + RAW + '/' + file, '_blank', 'noopener');
+  const openPreview = file => {
+    const url = PREVIEW + RAW + '/' + file;
+    let w = null;
+    try{ w = window.open(url, '_blank'); }catch(e){}
+    if(!w) location.href = url;   // 팝업이 막히면 같은 창에서 이동
+  };
   $('#navDash').addEventListener('click', () => openPreview('index.html'));
   $('#navSrc').addEventListener('click', () => openPreview('sourcing.html'));
-  $('#dataLink').addEventListener('click', () => window.open(DATA_URL, '_blank', 'noopener'));
+  $('#dataLink').addEventListener('click', () => {
+    let w = null;
+    try{ w = window.open(DATA_URL, '_blank'); }catch(e){}
+    if(!w) location.href = DATA_URL;
+  });
   $('#projSelect').addEventListener('change', e => { if(e.target.value && e.target.value !== '__local') selectProject(e.target.value); });
 
   $$('#segType button').forEach(b => b.addEventListener('click', () => setType(b.dataset.type)));
