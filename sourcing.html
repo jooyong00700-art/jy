@@ -612,8 +612,12 @@ function txt(s){ return String(s == null ? "" : s).trim(); }
 
 /* ============================================================
    쿠팡 상품 링크 — 앱 바로열기(intent://) + 모바일/PC 분기 + 리퍼러 완전 제거
-   - Android: intent://product?productId=..&vendorItemId=..#Intent;scheme=coupang;
-              package=com.coupang.mobile;S.browser_fallback_url=<웹URL>;end
+   - Android: intent://www.coupang.com/vp/products/<pid>[?vendorItemId=<vid>]
+              #Intent;scheme=https;package=com.coupang.mobile;
+              S.browser_fallback_url=<웹URL>;end
+       → 쿠팡 앱 공식 App Link(scheme=https)를 그대로 넘긴다. 앱이 https://www.coupang.com/vp/products/..
+         경로를 직접 받으므로 "앱만 열리고 홈으로 뜨는" 문제가 없다.
+         (예전 scheme=coupang + product?productId=.. 형식은 앱이 상품 경로를 못 잡아 홈이 떴다)
        → 삼성 인터넷/크롬은 새 탭·about:blank 경유가 아니라 "현재 탭에서 이동"해야
          쿠팡 앱(com.coupang.mobile)이 확실히 뜬다. 앱이 없으면 브라우저가 웹으로 넘긴다.
    - iOS: coupang://product?productId=.. 호출 후 앱이 안 뜨면(문서가 계속 보이면) 웹으로.
@@ -672,16 +676,23 @@ function cpAttrs(pid, vid, rawUrl){
     ' data-cp-pid="' + esc(ids.pid) + '" data-cp-vid="' + esc(ids.vid) + '"' +
     (ids.pid ? ' data-cp-link="1"' : "");
 }
-/* 앱 딥링크 경로: product?productId=..[&vendorItemId=..] (coupang:// 뒤에 붙는 부분) */
+/* iOS 딥링크 경로: product?productId=..[&vendorItemId=..] (coupang:// 뒤에 붙는 부분) */
 function cpAppPath(ids){
   if(!ids || !ids.pid) return "";
   return "product?productId=" + ids.pid + (ids.vid ? "&vendorItemId=" + ids.vid : "");
 }
-/* Android intent:// — 앱이 없거나 못 열면 브라우저가 S.browser_fallback_url 로 넘긴다 */
+/* Android 앱 링크 경로: 쿠팡 앱이 인식하는 공식 상품 URL(www.coupang.com/vp/products/..) */
+function cpAppLinkPath(ids){
+  if(!ids || !ids.pid) return "";
+  return "www.coupang.com/vp/products/" + ids.pid +
+    (ids.vid ? "?vendorItemId=" + ids.vid : "");
+}
+/* Android intent:// — scheme=https(공식 App Link)로 앱 상품 화면까지 직행.
+   앱이 없거나 못 열면 브라우저가 S.browser_fallback_url 로 넘긴다 */
 function cpIntentUrl(ids, webUrl){
-  var path = cpAppPath(ids);
+  var path = cpAppLinkPath(ids);
   if(!path) return "";
-  return "intent://" + path + "#Intent;scheme=coupang;package=com.coupang.mobile" +
+  return "intent://" + path + "#Intent;scheme=https;package=com.coupang.mobile" +
     ";S.browser_fallback_url=" + encodeURIComponent(webUrl) + ";end";
 }
 /* iOS coupang:// — 앱이 뜨면 문서가 숨겨지므로 그때 fallback 타이머를 끈다 */
