@@ -300,6 +300,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
         <div class="fld" style="flex:0 0 120px"><span>시작 No</span><input id="fStart" type="number" min="1" step="1" value="1"></div>
         <div class="fld" style="flex:0 0 165px"><span>작성 일자</span><input id="fDate" type="date"></div>
       </div>
+      <div class="hintline" id="typeHint" style="margin-top:8px">성향 버튼을 누르면 위 🎯 프롬프트 칸의 [기본 규칙] 블록이 그 성향 규칙으로 바로 바뀝니다. 직접 적어둔 업종·컨셉 줄은 그대로 남습니다.</div>
 
       <div class="grid" id="countWrap">
         <label class="fld c2"><span id="lbCount">제작 건수</span><input id="fCount" type="number" min="1" max="100" step="1" value="4"></label>
@@ -412,37 +413,75 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
   const LS = { key: 'writer.apiKey.', model:'writer.model.', conn:'writer.conn.', projects:'writer.local.projects.v1', hidden:'writer.hidden.shared.v1' };
 
   // 프롬프트 지시사항 기본값 — 성향(질의형/후기형/혼합)에 맞는 규칙만 이 칸에 들어간다.
-  // 사용자가 이어 적은 업종/컨셉 줄은 성향을 바꿔도 지우지 않는다(syncConceptRules).
+  // 성향 버튼을 누르면 위 [기본 규칙] 블록만 그 성향 규칙으로 통째로 바뀌고(syncConceptRules),
+  // 그 아래에 사용자가 이어 적은 업종/컨셉 줄은 지우지 않는다.
   // 상호명·업체 URL·가이드 본문은 예전처럼 공란으로 둔다.
   const CONCEPT_TAIL = '(여기에 업종/원하는 컨셉을 이어서 적어주세요)';
+  const RULE_HEAD = '[기본 규칙 · 성향 버튼을 누르면 이 블록이 자동으로 바뀝니다]';
   const RULE_BASE = [
     '광고티·홍보성 멘트·특수문자 웃음 표시 금지.',
     '형식적인 "OO 추천합니다" 금지, 자기 경험담처럼 자연스럽게 말하기.',
     '느낌표는 쓰지 말고 쉼표도 거의 쓰지 마세요. 맞춤법·띄어쓰기를 교과서처럼 맞추지 말고 스마트폰으로 툭툭 친 것처럼 살짝 러프하게 써 주세요.',
     '"운동 시" "외출 시" "사용 시" "보관 시" 같은 딱딱한 "~ 시" 한자어 금지. "운동할 때" "나갈 때" "쓸 때"처럼 구어체로 쓰세요.',
     '"유용해요" "활용도" "보관 공간" "내구성" 같은 설명서·카피 말투 금지, 내가 겪은 말로 바꾸세요.',
-    '뻔한 에피소드로 서론을 늘어놓지 말고 폰으로 30초 만에 툭 쓰듯 바로 본론으로 들어가세요. 과장된 감탄과 인위적인 스토리텔링은 쓰지 마세요.'
+    '본문은 단조롭게 딱딱 끊지 말고 지금 내 생활 배경이 한두 줄 자연스럽게 깔린 뒤 고민이나 경험으로 이어지게 쓰세요. 억지 사건이나 뻔한 클리셰("김장 도우러 갔다가" "분리수거하다가")로 늘리지는 마세요.',
+    '분량은 질의형 본문 4~7줄, 후기형 본문 7~11줄 안에서 상황 → 고민 → 질문(또는 달라진 점) 순서로 자연스럽게 이어지게 쓰세요.'
   ];
   const RULE_Q = [
     '질의형은 제목·본문에 브랜드명 절대 금지, 댓글1에서만 브랜드명을 딱 1번만 경험담 속에 자연스럽게 언급하고 대댓글에는 브랜드명을 다시 반복하지 마세요.',
-    '질의형 본문은 일상 고민 3~5줄로 무심하게 쓰고 마지막에 실제로 물어볼 법한 질문 한 번만 넣으세요. 제품 세부 스펙·특장점은 본문에 넣지 마세요.',
-    '질의형 댓글1은 "저도 그거 쓰는데"처럼 내가 겪은 장면부터 꺼내고, 스펙이 아니라 실제 사물과 행동으로 말하세요.',
+    '질의형 본문은 4~7줄로, 지금 내 처지와 배경(누구와 사는지, 언제 쓰는지, 며칠째 알아보는 중인지)을 한두 줄 깔고 그게 고민으로 이어지게 쓴 뒤 마지막에 실제로 물어볼 법한 질문 한 번만 넣으세요. 제품 세부 스펙·특장점은 본문에 넣지 마세요.',
+    '질의형 댓글1은 처음부터 업체명을 꺼내지 말고, 글쓴이 상황·고민에 공감·호응하는 1~2문장을 먼저 쓴 다음 "저도 요즘 ○○ 거 쓰고 있는데 괜찮더라구요" "이거 괜찮던데요?"처럼 담백하게 업체명을 한 번만 언급하세요.',
+    '댓글1에서 "최고예요" "미쳤어요" "강추해요" 같은 극찬은 쓰지 말고 "무난하게 쓰기 괜찮던데요" "저는 잘 쓰고 있어요"처럼 덤덤한 톤으로 말하세요.',
     '작성자 대댓글은 "찾아볼게요 공간이 넉넉한 게 필요했어요"처럼 로봇이 끊어 말하듯 쓰지 말고, 답을 듣고 반응하듯 이어서 1~2문장으로 쓰세요.'
   ];
   const RULE_R = [
     '후기형은 사진을 이미 올린 전제로 씁니다. 사진 보는 사람에게 말하듯 짧고 담백하게 쓰고 외관·구성·색을 글로 길게 묘사하지 마세요.',
-    '후기형 본문에 스펙 나열·홍보 문구·미사여구를 넣지 말고 며칠 써보고 달라진 점을 장면으로 쓰세요.',
+    '후기형 본문은 7~11줄로, 이 제품을 찾게 된 생활 배경 한두 줄 → 며칠 써보고 달라진 장면 → 사소한 아쉬움 순서로 자연스럽게 이어 쓰세요. 스펙 나열·홍보 문구·미사여구는 넣지 마세요.',
     '후기형 본문에는 브랜드명을 쓰지 말고, 댓글1이 "어디 제품이에요?"처럼 짧게 묻고 작성자 대댓글에서만 브랜드명을 딱 1번 안내하세요.',
     '후기형 댓글1은 짧은 질문 1~2줄, 대댓글은 묻는 말에 답하듯 1~2문장으로 이어 쓰세요.'
   ];
-  const RULE_LINES = RULE_BASE.concat(RULE_Q, RULE_R, [CONCEPT_TAIL]);
+  const RULE_LINES = RULE_BASE.concat(RULE_Q, RULE_R, [RULE_HEAD, CONCEPT_TAIL]);
+  // 예전 배포본의 기본 프롬프트 문구 — 어느 버전이 남아 있어도 규칙 줄로 알아본다.
+  const LEGACY_RULES = [
+    '질의형 본문에 제품 세부 스펙이나 특장점을 억지로 끼워넣지 말고, 진짜 카페 회원이 일상에서 가볍게 묻듯 자연스럽게 써 주세요.'
+  ];
+  const KNOWN_RULE_LINES = RULE_LINES.concat(LEGACY_RULES);
+  const RULE_SIGN_RE = /^(광고티|형식적인|느낌표는|"운동 시"|"유용해요"|뻔한 에피소드|본문은 단조롭게|분량은 질의형|질의형은|질의형 |후기형은|후기형 |작성자 대댓글은|댓글1에서 |\[기본 규칙)/;
+  function isRuleLike(raw){
+    const t = String(raw == null ? '' : raw).trim();
+    if(!t) return false;
+    if(t === RULE_HEAD || t === CONCEPT_TAIL) return true;
+    if(t.indexOf('업종/컨셉을 이어서 적어주세요') > -1) return true;
+    return KNOWN_RULE_LINES.indexOf(t) > -1 || RULE_SIGN_RE.test(t);
+  }
+  // 프롬프트 칸을 [자동 교체되는 규칙 블록]과 [사용자가 적은 업종/컨셉]으로 나눈다.
+  // 어떤 버전의 기본 문구가 남아 있어도 규칙 줄은 여기서 전부 걷어낸다.
+  function conceptParts(text){
+    const lines = String(text == null ? '' : text).split('\n');
+    let i = 0;
+    while(i < lines.length && isRuleLike(lines[i])) i++;   // 맨 위에서 이어지는 규칙 블록
+    const userLines = [];
+    for(let j = i; j < lines.length; j++){
+      if(isRuleLike(lines[j])) continue;                    // 사이에 남아 있던 옛 규칙 줄도 버린다
+      userLines.push(lines[j]);
+    }
+    const user = userLines.join('\n').replace(/^\s*\n/, '').replace(/\s+$/, '').trim();
+    return { rules: lines.slice(0, i), user: user };
+  }
+  // 규칙 블록은 항상 맨 위에 새로 깔고, 사용자 글이 있으면 그 아래에 그대로 붙인다.
+  function conceptValue(type, text){
+    const user = conceptParts(text).user;
+    return [RULE_HEAD].concat(conceptRules(type), [user || CONCEPT_TAIL]).join('\n');
+  }
+  function conceptForPrompt(text){
+    return String(text == null ? '' : text).split('\n').filter(function(l){ return l.trim() !== RULE_HEAD; }).join('\n').trim();
+  }
   function conceptRules(type){
     if(type === '후기형') return RULE_BASE.concat(RULE_R);
     if(type === '혼합') return RULE_BASE.concat(RULE_Q, RULE_R);
     return RULE_BASE.concat(RULE_Q);
   }
-  function conceptDefault(type){ return conceptRules(type).concat([CONCEPT_TAIL]).join('\n'); }
-  const DEFAULT_CONCEPT = conceptDefault('질의형');
+  function conceptDefault(type){ return conceptValue(type, ''); }
 
   const $ = s => document.querySelector(s);
   const $$ = s => Array.prototype.slice.call(document.querySelectorAll(s));
@@ -918,16 +957,14 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     $('#fCount').style.background = mixed ? '#f5f7fb' : '';
     syncConceptRules(t);
   }
-  // 성향 버튼을 누르면 기본 규칙 줄만 그 성향 것으로 갈아 끼운다. 사용자가 적어둔 컨셉 줄은 그대로 남긴다.
+  // 성향 버튼을 누르면 기본 규칙 블록을 선택한 성향 규칙으로 100% 갈아 끼운다.
+  // 예전 버전의 기본 문구나 옛 규칙 줄이 남아 있어도 전부 규칙으로 보고 지운 뒤,
+  // 사용자가 직접 적은 업종/컨셉 줄만 그대로 살려 아래에 다시 붙인다.
   function syncConceptRules(type){
     const el = $('#fConcept'); if(!el) return;
-    const lines = String(el.value || '').split('\n');
-    const isRule = function(l){ return RULE_LINES.indexOf(String(l).trim()) > -1; };
-    if(!lines.some(isRule)) return;   // 규칙이 없는, 사용자가 직접 쓴 칸은 건드리지 않는다
-    const user = lines.filter(function(l){
-      return !isRule(l) && String(l).trim() !== CONCEPT_TAIL;
-    }).join('\n').trim();
-    el.value = conceptRules(type).concat([user || CONCEPT_TAIL]).join('\n');
+    el.value = conceptValue(type, el.value);
+    // 바뀐 내용이 바로 화면·요약에 반영되도록 input 이벤트를 알린다.
+    try{ el.dispatchEvent(new Event('input', { bubbles: true })); }catch(e){}
   }
   function currentCounts(){
     if(state.type === '혼합'){
@@ -946,9 +983,10 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
   // 실측 (질의형/후기형, 중앙값 기준)
   // 질의형: 본문 170자·6~7줄·줄당 25자, 댓글1 105자·4줄(질문 아님), 대댓글 50자·2줄, 빈 줄 0~1
   // 후기형: 본문 290자·11~12줄·줄당 27자, 댓글1 46자·2줄(질문), 대댓글 62자·2.5줄, 빈 줄 2
+  // 요청 기준으로 본문은 질의형 4~7줄·후기형 7~11줄 안에서 상황→고민/경험이 이어지게 쓴다.
   const HS = {
-    q: {min:110, max:210, lines:[3,7]},
-    r: {min:240, max:360, lines:[8,14]}
+    q: {min:110, max:210, lines:[4,7]},
+    r: {min:200, max:340, lines:[7,11]}
   };
 
   const PERSONAS = [
@@ -1067,6 +1105,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     [/효자템|인생템|꿀템|필수템|최애템/g, '유행어'],
     [/완벽\s*그\s*자체|완벽합니다|완벽해요/g, '미사여구'],
     [/강력\s*추천|강추드립니다|강추합니다|적극\s*추천/g, '홍보문구'],
+    [/최고예요|최고에요|최고입니다|미쳤어요|미쳤다|미쳤네요|강추해요|강추해|강추!/g, '극찬'],
     [/추천드립니다|추천드려요|권해드립니다|권해드려요/g, '홍보문구'],
     [/어떨까요|어떠실까요|어떨지\s*모르겠/g, 'AI 말투'],
     [/하시면\s*좋을\s*것\s*같|해\s*보시는\s*건/g, 'AI 말투'],
@@ -1098,11 +1137,8 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
   // 업종 판단에는 사용자가 실제로 적은 컨셉만 쓴다.
   // 기본값 문구에 들어 있는 '광고' 같은 단어가 업종(마케팅/B2B)을 잘못 잡지 않도록 미리 걷어낸다.
   function conceptStyleText(){
-    const raw = String($('#fConcept').value || '');
-    const keep = raw.split('\n').filter(function(l){
-      const t = l.trim();
-      return t && RULE_LINES.indexOf(t) < 0;
-    }).join(' ');
+    const raw = conceptParts($('#fConcept').value).user;
+    const keep = String(raw || '').replace(/\n+/g, ' ');
     return keep.replace(/광고\s*티|광고티|홍보성|특수문자\s*웃음\s*표시|스펙|특장점|느낌표|쉼표|맞춤법|띄어쓰기|교과서|스마트폰|러프/g,' ');
   }
 
@@ -1244,7 +1280,16 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       }
     }
     if(isR && it.comment1 && !/\?|어디|어떤|얼마|뭐|이름|정보|궁금/.test(it.comment1)){ hits.push('후기형 댓글1이 질문이 아님'); score -= 8; }
-    if(!isR && it.comment1 && /\?$/.test(it.comment1.trim())){ hits.push('질의형 댓글1이 되물음'); score -= 6; }
+    // 질의형 댓글1은 "이거 괜찮던데요?" 같은 담백한 권유도 허용한다.
+    // 글쓴이에게 되묻거나 애원하는 투(어디예요? 알려주실 수 있나요?)일 때는 감점.
+    const c1Last = c1.split('\n').map(function(l){ return l.trim(); }).filter(Boolean).slice(-1)[0] || '';
+    if(!isR && c1Last && /\?$/.test(c1Last) && /(어디|어떤|얼마|몇|언제|있으|계세|인가|할까|될까|주실|알려|여쭤)/.test(c1Last)){
+      hits.push('질의형 댓글1이 글쓴이에게 되묻는 말'); score -= 6;
+    }
+    // 요청: 질의형 댓글1은 공감·호응을 먼저 하고 업체명을 꺼낸다.
+    if(!isR && brand && brand.length > 1 && c1First.indexOf(brand) > -1 && c1.split('\n').filter(function(l){ return l.trim(); }).length > 1){
+      hits.push('댓글1이 업체명부터 꺼냄'); score -= 6;
+    }
 
     score = Math.max(0, Math.min(100, score));
     return { score: score, hits: hits };
@@ -1260,6 +1305,9 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     [/순삭/g,'금방'], [/극락/g,'편한'], [/레전드/g,'좋은'], [/갓성비/g,'가성비 좋은'],
     [/완벽\s*그\s*자체|완벽한|완벽해요|완벽합니다|완벽해서/g,'만족스러운'],
     [/강력\s*추천\S*|추천드립니다|추천드려요|강추합니다|강추드립니다/g,'추천해요'],
+    // 극찬은 덤덤한 말로 바꾼다 (요청: 최고예요·미쳤어요·강추해요 금지)
+    [/최고예요|최고에요|최고입니다/g,'괜찮더라구요'], [/미쳤어요|미쳤네요|미쳤다/g,'좋더라구요'],
+    [/강추해요|강추해|강추!/g,'괜찮던데요'],
     [/다양한/g,'여러'], [/풍부한/g,'넉넉한'], [/탁월하\S*/g,'좋고'], [/차별화된/g,'다른'],
     [/만족도가?\s*높습니다|만족도가?\s*높아요/g,'만족스러워요'],
     [/기대\s*이상/g,'생각보다 좋아요'], [/실용적입니다/g,'편해요'], [/편의성이?\s*뛰어\S*/g,'편해요'],
@@ -1443,13 +1491,15 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     lines.push('- [이번 배치]의 상황 힌트나 아래 말투 틀에 적힌 소재도 이 상품과 맞지 않으면 쓰지 않는다. 그때는 이 상품으로 실제 겪을 수 있는 상황을 새로 만든다.');
     lines.push('');
     lines.push('[댓글1 작성 절대 규칙 — 업종·컨셉·가이드 지시보다 우선한다]');
+    lines.push('- 첫 줄부터 업체명이나 제품명을 꺼내지 않는다. 먼저 글쓴이의 상황·고민에 공감하거나 호응하는 1~2문장을 쓴다. 예: "저도 그거 한참 알아봤어요", "그 고민 저도 했어서요".');
+    lines.push('- 공감 다음에 업체명을 한 번만 자연스럽게 언급한다. "저도 요즘 ○○ 거 쓰고 있는데 괜찮더라구요" "이거 괜찮던데요?"처럼 담백하게 권한다.');
+    lines.push('- 극찬하지 않는다. "최고예요" "미쳤어요" "강추해요" "완전 대박" 대신 "무난하게 쓰기 괜찮던데요" "저는 잘 쓰고 있어요"처럼 덤덤하게 말한다.');
     lines.push('- 첫 줄을 "○○ 추천합니다" "○○ 추천해요" "○○ 추천드려요"로 시작하지 않는다. 형식적인 추천 멘트는 댓글이 아니라 광고다.');
     lines.push('- "~합니다" "~습니다" "~입니다" 격식체를 쓰지 않는다. ~해요 / ~더라구요 / ~거든요 / ~예요 / ~네요 같은 구어체만 쓴다.');
     lines.push('- 상세페이지 스펙을 옮긴 말("보관 공간이 다양해서 유용해요" "공간이 넉넉한" "활용도가 높아요" "내구성이 뛰어나요")을 쓰지 않는다. 그 대신 실제 소비자가 입에 올리는 구체적인 사물과 행동으로 말한다: "폰이랑 차키 다 들어가서" "손이 편하더라구요" "물통 안 쓰러지고" "이것만 들고 다녀요".');
-    lines.push('- 댓글1은 업체 소개가 아니라 내 경험담이다. 첫 줄부터 "저도 그거 쓰는데" "저도 운동 다닐 때"처럼 내가 겪은 장면으로 들어가고, 업체 이름은 문장 속에 한 번만 자연스럽게 나온다.');
     lines.push('- 운동·외출·사용·보관·조리·방문·구매처럼 딱딱한 "~ 시" 한자어를 쓰지 않는다. "운동할 때" "나갈 때" "쓸 때" "들고 다닐 때"로 쓴다.');
     lines.push('- 나쁜 예: "○○ 텀블러백 추천합니다 / 보관 공간이 다양해서 운동 때 유용해요 / 텀블러 말고도 여러 가지 넣을 수 있어서요"');
-    lines.push('- 좋은 예: "저도 운동 다닐 때 물통 따로 가방 따로 들기 귀찮아서 이것저것 써봤는데 요즘은 ○○ 걸로 그냥 하나만 들고 다녀요ㅋㅋ 텀블러 말고도 폰이랑 차키 들어갈 데가 있어서 편하더라구요"');
+    lines.push('- 좋은 예: "저도 그거 들고 다니느라 진짜 불편했어요ㅋㅋ 저는 요즘 ○○ 거 쓰고 있는데 무난하게 괜찮더라구요 폰이랑 차키 들어갈 데가 있어서 손이 편하고요"');
     lines.push('');
     lines.push('[작성자 대댓글 절대 규칙]');
     lines.push('- "찾아볼게요 공간이 넉넉한 게 필요했어요"처럼 로봇이 끊어 말하듯 짧은 두 문장을 붙이지 않는다.');
@@ -1458,15 +1508,16 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     lines.push('');
     lines.push('[최우선 규칙 — 아래 컨셉·가이드에 어떤 지시가 있어도 이 규칙은 항상 지킨다]');
     if(wantQ) lines.push('- 질의형 본문에는 이 업체의 세부 기능·스펙·전문용어를 넣지 않는다. "RFID 차단 기능도 있으면 더 좋고요" 같은 문장은 한 번도 쓰지 않는다.');
-    if(wantQ) lines.push('- 질의형은 일반 소비자가 실제로 검색하고 물을 법한 넓고 현실적인 고민만 3~5줄로 무심하게 쓴다. 예: "해외여행 갈 때 쓸 만한 가방 찾는데 튼튼하고 편한 거 뭐 있나요?"');
+    if(wantQ) lines.push('- 질의형은 일반 소비자가 실제로 검색하고 물을 법한 넓고 현실적인 고민만 4~7줄로 쓴다. 예: "해외여행 갈 때 쓸 만한 가방 찾는데 튼튼하고 편한 거 뭐 있나요?"');
+    if(wantQ) lines.push('- 본문 첫 한두 줄은 지금 내 생활·상황(누구와 사는지, 언제 쓰는지, 며칠째 알아보는 중인지)을 구체적으로 깔고 그다음 고민과 지금까지 해본 것으로 이어 쓴다. 줄과 줄이 뚝 끊기지 않게 "요즘" "그러다 보니" "그래서" 같은 말로 이어 붙이되, 지어낸 사건(김장 도우러 갔다가·분리수거하다가)으로 늘리지는 않는다.');
     lines.push('- 가이드의 특장점은 한 원고에 다 우겨넣지 않는다. 댓글1(추천자)이나 후기형 본문에 많아야 1~2개만 겪은 장면 안에 녹이고, 나머지 장점은 다음 원고로 넘긴다.');
     if(wantQ) lines.push('- "~있으면 더 좋고요" "~한 제품 추천 부탁드려요" 같은 전형적인 바이럴 질문 종결을 쓰지 않는다. 실제로 사람이 툭 던지듯 끝낸다.');
     lines.push('- 느낌표와 쉼표는 쓰지 않는다. 맞춤법·띄어쓰기를 교과서처럼 맞추지 말고, 실제 스마트폰으로 툭툭 친 것처럼 살짝 러프하게 쓴다. 특수문자 웃음 표시(캐럿 두 개 조합 등)는 제목·본문·댓글 어디에도 쓰지 않는다.');
     lines.push('- 브랜드명(상호명)은 질의형이면 제목·본문 0회, 댓글1에서 최대 1회만 쓴다. 작성자 대댓글에서는 브랜드명을 절대 다시 쓰지 않고 "찾아볼게요" "한번 볼게요" 같은 반응으로만 잇는다. 후기형도 한 칸에서 브랜드명을 두 번 이상 반복하지 않는다(최대 1회).');
-    lines.push('- 뻔한 도입 에피소드("김장 도우러 갔다가" "분리수거하다가" "아침에 우산 챙기다가")를 지어 붙이지 않는다. 폰으로 30초 만에 툭 쓰듯 첫 줄부터 본론·상황으로 들어가고, 과장된 감탄과 인위적인 스토리텔링은 쓰지 않는다.');
+    lines.push('- 뻔한 도입 에피소드("김장 도우러 갔다가" "분리수거하다가" "아침에 우산 챙기다가")를 지어 붙이지 않는다. 첫 줄부터 내 처지로 들어가 상황이 자연스럽게 고민이나 경험으로 이어지게 쓴다. 과장된 감탄과 인위적인 스토리텔링은 쓰지 않는다.');
     lines.push('');
     lines.push('[가장 중요 — 업종 / 컨셉 프롬프트]');
-    lines.push(g.concept ? g.concept : '(별도 지시 없음. 아래 업체 정보와 원고 작성 가이드에서 업종·제품·상황을 판단해 그 업체에 맞게 쓴다.)');
+    lines.push(g.concept ? conceptForPrompt(g.concept) : '(별도 지시 없음. 아래 업체 정보와 원고 작성 가이드에서 업종·제품·상황을 판단해 그 업체에 맞게 쓴다.)');
     lines.push('위 컨셉이 어떤 내용이든 [최우선 규칙]은 그대로 적용한다. 업종·제품·상황은 아래 [업체 정보]와 [원고 작성 가이드]에서 판단해 이 업체에 맞게 쓴다.');
     lines.push('');
     lines.push('[업체 정보]');
@@ -1506,6 +1557,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     lines.push('- 효능·실적 과장: 100% 보장, 부작용 없이, 즉시 효과, 완치, 후기 ○건 돌파');
     lines.push('- 구조: 모든 줄 길이가 비슷한 자로 잰 문장, 같은 어미 3회 이상 연속, 문단 3개가 규칙적으로 반복, 마지막에 "여러분도 꼭 해보세요"');
     lines.push('- 뻔한 도입 에피소드와 인위적인 스토리텔링: "김장 도우러 갔다가" "분리수거하다가" "아침에 우산 챙기다가" 같은 지어낸 서론, 과장된 감탄("완전 대박" "진짜 최고")');
+    lines.push('- 극찬 남발: "최고예요" "미쳤어요" "강추해요". 좋으면 "무난하게 쓰기 괜찮던데요" "저는 잘 쓰고 있어요" 정도로 담백하게 말한다.');
     lines.push('');
     if(wantR){
     lines.push('[후기형 — 사진이 함께 올라가는 글]');
@@ -1514,7 +1566,8 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     lines.push('- 특장점·가이드 내용은 나열하지 말고, 겪은 장면 안에 녹인다. "이틀 써보니" 같은 말로 붙인다.');
     lines.push('- 본문에 상호명을 쓰지 않는다. 댓글1이 묻고 작성자 대댓글에서 답한다. 상호명은 대댓글 답에서 딱 한 번만 쓰고 같은 칸에서 다시 반복하지 않는다.' + (photoOn ? '' : ' (사진 첨부가 없으면 장면 묘사를 한 줄 늘려도 된다.)'));
     lines.push('- 제목은 상황이나 결과 한 조각. 끝에 ?·?ㅋㅋ·ㅎㅎ·~ 중 하나를 자연스럽게 붙인다.');
-    lines.push('- 분량: 본문 9~13줄(240~340자), 빈 줄 1~2개. 댓글1은 1~2줄 짧은 질문. 대댓글은 2~3줄 답 + 팁.');
+    lines.push('- 본문은 이 제품을 찾게 된 생활 배경 한두 줄로 시작해서 며칠 써보고 달라진 장면으로 이어지고, 사소한 아쉬움 하나로 닫는다. 줄 사이가 끊기지 않게 이어 쓰되 사건을 꾸며내지 않는다.');
+    lines.push('- 분량: 본문 7~11줄(200~330자), 빈 줄 1~2개. 댓글1은 1~2줄 짧은 질문. 대댓글은 2~3줄 답 + 팁.');
     lines.push('- 끝은 재방문·재구매 의사나 사소한 아쉬움으로 닫는다.');
     lines.push('- 생활감은 남편·아이·집안일의 구체적인 장면 한두 개면 충분하다. 다만 뻔한 도입 에피소드로 시작하지 않고 첫 줄부터 이 제품 얘기로 들어간다.');
     lines.push('- 담백하게 쓴다. 좋았던 점은 한 번만 말하고, 감탄사를 겹쳐 쓰거나 사건을 꾸며내지 않는다.');
@@ -1525,10 +1578,10 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     lines.push('[질의형 — 사진 없이 올라가는 글]');
     lines.push('- 제목·본문 어디에도 상호명을 쓰지 않는다. (지역명은 써도 된다)');
     lines.push('- 댓글1에서 상호명은 딱 한 번만 쓴다. 같은 댓글 안에서 두 번째부터는 "거기" "그 제품"처럼만 말한다.');
-    lines.push('- 질문은 넓고 현실적으로. 일반 소비자가 실제로 검색할 법한 고민만 3~5줄로 무심하게 쓴다. 이 업체의 특장점·스펙·전문용어는 본문에 넣지 않는다.');
-    lines.push('- 상황·이유·지금까지 해본 것을 한 줄씩. 질문은 마지막에 한 번만, 되묻거나 애원하는 투로 늘리지 않는다.');
-    lines.push('- 분량: 본문 3~5줄(110~190자), 빈 줄 0~1개.');
-    lines.push('- 댓글1은 되묻는 말이 아니라 실제 써본 사람의 경험담이다. 첫 줄은 "○○ 추천합니다"가 아니라 내가 겪은 장면이고, 상호명은 문장 속에 한 번만 넣는다. 3~5줄. (특장점은 여기서 1~2개만, 사물과 행동으로)');
+    lines.push('- 질문은 넓고 현실적으로. 일반 소비자가 실제로 검색할 법한 고민만 4~7줄로 쓴다. 이 업체의 특장점·스펙·전문용어는 본문에 넣지 않는다.');
+    lines.push('- 첫 한두 줄은 지금 내 생활(누구와 사는지, 언제 쓰는지, 며칠째인지)로 시작해서 그게 고민으로 이어진다. "요즘" "그러다 보니" "그래서" 같은 말로 줄과 줄을 이어 붙인다.');
+    lines.push('- 분량: 본문 4~7줄(110~210자), 빈 줄 0~1개.');
+    lines.push('- 댓글1은 되묻는 말이 아니다. 첫 1~2문장은 글쓴이 상황·고민에 공감·호응하고, 그다음 "저도 요즘 ○○ 거 쓰고 있는데 괜찮더라구요" "이거 괜찮던데요?"처럼 담백하게 상호명을 한 번만 넣는다. 2~4줄. 극찬은 없고, 특장점은 아예 안 쓰거나 1개만 사물과 행동으로');
     lines.push('- 작성자 대댓글은 1~2문장. 상호명은 다시 쓰지 않고 답을 듣고 반응하듯 이어 쓴다. "찾아볼게요 공간이 넉넉한 게 필요했어요"처럼 끊어 쓰지 않는다.');
     lines.push('');
     }
@@ -1552,9 +1605,9 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       lines.push('(지금까지 해본 것과 안 된 이유 한 줄)');
       lines.push('(실제로 검색하고 물어볼 법한 질문 한 번)');
       lines.push('댓글1:');
-      lines.push('(나도 그걸 써봤다는 말로 시작. 상호명은 문장 속에 한 번만)');
-      lines.push('(어떤 상황에서 어떻게 썼는지 실제 사물·행동으로)');
-      lines.push('(그래서 어땠는지 한 줄)');
+      lines.push('(글쓴이 상황·고민에 공감하는 1~2문장. 업체명은 아직 꺼내지 않는다)');
+      lines.push('(공감 다음에 "저도 요즘 ○○ 거 쓰고 있는데 괜찮더라구요"처럼 담백하게 상호명 한 번)');
+      lines.push('(어떤 상황에서 어떻게 썼는지 실제 사물·행동으로 + 어땠는지 한 줄. 극찬 금지)');
       lines.push('대댓글:');
       lines.push('(반응 한 마디 + 찾아볼게요 같은 한 줄)');
       lines.push('');
@@ -1795,17 +1848,18 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     }
   ];
 
+  // 댓글1은 공감·호응 1~2문장 먼저, 그다음 담백하게 업체명 한 번 (극찬 없이)
   const C1_Q_PLACE = [
-    function(brand, w, P){ return ['저는 ' + brand + ' 다녀왔는데 ' + josa(w,'이','가') + ' 편했어요', P + '도 괜찮았고요', '예약하고 가시면 기다리지 않아요'].join('\n'); },
-    function(brand, w, P){ return ['저희는 ' + brand + ' 이용했어요', w + ' 괜찮았고 ' + P + '도 만족스러웠어요', '처음 가시면 상담부터 받아보세요'].join('\n'); },
-    function(brand, w, P){ return [brand + ' 여기 한번 가보세요', '저도 두 번 갔는데 ' + josa(w,'이','가') + ' 편했어요', P + ' 쪽으로 봐주셔서 좋았고요'].join('\n'); },
-    function(brand, w, P){ return ['저라면 ' + brand + ' 쪽으로 알아볼 것 같아요', w + ' 챙겨주시고 ' + P + '도 괜찮았어요', '가는 길에 전화해보시면 대기 있는지 알려주세요'].join('\n'); }
+    function(brand, w, P){ return ['저도 그거 알아보고 있었어요', '저는 ' + brand + ' 다녀왔는데 ' + josa(w,'이','가') + ' 무난했어요', P + '도 괜찮았고요'].join('\n'); },
+    function(brand, w, P){ return ['그 고민 저도 했어요', '저희는 ' + brand + ' 이용했는데 괜찮던데요', w + ' 쪽은 저도 만족했어요'].join('\n'); },
+    function(brand, w, P){ return ['저도 비슷하게 찾고 있었어요', brand + ' 여기 한번 가보세요', '저는 ' + w + ' 보고 정했는데 잘 쓰고 있어요'].join('\n'); },
+    function(brand, w, P){ return ['맞아요 고르기 어렵죠', '저라면 ' + brand + ' 쪽으로 알아보시는 것도 괜찮을 것 같아요', w + ' 챙겨주시면 대기 없이 들어가요'].join('\n'); }
   ];
   const C1_Q_PRODUCT = [
-    function(brand, w, P){ return ['저는 ' + brand + ' 쓰고 있는데 ' + josa(w,'이','가') + ' 편해요', P + '도 괜찮고요', '한 달 써보고 만족해서 계속 쓰고 있어요'].join('\n'); },
-    function(brand, w, P){ return [brand + ' 걸로 바꿨는데', w + ' 할 만하고요', P + ' 하나는 확실히 좋더라고요'].join('\n'); },
-    function(brand, w, P){ return ['저희 집은 ' + brand + ' 써요', '처음엔 반신반의했는데 ' + w + ' 때문에 바꾸길 잘했어요', P + '도 생각보다 괜찮고요'].join('\n'); },
-    function(brand, w, P){ return [brand + ' 여기 한번 보세요', '저는 ' + w + ' 보고 정했는데 후회 없어요', P + ' 쪽도 마음에 들었어요'].join('\n'); }
+    function(brand, w, P){ return ['저도 그거 한참 알아봤어요', '저는 요즘 ' + brand + ' 쓰고 있는데 ' + josa(w,'이','가') + ' 무난하게 괜찮더라구요', P + '도 그럭저럭 괜찮았고요'].join('\n'); },
+    function(brand, w, P){ return ['그 고민 저도 했었어요', brand + ' 걸로 바꿔서 쓰고 있는데 이거 괜찮던데요', w + ' 쪽은 크게 불편한 데가 없어요'].join('\n'); },
+    function(brand, w, P){ return ['맞아요 이거 고르기 어렵죠', '저희 집은 ' + brand + ' 쓰고 있어요', w + ' 때문에 바꿨는데 저는 잘 쓰고 있어요'].join('\n'); },
+    function(brand, w, P){ return ['저도 같은 이유로 계속 찾아보고 있었어요', brand + ' 여기 한번 보세요', '저는 ' + w + ' 보고 정했는데 무난했어요'].join('\n'); }
   ];
   const C2_Q = [
     ['오 그런 데가 있었네요', '한번 알아봐야겠어요 고마워요~'],
@@ -2307,7 +2361,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     $('#fBrand').value = p.brand || '';
     $('#fUrl').value = p.productUrl || '';
     if(local){
-      if(p.concept !== undefined) $('#fConcept').value = p.concept || conceptDefault(state.type);
+      if(p.concept !== undefined) $('#fConcept').value = conceptValue(state.type, p.concept || '');
       if(p.merits !== undefined) $('#fMerits').value = p.merits || '';
       if(p.notes !== undefined) $('#fNotes').value = p.notes || '';
       if(p.guide !== undefined) $('#fGuide').value = p.guide || '';
@@ -2437,7 +2491,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     lines.push('· 상호명: ' + (g.brand || '(미입력)'));
     if(g.url) lines.push('· 업체 URL: ' + g.url);
     lines.push('· 사진 첨부: ' + (g.photo || '미정'));
-    if(g.concept) lines.push('· 🎯 업종 / 컨셉 프롬프트: ' + g.concept.replace(/\n/g, ' / '));
+    if(g.concept) lines.push('· 🎯 업종 / 컨셉 프롬프트: ' + conceptForPrompt(g.concept).replace(/\n/g, ' / '));
     const total = splitCount($('#fTotal').value);
     if(total) lines.push('· 총 진행 수량: ' + total.total + '건');
     lines.push('· 이번 요청: ' + [q ? '질문형 ' + q + '건' : '', r ? '후기형 ' + r + '건' : ''].filter(Boolean).join(' + ') + ' (총 ' + (q+r) + '건)');
