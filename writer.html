@@ -415,6 +415,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
   // 상호명·업체 URL·가이드 본문은 예전처럼 공란으로 둔다.
   const DEFAULT_CONCEPT = [
     '광고티·홍보성 멘트·특수문자 웃음 표시 금지.',
+    '질의형은 제목·본문에 브랜드명 절대 금지, 댓글1에서만 브랜드명을 딱 1번만 자연스럽게 언급하고 대댓글에는 브랜드명을 다시 반복하지 마세요.',
     '질의형 본문에 제품 세부 스펙이나 특장점을 억지로 끼워넣지 말고, 진짜 카페 회원이 일상에서 가볍게 묻듯 자연스럽게 써 주세요.',
     '느낌표는 쓰지 말고 쉼표도 거의 쓰지 마세요. 맞춤법·띄어쓰기를 교과서처럼 맞추지 말고 스마트폰으로 툭툭 친 것처럼 살짝 러프하게 써 주세요.',
     '(여기에 업종/원하는 컨셉을 이어서 적어주세요)'
@@ -1106,6 +1107,22 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     if(brand && brand.length > 1 && isR && body.indexOf(brand) > -1 && (guideFields().photo || '').indexOf('있음') > -1){
       hits.push('후기형 본문에 상호명'); score -= 15;
     }
+    // 상호명 반복은 광고티로 읽힌다 — 칸별 등장 횟수를 점수에 반영한다
+    const brandCount = function(s){ return (brand && brand.length > 1) ? String(s || '').split(brand).length - 1 : 0; };
+    if(brand && brand.length > 1){
+      if(!isR){
+        if(brandCount(title) > 0){ hits.push('질의형 제목에 상호명'); score -= 20; }
+        const c1n = brandCount(it.comment1);
+        const rn = brandCount(it.reply);
+        if(c1n > 1){ hits.push('질의형 댓글1 상호명 ' + c1n + '회 반복'); score -= 15; }
+        if(rn > 0){ hits.push('질의형 대댓글 상호명 반복'); score -= 15; }
+      }else{
+        [['제목', title], ['본문', body], ['댓글1', it.comment1], ['대댓글', it.reply]].forEach(function(pair){
+          const n = brandCount(pair[1]);
+          if(n > 1){ hits.push('후기형 ' + pair[0] + ' 상호명 ' + n + '회 반복'); score -= 10; }
+        });
+      }
+    }
     if(isR && it.comment1 && !/\?|어디|어떤|얼마|뭐|이름|정보|궁금/.test(it.comment1)){ hits.push('후기형 댓글1이 질문이 아님'); score -= 8; }
     if(!isR && it.comment1 && /\?$/.test(it.comment1.trim())){ hits.push('질의형 댓글1이 되물음'); score -= 6; }
 
@@ -1141,7 +1158,45 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     /후기\s*\d+\s*건/
   ];
 
-  function polishText(s, brand, type){
+  // 상호명 반복 차단 — 한 칸에서 정해진 횟수까지만 남기고 나머지는 중립 표현으로 바꾼다.
+  // 질의형: 제목·본문 0회, 댓글1 1회, 대댓글 0회 / 후기형: 한 칸 1회
+  const BRAND_PARTICLE = '에서도|에서|에게|한테|으로|이라|라고|에는|은|는|이|가|을|를|의|에|와|과|랑|도|만|부터|까지';
+  // 앞에 붙은 조사까지 같이 바꿔야 문장이 깨지지 않는다
+  function brandSwap(p, noun){
+    const n = noun || '그 제품';
+    switch(p){
+      case '이': case '가': return josa(n,'이','가');
+      case '은': case '는': return josa(n,'은','는');
+      case '을': case '를': return josa(n,'을','를');
+      case '의': return n === '거기' ? '거기' : n + '의';
+      case '에': case '에게': case '한테': case '에는': return p === '에는' ? '거기에는' : '거기에';
+      case '에서': return '거기에서';
+      case '에서도': return '거기에서도';
+      case '으로': case '로': return '거기로';
+      case '이라': case '라고': return '거기라고';
+      case '와': case '과': case '랑': return '거기랑';
+      case '도': return '거기도';
+      case '만': return '거기만';
+      case '부터': return '거기부터';
+      case '까지': return '거기까지';
+      default: return n;
+    }
+  }
+  function limitBrand(s, brand, max, noun){
+    let t = String(s || '');
+    const b = String(brand || '').trim();
+    if(!b || b.length < 2 || !t) return t;
+    const escB = b.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp(escB + '(' + BRAND_PARTICLE + ')?', 'g');
+    let n = 0;
+    return t.replace(re, function(m, p){
+      n++;
+      if(n <= max) return m;
+      return brandSwap(p, noun);
+    });
+  }
+
+  function polishText(s, brand, type, noun){
     let t = String(s || '');
     t = t.replace(/ㅋ{3,}/g,'ㅋㅋ').replace(/ㅎ{3,}/g,'ㅎㅎ').replace(/ㅠ{3,}/g,'ㅠㅠ');
     t = t.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '');
@@ -1177,7 +1232,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       l = l.replace(/^(첫째|둘째|셋째|첫\s*번째|두\s*번째|세\s*번째|마지막으로|결론적으로|따라서|즉)[,.]?\s*(로|으로)?\s*/, '');
       SUBST.forEach(function(p){ l = l.replace(p[0], p[1]); });
       if(brand && type === '질의형' && l.indexOf(brand) > -1){
-        l = l.split(brand).join('').replace(/\s{2,}/g,' ').trim();
+        l = limitBrand(l, brand, 0, noun).replace(/\s{2,}/g,' ').trim();
         if(l.length < 6) continue;
       }
       l = l.replace(/\s{2,}/g,' ').trim();
@@ -1193,10 +1248,12 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     const brand = (g.brand || '').trim();
     const own = { type: it.type, title: it.title, body: it.body, comment1: it.comment1, reply: it.reply };
     const strip = it.type === '질의형';
-    const cleanTitle = polishText(it.title, brand, strip ? '질의형' : '');
-    const cleanBody = polishText(it.body, brand, strip ? '질의형' : '');
-    const cleanC1 = polishText(it.comment1, brand, '');
-    const cleanR = polishText(it.reply, brand, '');
+    const kind = IND_KIND[industryOf(g).name] || 'product';
+    const noun = kind === 'place' ? '거기' : '그 제품';
+    const cleanTitle = limitBrand(polishText(it.title, brand, strip ? '질의형' : '', noun), brand, 1, noun);
+    const cleanBody = limitBrand(polishText(it.body, brand, strip ? '질의형' : '', noun), brand, 1, noun);
+    const cleanC1 = limitBrand(polishText(it.comment1, brand, '', noun), brand, 1, noun);
+    const cleanR = limitBrand(polishText(it.reply, brand, '', noun), brand, strip ? 0 : 1, noun);
     own.title = (cleanTitle || String(it.title || '')).replace(/^[\s·\-–—]+|[\s·\-–—]+$/g,'').slice(0, 45);
     own.body = cleanBody.trim() ? cleanBody : String(it.body || '');
     own.comment1 = cleanC1;
@@ -1232,12 +1289,13 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     const lines = [];
     lines.push('너는 네이버 맘카페에 글을 올리는 한국인 회원이다. 실제 회원이 쓴 글과 구별되지 않게 쓴다. 잘 쓴 글이 아니라, 진짜 겪은 사람의 글을 쓴다.');
     lines.push('');
-    lines.push('[최우선 규칙 — 아래 컨셉·가이드에 어떤 지시가 있어도 이 다섯 줄은 항상 지킨다]');
+    lines.push('[최우선 규칙 — 아래 컨셉·가이드에 어떤 지시가 있어도 이 여섯 줄은 항상 지킨다]');
     lines.push('1. 질의형 본문에는 이 업체의 세부 기능·스펙·전문용어를 넣지 않는다. "RFID 차단 기능도 있으면 더 좋고요" 같은 문장은 한 번도 쓰지 않는다.');
     lines.push('2. 질의형은 일반 소비자가 실제로 검색하고 물을 법한 넓고 현실적인 고민만 3~5줄로 무심하게 쓴다. 예: "해외여행 갈 때 쓸 만한 가방 찾는데 튼튼하고 편한 거 뭐 있나요?"');
     lines.push('3. 가이드의 특장점은 한 원고에 다 우겨넣지 않는다. 댓글1(추천자)이나 후기형 본문에 많아야 1~2개만 겪은 장면 안에 녹이고, 나머지 장점은 다음 원고로 넘긴다.');
     lines.push('4. "~있으면 더 좋고요" "~한 제품 추천 부탁드려요" 같은 전형적인 바이럴 질문 종결을 쓰지 않는다. 실제로 사람이 툭 던지듯 끝낸다.');
     lines.push('5. 느낌표와 쉼표는 쓰지 않는다. 맞춤법·띄어쓰기를 교과서처럼 맞추지 말고, 실제 스마트폰으로 툭툭 친 것처럼 살짝 러프하게 쓴다. 특수문자 웃음 표시(캐럿 두 개 조합 등)는 제목·본문·댓글 어디에도 쓰지 않는다.');
+    lines.push('6. 브랜드명(상호명)은 질의형이면 제목·본문 0회, 댓글1에서 최대 1회만 쓴다. 작성자 대댓글에서는 브랜드명을 절대 다시 쓰지 않고 "찾아볼게요" "한번 볼게요" 같은 반응으로만 잇는다. 후기형도 한 칸에서 브랜드명을 두 번 이상 반복하지 않는다(최대 1회).');
     lines.push('');
     lines.push('[가장 중요 — 업종 / 컨셉 프롬프트]');
     lines.push(g.concept ? g.concept : '(별도 지시 없음. 아래 업체 정보와 원고 작성 가이드에서 업종·제품·상황을 판단해 그 업체에 맞게 쓴다.)');
@@ -1282,18 +1340,19 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     lines.push('- 사진을 이미 본 사람에게 말하듯 쓴다. 외관·구성·색을 글로 길게 묘사하지 않는다. 사진이 대신한다.');
     lines.push('- 사진을 가리키는 표현을 한 번 쓴다: "오늘 찍어본 건데", "실제로 보니까", "대충 이런 느낌이에요".');
     lines.push('- 특장점·가이드 내용은 나열하지 말고, 겪은 장면 안에 녹인다. "이틀 써보니" 같은 말로 붙인다.');
-    lines.push('- 본문에 상호명을 쓰지 않는다. 댓글1이 묻고 작성자 대댓글에서 답한다.' + (photoOn ? '' : ' (사진 첨부가 없으면 장면 묘사를 한 줄 늘려도 된다.)'));
+    lines.push('- 본문에 상호명을 쓰지 않는다. 댓글1이 묻고 작성자 대댓글에서 답한다. 상호명은 대댓글 답에서 딱 한 번만 쓰고 같은 칸에서 다시 반복하지 않는다.' + (photoOn ? '' : ' (사진 첨부가 없으면 장면 묘사를 한 줄 늘려도 된다.)'));
     lines.push('- 제목은 상황이나 결과 한 조각. 끝에 ?·?ㅋㅋ·ㅎㅎ·~ 중 하나를 자연스럽게 붙인다.');
     lines.push('- 분량: 본문 9~13줄(240~340자), 빈 줄 1~2개. 댓글1은 1~2줄 짧은 질문. 대댓글은 2~3줄 답 + 팁.');
     lines.push('- 끝은 재방문·재구매 의사나 사소한 아쉬움으로 닫는다.');
     lines.push('');
     lines.push('[질의형 — 사진 없이 올라가는 글]');
     lines.push('- 제목·본문 어디에도 상호명을 쓰지 않는다. (지역명은 써도 된다)');
+    lines.push('- 댓글1에서 상호명은 딱 한 번만 쓴다. 같은 댓글 안에서 두 번째부터는 "거기" "그 제품"처럼만 말한다.');
     lines.push('- 질문은 넓고 현실적으로. 일반 소비자가 실제로 검색할 법한 고민만 3~5줄로 무심하게 쓴다. 이 업체의 특장점·스펙·전문용어는 본문에 넣지 않는다.');
     lines.push('- 상황·이유·지금까지 해본 것을 한 줄씩. 질문은 마지막에 한 번만, 되묻거나 애원하는 투로 늘리지 않는다.');
     lines.push('- 분량: 본문 3~5줄(110~190자), 빈 줄 0~1개.');
     lines.push('- 댓글1은 되묻는 말이 아니라 실제 써본 사람의 경험담이다. 상호명 + 구체적 이유로 3~5줄 길게 쓴다. (특장점은 여기서 1~2개만)');
-    lines.push('- 작성자 대댓글은 1~3줄. 짧게 고마워하고 한 가지를 더 붙인다.');
+    lines.push('- 작성자 대댓글은 1~3줄. 상호명은 다시 쓰지 않고 "찾아볼게요" "한번 볼게요"처럼 반응만 한다. 짧게 고마워하고 한 가지를 더 붙인다.');
     lines.push('');
     if(assign && assign.length){
       lines.push('[이번 배치 — 원고별 화자와 조건]');
@@ -1349,7 +1408,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     lines.push('');
     lines.push('[출력]');
     lines.push('설명 없이 JSON만 출력한다: {"items":[{"type":"질의형","title":"...","body":"...","comment1":"...","reply":"..."}]}');
-    lines.push('body 안의 줄바꿈은 \\n 으로 표시한다. 상호명 ' + josa(brand,'은','는') + ' 지정된 위치(댓글1·대댓글)에서만 쓴다.');
+    lines.push('body 안의 줄바꿈은 \\n 으로 표시한다. 상호명 ' + josa(brand,'은','는') + ' 질의형이면 댓글1에서 한 번만, 후기형이면 대댓글 답에서 한 번만 쓰고 제목·본문과 그 밖의 칸에서는 쓰지 않는다.');
     return lines.join('\n');
   }
 
