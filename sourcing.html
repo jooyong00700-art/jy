@@ -358,12 +358,12 @@ body.force-pc .btn-go{width:auto !important; height:34px !important; padding:0 6
   <!-- 최상단: 오늘 소싱 스케줄 -->
   <div class="sched" id="sched">
     <div class="sh">
-      <span>🏆 <b>골드박스 매일 09:00</b></span><span class="sep">·</span>
+      <span>🏆 <b>골드박스 매일 07:00</b></span><span class="sep">·</span>
       <span>🔍 <b>정기 소싱 09:00~21:59</b> (2시간마다)</span>
       <span class="cd" id="schedCd">계산 중…</span>
     </div>
     <div class="row" id="schedChips"></div>
-    <div class="note" id="schedNote">야간 22:00~08:59는 휴식 시간입니다.</div>
+    <div class="note" id="schedNote">야간 22:00~06:59는 휴식 시간입니다. (골드박스만 07:00 자동 오픈)</div>
   </div>
 
   <div class="summary">
@@ -744,7 +744,7 @@ function paintGB(){
   btn.textContent = GB.open ? "접기" : "펼치기";
   btn.setAttribute("aria-pressed", String(GB.open));
   if(!GB.items.length){
-    row.innerHTML = '<div class="gb-empty">매일 오전 9시 자동 업데이트 예정<span class="sm">판매자로켓(로켓그로스) 상품만 모아 보여드립니다</span></div>';
+    row.innerHTML = '<div class="gb-empty">매일 오전 7시 자동 업데이트 예정<span class="sm">판매자로켓(로켓그로스) 상품만 모아 보여드립니다</span></div>';
     return;
   }
   row.innerHTML = GB.items.map(gbCardHTML).join("");
@@ -754,7 +754,7 @@ function paintGB(){
    ⏰ 오늘 소싱 스케줄 (KST 기준)
    ============================================================ */
 var SCHED_ROUNDS = [
-  {min: 540,  label: "🏆 09:00 골드박스", gold: true},
+  {min: 420,  label: "🏆 07:00 골드박스", gold: true},
   {min: 540,  label: "09:00"},
   {min: 660,  label: "11:00"},
   {min: 780,  label: "13:00"},
@@ -801,7 +801,7 @@ function paintSched(){
     box.innerHTML = '<span class="schip wait">⏳ 불러오는 중…</span>';
     $("schedCd").className = "cd";
     $("schedCd").textContent = "계산 중…";
-    $("schedNote").textContent = "지금 " + now.hhmm + " (KST) · 야간 22:00~08:59는 휴식 시간입니다.";
+    $("schedNote").textContent = "지금 " + now.hhmm + " (KST) · 야간 22:00~06:59는 휴식 시간입니다. (골드박스만 07:00 자동 오픈)";
     return;
   }
   var goldDone = (GB.date === now.date) && GB.items.length > 0;
@@ -819,20 +819,20 @@ function paintSched(){
   });
   box.innerHTML = html;
 
-  var starts = [540, 660, 780, 900, 1020, 1140, 1260];
+  var starts = [420, 540, 660, 780, 900, 1020, 1140, 1260];
   var next = null;
   for(var i = 0; i < starts.length; i++){ if(starts[i] > now.min){ next = starts[i]; break; } }
   var cd = $("schedCd");
   if(next === null){
     cd.className = "cd hot";
-    cd.textContent = "오늘 소싱 마감 · 내일 09:00 골드박스 예정";
+    cd.textContent = "오늘 소싱 마감 · 내일 07:00 골드박스 예정";
   } else {
     var diff = next - now.min, hh = Math.floor(diff / 60), mm = diff % 60;
     cd.className = "cd";
-    cd.textContent = (next === 540 ? "다음 09:00 골드박스까지 " : "다음 소싱까지 ") +
+    cd.textContent = (next === 420 ? "다음 07:00 골드박스까지 " : "다음 소싱까지 ") +
       (hh > 0 ? hh + "시간 " : "") + (mm > 0 ? mm + "분 " : "") + "남음";
   }
-  $("schedNote").textContent = "지금 " + now.hhmm + " (KST) · 야간 22:00~08:59는 휴식 시간입니다.";
+  $("schedNote").textContent = "지금 " + now.hhmm + " (KST) · 야간 22:00~06:59는 휴식 시간입니다. (골드박스만 07:00 자동 오픈)";
 }
 
 $("gbToggle").addEventListener("click", function(){
