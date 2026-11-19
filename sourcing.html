@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#0f1a30">
 <meta name="color-scheme" content="light">
 <meta name="robots" content="noindex,nofollow">
-<title>리스페토 소싱시트 · 실시간</title>
+<title>쿠팡 로켓그로스 소싱시트 · 실시간</title>
 <style>
 :root{
   --navy:#0f1a30; --navy2:#18294a; --navy3:#24365c;
@@ -124,7 +124,9 @@ select.sort:focus{border-color:var(--blue)}
 }
 .item:last-child{border-bottom:0}
 .item:hover{background:#fcfdff}
-.i-idx{grid-area:idx; font-size:12px; font-weight:800; color:#9aa5ba; font-variant-numeric:tabular-nums}
+.i-idx{grid-area:idx; font-size:12px; font-weight:800; color:#9aa5ba; font-variant-numeric:tabular-nums; line-height:1.2}
+.i-date{color:#aab4c7; font-weight:600; font-size:10px; letter-spacing:0; margin-top:3px; white-space:nowrap; font-variant-numeric:tabular-nums}
+.i-date .tm{display:block; color:#bcc4d3}
 .i-main{grid-area:main; min-width:0}
 .i-name{font-size:13.5px; font-weight:700; color:var(--ink); letter-spacing:-.2px; line-height:1.35; word-break:keep-all; overflow-wrap:anywhere}
 .i-sub{display:flex; align-items:center; gap:5px; flex-wrap:wrap; margin-top:4px; font-size:11.5px; color:var(--muted)}
@@ -165,7 +167,6 @@ footer.ft code{background:#e9edf5; border-radius:4px; padding:1px 5px; font-size
 }
 .viewbtn:hover{border-color:#c9d3e5; color:var(--navy)}
 .viewbtn:active{transform:translateY(1px)}
-.ftv{color:#adb7c8; font-size:11px}
 
 /* to top */
 .totop{
@@ -188,12 +189,13 @@ footer.ft code{background:#e9edf5; border-radius:4px; padding:1px 5px; font-size
   .item{
     grid-template-columns:1fr 1fr 1fr 1fr;
     grid-template-areas:
-      "main main main main"
+      "main main main idx"
       "price rev pur btn";
     row-gap:9px; padding:13px 13px 12px; align-items:stretch;
     border-bottom:8px solid var(--bg);
   }
-  .i-idx{display:none}
+  .i-idx{display:block; text-align:right; align-self:start; font-size:12.5px; padding-top:1px}
+  .i-idx .i-date{text-align:right; margin-top:2px; font-size:10.5px}
   .i-name{font-size:14px}
   .i-price,.i-rev,.i-pur{text-align:left; font-size:14px; display:flex; flex-direction:column; gap:1px}
   .lbl{display:block; font-size:10.5px; font-weight:700; color:var(--muted); letter-spacing:0}
@@ -223,7 +225,8 @@ body.force-pc .item{
   row-gap:10px !important; padding:11px 14px !important; align-items:center !important;
   border-bottom:1px solid var(--line2) !important;
 }
-body.force-pc .i-idx{display:block !important}
+body.force-pc .i-idx{display:block !important; text-align:left !important; font-size:12px !important}
+body.force-pc .i-idx .i-date{text-align:left !important; font-size:10px !important}
 body.force-pc .i-name{font-size:13.5px !important}
 body.force-pc .i-price,body.force-pc .i-rev,body.force-pc .i-pur{display:block !important; text-align:right !important; font-size:13px !important}
 body.force-pc .i-price{font-size:14px !important; font-weight:800 !important}
@@ -242,7 +245,7 @@ body.force-pc .btn-go{width:100% !important; height:34px !important; padding:0 !
   <div class="wrap">
     <div class="toprow">
       <div class="brand"><span class="dot"></span>
-        <span>리스페토 소싱시트<small>로켓그로스 · 검증 확정 상품</small></span>
+        <span>쿠팡 소싱시트<small>로켓그로스 · 검증 확정 상품</small></span>
       </div>
       <span class="pill" id="srcPill"><i></i><span id="srcText">불러오는 중…</span></span>
       <span class="spacer"></span>
@@ -285,11 +288,8 @@ body.force-pc .btn-go{width:100% !important; height:34px !important; padding:0 !
   </div>
 
   <footer class="ft">
-    <div><b>데이터 원본</b> · GitHub <code id="ftRepo">jooyong00700-art/jy</code> — <code>coupang-sourcing-all.csv</code> (검증 확정 상품만 · Contents API 무캐시 로드)</div>
-    <div id="ftNote">월 800명 이상 구매 · 판매가 9,000원 이상 · 판매자로켓 검증 완료 상품만 표시합니다.</div>
     <div class="ftrow">
       <button class="viewbtn" id="btnView" type="button" aria-pressed="false">🖥️ PC 버전 보기</button>
-      <span class="ftv">화면 전환은 이 기기에만 저장됩니다.</span>
     </div>
   </footer>
 </div>
@@ -301,7 +301,7 @@ body.force-pc .btn-go{width:100% !important; height:34px !important; padding:0 !
 "use strict";
 
 /* ============================================================
-   리스페토 실시간 소싱시트 (검증 확정 상품 전용)
+   쿠팡 로켓그로스 실시간 소싱시트 (검증 확정 상품 전용)
    - 원본: GitHub Contents API(무캐시) → raw.githubusercontent → jsDelivr
    - UTF-8 Base64(TextDecoder) 디코딩
    ============================================================ */
@@ -313,7 +313,7 @@ var RAW   = "https://raw.githubusercontent.com/" + OWNER + "/" + REPO + "/" + BR
 var CDN   = "https://cdn.jsdelivr.net/gh/" + OWNER + "/" + REPO + "@" + BRANCH + "/";
 
 var FILE  = "coupang-sourcing-all.csv";
-var DLOAD = "리스페토-소싱표-확정";
+var DLOAD = "쿠팡-소싱표-확정";
 
 var state = {
   q: "",
@@ -580,6 +580,15 @@ function paintSummary(){
 }
 function pad(n){ return (n < 10 ? "0" : "") + n; }
 
+/* 확인일시 → { d:"11/19", t:"21:12" } (시간 없으면 t는 빈 값) */
+function checkedParts(s){
+  var t = String(s == null ? "" : s).trim();
+  if(!t) return null;
+  var m = t.match(/(\d{4})[-.\/](\d{1,2})[-.\/](\d{1,2})(?:[ T]+(\d{1,2}):(\d{2}))?/);
+  if(!m) return { d: t, t: "" };
+  return { d: (+m[2]) + "/" + pad(+m[3]), t: m[4] ? pad(+m[4]) + ":" + m[5] : "" };
+}
+
 function paintChips(){
   var rows = state.rows || [];
   var cats = categories(rows);
@@ -619,12 +628,15 @@ function rowHTML(r){
   var sub = '<span class="cat">' + esc(r.cat) + "</span>";
   if(r.seller) sub += '<span class="sep">·</span><span>' + esc(r.seller) + "</span>";
   if(r.ship)   sub += '<span class="sep">·</span><span>' + esc(r.ship) + "</span>";
-  sub += '<span class="sep">·</span><span class="num">No.' + esc(r.idx) + "</span>";
+  var ck = checkedParts(r.checked);
+  var ckHTML = ck
+    ? '<div class="i-date" title="확인 ' + esc(r.checked) + '">' + esc(ck.d) + (ck.t ? '<span class="tm">' + esc(ck.t) + "</span>" : "") + "</div>"
+    : "";
   var btn = r.url
     ? '<a class="btn-go" href="' + esc(r.url) + '" target="_blank" rel="noopener noreferrer">쿠팡 ↗</a>'
     : '<span class="btn-go" style="background:#c9d0dd; cursor:default">링크없음</span>';
   return '<article class="item">' +
-    '<div class="i-idx num">' + esc(r.idx) + "</div>" +
+    '<div class="i-idx num">' + esc(r.idx) + ckHTML + "</div>" +
     '<div class="i-main"><div class="i-name">' + esc(r.name) + '</div><div class="i-sub">' + sub + "</div></div>" +
     price + rev + pur +
     '<div class="i-btn">' + btn + "</div>" +
