@@ -1948,20 +1948,15 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
   function buildProjectSelect(){
     const sel = $('#projSelect');
     const opts = ['<option value="">— 프로젝트를 선택하세요 —</option>'];
-    if(state.localProjects.length){
-      opts.push('<optgroup label="내가 만든 원고">');
-      state.localProjects.forEach(p => {
-        opts.push('<option value="' + esc(p.id) + '">' + esc(p.name) + '</option>');
-      });
-      opts.push('</optgroup>');
-    }
-    if(state.projects.length){
-      opts.push('<optgroup label="공유 원고">');
-      state.projects.forEach(p => {
-        opts.push('<option value="' + esc(p.id) + '">' + esc(p.name) + ' · ' + (p.items ? p.items.length : 0) + '건</option>');
-      });
-      opts.push('</optgroup>');
-    }
+    const seenName = {};
+    state.localProjects.concat(state.projects).forEach(p => {
+      if(!p || !p.id) return;
+      if(seenName[p.id]) return;
+      seenName[p.id] = true;
+      const cnt = p.items ? p.items.length : 0;
+      const label = cnt ? p.name + ' · ' + cnt + '건' : p.name;
+      opts.push('<option value="' + esc(p.id) + '">' + esc(label) + '</option>');
+    });
     sel.innerHTML = opts.join('');
     sel.value = (state.projId && findProject(state.projId)) ? state.projId : '';
   }
