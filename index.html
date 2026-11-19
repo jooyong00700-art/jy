@@ -945,7 +945,7 @@ function dailySeries(){
     const netSales = o.netSales!=null? Number(o.netSales)
       : (sales!=null ? sales - (coupon||0) : r.netSales);
     let profit = o.profit!=null? Number(o.profit) : r.profit;
-    const estimate = profit==null;
+    let estimate = profit==null;
     if(estimate && sales!=null){
       profit = Math.round(sales*blendedMargin());
     }
