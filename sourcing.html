@@ -678,14 +678,18 @@ function cpQuery(name){
   if(!s) return "";
   s = s.replace(/[\(\[\{][^\)\]\}]*[\)\]\}]/g, " ");   /* 괄호 안 옵션 제거 */
   s = s.split(/[,，、|｜\/·•]/)[0];                       /* 쉼표 등 구분자 앞 첫 덩어리 */
-  s = s.replace(/[^0-9A-Za-z가-힣ㄱ-ㅎㅏ-ㅣ\s\+\-]/g, " ");  /* 특수문자 정리 */
+  s = s.replace(/[^0-9A-Za-z가-힣ㄱ-ㅎㅏ-ㅣ\s\+\-\.]/g, " ");  /* 특수문자 정리(점은 숫자 표기에 필요) */
+  s = s.replace(/\s*\.\s*/g, ".");                      /* "99 . 9" → "99.9" */
   s = s.replace(/\s+/g, " ").trim();
   s = s.replace(/\s*(옵션|색상|컬러|사이즈|수량|구성)\s*$/i, "").trim();
   if(s.length > 40){                                    /* 40자 이내(가능하면 단어 경계) */
     var cut = s.slice(0, 40);
     var sp = cut.lastIndexOf(" ");
-    s = (sp > 20 ? cut.slice(0, sp) : cut).trim();
+    cut = (sp > 20 ? cut.slice(0, sp) : cut).trim();
+    cut = cut.replace(/\s+\d+$/, "");                   /* 잘린 끝의 숫자 토막("두피가려움 61") 제거 */
+    s = cut;
   }
+  s = s.replace(/^[\s\.\+\-]+|[\s\.\+\-]+$/g, "");     /* 끝의 마침표·기호 정리 */
   return s;
 }
 /* <a> 속성 문자열: 리퍼러 차단 + 새 탭 + 클릭 시점 재계산용 data 속성(pid·vid·검색어) */
