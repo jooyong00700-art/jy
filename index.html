@@ -1093,8 +1093,10 @@ const COST_OPTS = (function(){
     const key = o.id;
     if(seen[key]) continue;
     seen[key] = 1;
+    const master = PRODUCTS.find(pp=>pp.id===o.pid) || {};
+    const implied = o.q ? Math.round(o.s/o.q) : (master.price||null);
     out.push({id:key, pid:o.pid, name:o.name, prod:prodName(o.pid), status:o.st||'',
-      price:null, disc:null, fee:o.f, cost:o.c, inout:o.io, ship:o.sh,
+      price:implied, disc:0, fee:o.f, cost:(o.c||master.cost||0), inout:o.io, ship:o.sh,
       q2025:o.q, s2025:o.s, net2025:o.net, seedFrom:'2025-01-01', weight:o.s||0});
   }
   /* 현재 판매 상품(원가·판매가 최신) */
