@@ -797,6 +797,13 @@ function paintSched(){
   var box = $("schedChips");
   if(!box) return;
   var now = kstNow();
+  if(state.rows === null && !state.err && !GB.items.length){
+    box.innerHTML = '<span class="schip wait">⏳ 불러오는 중…</span>';
+    $("schedCd").className = "cd";
+    $("schedCd").textContent = "계산 중…";
+    $("schedNote").textContent = "지금 " + now.hhmm + " (KST) · 야간 22:00~08:59는 휴식 시간입니다.";
+    return;
+  }
   var goldDone = (GB.date === now.date) && GB.items.length > 0;
   var maxMin = csvTodayMaxMin(now.date);
   var html = "";
