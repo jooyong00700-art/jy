@@ -281,18 +281,18 @@ h1.hero-title .hl{
   position:relative;margin-top:46px;border-radius:26px;overflow:hidden;
   border:1px solid rgba(120,190,255,.18);
   background:linear-gradient(150deg,rgba(12,34,66,.9),rgba(6,13,25,.95));
-  padding:34px;display:grid;grid-template-columns:300px 1fr;gap:34px;align-items:center;
+  padding:30px 34px;display:grid;grid-template-columns:300px 1fr;gap:34px;align-items:center;min-height:250px;
 }
 .journal-left p{margin:10px 0 22px;font-size:14px;color:#a6b9d0}
 .journal-left h3{font-family:var(--latin);margin:8px 0 0;font-size:30px;font-weight:800;letter-spacing:.02em}
 .journal-left .ig{font-family:var(--latin);font-size:11px;letter-spacing:.22em;color:#7b8ea6}
 .mini-link{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;border:1px solid rgba(150,210,255,.35);font-size:13.5px;transition:background .3s,border-color .3s}
 .mini-link:hover{background:rgba(90,200,255,.14);border-color:rgba(170,225,255,.6)}
-.marquee{overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.marquee{overflow:hidden;height:152px;display:flex;align-items:center;mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
 .marquee-track{display:flex;gap:14px;width:max-content;animation:slide 46s linear infinite}
 .marquee:hover .marquee-track{animation-play-state:paused}
 @keyframes slide{to{transform:translateX(-50%)}}
-.tile{width:158px;aspect-ratio:1;border-radius:14px;border:1px solid rgba(140,200,255,.16);position:relative;overflow:hidden;flex-shrink:0;display:flex;align-items:flex-end;padding:12px}
+.tile{width:152px;height:152px;border-radius:14px;border:1px solid rgba(140,200,255,.16);position:relative;overflow:hidden;flex-shrink:0;display:flex;align-items:flex-end;padding:12px}
 .tile span{font-size:10.5px;color:#cfe6fb;background:rgba(4,10,20,.6);padding:3px 7px;border-radius:4px;border:1px solid rgba(130,200,255,.22)}
 .tile::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.04) 0 1px,transparent 1px 16px)}
 .m1{background:radial-gradient(120% 100% at 20% 15%,#25608f,#0a1a2c)}
@@ -1514,11 +1514,15 @@ const WING_CONTACT = {
     });
     const w = solCards[0].getBoundingClientRect().width || 340;
     solCards.forEach((c,i)=>{
-      const d = i-solI, abs = Math.abs(d);
-      const x = abs>2 ? Math.sign(d)*w*2.1 : d*(w*0.92);
+      let d = i-solI;
+      const n = solCards.length;
+      if(d>n/2) d -= n;
+      if(d<-n/2) d += n;
+      const abs = Math.abs(d);
+      const x = abs>2 ? Math.sign(d)*w*2.1 : d*(w*0.96);
       const scale = abs===0?1.06 : abs===1?0.84 : 0.74;
       c.style.transform = `translateX(${x}px) scale(${scale})`;
-      c.style.opacity = abs>2?0 : (abs===0?1: abs===1?0.74:0.45);
+      c.style.opacity = abs>2?0 : (abs===0?1: abs===1?0.8:0.5);
       c.style.zIndex = String(20-abs);
       c.style.pointerEvents = abs>2?'none':'auto';
       c.classList.toggle('is-active', abs===0);
