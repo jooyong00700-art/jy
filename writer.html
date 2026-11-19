@@ -1954,7 +1954,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       if(seenName[p.id]) return;
       seenName[p.id] = true;
       const cnt = p.items ? p.items.length : 0;
-      const label = cnt ? p.name + ' · ' + cnt + '건' : p.name;
+      const label = (cnt && !/\d+\s*건/.test(p.name)) ? p.name + ' · ' + cnt + '건' : p.name;
       opts.push('<option value="' + esc(p.id) + '">' + esc(label) + '</option>');
     });
     sel.innerHTML = opts.join('');
