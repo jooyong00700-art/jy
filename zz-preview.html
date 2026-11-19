@@ -1,24 +1,13 @@
 <!doctype html>
-<html><head><meta charset="utf-8"><title>WING responsive preview</title>
+<html><head><meta charset="utf-8"><title>WING mobile preview</title>
 <style>
-  body{margin:0;background:#20242c;font:13px/1.4 sans-serif;color:#9fb0c8;display:flex;gap:56px;padding:34px 34px 60px;align-items:flex-start}
-  .col{display:flex;flex-direction:column;gap:8px}
-  .lbl{font-size:11px;letter-spacing:.15em}
-  .m{width:390px;height:844px;border:0;background:#000;transform-origin:top left;transform:scale(1.26)}
-  .d{width:1280px;height:800px;border:0;background:#000;transform-origin:top left;transform:scale(.74)}
-  .box{overflow:hidden}
-  .box.m-box{width:491px;height:1063px}
-  .box.d-box{width:947px;height:592px}
+  body{margin:0;background:#20242c;padding:0;display:flex;justify-content:flex-start}
+  iframe{width:390px;height:844px;border:0;background:#000}
 </style></head>
 <body>
-  <div class="col"><div class="lbl">MOBILE 390</div><div class="box m-box"><iframe class="m" data-base="https://raw.githack.com/jooyong00700-art/jy/ae208e5/wing.html"></iframe></div></div>
-  <div class="col"><div class="lbl">DESKTOP 1280</div><div class="box d-box"><iframe class="d" data-base="https://raw.githack.com/jooyong00700-art/jy/ae208e5/wing.html"></iframe></div></div>
+<iframe id="f" data-base="https://raw.githack.com/jooyong00700-art/jy/0243978/wing.html"></iframe>
 <script>
-  function sync(){
-    const h = location.hash || '';
-    document.querySelectorAll('iframe').forEach(f => { f.src = f.dataset.base + h; });
-  }
-  addEventListener('hashchange', sync);
-  sync();
+  function sync(){ document.getElementById('f').src = document.getElementById('f').dataset.base + (location.hash||''); }
+  addEventListener('hashchange', sync); sync();
 </script>
 </body></html>
