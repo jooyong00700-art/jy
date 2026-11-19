@@ -235,6 +235,15 @@ input.inp[type=number]{text-align:right}
 .day .line .v{font-weight:700}
 .day .line .v.net{color:#2f6bff}
 .day .empty{font-size:10.5px; color:#b9c2d3; margin-top:6px}
+.day .qty-line{font-size:9.5px; font-weight:700; color:#41506b; display:flex; gap:3px; align-items:center; flex-wrap:wrap; line-height:1.35}
+.day .qty-line .qn{font-size:10px; font-weight:800; color:#16202f}
+.day .qty-line .qa{color:#a36200; background:#fff4e0; border-radius:4px; padding:0 3px; font-weight:700}
+.day .qty-line .qo{color:#0d7a5a; background:#e6f7f1; border-radius:4px; padding:0 3px; font-weight:700}
+.day .qty-line .qp{color:#98a3b8; font-weight:600}
+.qsplit{font-size:10.5px; color:#5b6784; display:flex; gap:3px; align-items:center; margin-top:2px}
+.qsplit .qa{color:#a36200; background:#fff4e0; border-radius:4px; padding:0 4px; font-weight:700}
+.qsplit .qo{color:#0d7a5a; background:#e6f7f1; border-radius:4px; padding:0 4px; font-weight:700}
+.qsplit .qp{color:#98a3b8; font-weight:600}
 .day .settle{margin-top:auto; align-self:flex-start; font-size:9.5px; font-weight:800; color:#2158c9; background:#eaf1ff; border-radius:5px; padding:1px 5px; display:inline-flex; gap:3px; align-items:center}
 .day .memo-dot{position:absolute; top:6px; right:7px; width:6px; height:6px; border-radius:50%; background:#f59f00}
 .cal-foot{display:flex; flex-wrap:wrap; gap:8px 20px; padding:10px 16px 14px; border-top:1px solid var(--line2); font-size:12px; color:#5b6784}
@@ -676,6 +685,11 @@ function dailySeries(){
     const ad = o.ad!=null? Number(o.ad) : r.ad;
     const qty = o.qty!=null? Number(o.qty) : r.qty;
     const coupon = o.coupon!=null? Number(o.coupon) : r.coupon;
+    /* 광고 판매수(광고센터 전환 판매수) · 자연 판매수(=전체−광고). 집계 전이면 null */
+    const adQty = o.adQty!=null? Number(o.adQty) : (r.adQty!=null? Number(r.adQty) : null);
+    const organicQty = o.organicQty!=null? Number(o.organicQty)
+      : (r.organicQty!=null? Number(r.organicQty)
+        : (adQty!=null && qty!=null ? Math.max(0, qty-adQty) : null));
     const netSales = o.netSales!=null? Number(o.netSales)
       : (sales!=null ? sales - (coupon||0) : r.netSales);
     let profit = o.profit!=null? Number(o.profit) : r.profit;
@@ -683,7 +697,8 @@ function dailySeries(){
     if(estimate && sales!=null){
       profit = Math.round(sales*blendedMargin());
     }
-    return Object.assign({}, r, {sales, ad, qty, coupon, netSales, profit,
+    return Object.assign({}, r, {sales, ad, qty, coupon, netSales, profit, adQty, organicQty,
+      adPending: (adQty==null && qty!=null),
       net: (profit!=null && ad!=null) ? profit-ad : null,
       live: r.d === liveDate, estimate});
   });
@@ -713,7 +728,11 @@ function liveRow(){
   else if(row && row.profit!=null && row.sales===sales) profit = row.profit;
   if(profit==null){ profit = Math.round(sales*blendedMargin()); estimate = true; }
   if(t.profitEstimate) estimate = true;
-  return {d:t.date, sales, coupon, netSales, qty, ad, profit, net:profit-ad, estimate};
+  /* 광고 판매수: 광고센터 당일 전환은 익일 확정 → 집계 전이면 null */
+  const adQty = n(t.adQty)!=null ? Math.max(0, n(t.adQty)) : (row && row.adQty!=null ? row.adQty : null);
+  const organicQty = adQty!=null && qty!=null ? Math.max(0, qty-adQty) : null;
+  return {d:t.date, sales, coupon, netSales, qty, ad, profit, adQty, organicQty,
+    adPending: (adQty==null && qty!=null), net:profit-ad, estimate};
 }
 </script>
 <script>
@@ -928,7 +947,7 @@ VIEWS.dashboard = function(){
         </div>
         <div class="val num">${won(live.netSales)}원</div>
         <div class="coup-line"><span>쿠폰 전 <b>${won(live.sales)}원</b></span><span class="c2">쿠폰 −${won(live.coupon)}원</span></div>
-        <div class="delta">${deltaHTML(dToday)} <span class="flat">전일 대비 · ${live.qty}개 · 목표 ${Math.round(live.netSales/S.targetSales*100)}%</span></div>
+        <div class="delta">${deltaHTML(dToday)} <span class="flat">전일 대비 · ${live.qty}개${live.adQty!=null?` (광고 ${live.adQty} · 자연 ${live.organicQty})`:''} · 목표 ${Math.round(live.netSales/S.targetSales*100)}%</span></div>
       </div>
       ${kpiCard('오늘 광고비 <span class="tag">VAT포함</span>', won(live.ad)+'원',
         `<span class="flat">VAT별도 ${won(S.live.adExVat)}원</span>`) }
@@ -1029,7 +1048,7 @@ function reportCard(rows){
         return `<span class="${diff>0?'up':(diff<0?'down':'flat')}">${diff>0?'+':''}${won(diff)}</span>`;
       };
       return `<tr>
-        <td class="l"><b>${fmtDate(r.d)}</b>${r.live?' <span class="tag live">LIVE</span>':''}${r.estimate?' <span class="tag estimate">추정</span>':''}</td>
+        <td class="l"><b>${fmtDate(r.d)}</b>${r.live?' <span class="tag live">LIVE</span>':''}${r.estimate?' <span class="tag estimate">추정</span>':''}${r.qty!=null?`<div class="qsplit">${(r.adQty!=null&&r.organicQty!=null)?`<b class="num" style="color:#16202f">${r.qty}개</b><span class="qa">광고 ${r.adQty}</span><span class="qo">자연 ${r.organicQty}</span>`:`<b class="num" style="color:#16202f">${r.qty}개</b><span class="qp">광고 집계 전</span>`}</div>`:''}</td>
         <td class="num">${wonW(netSalesOf(r))}<div style="font-size:11px">${cellDelta('sales')}</div></td>
         <td class="num">${wonW(r.profit)}<div style="font-size:11px">${cellDelta('profit')}</div></td>
         <td class="num">${wonW(r.ad)}<div style="font-size:11px">${cellDelta('ad')}</div></td>
@@ -1070,6 +1089,33 @@ function deltaCard(){
   </div>`;
 }
 
+/* ---- 캘린더 · 표 공통: 판매수(광고·자연) 표기 ---- */
+function qtySplitLine(r){
+  const pend = r.live ? '광고 집계 전' : '광고 미기록';
+  const t = (r.adQty!=null && r.organicQty!=null)
+    ? `판매 ${r.qty}개 (광고 ${r.adQty} · 자연 ${r.organicQty})`
+    : `판매 ${r.qty}개 (${pend})`;
+  const inner = (r.adQty!=null && r.organicQty!=null)
+    ? `<b class="qn num">${r.qty}개</b><span class="qa">광고 ${r.adQty}</span><span class="qo">자연 ${r.organicQty}</span>`
+    : `<b class="qn num">${r.qty}개</b><span class="qp">${pend}</span>`;
+  return `<div class="qty-line" title="${t}">${inner}</div>`;
+}
+function qtySplitTotalCell(rows){
+  const qt = sumOf(rows,'qty');
+  const withAd = rows.filter(r=>r.adQty!=null && r.organicQty!=null);
+  const aq = withAd.reduce((a,r)=>a+r.adQty,0), oq = withAd.reduce((a,r)=>a+r.organicQty,0);
+  const all = withAd.length===rows.filter(r=>r.qty!=null).length && withAd.length>0;
+  return `<td class="num"><b>${qt}개</b><div class="qsplit">${all
+    ? `<span class="qa">광고 ${aq}</span><span class="qo">자연 ${oq}</span>`
+    : `<span class="qa">광고 ${aq}+</span><span class="qp">집계 전 ${rows.length-withAd.length}일</span>`}</div></td>`;
+}
+function qtySplitCell(r){
+  if(r.qty==null) return '<td class="num flat">-</td>';
+  if(r.adQty==null || r.organicQty==null)
+    return `<td class="num">${r.qty}개<div class="qsplit"><span class="qp">${r.live?'광고 집계 전':'광고 미기록'}</span></div></td>`;
+  return `<td class="num"><b>${r.qty}개</b><div class="qsplit"><span class="qa">광고 ${r.adQty}</span><span class="qo">자연 ${r.organicQty}</span></div></td>`;
+}
+
 /* ---- 캘린더 ---- */
 function calendarCard(){
   const rows = dailySeries();
@@ -1097,6 +1143,7 @@ function calendarCard(){
       const dv = prevR ? deltaPct(rs, netSalesOf(prevR)) : null;
       body += `<div class="sales num"><span class="s-full">${won(rs)}원</span><span class="s-short">${Math.round(rs/10000)}만</span></div>`;
       if(opt.calDelta) body += `<div class="delta">${deltaHTML(dv)}</div>`;
+      if(r.qty!=null) body += qtySplitLine(r);
       if(opt.calMetric.ad) body += `<div class="line hide-m"><span>광고</span><span class="v num">${won(r.ad)}</span></div>`;
       if(opt.calMetric.net) body += `<div class="line hide-m"><span>순익</span><span class="v net num">${won(r.net)}</span></div>`;
       if(r.estimate) body += `<div style="margin-top:2px"><span class="tag estimate" style="font-size:9px">추정</span></div>`;
@@ -1241,13 +1288,14 @@ VIEWS.daily = function(){
     </div>`
   + `<div class="card" style="margin-top:14px">${sectionHead('일자별 데이터','빅셀 대시보드 매출 보고서와 동일 산식')}
       <div class="tbl-wrap"><table class="tbl">
-        <thead><tr><th class="l">날짜</th><th>요일</th><th>매출</th><th>전일대비</th><th>이익금</th><th>광고비</th><th>순이익금</th><th>이익률</th><th>광고비율</th></tr></thead>
+        <thead><tr><th class="l">날짜</th><th>요일</th><th>판매수</th><th>매출</th><th>전일대비</th><th>이익금</th><th>광고비</th><th>순이익금</th><th>이익률</th><th>광고비율</th></tr></thead>
         <tbody>${rows.slice().reverse().map(r=>{
           const i = all.indexOf(r), p = all[i-1];
           const er = r.sales? r.profit/r.sales*100:0, ar = r.sales? r.ad/r.sales*100:0;
           return `<tr>
             <td class="l"><b>${r.d}</b>${r.live?' <span class="tag live">LIVE</span>':''}${r.estimate?' <span class="tag estimate">추정</span>':''}</td>
             <td>${DOW[dateObj(r.d).getDay()]}</td>
+            ${qtySplitCell(r)}
             <td class="num">${won(r.sales)}</td>
             <td class="num">${deltaHTML(p?deltaPct(r.sales,p.sales):null)}</td>
             <td class="num">${won(r.profit)}</td>
@@ -1257,10 +1305,10 @@ VIEWS.daily = function(){
             <td class="num">${pct1(ar)}%</td>
           </tr>`;
         }).join('')}
-        <tr class="total"><td class="l">합계</td><td></td><td class="num">${won(sumOf(rows,'sales'))}</td><td></td><td class="num">${won(sumOf(rows,'profit'))}</td><td class="num">${won(sumOf(rows,'ad'))}</td><td class="num">${won(sumOf(rows,'net'))}</td><td class="num">${pct1(rate)}%</td><td class="num">${pct1(adRate)}%</td></tr>
+        <tr class="total"><td class="l">합계</td><td></td>${qtySplitTotalCell(rows)}<td class="num">${won(sumOf(rows,'sales'))}</td><td></td><td class="num">${won(sumOf(rows,'profit'))}</td><td class="num">${won(sumOf(rows,'ad'))}</td><td class="num">${won(sumOf(rows,'net'))}</td><td class="num">${pct1(rate)}%</td><td class="num">${pct1(adRate)}%</td></tr>
         </tbody>
       </table></div>
-      <div class="card-b" style="border-top:1px solid var(--line2)"><div class="formula"><b>계산 산식</b><br>순이익금 = <code>이익금 − 광고비</code> · 이익률 = <code>이익금 ÷ 매출</code> · 광고비는 VAT 포함 금액</div></div>
+      <div class="card-b" style="border-top:1px solid var(--line2)"><div class="formula"><b>계산 산식</b><br>순이익금 = <code>이익금 − 광고비</code> · 이익률 = <code>이익금 ÷ 매출</code> · 광고비는 VAT 포함 금액<br>판매수 = <code>광고 판매수 + 자연 판매수</code> · 광고 판매수는 쿠팡 광고센터 <b>광고 전환 판매수</b>(익일 확정) · 자연 판매수 = 전체 − 광고</div></div>
     </div>`
   + monthlyCard(all);
 };
