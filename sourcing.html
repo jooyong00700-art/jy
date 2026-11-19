@@ -611,14 +611,25 @@ function num(s){
 function txt(s){ return String(s == null ? "" : s).trim(); }
 
 /* ============================================================
-   쿠팡 상품 링크 — 모바일/PC 분기 + 리퍼러 완전 제거
+   쿠팡 상품 링크 — 앱 바로열기(intent://) + 모바일/PC 분기 + 리퍼러 완전 제거
+   - Android: intent://product?productId=..&vendorItemId=..#Intent;scheme=coupang;
+              package=com.coupang.mobile;S.browser_fallback_url=<웹URL>;end
+       → 삼성 인터넷/크롬은 새 탭·about:blank 경유가 아니라 "현재 탭에서 이동"해야
+         쿠팡 앱(com.coupang.mobile)이 확실히 뜬다. 앱이 없으면 브라우저가 웹으로 넘긴다.
+   - iOS: coupang://product?productId=.. 호출 후 앱이 안 뜨면(문서가 계속 보이면) 웹으로.
+   - PC·데스크톱 모드: 기존처럼 www.coupang.com 을 새 탭으로.
+   - <a href>는 데스크톱/미지원 대비 웹 URL 그대로 두고, 클릭 핸들러가
+     preventDefault 후 앱으로 넘긴다(우클릭·Ctrl/⌘ 클릭은 기본 동작 유지).
    - htmlpreview.github.io 미리보기에서 열면 Referer가 쿠팡 Akamai WAF에
      걸려 "요청하신 페이지의 사용권한이 없습니다"(403)가 뜬다.
      → 문서(<meta name="referrer">) + 링크(rel/referrerpolicy) 양쪽에서 차단
-   - 모바일에서는 www.coupang.com 대신 m.coupang.com 으로 연다(앱/웹 전환 자연스러움)
+   - 모바일에서는 www.coupang.com 대신 m.coupang.com 을 쓴다(앱/웹 전환 자연스러움)
    - URL 파라미터는 productId·vendorItemId 만 남긴다
    ============================================================ */
 var CP_MOBILE_MAX = 768;
+function cpUA(){ try{ return navigator.userAgent || ""; }catch(e){ return ""; } }
+function cpIsAndroid(){ return /Android/i.test(cpUA()); }   /* 삼성 인터넷·크롬 모바일 */
+function cpIsIOS(){ return /iPhone|iPad|iPod/i.test(cpUA()); }
 function isMobileView(){
   var ua = "";
   try{ ua = navigator.userAgent || ""; }catch(e){}
@@ -661,23 +672,76 @@ function cpAttrs(pid, vid, rawUrl){
     ' data-cp-pid="' + esc(ids.pid) + '" data-cp-vid="' + esc(ids.vid) + '"' +
     (ids.pid ? ' data-cp-link="1"' : "");
 }
+/* 앱 딥링크 경로: product?productId=..[&vendorItemId=..] (coupang:// 뒤에 붙는 부분) */
+function cpAppPath(ids){
+  if(!ids || !ids.pid) return "";
+  return "product?productId=" + ids.pid + (ids.vid ? "&vendorItemId=" + ids.vid : "");
+}
+/* Android intent:// — 앱이 없거나 못 열면 브라우저가 S.browser_fallback_url 로 넘긴다 */
+function cpIntentUrl(ids, webUrl){
+  var path = cpAppPath(ids);
+  if(!path) return "";
+  return "intent://" + path + "#Intent;scheme=coupang;package=com.coupang.mobile" +
+    ";S.browser_fallback_url=" + encodeURIComponent(webUrl) + ";end";
+}
+/* iOS coupang:// — 앱이 뜨면 문서가 숨겨지므로 그때 fallback 타이머를 끈다 */
+function cpOpenIOS(ids, webUrl){
+  var path = cpAppPath(ids);
+  if(!path){ window.location.href = webUrl; return; }
+  var fired = false;
+  var timer = setTimeout(function(){
+    if(fired) return;
+    try{ if(document.visibilityState === "hidden") return; }catch(e){}
+    window.location.href = webUrl;            /* 앱 미설치·미지원 → 웹으로 */
+  }, 2000);
+  var stop = function(){ fired = true; clearTimeout(timer); };
+  try{
+    document.addEventListener("visibilitychange", function(){
+      if(document.visibilityState === "hidden") stop();
+    });
+    window.addEventListener("pagehide", stop);
+  }catch(e){}
+  window.location.href = "coupang://" + path;
+}
 /* 링크 클릭 시점 처리
    1) 클릭 순간의 화면(모바일/PC)으로 URL 재계산
-   2) 빈 탭(about:blank)을 먼저 열고 그 탭을 쿠팡으로 이동
+   2) Android → 현재 탭에서 intent:// (쿠팡 앱 com.coupang.mobile)
+      iOS     → coupang:// (앱 미설치면 2초 뒤 웹)
+   3) PC → 빈 탭(about:blank)을 먼저 열고 그 탭을 쿠팡으로 이동
       → 주소창에 직접 입력한 것과 같은 요청이 되어 Referer·Sec-Fetch-Site 같은
         "다른 사이트에서 넘어왔다"는 표시가 남지 않는다(403 차단의 실제 원인)
-   3) 빈 탭이 막히면(팝업 차단) 원래 링크 그대로 이동 — rel↔referrerpolicy로 리퍼러 없음 */
+   4) 빈 탭이 막히면(팝업 차단) 원래 링크 그대로 이동 — rel↔referrerpolicy로 리퍼러 없음 */
 document.addEventListener("click", function(e){
   var t = e.target;
   var a = (t && t.closest) ? t.closest("a[data-cp-link]") : null;
   if(!a) return;
-  var url = cpUrl(a.getAttribute("data-cp-pid"), a.getAttribute("data-cp-vid"), "");
+  var ids = { pid: txt(a.getAttribute("data-cp-pid")), vid: txt(a.getAttribute("data-cp-vid")) };
+  var url = cpUrl(ids.pid, ids.vid, "");
   if(!url) return;
   a.setAttribute("href", url);
   a.setAttribute("rel", "noreferrer noopener");
   a.setAttribute("referrerpolicy", "no-referrer");
   /* 새 탭으로 열기(오른쪽 버튼·Ctrl/⌘/Shift 클릭)는 브라우저 기본 동작에 맡긴다 */
   if(e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  /* productId 없는 예외 링크는 웹 URL 그대로 */
+  if(!ids.pid){ e.preventDefault(); window.location.href = url; return; }
+  /* 1) Android — 새 탭이 아니라 현재 탭에서 intent:// 를 호출해야 앱이 확실히 뜬다 */
+  if(cpIsAndroid()){
+    var intentUrl = cpIntentUrl(ids, url);
+    if(intentUrl){
+      e.preventDefault();
+      try{ window.location.href = intentUrl; }
+      catch(err){ window.location.href = url; }
+      return;
+    }
+  }
+  /* 2) iOS — coupang:// 호출, 앱이 없으면 웹으로 */
+  if(cpIsIOS()){
+    e.preventDefault();
+    cpOpenIOS(ids, url);
+    return;
+  }
+  /* 3) PC·데스크톱 모드 — 기존과 동일하게 새 탭 */
   try{
     var w = window.open("about:blank", "_blank");
     if(!w) return;
