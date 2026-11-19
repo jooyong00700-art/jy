@@ -205,10 +205,6 @@ input.inp[type=number]{text-align:right}
 .months{display:grid; grid-template-columns:repeat(3,1fr); gap:6px}
 .months button{padding:9px 0; border-radius:9px; border:1px solid var(--line); background:#fff; font-size:12.5px; font-weight:700; color:#55617a}
 .months button.on{background:var(--blue); border-color:var(--blue); color:#fff}
-.memo-box{border:1px solid var(--line); border-radius:11px; padding:11px 12px; background:#fff}
-.memo-box .mh{display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:800; margin-bottom:8px}
-.memo-box .mh .d{font-weight:600; color:var(--muted); font-size:11.5px}
-.memo-empty{border:1px dashed #d8dfec; border-radius:9px; padding:18px 8px; text-align:center; color:#93a0b6; font-size:12px; background:#fbfcff}
 .memo-item{background:#fff9e8; border:1px solid #ffe6a8; border-radius:9px; padding:8px 9px; font-size:12px; margin-bottom:6px}
 .memo-item b{display:block; margin-bottom:2px}
 .memo-add{width:100%; border:1px dashed #cfd8e8; border-radius:9px; padding:8px; font-size:12px; color:#5f6b85; background:#fff}
@@ -252,6 +248,26 @@ input.inp[type=number]{text-align:right}
 .cal-legend{display:flex; flex-wrap:wrap; gap:12px; font-size:11.5px; color:#66718a}
 .cal-legend span{display:inline-flex; align-items:center; gap:5px}
 .cal-legend i{width:9px;height:9px;border-radius:3px;display:inline-block}
+
+/* ---------- 날짜별 광고·자연 판매수 칸 ---------- */
+.ao-lg{display:flex; gap:12px; font-size:11.5px; color:#66718a; font-weight:700; margin-left:auto}
+.ao-lg span{display:inline-flex; align-items:center; gap:4px}
+.ao-lg i{width:9px;height:9px;border-radius:3px;display:inline-block}
+.ao-lg i.ad{background:#f59f00}
+.ao-lg i.og{background:#12b886}
+.ao-tbl td{vertical-align:middle; padding-top:12px; padding-bottom:12px}
+.ao-tbl .ao-d{font-size:14px; letter-spacing:-.3px}
+.ao-tbl .ao-n{font-size:16px; letter-spacing:-.4px}
+.ao-tbl .ao-ad{color:#a36200}
+.ao-tbl .ao-og{color:#0a7f5c}
+.ao-tbl .ao-p{font-size:11.5px; color:#7b869a; font-weight:700}
+.ao-bar{display:flex; width:104px; height:7px; margin:6px 0 0 auto; border-radius:99px; overflow:hidden; background:#eef1f7}
+.ao-bar i{display:block; height:100%}
+.ao-bar i.ad{background:#f59f00}
+.ao-bar i.og{background:#12b886}
+.ao-bar.pend i{width:100%; background:repeating-linear-gradient(45deg,#e3e8f2 0 4px,#f3f6fb 4px 8px)}
+.ao-tbl tr.today td{background:#f6f9ff}
+.ao-tbl tr.today td:first-child{box-shadow:inset 3px 0 0 var(--blue)}
 
 /* ---------- modal ---------- */
 .mask{position:fixed; inset:0; background:rgba(15,26,48,.42); display:flex; align-items:center; justify-content:center; padding:16px; z-index:70; backdrop-filter:blur(2px)}
@@ -956,19 +972,13 @@ VIEWS.dashboard = function(){
       ${kpiCard('이번 달 매출 <span class="tag coup">쿠폰 제외</span>', won(monthSales)+'원',
         `<span class="flat">${mRange} · 순이익(광고비 제외) ${won(monthNet)}원</span>`, {cls:'month-kpi'})}
     </div>`
+  + `${adOrganicCard()}`
   + `<div class="two" style="margin-bottom:14px">
       ${todayOptionsCard(live)}
       ${todayCampaignsCard(live)}
     </div>`
-  + `<div class="two" style="margin-bottom:14px">
-      ${reportCard(rows)}
-      ${deltaCard()}
-    </div>`
+  + `<div style="margin-bottom:14px">${reportCard(rows)}</div>`
   + `${calendarCard()}`
-  + `<div class="two" style="margin-top:14px">
-      ${soldoutCard()}
-      ${rankCard()}
-    </div>`
   + `${stockMiniCard()}`;
 };
 
@@ -1065,30 +1075,6 @@ function reportCard(rows){
   </div>`;
 }
 
-/* ---- 상품별 매출 변동 ---- */
-function deltaCard(){
-  const rows = PRODUCT_DELTA.map(x=>{
-    const p = PRODUCTS.find(pp=>pp.id===x.id) || {short:x.id, icon:'📦'};
-    const diff = x.prev.sales ? (x.now.sales-x.prev.sales)/x.prev.sales*100 : (x.now.sales?-100:0);
-    return {p, x, diff};
-  });
-  return `<div class="card">
-    ${sectionHead('상품별 매출 변동','11월 17일 기준')}
-    <div class="tbl-wrap"><table class="tbl">
-      <thead><tr><th class="l">상품</th><th>전일 매출</th><th>매출</th><th>변동</th></tr></thead>
-      <tbody>${rows.map(r=>`<tr>
-        <td class="l"><div class="prod"><span class="thumb">${r.p.icon}</span><div><div class="nm">${esc(r.p.short)}</div><div class="cd">${r.p.id} · ${esc(r.p.mk==='RFM'?'로켓그로스':'판매자배송')}</div></div></div></td>
-        <td class="num">${wonW(r.x.prev.sales)}<div style="font-size:11px" class="flat">${r.x.prev.qty}개</div></td>
-        <td class="num"><b>${wonW(r.x.now.sales)}</b><div style="font-size:11px" class="flat">${r.x.now.qty}개</div></td>
-        <td class="num">${deltaHTML(r.diff)}</td>
-      </tr>`).join('')}</tbody>
-    </table></div>
-    <div class="card-b" style="border-top:1px solid var(--line2)">
-      <div class="alert info">📌 어제 대비 <b>신발깔창 +149.3%</b>(8→19개), 빨래건조대 -1.4% · 노트북거치대는 판매 0으로 품절 상태입니다.</div>
-    </div>
-  </div>`;
-}
-
 /* ---- 캘린더 · 표 공통: 판매수(광고·자연) 표기 ---- */
 function qtySplitLine(r){
   const pend = r.live ? '광고 집계 전' : '광고 미기록';
@@ -1177,11 +1163,6 @@ function calendarCard(){
           <label class="switch"><input type="checkbox" ${opt.calStock?'checked':''} data-act="calStock"> 입고 표시</label>
           <label class="switch"><input type="checkbox" ${opt.calSettle?'checked':''} data-act="calSettle"> 정산 표시</label>
         </div>
-        <div class="memo-box">
-          <div class="mh">나의 메모 <span class="d">${today.slice(0,4)}년 ${Number(today.slice(5,7))}월 ${Number(today.slice(8,10))}일</span></div>
-          ${memoListFor(today) || '<div class="memo-empty">등록된 메모가 없습니다.</div>'}
-          <button class="memo-add" data-act="memoAdd" data-d="${today}">＋ 추가하기</button>
-        </div>
         <div>
           <div class="side-chart-lab">차트 항목 표시 설정</div>
           <div class="toolbar" style="gap:5px;margin-bottom:6px">
@@ -1207,40 +1188,52 @@ function calendarCard(){
     </div>
   </div>`;
 }
-function memoListFor(ds){
-  const keys = Object.keys(S.memos).filter(k=>k.startsWith(ds));
-  if(!keys.length) return '';
-  return keys.map(k=>`<div class="memo-item"><b>${esc(S.memos[k].title||'메모')}</b>${esc(S.memos[k].body||'')}</div>`).join('');
-}
-
-/* ---- 품절 ---- */
-function soldoutCard(){
-  return `<div class="card">
-    ${sectionHead('쿠팡 품절 상품','11월 17일 기준')}
-    <div class="tbl-wrap"><table class="tbl">
-      <thead><tr><th class="l">상품</th><th>최근 7일 일평균</th><th>상태</th></tr></thead>
-      <tbody>${SOLDOUT.map(s=>`<tr>
-        <td class="l"><div class="prod"><span class="thumb">📦</span><div><div class="nm">${esc(s.name)}</div><div class="cd">${s.id}</div></div></div></td>
-        <td class="num">${s.qty}개</td>
-        <td><span class="pill warn">품절</span></td></tr>`).join('')}</tbody>
+/* ---- 날짜별 광고 · 자연 판매수 (상단 요약 칸) ---- */
+const AO_START = '2026-11-18';
+function adOrganicCard(){
+  const list = dailySeries();
+  const live = liveRow();
+  /* 자동 수집 전(또는 수집 전날)에도 오늘 행이 빠지지 않게 보강 */
+  if(live && live.d && live.qty!=null && !list.some(r=>r.d===live.d)) list.push(Object.assign({live:true}, live));
+  const rows = list.filter(r=>r.d>=AO_START && r.qty!=null).sort((a,b)=> a.d<b.d ? 1 : -1);
+  const today = (S.live && S.live.date) || '';
+  const body = rows.map(r=>{
+    const has = r.adQty!=null && r.organicQty!=null;
+    const ap = has && r.qty ? r.adQty/r.qty*100 : null;
+    const op = has && r.qty ? r.organicQty/r.qty*100 : null;
+    const isToday = r.d===today;
+    const status = has ? '<span class="pill ok">확정</span>'
+      : (isToday ? '<span class="pill rfm">오늘 실시간</span>' : '<span class="pill">집계 전</span>');
+    const bar = has
+      ? `<div class="ao-bar" title="광고 ${r.adQty} · 자연 ${r.organicQty}"><i class="ad" style="width:${pct1(ap)}%"></i><i class="og" style="width:${pct1(op)}%"></i></div>`
+      : `<div class="ao-bar pend" title="광고 전환 판매수는 익일 확정됩니다"><i></i></div>`;
+    return `<tr class="${isToday?'today':''}">
+      <td class="l"><b class="ao-d">${fmtDate(r.d)}</b>${isToday?' <span class="tag live">오늘</span>':''}</td>
+      <td class="num"><b class="ao-n">${r.qty}개</b>${bar}</td>
+      <td class="num">${has?`<b class="ao-ad">${r.adQty}개</b> <span class="ao-p">${pct1(ap)}%</span>`:'<span class="flat">광고 집계 전</span>'}</td>
+      <td class="num">${has?`<b class="ao-og">${r.organicQty}개</b> <span class="ao-p">${pct1(op)}%</span>`:'<span class="flat">—</span>'}</td>
+      <td class="num">${status}</td>
+    </tr>`;
+  }).join('');
+  const conf = rows.filter(r=>r.adQty!=null && r.organicQty!=null);
+  const confQ = conf.reduce((a,r)=>a+r.qty,0);
+  const adQ = conf.reduce((a,r)=>a+r.adQty,0);
+  const pendN = rows.length - conf.length;
+  const totalRow = conf.length ? `<tr class="total">
+      <td class="l">확정 합계 (${conf.length}일)</td>
+      <td class="num">${confQ}개</td>
+      <td class="num">광고 ${adQ}개 <span class="ao-p">${pct1(confQ?adQ/confQ*100:0)}%</span></td>
+      <td class="num">자연 ${confQ-adQ}개 <span class="ao-p">${pct1(confQ?(confQ-adQ)/confQ*100:0)}%</span></td>
+      <td class="num">${pendN?`<span class="flat">${pendN}일 집계 전</span>`:'<span class="flat">-</span>'}</td>
+    </tr>` : '';
+  return `<div class="card" style="margin-bottom:14px">
+    ${sectionHead('📊 날짜별 광고 · 자연 판매수', `${fmtDate(AO_START)} 이후 · 최신순 자동 갱신`,
+      `<div class="ao-lg"><span><i class="ad"></i>광고</span><span><i class="og"></i>자연</span></div>`)}
+    <div class="tbl-wrap"><table class="tbl ao-tbl">
+      <thead><tr><th class="l">날짜</th><th>총 판매수</th><th>광고 판매수 (비중)</th><th>자연 판매수 (비중)</th><th>상태</th></tr></thead>
+      <tbody>${body || '<tr><td class="l" colspan="5"><span class="flat">표시할 판매수 데이터가 없습니다.</span></td></tr>'}${totalRow}</tbody>
     </table></div>
-    <div class="card-b" style="border-top:1px solid var(--line2)"><div class="alert warn">⚠️ 좌식테이블·휴지통·손목보호대 옵션이 품절 상태입니다. 입고 요청 후 재판매를 검토하세요.</div></div>
-  </div>`;
-}
-
-/* ---- 순위 ---- */
-function rankCard(){
-  const rows = RANKS.slice(0,6);
-  return `<div class="card">
-    ${sectionHead('상품별 순위 변동','11월 17일 기준', `<button class="btn ghost" data-act="gotoRank">전체 보기 ›</button>`)}
-    <div>${rows.map(r=>{
-      const diff = r.prev - r.now;
-      return `<div class="rank-row">
-        <div class="nm">${esc(r.name)}<div class="kw">${esc(r.kw)} · ${r.id}</div></div>
-        <div class="rank-badge num">${r.now}위</div>
-        <div class="delta-badge ${diff>0?'up':(diff<0?'down':'flat')}">${diff>0?'▲'+diff:(diff<0?'▼'+Math.abs(diff):'-')}</div>
-      </div>`;
-    }).join('')}</div>
+    <div class="card-b" style="border-top:1px solid var(--line2)"><div class="hint">광고 판매수 = 쿠팡 광고센터 <b>광고 전환 판매수</b>(익일 확정) · 자연 판매수 = 총 판매수 − 광고 판매수 · <code>bigcell-live.json</code>의 daily 데이터가 늘어나면 이 칸도 자동으로 늘어납니다.</div></div>
   </div>`;
 }
 
@@ -1788,7 +1781,6 @@ ACTIONS.exportJson = ()=>{
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'bigcell-settings.json'; a.click();
 };
 ACTIONS.printPage = ()=> window.print();
-ACTIONS.gotoRank = ()=> go('rank');
 ACTIONS.setRate = (d,el)=>{ S.rate = numVal(el, S.rate); save(); };
 ACTIONS.setImportRate = (d,el)=>{ S.importCostRate = numVal(el, 45); save(); };
 ACTIONS.setVat = (d,el)=>{ S.vat = numVal(el, 1.1); save(); };
