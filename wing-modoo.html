@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<script>document.documentElement.classList.add('js');</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>주식회사 윙 (WING) | 맘카페 바이럴마케팅</title>
+<meta name="description" content="주식회사 윙 - 쿠팡·스마트스토어 셀러를 위한 맘카페 바이럴마케팅. 실사용 계정, 실명 인증 카페, 카페 말투에 맞춘 원고와 댓글 관리까지 팀이 직접 진행합니다.">
+<meta name="theme-color" content="#00C73C">
+<meta property="og:title" content="주식회사 윙 (WING) | 맘카페 바이럴마케팅">
+<meta property="og:description" content="실사용 계정 · 실명 인증 카페 · 팀이 직접 관리하는 맘카페 바이럴마케팅">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2300C73C'/%3E%3Cpath d='M14 40c8-14 22-20 36-16-6 12-20 20-32 20z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* ============================================================
+   주식회사 윙 (WING) — modoomkt.com/ad_1 스타일 시안
+   · 색/타이포/섹션 리듬: 모두의마케팅 랜딩 구조를 WING에 맞게 재구성
+   · 수정 포인트: 아래 :root 색상, .foot-info 의 사업자 정보,
+     스크립트 상단 CONFIG(전화·이메일·폼 전송 주소)
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box}
+:root{
+  --green:#00C73C;
+  --green-d:#00A833;
+  --green-l:#E9F9EC;
+  --green-mint:#C8F2DC;
+  --ink:#202020;
+  --ink-2:#333333;
+  --muted:#6d6d6d;
+  --line:#E7ECE8;
+  --soft:#F8F8F8;
+  --dark:#0E3B2A;
+  --yellow:#FFE14D;
+  --red:#E81C25;
+  --purple:#5443E6;
+  --radius:22px;
+  --nav-h:100px;
+  --font:"Pretendard Variable",Pretendard,"Noto Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + 10px)}
+body{margin:0;font-family:var(--font);color:var(--ink);background:#fff;font-size:17px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit}
+h1,h2,h3,h4,p{margin:0}
+ul{margin:0;padding:0;list-style:none}
+.container{max-width:1240px;margin:0 auto;padding:0 20px;width:100%}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* ---------- 공통 버튼 ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  padding:16px 50px;border:0;border-radius:60px;background:var(--green);color:#fff;
+  font-family:var(--font);font-size:22px;font-weight:800;letter-spacing:-.4px;line-height:1.2;
+  cursor:pointer;transition:background .35s ease,transform .35s ease,box-shadow .35s ease;
+  box-shadow:0 16px 30px -18px rgba(0,199,60,.95);white-space:nowrap}
+.btn:hover{background:#111;transform:translateY(-2px);box-shadow:0 18px 32px -18px rgba(0,0,0,.7)}
+.btn:active{transform:translateY(0)}
+.btn .ar{transition:transform .35s ease}
+.btn:hover .ar{transform:translateX(4px)}
+.btn-sm{padding:13px 28px;font-size:16px}
+.btn-ghost{background:#fff;color:var(--green);box-shadow:inset 0 0 0 2px var(--green),0 12px 24px -20px rgba(0,199,60,.9)}
+.btn-ghost:hover{background:var(--green);color:#fff;box-shadow:inset 0 0 0 2px var(--green),0 16px 30px -18px rgba(0,199,60,.8)}
+
+/* ---------- 네비게이션 ---------- */
+#nav{position:fixed;top:0;left:0;right:0;z-index:100;background:#fff;
+  box-shadow:4px 4px 18px rgba(0,0,0,.07);transition:height .3s ease,box-shadow .3s ease}
+.nav-inner{height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;gap:20px;transition:height .3s ease}
+body.nav-slim{--nav-h:76px}
+body.nav-slim #nav{box-shadow:4px 4px 18px rgba(0,0,0,.12)}
+.brand{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.brand .mark{width:40px;height:40px;flex:0 0 auto}
+.brand .word{display:flex;align-items:baseline;gap:9px}
+.brand b{font-size:30px;font-weight:900;letter-spacing:-1.2px;color:var(--green);line-height:1}
+.brand span{font-size:13px;font-weight:700;color:#9aa49d;letter-spacing:-.2px}
+.nav-links{display:flex;align-items:center}
+.nav-links a{position:relative;display:block;padding:0 30px;font-size:18px;font-weight:600;color:var(--ink);line-height:var(--nav-h);transition:color .25s, line-height .3s}
+.nav-links a::after{content:"";position:absolute;left:30px;right:30px;bottom:26px;height:3px;border-radius:3px;background:var(--green);transform:scaleX(0);transform-origin:center;transition:transform .3s ease}
+.nav-links a:hover{color:var(--green)}
+.nav-links a.is-active{color:var(--green)}
+.nav-links a.is-active::after{transform:scaleX(1)}
+.nav-toggle{display:none;width:56px;height:56px;margin-right:-8px;border:0;background:transparent;cursor:pointer;position:relative}
+.nav-toggle i{position:absolute;left:13px;width:30px;height:3px;border-radius:2px;background:var(--green);transition:transform .3s ease,opacity .2s ease}
+.nav-toggle i:nth-child(1){top:19px}
+.nav-toggle i:nth-child(2){top:27px}
+.nav-toggle i:nth-child(3){top:35px}
+.nav-toggle[aria-expanded="true"] i:nth-child(1){transform:translateY(8px) rotate(45deg)}
+.nav-toggle[aria-expanded="true"] i:nth-child(2){opacity:0}
+.nav-toggle[aria-expanded="true"] i:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+.mobile-menu{display:none;border-top:1px solid var(--line);background:#fff;overflow:hidden;max-height:0;transition:max-height .38s ease}
+.mobile-menu ul{padding:6px 0}
+.mobile-menu a{display:block;padding:15px 22px;font-size:17px;font-weight:700;border-bottom:1px solid #f1f4f2}
+.mobile-menu .m-cta{padding:16px 20px 20px}
+.mobile-menu .m-cta .btn{width:100%;font-size:17px;padding:15px 20px}
+body.menu-open .mobile-menu{max-height:440px}
+
+/* ---------- 히어로 ---------- */
+.hero{position:relative;overflow:hidden;background:
+  radial-gradient(900px 520px at 86% 8%,#EAFBF1 0%,rgba(234,251,241,0) 62%),
+  radial-gradient(700px 500px at 62% 96%,#F2FBF6 0%,rgba(242,251,246,0) 60%),
+  #fff}
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1.02fr .98fr;align-items:center;gap:20px;min-height:900px;padding:170px 20px 70px}
+.hero-copy{max-width:640px}
+.hero .eyebrow{font-size:22px;font-weight:700;color:#2b2b2b;letter-spacing:-.5px;margin-bottom:14px}
+.hero h1{font-size:68px;line-height:1.14;font-weight:900;letter-spacing:-2.6px;color:var(--ink)}
+.hero h1 .line2{display:block;margin-top:2px}
+.hero h1 em{font-style:normal;color:var(--green)}
+.hero-points{margin:26px 0 34px;display:grid;gap:2px}
+.hero-points li{position:relative;padding-left:16px;font-size:17px;line-height:1.75;color:#2f2f2f;letter-spacing:-.3px}
+.hero-points li::before{content:"";position:absolute;left:0;top:11px;width:5px;height:5px;border-radius:50%;background:var(--green)}
+.hero-btns{display:flex;flex-wrap:wrap;gap:16px}
+
+/* 히어로 비주얼 */
+.hero-visual{position:relative;height:660px}
+.hv-blob{position:absolute;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(0,199,60,.16),rgba(0,199,60,.05) 58%,rgba(0,199,60,0) 70%);filter:blur(4px)}
+.hv-blob.a{width:520px;height:520px;right:-70px;top:-60px}
+.hv-blob.b{width:360px;height:360px;left:10px;bottom:-40px;opacity:.7}
+.hv-leaf{position:absolute;right:-30px;top:30px;width:330px;height:330px;background:linear-gradient(140deg,#8FE9B6,#39C97F);opacity:.22;border-radius:0 100% 0 100%;transform:rotate(-12deg)}
+.hv-cup{position:absolute;right:-140px;bottom:-60px;width:600px;height:470px;background:linear-gradient(150deg,#D9F6E6 0%,#BEEFD7 60%,#B4EBCF 100%);border-radius:110px 110px 230px 230px;opacity:.85}
+.hv-cup::after{content:"";position:absolute;right:-92px;top:88px;width:150px;height:150px;border-radius:50%;border:38px solid #BEEFD7}
+.hv-saucer{position:absolute;right:-40px;bottom:-90px;width:520px;height:200px;border-radius:50%;background:#CBEFDD;opacity:.5}
+.phone{position:absolute;background:#191b1e;border-radius:44px;padding:10px;
+  box-shadow:0 40px 70px -30px rgba(10,60,35,.55),0 2px 0 rgba(255,255,255,.35) inset}
+.phone::before{content:"";position:absolute;left:50%;top:16px;transform:translateX(-50%);width:88px;height:20px;border-radius:0 0 14px 14px;background:#191b1e;z-index:3}
+.phone-screen{width:100%;height:100%;background:#fff;border-radius:36px;overflow:hidden;position:relative}
+.phone-back{width:236px;height:486px;right:16px;top:34px;transform:rotate(8deg)}
+.phone-front{width:266px;height:548px;left:54px;top:96px;transform:rotate(-7deg);z-index:2}
+.ps-head{display:flex;align-items:center;justify-content:space-between;padding:26px 18px 12px;border-bottom:1px solid #eef3ef}
+.ps-head b{font-size:15px;font-weight:900;color:var(--green);letter-spacing:-.4px}
+.ps-head i{width:16px;height:10px;border-top:2px solid var(--green);border-bottom:2px solid var(--green);position:relative}
+.ps-head i::after{content:"";position:absolute;left:0;top:3px;width:16px;border-top:2px solid var(--green)}
+.ps-body{padding:18px 18px 0}
+.ps-eyebrow{font-size:9px;font-weight:700;color:#8b968f;letter-spacing:-.1px}
+.ps-title{font-size:22px;line-height:1.24;font-weight:900;letter-spacing:-1px;margin-top:6px;color:#1d1d1d}
+.ps-title b{color:var(--green)}
+.ps-sub{font-size:9.5px;line-height:1.6;color:#7b857e;margin-top:8px}
+.ps-btn{display:inline-block;margin-top:12px;padding:7px 16px;border-radius:20px;background:var(--green);color:#fff;font-size:9px;font-weight:800}
+.ps-card{margin-top:16px;border-radius:12px;background:linear-gradient(160deg,#00C73C,#00A833);padding:12px;color:#fff}
+.ps-card small{display:block;font-size:8px;opacity:.85}
+.ps-card b{display:block;font-size:12px;font-weight:900;margin-top:2px}
+.ps-lines{display:grid;gap:4px;margin-top:9px}
+.ps-lines i{display:block;height:4px;border-radius:2px;background:rgba(255,255,255,.55)}
+.ps-lines i:nth-child(2){width:70%;background:rgba(255,255,255,.38)}
+.ps-lines i:nth-child(3){width:48%;background:rgba(255,255,255,.28)}
+.phone-back .ps-body{padding-top:40px;text-align:center}
+.pb-mark{width:56px;height:56px;border-radius:50%;margin:26px auto 12px;background:var(--green-l);display:grid;place-items:center}
+.pb-mark svg{width:30px;height:30px}
+.pb-t{font-size:13px;font-weight:900;color:#232323;letter-spacing:-.5px}
+.pb-s{font-size:8.5px;color:#8b968f;margin-top:4px}
+.pb-list{display:grid;gap:8px;margin-top:20px;padding:0 4px;text-align:left}
+.pb-list div{display:flex;gap:6px;align-items:center;font-size:8px;color:#59645d}
+.pb-list span{width:12px;height:12px;border-radius:4px;background:var(--green-l);flex:0 0 auto;position:relative}
+.pb-list span::after{content:"";position:absolute;inset:3px;border-radius:2px;background:var(--green);opacity:.7}
+
+/* ---------- 섹션 공통 ---------- */
+.sec{position:relative;padding:104px 0}
+.center-tit{text-align:center}
+.center-tit .kicker{font-size:22px;font-weight:800;color:var(--green);letter-spacing:-.6px;margin-bottom:10px}
+.center-tit h2{font-size:62px;line-height:1.2;font-weight:900;letter-spacing:-2.2px;color:var(--ink)}
+.center-tit h2 em{font-style:normal;color:var(--green)}
+.br-m{display:none}
+.center-tit p.sub{margin-top:16px;font-size:17px;color:#5c655f;letter-spacing:-.3px}
+.center-tit .only-m{display:none}
+
+/* ---------- 차별화 3가지 ---------- */
+.diff{background:var(--soft)}
+.diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:74px}
+.diff-card{text-align:center;padding:0 6px}
+.diff-icon{width:150px;height:150px;margin:0 auto 26px}
+.diff-icon svg{width:100%;height:100%}
+.diff-no{font-size:26px;font-weight:900;color:var(--green);letter-spacing:-.5px}
+.diff-card h3{margin-top:4px;font-size:38px;font-weight:900;letter-spacing:-1.6px;color:#1c1c1c}
+.diff-card h3 em{font-style:normal;color:var(--green)}
+.diff-card p{margin-top:14px;font-size:16px;line-height:1.7;color:#5c655f;letter-spacing:-.3px}
+
+/* ---------- 서비스 유형 (다크 그린) ---------- */
+.services{background:linear-gradient(155deg,#0B3626 0%,#124934 42%,#0C3929 78%,#0A3223 100%);color:#fff;overflow:hidden}
+.services::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(rgba(255,255,255,.10) 1px,transparent 1px);background-size:22px 22px;opacity:.5;
+  -webkit-mask-image:radial-gradient(120% 80% at 80% 100%,#000 0%,transparent 62%);
+  mask-image:radial-gradient(120% 80% at 80% 100%,#000 0%,transparent 62%)}
+.services .deco{position:absolute;pointer-events:none;opacity:.16}
+.services .deco.leaf1{width:420px;height:420px;left:-120px;top:-70px;background:linear-gradient(140deg,#8FE9B6,#1f7a52);border-radius:0 100% 0 100%;transform:rotate(-18deg)}
+.services .deco.leaf2{width:360px;height:360px;right:-110px;bottom:-80px;background:linear-gradient(140deg,#6EDCA0,#1b6b47);border-radius:100% 0 100% 0;transform:rotate(12deg);opacity:.14}
+.services .deco.curve{width:100%;height:100%;left:0;top:0;opacity:.12}
+.services .container{position:relative;z-index:2}
+.services .center-tit h2{color:#fff}
+.services .center-tit h2 em{color:var(--yellow)}
+.services .center-tit p.sub{color:rgba(255,255,255,.72)}
+.svc-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:70px}
+.svc-card{position:relative;display:flex;align-items:stretch;justify-content:space-between;gap:10px;
+  background:#fff;border-radius:18px;overflow:hidden;min-height:250px;
+  box-shadow:0 24px 40px -30px rgba(0,0,0,.8);transition:transform .35s ease,box-shadow .35s ease}
+.svc-card:hover{transform:translateY(-5px);box-shadow:0 30px 46px -28px rgba(0,0,0,.85)}
+.svc-text{padding:34px 0 30px 40px;flex:1 1 55%;min-width:0;color:#222}
+.svc-no{font-size:24px;font-weight:900;color:#2a2a2a;letter-spacing:-.5px;line-height:1}
+.svc-text h3{margin-top:8px;font-size:36px;font-weight:900;letter-spacing:-1.8px;line-height:1.2;color:#1b1b1b}
+.svc-text h3 em{font-style:normal;color:var(--green)}
+.svc-text p{margin-top:12px;font-size:14.5px;line-height:1.65;color:#5f6862;letter-spacing:-.25px;word-break:keep-all}
+.svc-art{flex:0 0 45%;position:relative;overflow:hidden;display:grid;place-items:center}
+/* 01 Q&A */
+.art-qa{background:linear-gradient(140deg,#E9F1EC,#F6FAF7)}
+.art-qa .qmark{position:absolute;font-size:190px;font-weight:900;color:#DCE8E0;right:-6px;bottom:-56px;line-height:1}
+.bubble{position:relative;z-index:2;background:#fff;border-radius:14px 14px 14px 4px;padding:10px 14px;font-size:12px;font-weight:800;color:#2a2a2a;box-shadow:0 12px 22px -16px rgba(0,0,0,.5)}
+.bubble.a{background:var(--green);color:#fff;border-radius:14px 14px 4px 14px;margin-top:8px}
+.art-qa .stack{display:grid;justify-items:start}
+/* 02 후기형 */
+.art-review{background:linear-gradient(150deg,#F3F7F4,#E7F1EA)}
+.review-card{width:82%;background:#fff;border-radius:12px;padding:12px 12px 10px;box-shadow:0 18px 30px -22px rgba(0,0,0,.6)}
+.review-stars{color:#FFC63A;font-size:13px;letter-spacing:2px}
+.review-line{height:6px;border-radius:3px;background:#E8EEEA;margin-top:7px}
+.review-line.w70{width:70%}
+.review-line.w45{width:45%}
+.review-photos{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:9px}
+.review-photos i{display:block;height:32px;border-radius:5px;background:linear-gradient(140deg,#CFE9D9,#9FD8B8)}
+.review-photos i:nth-child(2){background:linear-gradient(140deg,#E4EEE7,#C2DECB)}
+.review-photos i:nth-child(3){background:linear-gradient(140deg,#F3E7D8,#E0C9AC)}
+/* 03 핫딜형 */
+.art-deal{background:linear-gradient(150deg,#FDF1F1,#F8E4E4)}
+.deal-card{width:82%;background:#fff;border-radius:12px;padding:14px;box-shadow:0 18px 30px -22px rgba(0,0,0,.6);position:relative}
+.deal-tag{position:absolute;right:-6px;top:-10px;background:var(--red);color:#fff;font-size:11px;font-weight:900;padding:5px 10px;border-radius:8px;transform:rotate(6deg)}
+.deal-old{font-size:10px;color:#9aa49d;text-decoration:line-through}
+.deal-price{font-size:20px;font-weight:900;color:var(--red);letter-spacing:-.6px}
+.deal-price small{font-size:11px}
+.deal-line{height:6px;border-radius:3px;background:#EFF2F0;margin-top:8px}
+.deal-line.w60{width:60%}
+/* 04 정보배포형 */
+.art-info{background:linear-gradient(150deg,#EDF3EF,#E1EDE5)}
+.info-frame{width:86%;background:#fff;border-radius:10px;padding:8px;box-shadow:0 18px 30px -22px rgba(0,0,0,.6)}
+.info-bar{display:flex;gap:3px;margin-bottom:6px}
+.info-bar i{width:5px;height:5px;border-radius:50%;background:#D6E0D9}
+.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.info-grid i{display:block;height:24px;border-radius:4px;background:linear-gradient(140deg,#E8F1EB,#CFE3D6)}
+.info-grid i:nth-child(2n){background:linear-gradient(140deg,#F2EADF,#E2D2BC)}
+.info-grid i:nth-child(3n){background:linear-gradient(140deg,#E3EEF3,#C7DDE6)}
+
+/* ---------- 진행 프로세스 ---------- */
+.process{background:#fff}
+.steps{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:18px;margin-top:66px}
+.steps::before{content:"";position:absolute;left:6%;right:6%;top:38px;height:2px;background:linear-gradient(90deg,rgba(0,199,60,.15),rgba(0,199,60,.55),rgba(0,199,60,.15))}
+.step{position:relative;text-align:center;padding:0 6px}
+.step .dot{position:relative;z-index:2;width:78px;height:78px;margin:0 auto 18px;border-radius:50%;background:#fff;border:2px solid #DBF3E3;display:grid;place-items:center;box-shadow:0 14px 24px -20px rgba(0,90,40,.6)}
+.step .dot b{font-size:22px;font-weight:900;color:var(--green);letter-spacing:-.5px}
+.step h4{font-size:19px;font-weight:900;letter-spacing:-.7px;color:#1d1d1d}
+.step p{margin-top:7px;font-size:14px;line-height:1.6;color:#6a736d;letter-spacing:-.25px;word-break:keep-all}
+
+/* ---------- 가격 ---------- */
+.price{background:#fff;padding-bottom:100px}
+.price .center-tit h2 em{color:var(--green)}
+.price-group{margin-top:60px}
+.group-head{display:flex;align-items:baseline;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.group-head h4{font-size:24px;font-weight:900;letter-spacing:-.8px}
+.group-head span{font-size:15px;color:#7d8680;letter-spacing:-.3px}
+.group-head .line{flex:1;height:1px}
+.price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:22px}
+.pcard{position:relative;display:flex;flex-direction:column;border-radius:var(--radius);padding:26px 22px 22px;min-height:430px;color:#fff;
+  box-shadow:0 1px 0 rgba(0,0,0,.03),0 18px 34px -24px rgba(20,40,30,.5);transition:transform .35s ease,box-shadow .35s ease}
+.pcard:hover{transform:translateY(-6px);box-shadow:0 1px 0 rgba(0,0,0,.03),0 26px 42px -26px rgba(20,40,30,.55)}
+.pcard .p-no{font-size:15px;font-weight:800;opacity:.85}
+.pcard .p-badge{position:absolute;right:16px;top:20px;font-size:12px;font-weight:900;padding:5px 11px;border-radius:20px;background:var(--yellow);color:#2a2300;letter-spacing:-.2px}
+.pcard .p-brand{margin-top:16px;font-size:15px;font-weight:700;opacity:.9;letter-spacing:-.2px}
+.pcard .p-name{margin-top:2px;font-size:30px;font-weight:900;letter-spacing:-1.2px;line-height:1.15}
+.pcard .p-tag{align-self:flex-start;margin-top:10px;font-size:12px;font-weight:800;padding:5px 11px;border-radius:20px;background:rgba(255,255,255,.22);color:#fff;letter-spacing:-.2px}
+.pcard .p-desc{margin-top:16px;background:#fff;border-radius:12px;padding:14px;color:#414a44;font-size:13.5px;line-height:1.65;letter-spacing:-.2px;word-break:keep-all;flex:1 1 auto}
+.pcard .p-desc b{color:var(--green-d);font-weight:800}
+.pcard .p-pricebox{margin-top:16px}
+.pcard .p-was{font-size:12.5px;opacity:.8;text-decoration:line-through}
+.pcard .p-was2{font-size:12.5px;opacity:.85}
+.pcard .p-price{display:flex;align-items:baseline;gap:3px;font-weight:900;letter-spacing:-1.4px;line-height:1.1}
+.pcard .p-price .per{font-size:13px;font-weight:800;letter-spacing:-.2px;opacity:.9;margin-right:2px}
+.pcard .p-price .num{font-size:35px}
+.pcard .p-price .won{font-size:19px;font-weight:800}
+.pcard .p-vat{margin-top:4px;font-size:11.5px;opacity:.75}
+.pcard .p-cta{display:block;margin-top:14px;text-align:center;background:#fff;color:#1f2a23;border-radius:10px;padding:12px 10px;font-size:14.5px;font-weight:900;letter-spacing:-.3px;transition:background .3s,color .3s,transform .3s}
+.pcard .p-cta:hover{transform:translateY(-2px)}
+.pcard.free{background:linear-gradient(160deg,#5457F0 0%,#3B2FD4 100%)}
+.pcard.free .p-cta{color:#3B2FD4}
+.pcard.free .p-cta:hover{background:#0f1030;color:#fff}
+.pcard.basic{background:#E9F9EC;color:#1f2a23;box-shadow:0 1px 0 rgba(0,0,0,.03),0 18px 34px -26px rgba(20,40,30,.28)}
+.pcard.basic .p-badge{background:#DFF5E4;color:#0c7a35}
+.pcard.basic .p-brand{color:#56635a}
+.pcard.basic .p-tag{background:#fff;color:#0f8b3c}
+.pcard.basic .p-desc{background:#fff;border:1px solid #D8EEDD}
+.pcard.basic .p-was,.pcard.basic .p-vat{color:#5f7a67;opacity:1}
+.pcard.basic .p-price{color:#0f8b3c}
+.pcard.basic .p-cta{background:#fff;color:#0f8b3c;box-shadow:inset 0 0 0 1.5px #00C73C}
+.pcard.basic .p-cta:hover{background:var(--green);color:#fff}
+.pcard.std{background:linear-gradient(160deg,#22C93F 0%,#0F9A35 100%)}
+.pcard.std .p-cta{color:#0F9A35}
+.pcard.std .p-cta:hover{background:#082e13;color:#fff}
+.pcard.hot{background:linear-gradient(160deg,#FF3B3B 0%,#D3101B 100%)}
+.pcard.hot .p-cta{color:#D3101B}
+.pcard.hot .p-cta:hover{background:#2b0407;color:#fff}
+.price-note{margin-top:26px;text-align:center;font-size:13.5px;color:#8b948e;letter-spacing:-.2px}
+/* 패키지 */
+.pkg-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:22px}
+.pkg{background:#fff;border-radius:24px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.03),0 22px 40px -28px rgba(20,40,30,.45);display:flex;flex-direction:column}
+.pkg-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:20px 24px;color:#fff}
+.pkg-head .ph-l{display:flex;align-items:baseline;gap:10px;min-width:0}
+.pkg-head .no{font-size:14px;font-weight:800;opacity:.85}
+.pkg-head h3{font-size:22px;font-weight:900;letter-spacing:-.9px;white-space:nowrap}
+.pkg-head .unit{font-size:12px;font-weight:700;padding:5px 11px;border-radius:20px;background:rgba(255,255,255,.24);white-space:nowrap}
+.pkg.basic .pkg-head{background:linear-gradient(100deg,#22C93F,#0FA63A)}
+.pkg.std .pkg-head{background:linear-gradient(100deg,#14A97A,#0C7F63)}
+.pkg-body{padding:8px 24px 6px;flex:1}
+.pkg-row{display:grid;grid-template-columns:1fr auto auto auto;align-items:center;gap:14px;padding:16px 10px;border-bottom:1px solid #EDF2EE}
+.pkg-row:last-child{border-bottom:0}
+.pkg-row .qty{font-size:30px;font-weight:900;color:var(--green-d);letter-spacing:-1.4px}
+.pkg-row .qty small{font-size:14px;font-weight:800;margin-left:2px;letter-spacing:-.3px;color:#2c3a31}
+.pkg-row .per{font-size:13px;color:#5f6a63;background:#F2F6F3;border-radius:20px;padding:5px 11px;white-space:nowrap}
+.pkg-row .off{font-size:12px;font-weight:900;color:#fff;background:var(--red);border-radius:6px;padding:4px 8px;white-space:nowrap}
+.pkg-row .total{font-size:30px;font-weight:900;letter-spacing:-1.2px;color:#16241b;white-space:nowrap}
+.pkg-row .total small{font-size:15px;font-weight:800;margin-left:1px}
+.pkg-row.best{background:#FFFBE6;border-radius:12px;border-bottom:0;position:relative}
+.pkg-row.best::before{content:"BEST";position:absolute;left:10px;top:-9px;background:var(--yellow);color:#5a4a00;font-size:10px;font-weight:900;padding:2px 8px;border-radius:20px;letter-spacing:.4px}
+.pkg-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 24px 20px}
+.pkg-foot span{font-size:12px;color:#98a29b}
+.pkg-foot a{display:inline-flex;align-items:center;gap:7px;background:#1c1f1d;color:#fff;font-size:14px;font-weight:800;padding:11px 20px;border-radius:10px;transition:background .3s,transform .3s}
+.pkg-foot a:hover{background:var(--green);transform:translateY(-2px)}
+
+/* ---------- 상담 CTA + 폼 ---------- */
+.contact{position:relative;overflow:hidden;background:
+  radial-gradient(700px 380px at 82% 4%,#EFFAF3 0%,rgba(239,250,243,0) 65%),
+  radial-gradient(620px 340px at 12% 90%,#F3FAF6 0%,rgba(243,250,246,0) 62%),
+  #FBFCFB}
+.contact::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(rgba(0,130,60,.13) 1.4px,transparent 1.4px);background-size:20px 20px;
+  -webkit-mask-image:radial-gradient(70% 60% at 50% 30%,#000,transparent 78%);
+  mask-image:radial-gradient(70% 60% at 50% 30%,#000,transparent 78%);opacity:.55}
+.contact .container{position:relative;z-index:2}
+.contact .kicker{text-align:center;font-size:17px;font-weight:700;color:#8b948e;letter-spacing:2px;text-transform:lowercase;margin-bottom:12px}
+.contact h2{text-align:center;font-size:62px;line-height:1.22;font-weight:900;letter-spacing:-2.4px}
+.contact h2 em{font-style:normal;color:var(--green)}
+.contact .c-sub{margin-top:14px;text-align:center;font-size:17px;color:#5f6862;letter-spacing:-.3px}
+.contact .c-btns{display:flex;justify-content:center;flex-wrap:wrap;gap:16px;margin:32px 0 54px}
+.form-card{max-width:760px;margin:0 auto;background:#fff;border-radius:24px;padding:40px 40px 34px;
+  box-shadow:0 1px 0 rgba(0,0,0,.04),0 26px 50px -30px rgba(0,60,20,.45)}
+.form-head{text-align:center;margin-bottom:26px}
+.chip{display:inline-block;font-size:11.5px;font-weight:900;letter-spacing:2px;color:var(--green-d);background:var(--green-l);padding:6px 14px;border-radius:20px}
+.form-head h3{margin-top:12px;font-size:30px;font-weight:900;letter-spacing:-1.2px}
+.form-head h3 em{font-style:normal;color:var(--green)}
+.form-head p{margin-top:10px;font-size:14.5px;line-height:1.65;color:#6d776f;letter-spacing:-.2px}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px}
+.f-field{display:block;min-width:0}
+.f-field > span{display:block;font-size:14px;font-weight:800;color:#2c352f;margin-bottom:7px;letter-spacing:-.2px}
+.f-field > span em{font-style:normal;color:var(--green);margin-left:2px}
+.f-field input,.f-field select,.f-field textarea{width:100%;font-family:inherit;font-size:15px;color:#222;
+  background:#F7FAF8;border:1.5px solid #E3EDE6;border-radius:11px;padding:14px 15px;outline:none;
+  transition:border-color .25s,background .25s,box-shadow .25s;-webkit-appearance:none;appearance:none}
+.f-field input::placeholder,.f-field textarea::placeholder{color:#a8b3ac}
+.f-field input:focus,.f-field select:focus,.f-field textarea:focus{border-color:var(--green);background:#fff;box-shadow:0 0 0 4px rgba(0,199,60,.10)}
+.f-field textarea{min-height:132px;resize:vertical;line-height:1.6}
+.f-field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%236d7d73' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 16px center;padding-right:40px;color:#222}
+.f-field.has-error input,.f-field.has-error select,.f-field.has-error textarea{border-color:#E8433F;background:#FFF7F7}
+.f-err{display:none;margin-top:6px;font-size:12.5px;font-weight:700;color:#E8433F;letter-spacing:-.2px}
+.f-field.has-error .f-err{display:block}
+.f-full{grid-column:1 / -1}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.agree{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:#F6FAF7;border:1.5px solid #E9F1EB;border-radius:11px;padding:13px 15px}
+.agree label{display:flex;align-items:center;gap:9px;font-size:14px;font-weight:700;color:#39443c;cursor:pointer;letter-spacing:-.2px}
+.agree input{width:18px;height:18px;accent-color:var(--green);flex:0 0 auto;margin:0;cursor:pointer}
+.agree label em{font-style:normal;color:var(--green)}
+.agree .view{background:none;border:0;padding:0;font-size:13px;font-weight:700;color:#7b857e;text-decoration:underline;cursor:pointer}
+.agree .view:hover{color:var(--green)}
+.agree.has-error{border-color:#E8433F;background:#FFF7F7}
+.agree-err{display:none;margin-top:8px;font-size:12.5px;font-weight:700;color:#E8433F}
+.agree.has-error + .agree-err{display:block}
+.submit-row{margin-top:22px}
+.submit-row .btn{width:100%;font-size:19px;padding:17px 20px}
+.form-foot{margin-top:14px;text-align:center;font-size:12.5px;color:#98a29b;letter-spacing:-.2px}
+/* 접수 완료 */
+.form-done{display:none;text-align:center;padding:16px 6px 6px}
+.form-done.on{display:block;animation:pop .45s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.done-ico{width:74px;height:74px;margin:0 auto 18px;border-radius:50%;background:var(--green-l);display:grid;place-items:center}
+.done-ico svg{width:38px;height:38px}
+.form-done h4{font-size:26px;font-weight:900;letter-spacing:-1px}
+.form-done .done-sub{margin-top:10px;font-size:14.5px;line-height:1.7;color:#63706a}
+.receipt{margin:22px auto 0;max-width:520px;border:1px dashed #CFE3D6;border-radius:14px;background:#F8FCF9;padding:16px 18px;text-align:left}
+.receipt .r-top{display:flex;justify-content:space-between;align-items:center;gap:10px;padding-bottom:10px;border-bottom:1px solid #E4EFE7;font-size:12.5px;color:#7d8a82;font-weight:700}
+.receipt .r-top b{color:var(--green-d);font-size:13.5px;letter-spacing:.2px}
+.receipt dl{display:grid;grid-template-columns:78px 1fr;gap:8px 10px;margin:12px 0 0;font-size:13.5px}
+.receipt dt{color:#8b968f;font-weight:700}
+.receipt dd{margin:0;color:#2c352f;font-weight:700;word-break:break-all}
+.receipt .r-msg{grid-column:1/-1;color:#4d5952;font-weight:500;line-height:1.6;white-space:pre-wrap}
+.done-btns{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:22px}
+.done-btns button{font-family:inherit;font-size:14px;font-weight:800;padding:12px 22px;border-radius:10px;border:1.5px solid #DDE8E1;background:#fff;color:#39443c;cursor:pointer;transition:.25s}
+.done-btns button:hover{border-color:var(--green);color:var(--green)}
+.done-btns button.primary{background:var(--green);border-color:var(--green);color:#fff}
+.done-btns button.primary:hover{background:#111;border-color:#111;color:#fff}
+
+/* ---------- 푸터 ---------- */
+.foot{background:#222;color:#6d6d6d;padding:80px 0 0;text-align:center}
+.foot .f-mark{width:52px;height:52px;margin:0 auto 12px;opacity:.95}
+.foot .f-name{font-size:17px;font-weight:900;color:#e9efe9;letter-spacing:-.3px}
+.foot-info{margin-top:22px;display:grid;gap:6px;font-size:13.5px;line-height:1.7;color:#8b8b8b;letter-spacing:-.2px}
+.foot-info .row{display:flex;justify-content:center;flex-wrap:wrap;gap:0 14px}
+.foot-info .k{color:#666}
+.foot-info a:hover{color:var(--green)}
+.foot-note{margin-top:16px;font-size:11.5px;color:#5b5b5b;letter-spacing:-.1px}
+.foot-copy{margin-top:34px;padding:18px 0;border-top:1px solid #2f2f2f;font-size:12.5px;color:#666;letter-spacing:.2px}
+.foot-top{display:inline-flex;align-items:center;gap:8px;margin-top:20px;font-size:12.5px;color:#8b8b8b;border:1px solid #333;border-radius:20px;padding:8px 16px}
+.foot-top:hover{color:#fff;border-color:#555}
+
+/* ---------- 플로팅 CTA ---------- */
+.fab-wrap{position:fixed;right:26px;bottom:26px;z-index:90;display:flex;align-items:center;gap:10px}
+.fab-tip{background:#fff;color:#26312a;font-size:13px;font-weight:800;letter-spacing:-.2px;padding:9px 14px;border-radius:20px;
+  box-shadow:0 12px 24px -14px rgba(0,0,0,.5);white-space:nowrap;opacity:0;transform:translateX(8px);pointer-events:none;transition:.3s}
+.fab-wrap:hover .fab-tip{opacity:1;transform:none}
+.fab{position:relative;width:66px;height:66px;border:0;border-radius:50%;cursor:pointer;
+  background:linear-gradient(150deg,#16D24B,#00B335);box-shadow:0 18px 30px -14px rgba(0,160,50,.85);
+  display:grid;place-items:center;transition:transform .3s}
+.fab:hover{transform:translateY(-3px) scale(1.03)}
+.fab svg{width:30px;height:30px;position:relative;z-index:2}
+.fab .ring{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(0,199,60,.5);animation:ring 2.6s ease-out infinite}
+@keyframes ring{0%{transform:scale(1);opacity:.65}70%{transform:scale(1.55);opacity:0}100%{opacity:0}}
+
+/* ---------- 모달 ---------- */
+.modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.modal.on{display:flex}
+.modal-bg{position:absolute;inset:0;background:rgba(9,20,14,.55);backdrop-filter:blur(2px)}
+.modal-box{position:relative;z-index:2;width:100%;max-width:560px;max-height:82vh;overflow:auto;background:#fff;border-radius:20px;padding:28px 28px 24px;box-shadow:0 30px 60px -30px rgba(0,0,0,.6);animation:pop .3s ease}
+.modal-box h3{font-size:21px;font-weight:900;letter-spacing:-.8px;margin-bottom:6px}
+.modal-box .m-sub{font-size:13px;color:#7b857e;margin-bottom:16px}
+.modal-box .m-body{font-size:13.5px;line-height:1.75;color:#4a544d}
+.modal-box .m-body h4{font-size:13.5px;font-weight:900;color:#2b352e;margin:14px 0 4px}
+.modal-box .m-body ul{display:grid;gap:3px;padding-left:2px}
+.modal-box .m-body li{position:relative;padding-left:11px}
+.modal-box .m-body li::before{content:"·";position:absolute;left:0}
+.modal-close{position:absolute;right:14px;top:14px;width:34px;height:34px;border:0;border-radius:50%;background:#F2F6F3;color:#5b665f;font-size:18px;cursor:pointer;line-height:1}
+.modal-close:hover{background:#E4EDE7}
+.modal-actions{display:flex;gap:10px;margin-top:20px}
+.modal-actions .btn{flex:1;font-size:15px;padding:13px 16px}
+.toast{position:fixed;left:50%;bottom:34px;transform:translate(-50%,20px);z-index:300;background:#1d2620;color:#fff;
+  font-size:13.5px;font-weight:700;padding:12px 20px;border-radius:30px;opacity:0;pointer-events:none;transition:.3s;box-shadow:0 16px 30px -18px rgba(0,0,0,.8)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- 리빌 애니메이션 ---------- */
+.js [data-reveal]{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.js [data-reveal].in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .js [data-reveal]{opacity:1!important;transform:none!important;transition:none!important}
+  .fab .ring{animation:none}
+  *{animation-duration:.001ms!important;animation-iteration-count:1!important}
+}
+
+/* ============================================================
+   반응형
+   ============================================================ */
+@media (max-width:1240px){
+  .container{padding:0 24px}
+  .nav-links a{padding:0 20px;font-size:17px}
+  .nav-links a::after{left:20px;right:20px;bottom:24px}
+  .hero-inner{min-height:800px;padding-top:150px}
+  .hero h1{font-size:56px;letter-spacing:-2px}
+  .hero .eyebrow{font-size:20px}
+  .hero-visual{height:600px;transform:scale(.92);transform-origin:right center}
+  .center-tit h2{font-size:52px}
+  .contact h2{font-size:52px}
+  .diff-card h3{font-size:32px}
+  .svc-text h3{font-size:31px}
+}
+@media (max-width:1080px){
+  .hero-inner{grid-template-columns:1fr .9fr;min-height:auto;padding:150px 24px 64px}
+  .hero h1{font-size:50px}
+  .hero-visual{height:520px;transform:scale(.82)}
+  .phone-front{left:0;top:80px}
+  .phone-back{right:-10px;top:20px}
+  .diff-grid{gap:24px}
+  .diff-icon{width:124px;height:124px}
+  .diff-card h3{font-size:28px}
+  .svc-grid{gap:16px}
+  .svc-text{padding:28px 0 24px 26px}
+  .svc-text h3{font-size:27px}
+  .svc-text p{font-size:13.5px}
+  .price-grid{grid-template-columns:repeat(2,1fr)}
+  .pkg-grid{grid-template-columns:1fr}
+  .steps{grid-template-columns:repeat(3,1fr);row-gap:34px}
+  .steps::before{display:none}
+}
+@media (max-width:960px){
+  :root{--nav-h:84px}
+  .nav-links{display:none}
+  .nav-toggle{display:block}
+  .mobile-menu{display:block}
+  .hero-inner{grid-template-columns:1fr;text-align:center;padding:130px 24px 56px}
+  .hero-copy{max-width:none;margin:0 auto}
+  .hero h1{font-size:46px}
+  .hero-points{justify-items:center;display:grid}
+  .hero-points li{text-align:left;max-width:420px;width:100%}
+  .hero-btns{justify-content:center}
+  .hero-visual{display:none}
+  .diff-grid{grid-template-columns:1fr;gap:46px;max-width:520px;margin:56px auto 0}
+  .diff-card p{max-width:420px;margin:14px auto 0}
+  .svc-grid{grid-template-columns:1fr}
+  .svc-card{min-height:0}
+  .center-tit h2{font-size:44px;letter-spacing:-1.6px}
+  .contact h2{font-size:44px;letter-spacing:-1.6px}
+  .sec{padding:80px 0}
+}
+@media (max-width:768px){
+  body{font-size:16px}
+  :root{--nav-h:70px}
+  .brand .mark{width:34px;height:34px}
+  .brand b{font-size:25px}
+  .brand span{display:none}
+  .nav-toggle{width:48px;height:48px;margin-right:-6px}
+  .nav-toggle i{left:9px;width:28px}
+  .nav-toggle i:nth-child(1){top:15px}
+  .nav-toggle i:nth-child(2){top:23px}
+  .nav-toggle i:nth-child(3){top:31px}
+  .nav-toggle[aria-expanded="true"] i:nth-child(1){transform:translateY(8px) rotate(45deg)}
+  .nav-toggle[aria-expanded="true"] i:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+  .hero-inner{padding:108px 20px 44px}
+  .br-m{display:inline}
+  .hero .eyebrow{font-size:15px;line-height:2;margin-bottom:6px}
+  .hero h1{font-size:34px;line-height:1.24;letter-spacing:-1.4px}
+  .hero-points{margin:20px 0 26px;gap:0}
+  .hero-points li{font-size:14px;line-height:1.75}
+  .hero-points li::before{top:9px}
+  .hero-btns{gap:9px}
+  .hero-btns .btn{font-size:15px;padding:13px 22px;flex:1 1 auto;min-width:0}
+  .sec{padding:60px 0}
+  .center-tit .kicker{font-size:16px;margin-bottom:6px}
+  .center-tit h2{font-size:30px;letter-spacing:-1.2px;line-height:1.26}
+  .center-tit p.sub{font-size:13.5px;margin-top:10px}
+  .diff-grid{margin-top:38px;gap:38px}
+  .diff-icon{width:104px;height:104px;margin-bottom:16px}
+  .diff-no{font-size:20px}
+  .diff-card h3{font-size:25px;letter-spacing:-1px}
+  .diff-card p{font-size:13.5px;margin-top:9px}
+  .svc-grid{margin-top:34px;gap:12px}
+  .svc-card{border-radius:14px}
+  .svc-text{padding:22px 18px 18px;flex:1 1 auto}
+  .svc-no{font-size:18px}
+  .svc-text h3{font-size:24px;margin-top:4px;letter-spacing:-1.2px}
+  .svc-text p{font-size:12.5px;margin-top:8px}
+  .svc-art{display:none}
+  .svc-card::after{content:"";position:absolute;right:-40px;bottom:-46px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(0,199,60,.16),rgba(0,199,60,0) 70%)}
+  .steps{grid-template-columns:1fr 1fr;gap:22px 12px;margin-top:36px}
+  .step .dot{width:58px;height:58px;margin-bottom:12px}
+  .step .dot b{font-size:17px}
+  .step h4{font-size:15.5px}
+  .step p{font-size:12.5px;margin-top:4px}
+  .price-group{margin-top:38px}
+  .group-head h4{font-size:19px}
+  .group-head span{font-size:12.5px}
+  .price-grid{gap:12px;margin-top:14px}
+  .pcard{min-height:0;padding:20px 16px 16px;border-radius:18px}
+  .pcard .p-name{font-size:24px}
+  .pcard .p-brand{font-size:13px;margin-top:10px}
+  .pcard .p-desc{font-size:12.5px;padding:12px;margin-top:12px}
+  .pcard .p-price .num{font-size:28px}
+  .pcard .p-cta{font-size:13px;padding:11px 8px}
+  .pkg-head{padding:16px 18px}
+  .pkg-head h3{font-size:17px}
+  .pkg-head .unit{font-size:11px;padding:4px 9px}
+  .pkg-body{padding:4px 14px 2px}
+  .pkg-row{grid-template-columns:auto 1fr auto;gap:8px;padding:13px 6px}
+  .pkg-row .per{grid-column:2;justify-self:start;font-size:11.5px;padding:4px 9px}
+  .pkg-row .off{grid-column:2;grid-row:2;justify-self:start;margin-top:-2px}
+  .pkg-row .total{grid-column:3;grid-row:1 / span 2;font-size:24px}
+  .pkg-row .qty{font-size:24px}
+  .pkg-row.best::before{left:6px}
+  .pkg-foot{padding:10px 18px 16px}
+  .pkg-foot a{font-size:13px;padding:10px 16px}
+  .contact h2{font-size:30px;letter-spacing:-1.2px}
+  .contact .c-sub{font-size:13.5px;margin-top:10px}
+  .contact .c-btns{margin:22px 0 32px;gap:9px}
+  .contact .c-btns .btn{font-size:15px;padding:13px 22px;flex:1 1 auto}
+  .form-card{padding:24px 18px 22px;border-radius:18px}
+  .form-head h3{font-size:23px}
+  .form-head p{font-size:13px}
+  .f-row{grid-template-columns:1fr;gap:14px}
+  .f-field > span{font-size:13px}
+  .f-field input,.f-field select,.f-field textarea{font-size:15px;padding:13px 14px}
+  .submit-row .btn{font-size:16px;padding:15px 16px}
+  .receipt dl{grid-template-columns:64px 1fr;font-size:12.5px}
+  .form-done h4{font-size:21px}
+  .foot{padding:52px 0 0}
+  .foot-info{font-size:12px;gap:4px}
+  .foot-info .row{gap:0 10px}
+  .fab{width:56px;height:56px}
+  .fab svg{width:25px;height:25px}
+  .fab-wrap{right:16px;bottom:16px}
+  .fab-tip{display:none}
+  .modal-box{padding:24px 20px 20px;border-radius:16px}
+  .toast{font-size:12.5px;padding:11px 16px;bottom:84px;width:max-content;max-width:88vw}
+}
+@media (max-width:420px){
+  .hero h1{font-size:30px}
+  .hero-btns .btn{font-size:14px;padding:12px 16px}
+  .price-grid{grid-template-columns:1fr}
+  .pcard{min-height:0}
+  .steps{grid-template-columns:1fr}
+  .pkg-head .unit{display:none}
+  .pkg-row{grid-template-columns:auto 1fr auto}
+  .pkg-row .per{font-size:11px}
+}
+</style>
+</head>
+<body>
+<a class="sr-only" href="#section06">상담 문의로 바로가기</a>
+
+<!-- ================= NAV ================= -->
+<header id="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="#top" aria-label="주식회사 윙 홈">
+      <svg class="mark" viewBox="0 0 64 64" aria-hidden="true">
+        <defs><linearGradient id="wm" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#22D95A"/><stop offset="1" stop-color="#00A833"/>
+        </linearGradient></defs>
+        <rect width="64" height="64" rx="16" fill="url(#wm)"/>
+        <path d="M13 41c7-14 20-21 38-19-4 13-17 22-31 22-2.6 0-5-.9-7-3z" fill="#fff" opacity=".95"/>
+        <path d="M20 44c9-3 17-9 22-17-2 10-9 18-19 20z" fill="#00A833" opacity=".35"/>
+      </svg>
+      <span class="word"><b>WING</b><span>주식회사 윙</span></span>
+    </a>
+    <nav class="nav-links" aria-label="주요 메뉴">
+      <a href="#section01">맘카페마케팅</a>
+      <a href="#section02">차별화된 3가지</a>
+      <a href="#section03">서비스 유형</a>
+      <a href="#section04">가격 안내</a>
+      <a href="#section06">상담문의</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="mobileMenu" aria-label="메뉴 열기">
+      <i></i><i></i><i></i>
+    </button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <ul>
+      <li><a href="#section01">맘카페마케팅</a></li>
+      <li><a href="#section02">차별화된 3가지</a></li>
+      <li><a href="#section03">바이럴 서비스 유형</a></li>
+      <li><a href="#how">진행 프로세스</a></li>
+      <li><a href="#section04">가격 안내</a></li>
+      <li><a href="#section06">상담문의</a></li>
+    </ul>
+    <div class="m-cta"><a class="btn" href="#section06">무료 상담 신청하기</a></div>
+  </div>
+</header>
+
+<main id="top">
+<!-- ================= HERO ================= -->
+<section class="hero" id="section01">
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <p class="eyebrow" data-reveal>쿠팡·스마트스토어 셀러를 위한 입소문 마케팅</p>
+      <h1 data-reveal>주식회사 윙<span class="line2"><em>맘카페</em> 바이럴마케팅</span></h1>
+      <ul class="hero-points" data-reveal>
+        <li>100% 실사용 계정, 실명 인증 카페 관리팀이 직접 소통하며</li>
+        <li>광고주 니즈 파악부터 콘텐츠·댓글 관리까지</li>
+        <li>개인이 아닌 팀이 분석하여</li>
+        <li>판매로 이어지는 바이럴마케팅을 약속드립니다.</li>
+      </ul>
+      <div class="hero-btns" data-reveal>
+        <a class="btn" href="#section06">상담 신청하기 <span class="ar">→</span></a>
+        <button class="btn" type="button" id="heroCall">전화로 안내받기</button>
+      </div>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <span class="hv-blob a"></span>
+      <span class="hv-blob b"></span>
+      <span class="hv-saucer"></span>
+      <span class="hv-cup"></span>
+      <span class="hv-leaf"></span>
+
+      <div class="phone phone-back">
+        <div class="phone-screen">
+          <div class="ps-body">
+            <div class="pb-mark">
+              <svg viewBox="0 0 64 64"><path d="M10 42c8-15 22-22 40-20-5 14-19 23-33 23-3 0-5-1-7-3z" fill="#00C73C"/></svg>
+            </div>
+            <p class="pb-t">오늘도 카페에서</p>
+            <p class="pb-s">자연스럽게 발견되는 우리 제품</p>
+            <div class="pb-list">
+              <div><span></span>실사용 계정 후기형</div>
+              <div><span></span>카페 말투 원고</div>
+              <div><span></span>댓글 응대까지</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phone phone-front">
+        <div class="phone-screen">
+          <div class="ps-head"><b>WING</b><i></i></div>
+          <div class="ps-body">
+            <p class="ps-eyebrow">이런 글, 한 번쯤 보셨죠?</p>
+            <p class="ps-title">효과가 없어<br><b>진짜 광고?</b></p>
+            <p class="ps-sub">카페 말투로 자연스럽게<br>스며드는 후기형 콘텐츠</p>
+            <span class="ps-btn">무료 상담</span>
+            <div class="ps-card">
+              <small>오늘의 카페</small>
+              <b>우리 동네 맘카페</b>
+              <div class="ps-lines"><i></i><i></i><i></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 차별화 3가지 ================= -->
+<section class="sec diff" id="section02">
+  <div class="container">
+    <div class="center-tit" data-reveal>
+      <p class="kicker">윙마케팅</p>
+      <h2>차별화된 <em>3가지</em>를<br class="br-m"> 꼭 확인하세요!</h2>
+    </div>
+
+    <div class="diff-grid">
+      <article class="diff-card" data-reveal>
+        <div class="diff-icon">
+          <svg viewBox="0 0 160 160" fill="none" aria-hidden="true">
+            <circle cx="70" cy="70" r="44" stroke="#202020" stroke-width="11"/>
+            <circle cx="70" cy="70" r="21" fill="#00C73C"/>
+            <circle cx="70" cy="70" r="21" stroke="#202020" stroke-width="9"/>
+            <path d="M92 92l34 34" stroke="#202020" stroke-width="11" stroke-linecap="round"/>
+            <path d="M112 126l14-14 14 14-14 14-14-14z" fill="#00C73C" stroke="#202020" stroke-width="6"/>
+            <path d="M18 132l18-16 14 10 20-26" stroke="#00C73C" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <p class="diff-no">NO.1</p>
+        <h3><em>마케팅</em> 전문성</h3>
+        <p>맘카페·커뮤니티 마케팅만 집중해 온 팀이 직접 진행합니다. 셀러의 상품과 타깃을 이해하는 전문성으로 결과를 만듭니다.</p>
+      </article>
+
+      <article class="diff-card" data-reveal style="transition-delay:.08s">
+        <div class="diff-icon">
+          <svg viewBox="0 0 160 160" fill="none" aria-hidden="true">
+            <circle cx="80" cy="80" r="46" stroke="#202020" stroke-width="11" stroke-dasharray="30 20"/>
+            <path d="M80 30v19M80 111v19M30 80h19M111 80h19" stroke="#202020" stroke-width="9" stroke-linecap="round"/>
+            <circle cx="80" cy="80" r="26" fill="#00C73C"/>
+            <path d="M69 81l8 8 15-17" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <p class="diff-no">NO.2</p>
+        <h3>실사용 <em>계정 관리</em></h3>
+        <p>실제 사용 중인 계정과 실명 인증 카페만 사용합니다. 광고 티가 나지 않게, 카페 규정 안에서 자연스럽게 노출됩니다.</p>
+      </article>
+
+      <article class="diff-card" data-reveal style="transition-delay:.16s">
+        <div class="diff-icon">
+          <svg viewBox="0 0 160 160" fill="none" aria-hidden="true">
+            <path d="M64 116h32M70 130h20" stroke="#202020" stroke-width="9" stroke-linecap="round"/>
+            <path d="M80 18a46 46 0 00-26 83c6 5 8 9 8 15h36c0-6 2-10 8-15A46 46 0 0080 18z" fill="#fff" stroke="#202020" stroke-width="10" stroke-linejoin="round"/>
+            <circle cx="80" cy="64" r="13" fill="#00C73C" stroke="#202020" stroke-width="8"/>
+            <path d="M80 48v-9M96 64h9M64 64h-9M90 54l6-6M70 54l-6-6" stroke="#00C73C" stroke-width="7" stroke-linecap="round"/>
+            <path d="M36 40l-8-6M124 40l8-6" stroke="#00C73C" stroke-width="7" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <p class="diff-no">NO.3</p>
+        <h3><em>콘텐츠</em>·댓글 케어</h3>
+        <p>카페 말투에 맞춘 원고와 자연스러운 댓글 응대까지. 발행 후 반응까지 팀이 직접 관리합니다.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 서비스 유형 ================= -->
+<section class="sec services" id="section03">
+  <span class="deco leaf1"></span>
+  <span class="deco leaf2"></span>
+  <svg class="deco curve" viewBox="0 0 1440 900" preserveAspectRatio="none" aria-hidden="true">
+    <g fill="none" stroke="#8FE9B6" stroke-width="1.2">
+      <path d="M-40 720C240 560 470 470 760 430s430-40 720-120"/>
+      <path d="M-40 790C240 630 470 540 760 500s430-40 720-120"/>
+      <path d="M-40 860C240 700 470 610 760 570s430-40 720-120"/>
+    </g>
+  </svg>
+  <div class="container">
+    <div class="center-tit" data-reveal>
+      <p class="kicker">윙마케팅</p>
+      <h2><em>바이럴 서비스</em> 유형</h2>
+      <p class="sub">자연스러운 입소문으로 매출 상승을 책임집니다.</p>
+    </div>
+
+    <div class="svc-grid">
+      <article class="svc-card" data-reveal>
+        <div class="svc-text">
+          <p class="svc-no">01.</p>
+          <h3><em>Q&amp;A</em> 형</h3>
+          <p>질문 게시글과 단답형 댓글을 통해<br>자연스러운 효과를 유도하는 방식</p>
+        </div>
+        <div class="svc-art art-qa">
+          <span class="qmark">?</span>
+          <div class="stack">
+            <div class="bubble">이거 진짜 써보신 분?</div>
+            <div class="bubble a">저 어제 받아서 써봤어요 :)</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="svc-card" data-reveal style="transition-delay:.06s">
+        <div class="svc-text">
+          <p class="svc-no">02.</p>
+          <h3><em>후기형</em></h3>
+          <p>후기 내용 및 사진 등을 함께<br>사용하여 게시하는 방식</p>
+        </div>
+        <div class="svc-art art-review">
+          <div class="review-card">
+            <div class="review-stars">★★★★★</div>
+            <div class="review-line"></div>
+            <div class="review-line w70"></div>
+            <div class="review-photos"><i></i><i></i><i></i></div>
+            <div class="review-line w45"></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="svc-card" data-reveal style="transition-delay:.12s">
+        <div class="svc-text">
+          <p class="svc-no">03.</p>
+          <h3><em>핫딜형</em></h3>
+          <p>URL·이미지 등 상품 정보를 함께 첨부해<br>핫딜 게시판에 맞게 발행하는 방식</p>
+        </div>
+        <div class="svc-art art-deal">
+          <div class="deal-card">
+            <span class="deal-tag">-42%</span>
+            <div class="deal-line w60" style="margin:0 0 6px"></div>
+            <div class="deal-old">35,000원</div>
+            <div class="deal-price">19,900<small>원</small></div>
+            <div class="deal-line"></div>
+            <div class="deal-line w60"></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="svc-card" data-reveal style="transition-delay:.18s">
+        <div class="svc-text">
+          <p class="svc-no">04.</p>
+          <h3>정보배포형</h3>
+          <p>각종 신상품 및 정보를 활용해<br>정보를 배포함으로써 구매를 유도하는 방식</p>
+        </div>
+        <div class="svc-art art-info">
+          <div class="info-frame">
+            <div class="info-bar"><i></i><i></i><i></i></div>
+            <div class="info-grid"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 진행 프로세스 ================= -->
+<section class="sec process" id="how">
+  <div class="container">
+    <div class="center-tit" data-reveal>
+      <p class="kicker">HOW IT WORKS</p>
+      <h2>상담부터 리포트까지,<br class="br-m"> <em>팀이 직접</em> 진행합니다</h2>
+      <p class="sub">결과가 나올 때까지 담당자가 같은 속도로 함께 갑니다.</p>
+    </div>
+    <div class="steps">
+      <div class="step" data-reveal><div class="dot"><b>01</b></div><h4>상담 접수</h4><p>업종·상품·목표를 확인하고<br>가능한 방향을 정리합니다</p></div>
+      <div class="step" data-reveal style="transition-delay:.06s"><div class="dot"><b>02</b></div><h4>카페 선정</h4><p>타깃과 지역에 맞는<br>실명 인증 카페를 리스트업합니다</p></div>
+      <div class="step" data-reveal style="transition-delay:.12s"><div class="dot"><b>03</b></div><h4>원고 기획</h4><p>카페 말투와 키워드에 맞춰<br>원고를 설계합니다</p></div>
+      <div class="step" data-reveal style="transition-delay:.18s"><div class="dot"><b>04</b></div><h4>발행·관리</h4><p>게시와 댓글 응대까지<br>팀이 직접 관리합니다</p></div>
+      <div class="step" data-reveal style="transition-delay:.24s"><div class="dot"><b>05</b></div><h4>결과 리포트</h4><p>진행 결과를 정리해<br>다음 캠페인을 제안합니다</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 가격 ================= -->
+<section class="sec price" id="section04">
+  <div class="container">
+    <div class="center-tit" data-reveal>
+      <h2>이 모든 걸 <em>이 가격으로.</em></h2>
+      <p class="sub">베스트 상품으로 정리했습니다. 필요하신 상품을 선택하세요!</p>
+    </div>
+
+    <div class="price-group">
+      <div class="group-head" data-reveal>
+        <h4>단건 상품</h4><span>필요한 만큼 가볍게</span><i class="line"></i>
+      </div>
+      <div class="price-grid">
+        <article class="pcard free" data-reveal>
+          <span class="p-no">01</span>
+          <span class="p-badge">첫 이용 혜택</span>
+          <p class="p-brand">WING 맘카페</p>
+          <p class="p-name">무료 쿠폰</p>
+          <span class="p-tag">1건 제공</span>
+          <div class="p-desc">처음 상담하시는 분께 드리는 <b>1건 무료</b> 체험. 카페 선정과 원고 방향을 먼저 확인해 보세요.</div>
+          <div class="p-pricebox">
+            <div class="p-was">정상가 35,000원</div>
+            <div class="p-price"><span class="per">파격특가</span><span class="num">0</span><span class="won">원</span></div>
+            <div class="p-vat">&nbsp;</div>
+          </div>
+          <a class="p-cta" href="#section06" data-product="무료 쿠폰">무료 쿠폰 받기 →</a>
+        </article>
+
+        <article class="pcard basic" data-reveal style="transition-delay:.06s">
+          <span class="p-no">02</span>
+          <p class="p-brand">WING 맘카페</p>
+          <p class="p-name">BASIC</p>
+          <span class="p-tag">최소 30건</span>
+          <div class="p-desc">행사, 축제, 지원사업, 오픈 소식 등 단기간에 정보를 넓게 알리고 싶은 경우 적합한 <b>정보 전달형</b> 배포 상품입니다.</div>
+          <div class="p-pricebox">
+            <div class="p-was2">&nbsp;</div>
+            <div class="p-price"><span class="per">건당</span><span class="num">35,000</span><span class="won">원</span></div>
+            <div class="p-vat">부가세 별도</div>
+          </div>
+          <a class="p-cta" href="#section06" data-product="BASIC">상담 신청 →</a>
+        </article>
+
+        <article class="pcard std" data-reveal style="transition-delay:.12s">
+          <span class="p-no">03</span>
+          <span class="p-badge">추천</span>
+          <p class="p-brand">WING 맘카페</p>
+          <p class="p-name">STANDARD</p>
+          <span class="p-tag">최소 10건</span>
+          <div class="p-desc">업종과 지역에 맞는 맘카페를 선별해 후기형·질문형·정보공유형 콘텐츠로 자연스럽게 노출하는 <b>타깃 침투형</b> 상품입니다.</div>
+          <div class="p-pricebox">
+            <div class="p-was2">&nbsp;</div>
+            <div class="p-price"><span class="per">건당</span><span class="num">50,000</span><span class="won">원</span></div>
+            <div class="p-vat">부가세 별도</div>
+          </div>
+          <a class="p-cta" href="#section06" data-product="STANDARD">상담 신청 →</a>
+        </article>
+
+        <article class="pcard hot" data-reveal style="transition-delay:.18s">
+          <span class="p-no">04</span>
+          <span class="p-badge">🔥 HOT</span>
+          <p class="p-brand">WING 맘카페</p>
+          <p class="p-name">HOT DEAL</p>
+          <span class="p-tag">최소 1건</span>
+          <div class="p-desc">대형 맘카페 핫딜 영역을 활용해 제품 혜택과 구매 정보를 집중 노출하는 <b>구매 전환형</b> 상품입니다.</div>
+          <div class="p-pricebox">
+            <div class="p-was2">&nbsp;</div>
+            <div class="p-price"><span class="per">건당</span><span class="num">70,000</span><span class="won">원</span></div>
+            <div class="p-vat">부가세 별도</div>
+          </div>
+          <a class="p-cta" href="#section06" data-product="HOT DEAL">바로 신청 →</a>
+        </article>
+      </div>
+    </div>
+
+    <div class="price-group">
+      <div class="group-head" data-reveal>
+        <h4>패키지 상품</h4><span>많이 할수록 건당 단가 DOWN</span><i class="line"></i>
+      </div>
+      <div class="pkg-grid">
+        <article class="pkg basic" data-reveal>
+          <div class="pkg-head">
+            <div class="ph-l"><span class="no">05</span><h3>WING BASIC 패키지</h3></div>
+            <span class="unit">단건가 35,000원</span>
+          </div>
+          <div class="pkg-body">
+            <div class="pkg-row">
+              <div class="qty">30<small>건</small></div>
+              <div class="per">건당 약 33,333원</div>
+              <div class="off">5% 할인</div>
+              <div class="total">100<small>만원</small></div>
+            </div>
+            <div class="pkg-row best">
+              <div class="qty">50<small>건</small></div>
+              <div class="per">건당 30,000원</div>
+              <div class="off">14% 할인</div>
+              <div class="total">150<small>만원</small></div>
+            </div>
+          </div>
+          <div class="pkg-foot"><span>* 부가세 별도</span><a href="#section06" data-product="BASIC 패키지">패키지 상담 →</a></div>
+        </article>
+
+        <article class="pkg std" data-reveal style="transition-delay:.08s">
+          <div class="pkg-head">
+            <div class="ph-l"><span class="no">06</span><h3>WING STANDARD 패키지</h3></div>
+            <span class="unit">단건가 50,000원</span>
+          </div>
+          <div class="pkg-body">
+            <div class="pkg-row">
+              <div class="qty">20<small>건</small></div>
+              <div class="per">건당 45,000원</div>
+              <div class="off">10% 할인</div>
+              <div class="total">90<small>만원</small></div>
+            </div>
+            <div class="pkg-row">
+              <div class="qty">30<small>건</small></div>
+              <div class="per">건당 40,000원</div>
+              <div class="off">20% 할인</div>
+              <div class="total">120<small>만원</small></div>
+            </div>
+            <div class="pkg-row best">
+              <div class="qty">50<small>건</small></div>
+              <div class="per">건당 36,000원</div>
+              <div class="off">28% 할인</div>
+              <div class="total">180<small>만원</small></div>
+            </div>
+          </div>
+          <div class="pkg-foot"><span>* 부가세 별도</span><a href="#section06" data-product="STANDARD 패키지">패키지 상담 →</a></div>
+        </article>
+      </div>
+      <p class="price-note" data-reveal>모든 금액은 부가세 별도입니다. 할인율은 단건가 대비 기준이며, 상세 조건은 상담 시 안내드립니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 상담 CTA + 폼 ================= -->
+<section class="sec contact" id="section06">
+  <div class="container">
+    <p class="kicker" data-reveal>contact us</p>
+    <h2 data-reveal><em>무료 상담</em>해보세요!<br class="br-m"> 자세하게 안내해드립니다.</h2>
+    <p class="c-sub" data-reveal>계약하지 않으셔도 됩니다. 궁금하신 게 있다면 편하게 남겨주세요!</p>
+    <div class="c-btns" data-reveal>
+      <a class="btn" href="#inqForm">신청서 작성하기 <span class="ar">→</span></a>
+      <button class="btn" type="button" id="ctaCall">전화로 안내받기</button>
+    </div>
+
+    <div class="form-card" data-reveal>
+      <div class="form-head">
+        <span class="chip">CONTACT</span>
+        <h3>윙 맘카페 홍보 <em>상담문의</em></h3>
+        <p>맘카페 마케팅이 처음이셔도 괜찮습니다.<br>내용을 남겨주시면 확인 후 빠르게 연락드립니다.</p>
+      </div>
+
+      <form id="inqForm" novalidate autocomplete="on">
+        <div class="hp"><label>웹사이트<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+        <div class="f-row">
+          <label class="f-field">
+            <span>성함 / 상호 <em>*</em></span>
+            <input type="text" name="name" maxlength="40" placeholder="예) 홍길동 / 윙스토어" autocomplete="name">
+            <p class="f-err">성함 또는 상호를 입력해 주세요.</p>
+          </label>
+          <label class="f-field">
+            <span>연락처 <em>*</em></span>
+            <input type="tel" name="phone" inputmode="numeric" maxlength="15" placeholder="010-0000-0000" autocomplete="tel">
+            <p class="f-err">연락 가능한 번호를 정확히 입력해 주세요.</p>
+          </label>
+          <label class="f-field">
+            <span>업종</span>
+            <input type="text" name="biz" maxlength="40" placeholder="예) 소아과, 키즈카페, 쇼핑몰">
+          </label>
+          <label class="f-field">
+            <span>지역</span>
+            <input type="text" name="area" maxlength="40" placeholder="예) 경기 안양시">
+          </label>
+          <label class="f-field f-full">
+            <span>관심 상품</span>
+            <select name="product" id="productSelect">
+              <option value="">선택해주세요</option>
+              <option>무료 쿠폰</option>
+              <option>BASIC</option>
+              <option>STANDARD</option>
+              <option>HOT DEAL</option>
+              <option>BASIC 패키지</option>
+              <option>STANDARD 패키지</option>
+              <option>문의하기</option>
+            </select>
+          </label>
+          <label class="f-field f-full">
+            <span>문의 내용</span>
+            <textarea name="message" maxlength="1200" placeholder="홍보하고 싶은 제품·서비스, 희망 지역 맘카페, 일정 등을 자유롭게 남겨주세요."></textarea>
+          </label>
+          <div class="f-full">
+            <div class="agree" id="agreeBox">
+              <label><input type="checkbox" name="agree" id="agreeChk"> 개인정보 수집 및 이용에 동의합니다. <em>*</em></label>
+              <button type="button" class="view" id="privacyOpen">내용 보기</button>
+            </div>
+            <p class="agree-err">개인정보 수집 및 이용에 동의해 주세요.</p>
+          </div>
+        </div>
+        <div class="submit-row">
+          <button class="btn" type="submit" id="submitBtn">상담문의 보내기 <span class="ar">→</span></button>
+        </div>
+        <p class="form-foot">남겨주신 정보는 상담 목적으로만 사용되며, 영업일 기준 1일 이내에 연락드립니다.</p>
+      </form>
+
+      <div class="form-done" id="formDone" role="status" aria-live="polite">
+        <div class="done-ico">
+          <svg viewBox="0 0 40 40" fill="none" aria-hidden="true"><circle cx="20" cy="20" r="19" stroke="#00C73C" stroke-width="2.4"/><path d="M12 20.5l5.6 5.6L28.5 15" stroke="#00C73C" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h4>상담 신청이 접수되었습니다</h4>
+        <p class="done-sub">담당자가 내용을 확인한 뒤 입력하신 연락처로<br>빠르게 연락드리겠습니다.</p>
+        <div class="receipt" id="receipt">
+          <div class="r-top"><span>접수번호</span><b id="rNo">WING-00000000-0000</b></div>
+          <dl>
+            <dt>성함 / 상호</dt><dd id="rName">-</dd>
+            <dt>연락처</dt><dd id="rPhone">-</dd>
+            <dt>관심 상품</dt><dd id="rProduct">-</dd>
+            <dt>문의 내용</dt><dd class="r-msg" id="rMsg">-</dd>
+          </dl>
+        </div>
+        <div class="done-btns">
+          <button type="button" class="primary" id="copyBtn">내용 복사하기</button>
+          <button type="button" id="againBtn">새로 작성하기</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ================= 푸터 ================= -->
+<footer class="foot" id="sh_ft">
+  <div class="container">
+    <svg class="f-mark" viewBox="0 0 64 64" aria-hidden="true">
+      <rect width="64" height="64" rx="16" fill="#2b2b2b"/>
+      <path d="M13 41c7-14 20-21 38-19-4 13-17 22-31 22-2.6 0-5-.9-7-3z" fill="#00C73C"/>
+    </svg>
+    <p class="f-name">주식회사 윙 (WING)</p>
+
+    <!-- ▼ 사업자 정보: 실제 정보로 교체해 주세요 (지어낸 정보는 넣지 않았습니다) -->
+    <div class="foot-info">
+      <div class="row">
+        <span><span class="k">사업자등록번호</span> 000-00-00000</span>
+        <span><span class="k">대표</span> 홍길동</span>
+        <span><span class="k">통신판매업 신고</span> 제0000-0000-0000호</span>
+      </div>
+      <div class="row">
+        <span><span class="k">주소</span> 주소를 입력해 주세요</span>
+      </div>
+      <div class="row">
+        <span><span class="k">이메일</span> <a href="mailto:contact@example.com">contact@example.com</a></span>
+        <span><span class="k">전화</span> 000-0000-0000</span>
+      </div>
+    </div>
+    <p class="foot-note">※ 위 사업자 정보는 시안용 자리표시자입니다. 실제 정보로 교체해 주세요.</p>
+    <a class="foot-top" href="#top">맨 위로 ↑</a>
+    <div class="foot-copy">ⓒ WING All rights reserved.</div>
+  </div>
+</footer>
+
+<!-- ================= 플로팅 CTA ================= -->
+<div class="fab-wrap">
+  <span class="fab-tip">무료 상담 신청하기</span>
+  <button class="fab" id="fab" type="button" aria-label="무료 상담 신청서로 이동">
+    <span class="ring"></span>
+    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <path d="M27 16.5c0 5.2-4.9 9.4-11 9.4-1.3 0-2.6-.2-3.8-.5L6 28l1.6-5A8.7 8.7 0 015 16.5C5 11.3 9.9 7 16 7s11 4.3 11 9.5z" fill="#fff"/>
+      <circle cx="11.5" cy="16.5" r="1.7" fill="#00B335"/>
+      <circle cx="16" cy="16.5" r="1.7" fill="#00B335"/>
+      <circle cx="20.5" cy="16.5" r="1.7" fill="#00B335"/>
+    </svg>
+  </button>
+</div>
+
+<!-- ================= 모달 ================= -->
+<div class="modal" id="privacyModal" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
+  <div class="modal-bg" data-close></div>
+  <div class="modal-box">
+    <button class="modal-close" type="button" data-close aria-label="닫기">✕</button>
+    <h3 id="pmTitle">개인정보 수집 및 이용 안내</h3>
+    <p class="m-sub">상담 접수를 위해 아래와 같이 개인정보를 수집·이용합니다.</p>
+    <div class="m-body">
+      <h4>수집 항목</h4>
+      <ul><li>필수: 성함 또는 상호, 연락처</li><li>선택: 업종, 지역, 관심 상품, 문의 내용</li></ul>
+      <h4>수집·이용 목적</h4>
+      <ul><li>상담 접수 및 회신, 서비스 안내, 진행 상담</li></ul>
+      <h4>보유 기간</h4>
+      <ul><li>상담 종료 후 6개월 (관계 법령에 별도 보존 기간이 있는 경우 해당 기간)</li></ul>
+      <h4>동의 거부 권리</h4>
+      <ul><li>동의를 거부하실 수 있으나, 이 경우 상담 접수가 제한됩니다.</li></ul>
+      <p style="margin-top:14px;color:#8b968f;font-size:12px">※ 아래 내용은 시안용 기본 문구입니다. 실제 운영 시 사업장 정책에 맞게 검토·수정해 주세요.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" type="button" id="privacyAgree">확인하고 동의</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="callModal" role="dialog" aria-modal="true" aria-labelledby="cmTitle">
+  <div class="modal-bg" data-close></div>
+  <div class="modal-box">
+    <button class="modal-close" type="button" data-close aria-label="닫기">✕</button>
+    <h3 id="cmTitle">전화 상담 안내</h3>
+    <p class="m-sub">담당자가 직접 상황을 듣고 안내드립니다.</p>
+    <div class="m-body">
+      <div id="callNumberBox" hidden>
+        <p>대표번호 <b id="callNumber">000-0000-0000</b></p>
+      </div>
+      <div id="callFallback">
+        <p>전화 상담 번호가 아직 등록되지 않았습니다.<br>아래 상담 신청서에 연락처를 남겨주시면, 확인 후 담당자가 순차적으로 전화드립니다.</p>
+      </div>
+      <p style="margin-top:12px;color:#8b968f;font-size:12px">평일 09:00 ~ 18:00 (점심 12:00 ~ 13:00)</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" type="button" id="callToForm">상담 신청서 작성</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ============================================================
+   CONFIG — 실제 정보가 정해지면 여기만 수정하면 됩니다.
+   phone: 값이 있으면 '전화로 안내받기'가 바로 전화 연결(tel:)로 동작
+   email: 값이 있으면 접수 완료 화면에 '메일로 보내기'가 열립니다
+   formEndpoint: 값이 있으면 접수 시 해당 주소로 POST 전송(Formspree 등)
+                  비어 있으면 브라우저에서 접수 안내만 표시
+   ============================================================ */
+const CONFIG = {
+  phone: "",
+  email: "",
+  formEndpoint: ""
+};
+
+(function () {
+  "use strict";
+  const $ = (s, el) => (el || document).querySelector(s);
+  const $$ = (s, el) => Array.from((el || document).querySelectorAll(s));
+  const body = document.body;
+
+  /* ---------- 네비 : 스크롤 축소 / 모바일 메뉴 ---------- */
+  const navToggle = $("#navToggle");
+  const mobileMenu = $("#mobileMenu");
+  let lastY = window.scrollY;
+
+  function onScroll() {
+    const y = window.scrollY;
+    body.classList.toggle("nav-slim", y > 40);
+    lastY = y;
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  function closeMenu() {
+    body.classList.remove("menu-open");
+    navToggle.setAttribute("aria-expanded", "false");
+    navToggle.setAttribute("aria-label", "메뉴 열기");
+  }
+  navToggle.addEventListener("click", () => {
+    const open = body.classList.toggle("menu-open");
+    navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    navToggle.setAttribute("aria-label", open ? "메뉴 닫기" : "메뉴 열기");
+  });
+  $$("#mobileMenu a").forEach(a => a.addEventListener("click", closeMenu));
+  window.addEventListener("resize", () => { if (window.innerWidth > 960) closeMenu(); });
+
+  /* ---------- 부드러운 스크롤 (고정 헤더 보정) ---------- */
+  function navHeight() {
+    return $("#nav").offsetHeight;
+  }
+  function scrollToId(hash) {
+    const el = hash === "#top" ? document.documentElement : document.querySelector(hash);
+    if (!el) return;
+    const top = hash === "#top" ? 0 : el.getBoundingClientRect().top + window.scrollY - navHeight() + 2;
+    window.scrollTo({ top: top, behavior: "smooth" });
+  }
+  $$('a[href^="#"]').forEach(a => {
+    a.addEventListener("click", e => {
+      const href = a.getAttribute("href");
+      if (!href || href === "#") return;
+      e.preventDefault();
+      closeMenu();
+      scrollToId(href);
+      if (history.replaceState) history.replaceState(null, "", href);
+    });
+  });
+
+  /* ---------- 스크롤 등장 ---------- */
+  const revealEls = $$("[data-reveal]");
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(en => {
+        if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); }
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+    revealEls.forEach(el => io.observe(el));
+  } else {
+    revealEls.forEach(el => el.classList.add("in"));
+  }
+
+  /* ---------- 현재 섹션 표시 ---------- */
+  const navMap = new Map();
+  $$(".nav-links a").forEach(a => navMap.set(a.getAttribute("href").slice(1), a));
+  const sections = ["section01", "section02", "section03", "section04", "section06"]
+    .map(id => document.getElementById(id)).filter(Boolean);
+  if ("IntersectionObserver" in window) {
+    const spy = new IntersectionObserver((entries) => {
+      entries.forEach(en => {
+        if (!en.isIntersecting) return;
+        navMap.forEach(a => a.classList.remove("is-active"));
+        const link = navMap.get(en.target.id);
+        if (link) link.classList.add("is-active");
+      });
+    }, { rootMargin: "-45% 0px -50% 0px" });
+    sections.forEach(s => spy.observe(s));
+  }
+
+  /* ---------- 모달 ---------- */
+  let openModal = null;
+  function showModal(id) {
+    const m = document.getElementById(id);
+    if (!m) return;
+    m.classList.add("on");
+    openModal = m;
+    body.style.overflow = "hidden";
+    const f = m.querySelector("button, [href]");
+    if (f) setTimeout(() => f.focus(), 60);
+  }
+  function hideModal() {
+    if (!openModal) return;
+    openModal.classList.remove("on");
+    openModal = null;
+    body.style.overflow = "";
+  }
+  $$("[data-close]").forEach(el => el.addEventListener("click", hideModal));
+  document.addEventListener("keydown", e => { if (e.key === "Escape") hideModal(); });
+
+  $("#privacyOpen").addEventListener("click", () => showModal("privacyModal"));
+  $("#privacyAgree").addEventListener("click", () => {
+    $("#agreeChk").checked = true;
+    $("#agreeChk").dispatchEvent(new Event("change"));
+    hideModal();
+  });
+
+  function openCallModal() {
+    const numBox = $("#callNumberBox");
+    const fallback = $("#callFallback");
+    if (CONFIG.phone) {
+      numBox.hidden = false;
+      fallback.hidden = true;
+      $("#callNumber").textContent = CONFIG.phone;
+    } else {
+      numBox.hidden = true;
+      fallback.hidden = false;
+    }
+    showModal("callModal");
+  }
+  ["#heroCall", "#ctaCall"].forEach(sel => {
+    const el = $(sel);
+    if (!el) return;
+    el.addEventListener("click", () => {
+      if (CONFIG.phone) { window.location.href = "tel:" + CONFIG.phone.replace(/[^0-9+]/g, ""); return; }
+      openCallModal();
+    });
+  });
+  $("#callToForm").addEventListener("click", () => {
+    hideModal();
+    setTimeout(() => {
+      scrollToId("#inqForm");
+      $("#inqForm [name=name]").focus({ preventScroll: true });
+    }, 120);
+  });
+
+  /* ---------- 토스트 ---------- */
+  let toastTimer = null;
+  function toast(msg) {
+    const t = $("#toast");
+    t.textContent = msg;
+    t.classList.add("on");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove("on"), 2600);
+  }
+
+  /* ---------- 플로팅 CTA ---------- */
+  $("#fab").addEventListener("click", () => {
+    scrollToId("#section06");
+    setTimeout(() => { const n = $("#inqForm [name=name]"); if (n) n.focus({ preventScroll: true }); }, 520);
+  });
+
+  /* ---------- 상품 CTA → 관심 상품 자동 선택 ---------- */
+  $$("[data-product]").forEach(a => {
+    a.addEventListener("click", () => {
+      const p = a.getAttribute("data-product");
+      const sel = $("#productSelect");
+      if (!sel) return;
+      const opt = Array.from(sel.options).find(o => o.textContent.trim() === p);
+      if (opt) sel.value = opt.value || opt.textContent;
+      setTimeout(() => sel.classList.add("flash"), 400);
+      sel.style.borderColor = "#00C73C";
+      sel.style.background = "#fff";
+      setTimeout(() => { sel.style.borderColor = ""; sel.style.background = ""; }, 2000);
+    });
+  });
+
+  /* ---------- 폼 ---------- */
+  const form = $("#inqForm");
+  const done = $("#formDone");
+  const agreeChk = $("#agreeChk");
+  const agreeBox = $("#agreeBox");
+  const phoneInput = form.querySelector("[name=phone]");
+  const submitBtn = $("#submitBtn");
+
+  function formatPhone(v) {
+    const d = v.replace(/[^0-9]/g, "").slice(0, 11);
+    if (d.length < 4) return d;
+    if (d.length < 8) return d.slice(0, 3) + "-" + d.slice(3);
+    if (d.length < 11) return d.slice(0, 3) + "-" + d.slice(3, 6) + "-" + d.slice(6);
+    return d.slice(0, 3) + "-" + d.slice(3, 7) + "-" + d.slice(7);
+  }
+  phoneInput.addEventListener("input", () => {
+    const pos = phoneInput.selectionStart;
+    phoneInput.value = formatPhone(phoneInput.value);
+    if (pos !== null && phoneInput.value.length >= pos) phoneInput.setSelectionRange(phoneInput.value.length, phoneInput.value.length);
+  });
+
+  function setError(field, on, msg) {
+    const wrap = field.closest(".f-field");
+    if (!wrap) return;
+    wrap.classList.toggle("has-error", on);
+    if (msg) {
+      const err = wrap.querySelector(".f-err");
+      if (err) err.textContent = msg;
+    }
+  }
+  function validate() {
+    let ok = true, first = null;
+    const name = form.querySelector("[name=name]");
+    const phone = form.querySelector("[name=phone]");
+
+    if (!name.value.trim()) { setError(name, true, "성함 또는 상호를 입력해 주세요."); ok = false; first = first || name; }
+    else setError(name, false);
+
+    const digits = phone.value.replace(/[^0-9]/g, "");
+    if (digits.length < 9 || digits.length > 11) {
+      setError(phone, true, "연락 가능한 번호를 정확히 입력해 주세요."); ok = false; first = first || phone;
+    } else setError(phone, false);
+
+    if (!agreeChk.checked) { agreeBox.classList.add("has-error"); ok = false; first = first || agreeChk; }
+    else agreeBox.classList.remove("has-error");
+
+    if (!ok && first) {
+      if (first === agreeChk) {
+        agreeBox.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(() => agreeChk.focus({ preventScroll: true }), 320);
+      } else {
+        const y = first.getBoundingClientRect().top + window.scrollY - navHeight() - 24;
+        window.scrollTo({ top: y, behavior: "smooth" });
+        setTimeout(() => first.focus({ preventScroll: true }), 320);
+        first.focus({ preventScroll: true });
+      }
+    }
+    return ok;
+  }
+  form.addEventListener("input", e => {
+    const t = e.target;
+    if (t.name === "name" || t.name === "phone") setError(t, false);
+  });
+  agreeChk.addEventListener("change", () => {
+    if (agreeChk.checked) agreeBox.classList.remove("has-error");
+  });
+
+  function receiptNo() {
+    const d = new Date();
+    const p = n => String(n).padStart(2, "0");
+    const stamp = "" + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate());
+    const rand = String(Math.floor(1000 + Math.random() * 9000));
+    return "WING-" + stamp + "-" + rand;
+  }
+  let lastRecord = null;
+
+  function buildRecord(fd) {
+    const val = k => (fd.get(k) || "").toString().trim();
+    return {
+      no: receiptNo(),
+      name: val("name"),
+      phone: val("phone"),
+      biz: val("biz"),
+      area: val("area"),
+      product: val("product") || "미선택",
+      message: val("message"),
+      at: new Date()
+    };
+  }
+
+  function renderDone(record) {
+    $("#rNo").textContent = record.no;
+    $("#rName").textContent = record.name + (record.biz ? " (" + record.biz + ")" : "");
+    $("#rPhone").textContent = record.phone;
+    $("#rProduct").textContent = record.product;
+    $("#rMsg").textContent = record.message || "(문의 내용 없음)";
+    form.hidden = true;
+    done.classList.add("on");
+    const y = $(".form-card").getBoundingClientRect().top + window.scrollY - navHeight() - 20;
+    window.scrollTo({ top: y, behavior: "smooth" });
+    done.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    if (!validate()) return;
+    const fd = new FormData(form);
+    if ((fd.get("website") || "").toString().trim()) return; // 스팸 봇
+    const record = buildRecord(fd);
+    lastRecord = record;
+
+    const originalText = submitBtn.innerHTML;
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = "접수 중…";
+
+    if (CONFIG.formEndpoint) {
+      try {
+        const res = await fetch(CONFIG.formEndpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify(record)
+        });
+        if (!res.ok) throw new Error("send-failed");
+        renderDone(record);
+      } catch (err) {
+        toast("전송이 지연되고 있습니다. 잠시 후 다시 시도해 주세요.");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = originalText;
+      }
+      return;
+    }
+
+    setTimeout(() => {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+      renderDone(record);
+    }, 350);
+  });
+
+  $("#copyBtn").addEventListener("click", async () => {
+    if (!lastRecord) return;
+    const r = lastRecord;
+    const text = [
+      "[주식회사 윙 상담 신청]",
+      "접수번호: " + r.no,
+      "성함/상호: " + r.name + (r.biz ? " (" + r.biz + ")" : ""),
+      "연락처: " + r.phone,
+      r.area ? "지역: " + r.area : "",
+      "관심 상품: " + r.product,
+      "문의 내용: " + (r.message || "-")
+    ].filter(Boolean).join("\n");
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+        document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove();
+      }
+      toast("상담 내용이 복사되었습니다.");
+    } catch (err) {
+      toast("복사가 차단되었습니다. 내용을 직접 선택해 주세요.");
+    }
+  });
+
+  $("#againBtn").addEventListener("click", () => {
+    form.reset();
+    $$(".f-field").forEach(f => f.classList.remove("has-error"));
+    agreeBox.classList.remove("has-error");
+    done.classList.remove("on");
+    form.hidden = false;
+    lastRecord = null;
+    scrollToId("#inqForm");
+    setTimeout(() => form.querySelector("[name=name]").focus({ preventScroll: true }), 420);
+  });
+})();
+</script>
+</body>
+</html>
