@@ -115,6 +115,10 @@ tr:hover .mini{opacity:1}
 .type.r{background:var(--green-weak); color:#0b7a5b}
 .dates{color:var(--muted); font-size:12px; white-space:nowrap}
 .flag{display:inline-block; margin-top:4px; font-size:10.5px; font-weight:800; color:#a26200; background:var(--amber-weak); border-radius:6px; padding:1px 6px}
+.aiflag{display:inline-block; margin-top:4px; font-size:10.5px; font-weight:800; border-radius:6px; padding:1px 6px; cursor:help; white-space:nowrap}
+.aiflag.good{color:#137a3b; background:#e7f6ec}
+.aiflag.mid{color:#a26200; background:var(--amber-weak)}
+.aiflag.bad{color:#b42318; background:#fdeceb}
 .copyall{margin-top:7px; font-size:11.5px; font-weight:800; color:var(--blue-ink); background:var(--blue-weak); border-radius:8px; padding:5px 9px; border:1px solid #d9e5ff}
 .copyall:hover{background:#e3edff}
 .empty{padding:44px 20px; text-align:center; color:var(--muted); font-size:13px; line-height:1.8}
@@ -860,7 +864,279 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     return {q: state.type === '질의형' ? n : 0, r: state.type === '후기형' ? n : 0};
   }
 
-  /* ================= 프롬프트 ================= */
+  /* ============ 실제 작가 원고 학습(비식별) · 사람티 엔진 ============ */
+  /* 9,264건 · 707개 원고판 시트에서 뽑은 통계와 패턴만 규칙으로 옮겼다.
+     업체명·지역·URL·실명은 넣지 않고, 예시는 전부 가명(○○)으로 바꿔 쓴다. */
+
+  // 실측 (질의형/후기형, 중앙값 기준)
+  // 질의형: 본문 170자·6~7줄·줄당 25자, 댓글1 105자·4줄(질문 아님), 대댓글 50자·2줄, 빈 줄 0~1
+  // 후기형: 본문 290자·11~12줄·줄당 27자, 댓글1 46자·2줄(질문), 대댓글 62자·2.5줄, 빈 줄 2
+  const HS = {
+    q: {min:140, max:230, lines:[4,8]},
+    r: {min:240, max:360, lines:[8,14]}
+  };
+
+  const PERSONAS = [
+    {k:'톡투',   d:'짧게 끊어 툭 던지는 말투. 문장 끝을 흐리지 않는다. "~잖아요" "~더라고요". ㅋㅋ 0~1회.'},
+    {k:'수다투', d:'말이 이어지는 수다. 중간에 스스로 덧붙이거나 정정한다("아 근데", "그러니까"). ㅎㅎ 1~2회.'},
+    {k:'담백투', d:'감정 표현을 아끼고 사실 위주로 담담하게. 느낌표 거의 없음. "~더라구요" "~했어요".'},
+    {k:'무심투', d:'결론부터 툭, 관심 없는 척하지만 정보는 정확. "그냥" "굳이" "뭐" 자주 씀.'},
+    {k:'현실맘투', d:'아이·남편·살림 얘기가 자연스럽게 붙는다. 푸념과 웃음이 같이 온다. ㅠㅠ 0~1회.'},
+    {k:'꼼꼼투', d:'비교·확인 과정이 구체적. 기간·횟수·전후를 말한다("이틀 써보니", "세 번째 방문").'}
+  ];
+
+  // 업종/상품군별 톤·포커스 (실제 원고에서 그 업종이 실제로 말하는 것만)
+  const IND_STYLE = [
+    { name:'맛집·외식', re:/맛집|식당|고기|삼겹|갈비|곱창|국밥|해장|칼국수|횟집|초밥|스시|파스타|브런치|카페|베이커리|디저트|분식|떡볶이|치킨|피자|주점|술집|호프|뷔페|한정식|쌀국수|마라|샤브|족발|보쌈|순대|냉면|돈까스|김밥|커피/,
+      focus:['무엇을 시켰고 양·간·식감이 어땠는지','자리·주차·대기·룸 같은 실제 이용 조건','누구와 갔을 때 편했는지'],
+      words:['메뉴','반찬','양','간','국물','불판','자리','주차','웨이팅','룸','아이 의자'],
+      angles:['아이랑 갈 데를 못 찾아서 한 시간 헤맨 날','오랜만에 만난 친구랑 점심을 먹은 날','남편이 늦게 들어와 저녁을 또 챙겨야 했던 날','모임 장소 정하다가 결국 다 같이 실패한 적'],
+      wants:['무엇을 먹었는지','주차·대기 같은 조건','다시 갈 의사']},
+    { name:'식품·간편식·건강식품', re:/식품|간식|안주|반찬|새우|튀김|과일|정육|수산|주류|홍삼|비타민|유산균|프로바이오틱스|루테인|오메가|콜라겐|단백질|쉐이크|다이어트|효소|녹차|홍차|꿀|소금|김치|만두|쿠키|견과|두유|샐러드|밀키트|캔디|젤리|초콜릿|쌀|잡곡/,
+      focus:['먹는 순간의 맛·식감·양','조리·보관이 얼마나 번거로운지','누가 먹었고 반응이 어땠는지'],
+      words:['한 봉','데우기만','양','간','식감','보관','유통기한','아이가','남편이'],
+      angles:['남편 퇴근이 늦은 날 안주를 또 고민한 날','아이 학원 끝나고 저녁 전에 출출할 때','주말에 집들이 준비하다 손이 모자란 날','다이어트 한다고 먹는 걸 바꾼 지 일주일'],
+      wants:['맛과 식감','조리 편의성','가족 반응']},
+    { name:'병원·의원·치과·한의원', re:/병원|의원|치과|한의원|피부과|정형|내과|소아과|이비인후과|산부인과|비뇨|안과|성형외과|모발|탈모|진료|클리닉|검진|도수|한방|약국/,
+      focus:['증상이 어느 정도였는지','상담·설명·대기 같은 진료 경험','치료 후 몸이 어떻게 달라졌는지(과장 없이)'],
+      words:['증상','진료','상담','예약','대기','설명','치료','경과','재진'],
+      angles:['증상이 오래돼서 미루다 온 가족이 걱정한 날','아이가 아파서 밤에 잠을 못 잔 다음 날','부모님 모시고 검진을 받아야 했던 날','다른 곳에서 설명을 못 들어 답답했던 적'],
+      wants:['증상과 경과','설명·대기 같은 진료 경험','어디인지']},
+    { name:'뷰티·피부관리·네일·헤어', re:/뷰티|피부관리|에스테틱|관리샵|네일|헤어|미용|속눈썹|눈썹|왁싱|제모|반영구|마사지|스파|체형관리|화장품|스킨|로션|앰플|세럼|크림|토너|클렌저|선크림|향수|메이크업|파운데이션|쿠션|마스크팩|샴푸|바디/,
+      focus:['피부·모발 상태가 어땠는지','관리 받는 동안의 자극·불편함','받고 나서 당일과 며칠 뒤의 차이'],
+      words:['모공','각질','홍조','결','당김','자극','압출','관리','시술','재방문'],
+      angles:['환절기라 코 주변이 뒤집어진 요즘','중요한 약속을 앞두고 피부가 안 좋아진 날','아이 낳고 나서 피부가 달라진 느낌','샴푸할 때마다 두피가 가려운 요즘'],
+      wants:['상태 변화','자극·불편함','어디서 받았는지']},
+    { name:'가구·인테리어·시공', re:/가구|인테리어|리모델링|커튼|블라인드|조명|도배|장판|시공|집수리|침대|매트리스|소파|식탁|책상|수납장|붙박이|중문|샷시|타일|욕실|주방/,
+      focus:['공간이 어떻게 달라졌는지','견적·일정·먼지·마감 같은 진행 과정','가족이 실제로 쓰면서 느낀 점'],
+      words:['견적','일정','마감','먼지','시공','크기','수납','배치','자리'],
+      angles:['이사 날짜가 코앞인데 가구를 못 정한 날','아이 방을 새로 꾸며주기로 한 주말','주방만이라도 바꾸고 싶어서 견적을 받은 날','오래된 문이 계속 걸려서 결국 손댄 날'],
+      wants:['공간 변화','진행 과정의 불편함','어디서 했는지']},
+    { name:'학원·교육·과외', re:/학원|과외|교육|수강|교습|클래스|레슨|보습|입시|논술|수학|영어|국어|과학|코딩|태권도|피아노|미술|발레|유치원|어린이집|독서|학습지|교재|인강/,
+      focus:['아이가 무엇을 어려워했는지','수업 방식·선생님·레벨 같은 실제 경험','아이의 태도나 실력이 어떻게 달라졌는지'],
+      words:['수업','선생님','레벨','숙제','진도','상담','셔틀','체험'],
+      angles:['아이가 특정 과목을 유독 어려워하는 요즘','방학 때 뭘 해야 할지 모르겠던 날','형제 시간이 겹치지 않아 동선을 짜야 했던 주','다른 학원에서 실력이 안 늘어서 고민하던 때'],
+      wants:['아이의 변화','수업 방식','어디인지']},
+    { name:'가전·디지털·생활용품', re:/가전|가습기|공기청정|선풍기|에어프라이어|세탁기|건조기|냉장고|청소기|로봇|정수기|비데|전자레인지|밥솥|커피머신|믹서|블렌더|무선|충전|이어폰|핸드폰|케이스|노트북|모니터|생활용품|살림|수납|정리|침구|세제|행주|수세미|욕조|샤워/,
+      focus:['사기 전에 뭐가 불편했는지','설치·소리·크기·전기 같은 실제 조건','일주일쯤 쓰고 달라진 점'],
+      words:['설치','소리','크기','무게','전기','필터','청소','자리','수납'],
+      angles:['빨래가 밀려서 주말이 없어진 날','집 안 냄새 때문에 창문을 계속 열어둔 요즘','아이 물건이 늘어서 수납이 버티지 못한 날','매번 손으로 하던 일이 하루 세 번씩 생긴 때'],
+      wants:['전후 차이','설치·소리 같은 조건','제품 이름']},
+    { name:'패션·잡화', re:/옷|의류|패션|원피스|바지|코트|니트|셔츠|신발|운동화|가방|백팩|크로스백|토트|지갑|파우치|캐리어|액세서리|주얼리|안경|모자|양말|속옷/,
+      focus:['어떤 상황에 입고 나갔는지','재질·핏·무게 같은 실착 느낌','하루 입고 다닌 뒤의 상태'],
+      words:['핏','재질','무게','수납','안감','어깨','허리','세탁'],
+      angles:['출근복이 마땅치 않아 매일 같은 옷을 입던 요즘','아이 물건까지 챙기다 가방이 터질 것 같던 날','여행 앞두고 짐이 자꾸 늘어난 때','계절이 바뀌어 옷장을 정리한 주말'],
+      wants:['실착 느낌','수납·무게','제품 정보']},
+    { name:'운동·헬스·필라테스', re:/헬스|운동|필라테스|요가|체육|수영|클라이밍|골프|테니스|배드민턴|복싱|주짓수|크로스핏|스쿼시|자전거|등산|스키|보드|PT/,
+      focus:['몸 상태나 계기가 어땠는지','수업·시설·시간대 같은 실제 조건','몇 주 다니고 달라진 점'],
+      words:['수업','시간','시설','샤워','주차','자세','체력','통증'],
+      angles:['계단만 올라도 숨이 차던 요즘','오래 앉아 일해서 허리가 굳은 날','주말마다 몸이 무겁다고 느낀 때','아이가 운동을 시작하고 싶다고 한 날'],
+      wants:['몸의 변화','시설·시간','어디인지']},
+    { name:'반려동물', re:/반려|강아지|고양이|펫|사료|애견|펫시터|동물병원/,
+      focus:['아이가 어떤 상태였는지','먹이·용품을 써보고 달라진 점','관리·청소가 얼마나 편해졌는지'],
+      words:['사료','간식','산책','털','배변','병원','미용','용품'],
+      angles:['산책 다녀오면 발 씻기는 게 일이 된 요즘','사료를 바꿔야 할 때가 된 날','집에 혼자 있는 시간이 길어진 요즘','털이 계속 늘어서 청소기를 하루 두 번 돌린 때'],
+      wants:['아이 반응','관리 편의','제품 정보']},
+    { name:'여행·숙박·레저', re:/여행|숙소|펜션|호텔|리조트|캠핑|글램핑|렌탈|티켓|투어|항공|공항|바다|해수욕|스키/,
+      focus:['누구와 언제 다녀왔는지','예약·체크인·이동 같은 실제 조건','가서 실제로 뭐 했는지'],
+      words:['예약','체크인','주차','조식','이동','바베큐','수영장','준비물'],
+      angles:['아이 방학이라 어디라도 다녀와야 했던 주','부모님 모시고 가까운 데를 찾은 날','주말에 갑자기 비가 와서 실내로 바꾼 때','오랜만에 친구 가족과 만나기로 한 날'],
+      wants:['이용 조건','무엇을 했는지','어디인지']},
+    { name:'창업·마케팅·법률·B2B', re:/창업|법률|변호사|법무|세무|회계|보험|대출|주식|투자|마케팅|광고|홈페이지|웹사이트|플랫폼|컨설팅|프랜차이즈|사업|기업|인쇄|명함|간판/,
+      focus:['지금 겪는 구체적 문제와 숫자','상대가 어떤 방식으로 설명했는지','진행하고 나서 뭐가 달라졌는지'],
+      words:['견적','계약','비용','일정','상담','리포트','매출','문의','노출'],
+      angles:['오픈하고 두 달인데 문의가 안 늘어서 답답한 요즘','계약서 조항 하나 때문에 밤에 검색만 한 날','광고비를 쓰는데 결과가 안 보여서 고민하던 때','직원 채용하고 나서 일이 꼬인 적'],
+      wants:['문제와 숫자','상대의 설명 방식','어디에 맡겼는지']},
+    { name:'웨딩·이벤트·상조', re:/웨딩|결혼|청첩장|스드메|드레스|예식|상조|장례|돌잔치|파티|꽃|플라워/,
+      focus:['준비 일정이 어느 정도였는지','예약·상담에서 실제로 확인한 것','당일 어떤 부분이 편했는지'],
+      words:['예약','상담','견적','당일','스텝','홀','사진','동선'],
+      angles:['날짜가 두 달 남고 아직 아무것도 못 정한 때','부모님과 의견이 달라서 한 주를 날린 날','돌잔치 장소를 세 곳 돌아보고 지친 주말','청첩장을 늦게 정해서 마음이 급했던 때'],
+      wants:['진행 과정','당일 경험','어디인지']},
+    { name:'유아·아동·임신·출산', re:/유아|아기|육아|키즈|어린이|기저귀|이유식|장난감|유모차|아동|임신|출산|산후|분유|젖병|아기용품/,
+      focus:['아이月齢·상황이 어땠는지','안전·세척·소재 같은 실제 조건','아이 반응과 엄마 손이 얼마나 줄었는지'],
+      words:['이유식','기저귀','세척','소재','소독','등원','낮잠','분유'],
+      angles:['이유식을 시작하면서 하루가 꼬인 요즘','어린이집 등원 준비로 아침이 전쟁인 날','아이 옷이 한 번에 작아져서 다시 산 주말','둘째가 태어나 물건을 하나 더 사야 했던 때'],
+      wants:['아이 반응','안전·세척','제품 정보']},
+    { name:'부동산·이사·청소', re:/부동산|이사|원룸|오피스텔|아파트|입주청소|청소업체/,
+      focus:['집 상태나 일정이 어땠는지','견적·인원·시간 같은 실제 조건','끝나고 어디가 달라졌는지'],
+      words:['견적','일정','인원','입주','짐','청소','수납','보증금'],
+      angles:['이사 날짜가 일주일 남고 짐이 그대로인 때','입주 전날 청소를 누가 할지 못 정한 날','집이 좁아서 짐을 버려야 했던 주말','월세 계약을 앞두고 조건을 비교하던 때'],
+      wants:['진행 조건','결과','어디인지']},
+    { name:'자동차·생활서비스', re:/자동차|타이어|세차|정비|렌터카|카센터|주유/,
+      focus:['차 상태와 계기','대기·견적·설명 같은 실제 경험','끝나고 달라진 점'],
+      words:['정비','견적','타이어','오일','대기','예약','세차'],
+      angles:['차에서 소리가 나는데 원인을 모르던 날','검사 기간이 다 되어 급하게 알아본 때','세차를 미루다 차 안까지 지저분해진 주말','장거리 앞두고 점검을 받아야 했던 날'],
+      wants:['증상과 결과','진행 조건','어디인지']}
+  ];
+  const IND_GENERIC_STYLE = { name:'일반 소비재·서비스',
+    focus:['쓰기 전에 뭐가 불편했는지','실제 조건(크기·시간·비용)','일주일쯤 지나 달라진 점'],
+    words:['전','후','크기','시간','가격','관리'],
+    angles:['필요한 게 생겨서 며칠 알아만 본 요즘','주변에서 추천을 받았는데 다 달라서 헷갈린 때','일단 질렀다가 실패한 적이 있어서 조심스러운 요즘','알아볼 시간이 없어서 대충 정했다가 후회한 날'],
+    wants:['전후 차이','실제 조건','제품·업체 정보']};
+
+  // AI 티 대표 표현 (실제 원고 2백만 자에서 거의 안 나오는 것들)
+  const BANNED = [
+    [/삶의\s*질/g, '미사여구'],
+    [/취향\s*저격|취향저격/g, '유행어'],
+    [/마성의|요물|극락|순삭|레전드|갓성비/g, '유행어'],
+    [/퀄리티가?\s*남다르|남다른\s*퀄리티|퀄리티\s*보장/g, '미사여구'],
+    [/효자템|인생템|꿀템|필수템|최애템/g, '유행어'],
+    [/완벽\s*그\s*자체|완벽합니다|완벽해요/g, '미사여구'],
+    [/강력\s*추천|강추드립니다|강추합니다|적극\s*추천/g, '홍보문구'],
+    [/추천드립니다|추천드려요|권해드립니다|권해드려요/g, '홍보문구'],
+    [/어떨까요|어떠실까요|어떨지\s*모르겠/g, 'AI 말투'],
+    [/하시면\s*좋을\s*것\s*같|해\s*보시는\s*건/g, 'AI 말투'],
+    [/에\s*대해\s*알아보겠|소개해\s*드릴|알려드릴게요/g, 'AI 말투'],
+    [/첫째|둘째|셋째|결론적으로|요약하자면|따라서|그러므로/g, 'AI 말투'],
+    [/다양한|풍부한|탁월한|차별화된|합리적인\s*가격|특별한\s*경험|새로운\s*경험/g, '미사여구'],
+    [/만족도가?\s*높|기대\s*이상|실용적입니다|편의성이?\s*뛰어/g, '미사여구'],
+    [/삶이\s*달라|일상이\s*달라|삶의\s*질이\s*달라/g, '미사여구'],
+    [/100%\s*보장|부작용\s*없|즉시\s*효과|완치|면역력\s*(급상승|폭발)/g, '효능 과장'],
+    [/안녕하세요[,.!]?\s*[^\n]{0,12}(입니다|이에요)|오늘은\s*[^\n]{0,20}소개/g, '체험단 문체'],
+    [/여러분|구독|팔로우|저장해\s*두세요|꿀팁\s*대방출|총정리/g, '체험단 문체'],
+    [/문의\s*(주세요|바랍니다)|구매\s*문의|링크\s*확인|프로필\s*링크|오픈\s*채팅|카톡\s*주세요|DM\s*주세요/g, '홍보문구'],
+    [/할인\s*(중|쿠폰)|이벤트\s*진행|선착순|한정\s*수량|지금\s*바로\s*구매/g, '홍보문구'],
+    [/\d{2,3}-\d{3,4}-\d{4}|010-?\d{4}/g, '연락처'],
+    [/https?:\/\/|www\./g, '링크']
+  ];
+
+  function industryOf(g){
+    const t = [g.concept, g.guide, g.merits, g.notes, g.brand].filter(Boolean).join(' ');
+    for(const s of IND_STYLE){ if(s.re.test(t)) return s; }
+    return IND_GENERIC_STYLE;
+  }
+  function personaFor(seed){
+    return PERSONAS[Math.abs(seed) % PERSONAS.length];
+  }
+  function pickFrom(arr, seed){
+    if(!arr || !arr.length) return '';
+    return arr[Math.abs(seed) % arr.length];
+  }
+
+  /* ---- 사람티 점검(자가 검사) ---- */
+  function aiReport(it){
+    const hits = [];
+    let score = 100;
+    const body = String(it.body || '');
+    const title = String(it.title || '');
+    const all = title + '\n' + body + '\n' + (it.comment1 || '') + '\n' + (it.reply || '');
+    const isR = it.type === '후기형';
+
+    BANNED.forEach(function(pair){
+      const m = all.match(pair[0]);
+      if(m){ hits.push(pair[1] + '「' + m[0] + '」'); score -= 12; }
+    });
+
+    const emoji = (all.match(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu) || []).length;
+    if(emoji > 1){ hits.push('이모지 ' + emoji + '개'); score -= 8; }
+    if(/ㅋ{4,}|ㅎ{4,}|ㅠ{3,}/.test(all)){ hits.push('ㅋㅋㅋㅋ 반복'); score -= 6; }
+
+    const emps = (all.match(/진짜|너무|완전|엄청|정말|무조건|최고|대박/g) || []).length;
+    if(emps > 5){ hits.push('강조어 ' + emps + '회'); score -= 10; }
+
+    const lines = body.split('\n').map(function(l){ return l.trim(); }).filter(Boolean);
+    const lineLen = lines.map(function(l){ return l.length; });
+    if(lines.length >= 4){
+      const avg = lineLen.reduce(function(a,b){ return a+b; },0) / lineLen.length;
+      const flat = lineLen.filter(function(n){ return Math.abs(n - avg) <= 4; }).length;
+      if(flat / lineLen.length > 0.8 && avg > 34){ hits.push('줄 길이가 자로 잰 듯 균일'); score -= 8; }
+    }
+    // 같은 어미 3회 연속
+    const ends = lines.map(function(l){ return (l.match(/(어요|네요|더라고요|거든요|습니다|입니다|해요)$/) || [''])[0]; }).filter(Boolean);
+    let run = 1, maxRun = 1;
+    for(let i=1;i<ends.length;i++){ if(ends[i] === ends[i-1] && ends[i]) { run++; maxRun = Math.max(maxRun, run); } else run = 1; }
+    if(maxRun >= 4){ hits.push('같은 어미 ' + maxRun + '회 연속'); score -= 8; }
+
+    if(/습니다|입니다|하시기 바랍|였습니다/.test(body)){ hits.push('문어체 종결'); score -= 15; }
+
+    const lim = isR ? HS.r : HS.q;
+    const len = body.replace(/\s/g,'').length;
+    if(len < lim.min * 0.7){ hits.push('본문이 짧음(' + len + '자)'); score -= 8; }
+    if(len > lim.max * 1.35){ hits.push('본문이 김(' + len + '자)'); score -= 6; }
+    if(lines.length < lim.lines[0] - 1){ hits.push('줄 수 적음(' + lines.length + '줄)'); score -= 6; }
+
+    const brand = (guideFields().brand || '').trim();
+    if(brand && brand.length > 1 && !isR && body.indexOf(brand) > -1){ hits.push('질의형 본문에 상호명'); score -= 25; }
+    if(brand && brand.length > 1 && isR && body.indexOf(brand) > -1 && (guideFields().photo || '').indexOf('있음') > -1){
+      hits.push('후기형 본문에 상호명'); score -= 15;
+    }
+    if(isR && it.comment1 && !/\?|어디|어떤|얼마|뭐|이름|정보|궁금/.test(it.comment1)){ hits.push('후기형 댓글1이 질문이 아님'); score -= 8; }
+    if(!isR && it.comment1 && /\?$/.test(it.comment1.trim())){ hits.push('질의형 댓글1이 되물음'); score -= 6; }
+
+    score = Math.max(0, Math.min(100, score));
+    return { score: score, hits: hits };
+  }
+
+  // 자동 정제 — 표현 치환, 인사·홍보 줄 삭제, 기호 정리
+  const SUBST = [
+    [/퀄리티가?\s*남다른|남다른\s*퀄리티/g,'괜찮은'],
+    [/삶의\s*질이\s*달라\S*|삶의\s*질/g,'생활'],
+    [/취향\s*저격|취향저격/g,'마음에 드는'],
+    [/마성의|요물/g,''],
+    [/효자템|인생템|꿀템|필수템|최애템/g,'물건'],
+    [/순삭/g,'금방'], [/극락/g,'편한'], [/레전드/g,'좋은'], [/갓성비/g,'가성비 좋은'],
+    [/완벽\s*그\s*자체|완벽한|완벽해요|완벽합니다|완벽해서/g,'만족스러운'],
+    [/강력\s*추천\S*|추천드립니다|추천드려요|강추합니다|강추드립니다/g,'추천해요'],
+    [/다양한/g,'여러'], [/풍부한/g,'넉넉한'], [/탁월하\S*/g,'좋고'], [/차별화된/g,'다른'],
+    [/만족도가?\s*높습니다|만족도가?\s*높아요/g,'만족스러워요'],
+    [/기대\s*이상/g,'생각보다 좋아요'], [/실용적입니다/g,'편해요'], [/편의성이?\s*뛰어\S*/g,'편해요'],
+    [/100%\s*보장|부작용\s*없이|즉시\s*효과/g,'']
+  ];
+  const DROP_LINE = [
+    /안녕하세요|반갑습니다/,
+    /오늘은\s*.{0,25}(소개|알려)\s*드릴/,
+    /여러분|구독|팔로우|저장해\s*두|꿀팁|총정리/,
+    /(구매|예약|문의|주문)\s*(하시|주시|바랍|주세요)/,
+    /링크|카톡|오픈\s*채팅|DM|연락\s*주/,
+    /할인|이벤트\s*진행|선착순|한정\s*수량|지금\s*바로/,
+    /꼭\s*(구매|사|써|해)\s*보세요/,
+    /후기\s*\d+\s*건/
+  ];
+
+  function polishText(s, brand, type){
+    let t = String(s || '');
+    t = t.replace(/ㅋ{3,}/g,'ㅋㅋ').replace(/ㅎ{3,}/g,'ㅎㅎ').replace(/ㅠ{3,}/g,'ㅠㅠ');
+    t = t.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '');
+    const lines = t.split('\n');
+    const out = [];
+    for(let i=0;i<lines.length;i++){
+      let l = lines[i].trim();
+      if(!l){
+        if(out.length && out[out.length-1] !== '') out.push('');
+        continue;
+      }
+      if(DROP_LINE.some(function(re){ return re.test(l); })) continue;
+      l = l.replace(/^(첫째|둘째|셋째|첫\s*번째|두\s*번째|세\s*번째|마지막으로|결론적으로|따라서|즉)[,.]?\s*(로|으로)?\s*/, '');
+      SUBST.forEach(function(p){ l = l.replace(p[0], p[1]); });
+      if(brand && type !== '후기형' && l.indexOf(brand) > -1){
+        l = l.split(brand).join('').replace(/\s{2,}/g,' ').trim();
+        if(l.length < 6) continue;
+      }
+      l = l.replace(/\s{2,}/g,' ').trim();
+      if(!l) continue;
+      out.push(l);
+    }
+    while(out.length && out[out.length-1] === '') out.pop();
+    return out.join('\n');
+  }
+
+  function polishItem(it){
+    const g = guideFields();
+    const brand = (g.brand || '').trim();
+    const own = { type: it.type, title: it.title, body: it.body, comment1: it.comment1, reply: it.reply };
+    const cleanTitle = polishText(it.title, brand, it.type);
+    const cleanBody = polishText(it.body, brand, it.type);
+    const cleanC1 = polishText(it.comment1, brand, '');
+    const cleanR = polishText(it.reply, brand, '');
+    own.title = (cleanTitle || String(it.title || '').replace(brand, '')).replace(/^[\s·\-–—]+|[\s·\-–—]+$/g,'').slice(0, 45);
+    own.body = cleanBody.trim() ? cleanBody : String(it.body || '');
+    own.comment1 = cleanC1;
+    own.reply = cleanR;
+    own.ai = aiReport(own);
+    return own;
+  }
+
+  /* ---- 프롬프트 ---- */
   function guideFields(){
     return {
       brand: $('#fBrand').value.trim(),
@@ -874,20 +1150,21 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
   }
   function pickExamples(){
     const ex = learnedExisting();
-    const q = ex.filter(e => e.type.indexOf('질의') > -1 && e.body.length > 60).slice(-1)[0];
-    const r = ex.filter(e => e.type.indexOf('후기') > -1 && e.body.length > 60).slice(-1)[0];
-    return {q, r};
+    const q = ex.filter(function(e){ return e.type.indexOf('질의') > -1 && e.body.length > 60; }).slice(-1)[0];
+    const r = ex.filter(function(e){ return e.type.indexOf('후기') > -1 && e.body.length > 60; }).slice(-1)[0];
+    return {q: q, r: r};
   }
-  function buildSystemPrompt(){
+
+  function buildSystemPrompt(assign){
     const g = guideFields();
-    const ex = pickExamples();
-    const titles = learnedExisting().map(e => e.title).filter(Boolean);
+    const ind = industryOf(g);
     const brand = g.brand || '상호명';
+    const photoOn = (g.photo || '').indexOf('있음') > -1;
     const lines = [];
-    lines.push('너는 네이버 맘카페에 글을 올리는 한국인 맘카페 회원이다. 실제 회원이 쓴 것처럼 자연스러운 구어체로 원고를 쓴다.');
+    lines.push('너는 네이버 맘카페에 글을 올리는 한국인 회원이다. 실제 회원이 쓴 글과 구별되지 않게 쓴다. 잘 쓴 글이 아니라, 진짜 겪은 사람의 글을 쓴다.');
     lines.push('');
-    lines.push('[최우선 지시 — 업종 / 컨셉 프롬프트]');
-    lines.push(g.concept ? g.concept : '(별도 지시 없음. 아래 업체 정보와 원고 작성 가이드에서 업종·제품·상황을 스스로 판단해 그 업체에 맞게 쓴다.)');
+    lines.push('[가장 중요 — 업종 / 컨셉 프롬프트]');
+    lines.push(g.concept ? g.concept : '(별도 지시 없음. 아래 업체 정보와 원고 작성 가이드에서 업종·제품·상황을 판단해 그 업체에 맞게 쓴다.)');
     lines.push('');
     lines.push('[업체 정보]');
     lines.push('- 상호명: ' + (g.brand || '(미정)'));
@@ -897,43 +1174,95 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     if(g.notes) lines.push('- 특이사항: ' + g.notes);
     if(g.guide) lines.push('- 원고 작성 가이드(본문):\n' + g.guide);
     lines.push('');
-    lines.push('[지시 우선순위]');
-    lines.push('1) 위 업종/컨셉 프롬프트와 이 업체 정보·가이드를 최우선으로 따른다. 업종·제품·소재·상황·소구점은 전부 이 업체의 것이어야 한다.');
-    lines.push('2) 특정 업종(식품·안주 등)을 기본값으로 가정하지 않는다. 가이드에 없는 다른 업종의 제품이나 상황을 끌어오지 않는다.');
-    lines.push('3) 아래 [원고 유형 규칙]은 맘카페 글의 구성(제목·본문·댓글 역할)만 정한 것이고, 내용은 이 업체에 맞게 새로 쓴다.');
-    lines.push('4) [말투 참고]의 기존 원고는 말투·문장 길이·댓글 구성만 참고하고, 그 소재와 상황은 절대 베끼지 않는다.');
+    lines.push('[업종 스타일 — 자동 적용: ' + ind.name + ']');
+    lines.push('- 이 업종 원고에서 실제 회원들이 말하는 것: ' + ind.focus.join(' / '));
+    lines.push('- 자연스럽게 나오는 단어: ' + ind.words.join(', '));
+    lines.push('- 이 업종에서 독자가 알고 싶어 하는 것: ' + ind.wants.join(', '));
+    lines.push('- 업종과 무관한 소재(다른 업종의 제품·상황)는 한 줄도 넣지 않는다.');
     lines.push('');
-    lines.push('[원고 유형 규칙]');
-    lines.push('■ 질의형(질문형) — 본문 상호명 미노출 + 고민/질문 → 댓글1에서 상호명 추천 → 대댓글 감사');
-    lines.push('- 제목: 궁금증이 드러나는 짧은 질문 (10~26자)');
-    lines.push('- 내용: 4~6줄. 이 업체의 업종·제품과 관련된 일상의 고민이나 궁금증을 구체적으로 쓴다.');
-    lines.push('- 브랜드명은 본문에 절대 쓰지 않는다.');
-    lines.push('- 마지막 줄은 다른 회원에게 자연스럽게 묻는 질문으로 끝낸다.');
-    lines.push('- 댓글1: 다른 회원 말투로 자기 경험을 말하며 "' + brand + '"를 자연스럽게 추천한다.');
-    lines.push('- 작성자 대댓글: 작성자가 고마워하며 반응한다.');
-    lines.push('■ 후기형 — 일상 에피소드 + 경험 → 댓글1 질문 → 대댓글 상호명 안내');
-    lines.push('- 제목: 어떤 상황이었는지 드러나는 짧은 후기 제목');
-    lines.push('- 내용: 6~8줄. 이 업체의 제품·서비스를 실제로 써본 구체적인 일상 에피소드와 장점(특장점·가이드에 적힌 내용)을 자연스럽게 풀어쓴다.');
-    lines.push('- 브랜드명은 본문에 쓰지 않는다.');
-    lines.push('- 댓글1: 제품이나 브랜드를 묻는 다른 회원 댓글.');
-    lines.push('- 작성자 대댓글: "' + brand + '"를 알려준다.');
+    lines.push('[실제 회원 문체 10계명]');
+    lines.push('1. 첫 줄은 인사나 결론이 아니라 지금 내 처지다. "주말마다 애들이 집에서만 뒹굴어서" 처럼 장면으로 시작한다.');
+    lines.push('2. 한 줄에 생각 하나. 줄은 20~30자, 문장은 짧게 끊는다. 한 문장에 두 가지를 넣지 않는다.');
+    lines.push('3. 접속사는 근데·그래서·그냥·아 정도만. 따라서·또한·이러한·즉 같은 문어체 접속어는 쓰지 않는다.');
+    lines.push('4. 종결은 ~더라고요/~거든요/~네요/~잖아요/~어요/~고요 위주. ~입니다/~습니다/~하겠습니다는 한 번도 쓰지 않는다.');
+    lines.push('5. 감정은 한 번만. 좋으면 "좋더라고요", 아쉬우면 "좀 그렇더라고요". 두 번 강조하면 광고로 읽힌다.');
+    lines.push('6. 숫자·기간·횟수는 실제로 겪은 것만 쓴다. 없으면 쓰지 않는다. 성분·수치·후기 수를 지어내지 않는다.');
+    lines.push('7. 이모지는 0~1개. 그 대신 ㅋㅋ·ㅎㅎ·ㅠㅠ·~·^^를 쓴다. ㅋㅋㅋㅋ처럼 3자 이상 반복하지 않는다.');
+    lines.push('8. 중간에 말을 고치거나 스스로 정정하는 대목을 한 번 넣는다("아 근데", "생각보다는", "그건 아니고").');
+    lines.push('9. 마지막 줄은 감동이나 당부가 아니라 여운이나 다음 계획이다. "다음에 또 갈 것 같아요" 정도로 끝낸다.');
+    lines.push('10. 완벽한 기승전결을 만들지 않는다. 중간에 사소한 불만이나 변수 하나를 남긴다.');
     lines.push('');
-    lines.push('[말투]');
-    lines.push('ㅋㅋ, ㅎㅎ, ㅠㅠ, ~, ^^ 같은 표현을 자연스럽게 섞은 구어체. 맞춤법은 살짝 흐트러져도 되지만 읽기 불편할 정도로 흐트러뜨리지 않는다. 이모지는 0~1개. 광고 문구·과장·효능 표현·가격 흥정 유도는 쓰지 않는다. 줄바꿈은 \\n 으로 구분하고 각 줄은 20~45자 정도로 짧게 끊는다.');
+    lines.push('[절대 금지 — AI 티가 나는 것]');
+    lines.push('- 미사여구·유행어: 삶의 질, 취향 저격, 마성의, 퀄리티가 남다른, 완벽, 효자템·인생템·꿀템·필수템, 극락, 순삭, 레전드, 갓성비');
+    lines.push('- 홍보 문구: 강력 추천, 강추합니다, 추천드립니다, 구매 문의, 링크 확인, 카톡·DM, 할인 중, 이벤트 진행, 선착순, 지금 바로');
+    lines.push('- AI 말투: ~해 보시는 건 어떨까요, ~하시면 좋을 것 같아요, ~에 대해 알아보겠습니다, 첫째·둘째·결론적으로, 다양한·풍부한·탁월한·차별화된, 만족도가 높습니다, 기대 이상');
+    lines.push('- 체험단 문체: 안녕하세요 ○○입니다, 오늘은 ~를 소개해드릴게요, 여러분, 꿀팁 대방출, 총정리, 저장해두세요');
+    lines.push('- 효능·실적 과장: 100% 보장, 부작용 없이, 즉시 효과, 완치, 후기 ○건 돌파');
+    lines.push('- 구조: 모든 줄 길이가 비슷한 자로 잰 문장, 같은 어미 3회 이상 연속, 문단 3개가 규칙적으로 반복, 마지막에 "여러분도 꼭 해보세요"');
+    lines.push('');
+    lines.push('[후기형 — 사진이 함께 올라가는 글]');
+    lines.push('- 사진을 이미 본 사람에게 말하듯 쓴다. 외관·구성·색을 글로 길게 묘사하지 않는다. 사진이 대신한다.');
+    lines.push('- 사진을 가리키는 표현을 한 번 쓴다: "오늘 찍어본 건데", "실제로 보니까", "대충 이런 느낌이에요".');
+    lines.push('- 특장점·가이드 내용은 나열하지 말고, 겪은 장면 안에 녹인다. "이틀 써보니" 같은 말로 붙인다.');
+    lines.push('- 본문에 상호명을 쓰지 않는다. 댓글1이 묻고 작성자 대댓글에서 답한다.' + (photoOn ? '' : ' (사진 첨부가 없으면 장면 묘사를 한 줄 늘려도 된다.)'));
+    lines.push('- 제목은 상황이나 결과 한 조각. 끝에 ?·?ㅋㅋ·ㅎㅎ·~·!!·^^ 중 하나를 자연스럽게 붙인다.');
+    lines.push('- 분량: 본문 9~13줄(240~340자), 빈 줄 1~2개. 댓글1은 1~2줄 짧은 질문. 대댓글은 2~3줄 답 + 팁.');
+    lines.push('- 끝은 재방문·재구매 의사나 사소한 아쉬움으로 닫는다.');
+    lines.push('');
+    lines.push('[질의형 — 사진 없이 올라가는 글]');
+    lines.push('- 제목·본문 어디에도 상호명을 쓰지 않는다. (지역명은 써도 된다)');
+    lines.push('- 실제로 겪는 불편이나 고민을 3~5줄로 구체적으로 쓴다. 상황·이유·지금까지 해본 것을 섞는다.');
+    lines.push('- 그다음 자연스러운 질문 1~2줄. "추천 좀 부탁드려요" 같은 무난한 마무리도 좋다.');
+    lines.push('- 분량: 본문 5~8줄(150~210자), 빈 줄 0~1개. 질문은 마지막에 한 번만.');
+    lines.push('- 댓글1은 되묻는 말이 아니라 실제 써본 사람의 경험담이다. 상호명 + 구체적 이유로 3~5줄 길게 쓴다.');
+    lines.push('- 작성자 대댓글은 1~3줄. 짧게 고마워하고 한 가지를 더 붙인다.');
+    lines.push('');
+    if(assign && assign.length){
+      lines.push('[이번 배치 — 원고별 화자와 조건]');
+      assign.forEach(function(a, i){
+        lines.push((i+1) + ') ' + a.type + ' · 화자 ' + a.persona.k + ' — ' + a.persona.d + (a.angle ? ' · 소재 출발점: ' + a.angle : ''));
+      });
+      lines.push('화자가 다르면 말투·문장 길이·이모지 사용이 눈에 띄게 달라야 한다. 같은 문장 틀을 재사용하지 않는다.');
+      lines.push('');
+    }
+    lines.push('[말투 예시 — 가명 처리된 참고용. 말투·호흡·댓글 구조만 보고 소재·업종·제품은 절대 가져오지 않는다]');
+    lines.push('예시1 (질의형)');
+    lines.push('제목: ○○동에 애들 데리고 갈 만한 데 있을까요??');
+    lines.push('본문:\n주말마다 애들이 집에서만 뒹굴어서\n어딘가 데리고 나가야 하나 싶어요\n큰애가 요즘 심심하다고 계속 얘기하거든요\n\n실내면 좋고 주차 되면 더 좋은데\n가보신 곳 있으면 알려주세요ㅠㅠ');
+    lines.push('댓글1:\n저희는 ○○ 다녀왔는데 애들이 좋아했어요\n주차장이 바로 붙어 있어서 편했구요\n주말엔 사람 많은 게 흠인데 오전에 가면 괜찮아요');
+    lines.push('대댓글:\n오 그런 데가 있었네요\n오전에 가는 걸로 해봐야겠어요 고맙습니다~');
+    lines.push('');
+    lines.push('예시2 (후기형, 사진 있음)');
+    lines.push('제목: 건조기 들이고 나서 주말이 생겼어요ㅋㅋ');
+    lines.push('본문:\n베란다에 널어두면 하루 종일 축축할 때가 많아서\n빨래가 늘 밀려 있었거든요\n\n이번에 들여서 첫날 돌려봤는데\n수건이 훅 마르는 게 신기하더라고요\n소리도 생각보다 크지 않고요\n\n아이 옷이랑 수건만 모아 돌리니까\n주말에 빨래하는 시간이 확 줄었어요');
+    lines.push('댓글1:\n저도 그거 알아보는 중이에요\n베란다에 두셨어요? 자리 얼마나 차지하나요?');
+    lines.push('대댓글:\n베란다 한쪽에 딱 놓았는데\n세탁기 옆자리 정도만 쓰는 것 같아요');
+    lines.push('');
+    lines.push('예시3 (질의형, 병원)');
+    lines.push('제목: 아이가 밤마다 기침하는데 어디로 가야 할까요');
+    lines.push('본문:\n큰애가 일주일째 밤에만 기침을 해요\n낮에는 멀쩡한데 누우면 시작하니까\n옆에서 자는 저도 같이 깨고요\n\n동네 병원은 감기라고만 하시는데\n이게 맞는 건지 계속 신경이 쓰여서요');
+    lines.push('댓글1:\n저희 아이도 그랬는데 ○○ 이비인후과 가서\n알레르기 검사 받고 나서 좀 나아졌어요\n원장님이 설명을 길게 해주셔서 좋았어요');
+    lines.push('대댓글:\n아 그런 검사도 있군요\n저도 한번 가봐야겠어요 감사합니다ㅠㅠ');
+    lines.push('');
+    lines.push('예시4 (후기형, 맛집)');
+    lines.push('제목: 오랜만에 친구 만나 점심 먹고 왔는데 아직도 생각나요ㅋㅋ');
+    lines.push('본문:\n친구가 애들 맡기고 나올 수 있는 날이\n한 달에 한 번뿐이라 그날만 기다렸어요\n\n고기는 그냥 무난했는데\n된장찌개가 진해서 그거 하나로 밥 두 공기 먹었네요\n반찬도 계속 채워주셔서 편했어요\n\n주차가 좁은 게 흠인데\n점심엔 그래도 자리가 있더라고요');
+    lines.push('댓글1:\n여기 어디예요?? 저도 친구랑 갈 데 찾는 중이에요');
+    lines.push('대댓글:\n○○동 ○○이고 12시 전에 가면 주차 돼요');
+    lines.push('');
+    lines.push('예시5 (질의형, 학원)');
+    lines.push('제목: 초등 논술 학원 보내보신 분 계세요?');
+    lines.push('본문:\n아이가 책은 좋아하는데\n자기 생각을 글로 못 쓰겠다고 해서요\n\n숙제 많은 데는 싫다고 하고\n그렇다고 놀이식은 또 아닌 것 같고\n어디가 맞는지 모르겠어요\n\n보내보신 분 있으면 얘기 좀 들려주세요');
+    lines.push('댓글1:\n저희는 ○○ 다니는데 숙제는 적은 편이에요\n대신 책 읽고 한 장 쓰는 걸 매주 해요\n아이가 지루해하지 않아서 만족하고 있어요');
+    lines.push('대댓글:\n한 장이면 부담 없겠네요\n저도 상담 받아봐야겠어요 정보 고맙습니다~');
+    const ex = pickExamples();
     if(ex.q || ex.r){
       lines.push('');
-      lines.push('[말투 참고 — 문장 길이·말투·댓글 역할만 참고하고, 소재·상황·제품·소구점은 절대 베끼지 말 것]');
-      if(ex.q){
-        lines.push('질의형 예시 제목: ' + ex.q.title);
-        lines.push('질의형 예시 본문: ' + ex.q.body.replace(/\n/g,' ').slice(0,160));
-        if(ex.q.comment1) lines.push('질의형 예시 댓글1: ' + ex.q.comment1.slice(0,120));
-      }
-      if(ex.r){
-        lines.push('후기형 예시 제목: ' + ex.r.title);
-        lines.push('후기형 예시 본문: ' + ex.r.body.replace(/\n/g,' ').slice(0,160));
-        if(ex.r.comment1) lines.push('후기형 예시 댓글1: ' + ex.r.comment1.slice(0,120));
-      }
+      lines.push('[이 업체에서 이미 나온 원고 — 제목·문장이 겹치면 안 된다. 말투만 참고]');
+      if(ex.q) lines.push('질의형: ' + ex.q.title + ' / ' + ex.q.body.replace(/\n/g,' ').slice(0,120));
+      if(ex.r) lines.push('후기형: ' + ex.r.title + ' / ' + ex.r.body.replace(/\n/g,' ').slice(0,120));
     }
+    const titles = learnedExisting().map(function(e){ return e.title; }).filter(Boolean);
     if(titles.length){
       lines.push('');
       lines.push('[이미 쓴 원고 제목 — 같은 상황·비슷한 문장 금지]');
@@ -942,18 +1271,29 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     lines.push('');
     lines.push('[출력]');
     lines.push('설명 없이 JSON만 출력한다: {"items":[{"type":"질의형","title":"...","body":"...","comment1":"...","reply":"..."}]}');
+    lines.push('body 안의 줄바꿈은 \\n 으로 표시한다. 상호명 ' + josa(brand,'은','는') + ' 지정된 위치(댓글1·대댓글)에서만 쓴다.');
     return lines.join('\n');
   }
-  function buildUserPrompt(plan){
+
+  function buildAssignments(plan, offset){
+    return plan.map(function(t, i){
+      const seed = (offset || 0) + i;
+      const p = personaFor(seed * 5 + 1);
+      const ind = industryOf(guideFields());
+      const angle = pickFrom(ind.angles, seed + (t === '후기형' ? 1 : 0));
+      return { type: t, persona: p, angle: angle };
+    });
+  }
+  function buildUserPrompt(assign){
     const g = guideFields();
-    const q = plan.filter(t => t === '질의형').length;
-    const r = plan.filter(t => t === '후기형').length;
+    const q = assign.filter(function(a){ return a.type === '질의형'; }).length;
+    const r = assign.filter(function(a){ return a.type === '후기형'; }).length;
     const parts = [];
     if(q) parts.push('질의형 ' + q + '건');
     if(r) parts.push('후기형 ' + r + '건');
-    let line = (g.brand ? g.brand + ' 업체의 ' : '') + parts.join(', ') + '을 작성해라.';
-    line += ' 업종과 컨셉은 위 [업종 / 컨셉 프롬프트]와 업체 가이드를 따르고, 다른 업종의 소재는 쓰지 않는다.';
-    line += ' 각 원고는 서로 완전히 다른 일상 상황이어야 하고, 기존 제목과 겹치면 안 된다.';
+    let line = (g.brand ? g.brand + ' 업체의 ' : '') + parts.join(', ') + '을 위 배치 순서대로 쓴다.';
+    line += ' 각 원고는 서로 다른 화자·다른 상황이어야 하고, 위에 이미 나온 제목과 겹치면 안 된다.';
+    line += ' 업종·제품·소구점은 전부 이 업체의 것이어야 하고, 예시에 나온 소재는 한 줄도 쓰지 않는다.';
     line += ' type 값은 정확히 "질의형" 또는 "후기형"으로 쓴다.';
     return line;
   }
@@ -1043,53 +1383,23 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
   }
 
   /* ================= 초안(로컬) 생성 ================= */
-  // 업종별 어휘 · 특장점이 비어 있을 때 쓰는 기본 소구점
-  const IND = [
-    { re:/학원|과외|교육|수강|교습|클래스|레슨|보습/, item:'학원',
-      situations:['아이 학년이 올라가는 요즘','방학 때 뭘 해야 할지 고민인 요즘','아이가 특정 과목을 유독 어려워하는 요즘','형제끼리 시간이 겹치지 않는 요즘'],
-      points:['꼼꼼한 수업 구성','아이 눈높이에 맞는 설명','상담이 자세한 점'], gain:'다니기가' },
-    { re:/병원|의원|치과|한의원|피부과|정형|내과|소아과|진료|클리닉/, item:'병원',
-      situations:['아이가 자주 아픈 요즘','오래된 통증 때문에 고민이 많은 요즘','가족이 함께 검진을 받아야 하는 요즘','집 근처에 괜찮은 곳을 찾는 요즘'],
-      points:['자세한 설명','예약과 대기가 편한 점','꼼꼼한 진료'], gain:'다니기가' },
-    { re:/인테리어|리모델링|가구|커튼|조명|도배|장판|시공|집수리/, item:'인테리어',
-      situations:['이사 앞두고 집을 정리하는 요즘','오래된 집을 손보려고 마음먹은 요즘','아이 방을 새로 꾸며주려는 요즘','주방만이라도 바꾸고 싶은 요즘'],
-      points:['견적이 투명한 점','마감이 깔끔한 점','일정을 지키는 점'], gain:'지내기가' },
-    { re:/유아|아기|육아|키즈|어린이|기저귀|이유식|장난감|유모차|아동/, item:'육아용품',
-      situations:['아이가 이유식을 시작한 요즘','어린이집 등원을 준비하는 요즘','아이 옷 사이즈가 한 번에 커진 요즘','둘째가 태어나 물건을 하나 더 사야 하는 요즘'],
-      points:['안전한 소재','쓰기 편한 구성','세척이 간편한 점'], gain:'챙기기가' },
-    { re:/반려|강아지|고양이|펫|사료|애견/, item:'반려동물 용품',
-      situations:['강아지가 한 살이 된 요즘','산책을 자주 나가게 된 요즘','사료를 바꿔야 할 때가 된 요즘','집에 혼자 있는 시간이 길어진 요즘'],
-      points:['성분이 안전한 점','챙기기 편한 구성','아이가 잘 먹는 점'], gain:'챙기기가' },
-    { re:/헬스|운동|필라테스|요가|PT|체육|수영|클라이밍/, item:'운동 시설',
-      situations:['오랜만에 운동을 다시 시작한 요즘','앉아 있는 시간이 길어진 요즘','체력이 예전 같지 않다는 걸 느끼는 요즘','주말마다 몸이 무거운 요즘'],
-      points:['시간대가 넓은 점','시설이 깨끗한 점','초보자도 따라가기 쉬운 점'], gain:'다니기가' },
-    { re:/가방|백팩|크로스백|토트|지갑|파우치|캐리어|여행가방|핸드백/, item:'가방',
-      situations:['출퇴근할 때 들고 다닐 가방이 필요한 요즘','주말에 아이 물건까지 챙겨 나가는 날','여행 앞두고 짐이 많아진 요즘','노트북을 같이 넣고 다닐 가방을 찾는 요즘'],
-      points:['가벼운 무게','넉넉한 수납','튼튼한 마감'], gain:'들고 다니기가' },
-    { re:/화장품|뷰티|코스메틱|스킨|로션|앰플|향수|메이크업/, item:'화장품',
-      situations:['환절기라 피부가 뒤집어진 요즘','중요한 약속을 앞둔 요즘','메이크업이 자꾸 뜨는 요즘','아이 낳고 나서 피부가 달라진 요즘'],
-      points:['순한 사용감','흡수가 빠른 점','메이크업이 잘 받는 점'], gain:'바르기가' },
-    { re:/식품|간식|안주|먹거리|반찬|새우|튀김|떡|커피|베이커리|과일|정육|수산|주류/, item:'간식·안주',
-      situations:['남편 퇴근이 늦은 날','아이 학원 끝나고 저녁 전인 시간','주말에 집들이가 있는 날','애들 다 재운 늦은 밤','김장하고 난 다음 날'],
-      points:['간편하게 데우기만 하면 되는 점','깔끔한 뒷정리','질리지 않는 맛'], gain:'먹이고 챙기기가' },
-    { re:/옷|의류|패션|원피스|바지|코트|니트|셔츠|신발|운동화/, item:'옷',
-      situations:['출근복이 마땅치 않은 요즘','체형이 조금 바뀐 요즘','주말에 입을 옷이 없어서 고민인 요즘','계절이 바뀌어 옷장을 정리하는 요즘'],
-      points:['재질이 좋은 점','핏이 자연스러운 점','세탁이 편한 점'], gain:'입기가' },
-    { re:/생활|살림|주방|청소|수납|정리|침구|욕실/, item:'생활용품',
-      situations:['신혼집 살림을 하나씩 채우는 요즘','집 정리를 다시 시작한 요즘','계절이 바뀌어 집 안 물건을 바꾸는 요즘','주방 살림을 하나씩 줄이는 요즘'],
-      points:['쓰임새가 많은 점','관리가 쉬운 점','가격 대비 구성'], gain:'쓰기가' }
-  ];
-  const IND_GENERIC = { item:'제품',
-    situations:['새로 준비할 게 생긴 요즘','주변에서 추천을 자주 받는 요즘','이것저것 알아보고 있는 요즘','필요한 게 생겨서 찾아보는 요즘'],
-    points:['쓰기 편한 점','마감이 깔끔한 점','가격 대비 만족스러운 점'], gain:'쓰기가' };
-
-  const WORRIES = [
-    '뭘 골라야 할지 늘 막막했어요',
-    '몇 번 잘못 골라서 이번엔 제대로 알아보고 싶었어요',
-    '가격대가 너무 달라서 기준을 못 잡겠어요',
-    '주변에 물어봐도 다들 자기 쓰는 것만 추천해서요'
-  ];
-  const CHECKS = ['실사용 후기','가격과 구성','관리하기 편한지','초보가 쓰기 편한지'];
+  // 실제 원고의 분량·줄 수·댓글 길이 비율을 따른다.
+  // 질의형: 6~8줄(150~190자), 댓글1이 길고(경험담 3~4줄) 대댓글은 짧다(2줄).
+  // 후기형: 9~11줄(200~320자), 빈 줄 1~2개, 댓글1은 짧은 질문, 대댓글이 조금 길다.
+  const TOPIC = {
+    '맛집·외식':'맛집', '식품·간편식·건강식품':'간식', '병원·의원·치과·한의원':'병원',
+    '뷰티·피부관리·네일·헤어':'피부관리', '가구·인테리어·시공':'인테리어', '학원·교육·과외':'학원',
+    '가전·디지털·생활용품':'생활용품', '패션·잡화':'가방', '운동·헬스·필라테스':'운동',
+    '반려동물':'강아지 용품', '여행·숙박·레저':'숙소', '창업·마케팅·법률·B2B':'마케팅',
+    '웨딩·이벤트·상조':'행사', '유아·아동·임신·출산':'아이 물건', '부동산·이사·청소':'이사',
+    '자동차·생활서비스':'차', '일반 소비재·서비스':'제품'
+  };
+  const IND_KIND = {
+    '맛집·외식':'place','병원·의원·치과·한의원':'place','뷰티·피부관리·네일·헤어':'place',
+    '가구·인테리어·시공':'place','학원·교육·과외':'place','운동·헬스·필라테스':'place',
+    '여행·숙박·레저':'place','웨딩·이벤트·상조':'place','부동산·이사·청소':'place','자동차·생활서비스':'place',
+    '창업·마케팅·법률·B2B':'service','일반 소비재·서비스':'product'
+  };
 
   function hasJong(s){
     const c = String(s || '').trim().slice(-1);
@@ -1099,124 +1409,208 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     return (code - 0xAC00) % 28 !== 0;
   }
   function josa(w, a, b){ return String(w) + (hasJong(w) ? a : b); }
-  function copula(w){ return String(w) + (hasJong(w) ? '이에요' : '예요'); }
   function pointPhrase(p){
     let s = String(p || '').trim().replace(/[.。]$/, '');
-    if(/함$/.test(s)) s = s.replace(/함$/, '한 점');
-    if(/점$/.test(s)) return s;
-    if(/부분$/.test(s)) return s;
+    if(/함$/.test(s)) return s.replace(/함$/, '한 점');
+    if(/음$/.test(s)) return s.replace(/음$/, '은 점');
+    if(/점$|부분$|거$/.test(s)) return s;
     return s + ' 부분';
   }
-  function meritList(list){
-    const m = (list || []).filter(Boolean).slice(0, 2);
-    return m.join(', ');
+  function splitPoints(s){
+    return String(s || '').split(/\n|[,·、|]+/).map(function(x){ return x.trim(); }).filter(function(x){ return x.length > 1; }).slice(0, 4);
   }
 
-  function detectIndustry(g){
-    const t = [g.concept, g.guide, g.merits, g.notes, g.brand].filter(Boolean).join(' ');
-    for(const ind of IND){ if(ind.re.test(t)) return ind; }
-    return IND_GENERIC;
-  }
-  function splitPoints(s){
-    return String(s || '').split(/\n|[,·、|]+/).map(x => x.trim()).filter(x => x.length > 1).slice(0, 3);
-  }
+  const Q_TITLES = [
+    function(t){ return t + ' 하나 제대로 알아보려는데 추천 부탁드려요'; },
+    function(t){ return '이번에 ' + t + ' 바꾸려는데 어디가 괜찮을까요'; },
+    function(t){ return t + ' 고르는 기준이 뭔지 모르겠어요ㅠ'; },
+    function(t){ return t + ' 잘 아시는 분 계세요??'; },
+    function(t){ return '이번엔 실패 안 하고 싶어서요.. ' + t; }
+  ];
+  const R_TITLES = [
+    function(t){ return t + ' 바꾸고 나서 달라진 점'; },
+    function(t){ return '며칠 써보니 ' + t + ' 생각이 달라졌어요ㅋㅋ'; },
+    function(t){ return t + ' 때문에 고민했는데 좀 나아졌어요'; },
+    function(t){ return '이번에 ' + t + ' 정했어요'; },
+    function(t){ return t + ' 해보고 나서 좀 편해졌어요'; }
+  ];
+
+  const Q_BODIES = [
+    function(ang, w){
+      return [ang,
+        '며칠째 이것만 검색하고 있는데 답이 안 나와요',
+        '',
+        '그냥 되는대로 하다가 시간만 보낸 것 같아요',
+        josa(w[0],'은','는') + ' 늘 대충 넘겼는데 이번엔 아니더라고요',
+        '고른 사람 얘기를 들어봐야 할 것 같아서요',
+        '혹시 비슷한 상황 겪으신 분 계시면 조언 좀 부탁드려요'];
+    },
+    function(ang, w){
+      return [ang,
+        '가격도 다 다르고 하는 말도 다 달라서요',
+        w[0] + ' 하나만 봐도 기준이 안 잡혀요',
+        '',
+        '되는대로 해보다가 결국 아무것도 못 정했어요',
+        josa(w[1 % w.length],'도','도') + ' 그렇고 ' + w[2 % w.length] + '도 애매하고요',
+        '제발 하나만 정하고 싶은데 쉽지가 않네요',
+        '괜찮은 곳 아시면 댓글로 알려주세요'];
+    },
+    function(ang, w){
+      return [ang,
+        '일단 하나 정했다가 실패한 적이 있어서요',
+        '',
+        josa(w[0],'은','는') + ' 이제 안 믿고 직접 확인해보려고요',
+        '주변에 물어봐도 답이 다 달라서 결국 혼자 알아봤어요',
+        '검색하면 다 좋다고만 해서 더 모르겠고요',
+        '',
+        '써보신 분 있으면 어떤지 알려주세요'];
+    },
+    function(ang, w){
+      return [ang,
+        josa(w[1 % w.length],'이','가') + ' 제일 문제라서요',
+        '이것 하나 때문에 한 주가 다 갑니다',
+        '',
+        '괜찮다는 데는 이미 다 가봤고 결과는 다 비슷했어요',
+        '이제 남은 데가 없어서 여쭤봐요',
+        '혹시 아는 곳 있으시면 추천 좀 해주세요ㅠㅠ'];
+    }
+  ];
+
+  const C1_Q_PLACE = [
+    function(brand, w, P){ return ['저는 ' + brand + ' 다녀왔는데 ' + josa(w,'이','가') + ' 편했어요', P + '도 괜찮았고요', '예약하고 가시면 기다리지 않아요'].join('\n'); },
+    function(brand, w, P){ return ['저희는 ' + brand + ' 이용했어요', w + ' 괜찮았고 ' + P + '도 만족스러웠어요', '처음 가시면 상담부터 받아보세요'].join('\n'); },
+    function(brand, w, P){ return [brand + ' 여기 한번 가보세요', '저도 두 번 갔는데 ' + josa(w,'이','가') + ' 편했어요', P + ' 쪽으로 봐주셔서 좋았고요'].join('\n'); },
+    function(brand, w, P){ return ['저라면 ' + brand + ' 쪽으로 알아볼 것 같아요', w + ' 챙겨주시고 ' + P + '도 괜찮았어요', '가는 길에 전화해보시면 대기 있는지 알려주세요'].join('\n'); }
+  ];
+  const C1_Q_PRODUCT = [
+    function(brand, w, P){ return ['저는 ' + brand + ' 쓰고 있는데 ' + josa(w,'이','가') + ' 편해요', P + '도 괜찮고요', '한 달 써보고 만족해서 계속 쓰고 있어요'].join('\n'); },
+    function(brand, w, P){ return [brand + ' 걸로 바꿨는데', w + ' 할 만하고요', P + ' 하나는 확실히 좋더라고요'].join('\n'); },
+    function(brand, w, P){ return ['저희 집은 ' + brand + ' 써요', '처음엔 반신반의했는데 ' + w + ' 때문에 바꾸길 잘했어요', P + '도 생각보다 괜찮고요'].join('\n'); },
+    function(brand, w, P){ return [brand + ' 여기 한번 보세요', '저는 ' + w + ' 보고 정했는데 후회 없어요', P + ' 쪽도 마음에 들었어요'].join('\n'); }
+  ];
+  const C2_Q = [
+    ['오 그런 데가 있었네요', '한번 알아봐야겠어요 고맙습니다~'],
+    ['정보 감사합니다ㅠㅠ', '주말에 한번 가볼게요'],
+    ['네 덕분에 정했습니다', '자세히 알려주셔서 고마워요'],
+    ['아 그래요??', '저도 그렇게 해볼게요 감사해요']
+  ];
+
+  const R_BODIES = [
+    function(ang, w, laugh){
+      return [ang,
+        josa(w[0],'이','가') + ' 계속 신경 쓰여서 다른 건 아예 못 봤어요',
+        '',
+        '이번에 제대로 알아보고 정했는데 생각보다 오래 걸렸어요',
+        josa(w[1 % w.length],'이','가') + ' 생각보다 괜찮더라고요' + laugh,
+        '첫날엔 몰랐는데 며칠 지나니까 확실히 알겠더라고요',
+        '오늘 찍어둔 것 보니까 차이가 그대로 보이네요',
+        '며칠 지나도 처음 느낌 그대로예요',
+        '가족들도 다 만족하고 있어요',
+        '',
+        '아쉬운 건 ' + josa(w[2 % w.length],'이','가') + ' 살짝 그래서 그건 좀 더 지켜봐야겠고요',
+        '다음에 또 갈 것 같아요'];
+    },
+    function(ang, w, laugh){
+      return [ang,
+        '그때마다 대충 넘겼는데',
+        josa(w[2 % w.length],'이','가') + ' 계속 신경 쓰이더라고요',
+        '',
+        '그래서 이번엔 다르게 해봤어요',
+        josa(w[0],'이','가') + ' 이렇게 차이 날 줄은 몰랐어요' + laugh,
+        '일주일 써보고 두 번째로 확인했는데도 그대로였어요',
+        '전에는 몰랐던 부분이 하나씩 보이네요',
+        '설명 들어보니까 왜 그런지도 알겠더라고요',
+        '며칠 지나도 처음 느낌 그대로예요',
+        '',
+        '집에서 계속 쓰게 될 것 같아요'];
+    },
+    function(ang, w, laugh){
+      return [ang,
+        '',
+        '전에는 그냥 되는대로 했어요',
+        w[0] + '만 봐도 늘 애매했거든요',
+        '',
+        '이번엔 세 번째로 바꿔본 건데 이번엔 좀 달랐어요',
+        josa(w[1 % w.length],'이','가') + ' 확실히 다르더라고요' + laugh,
+        '오늘 찍어둔 것 보니까 차이가 보이네요',
+        '며칠 지나도 처음 느낌 그대로예요',
+        '',
+        josa(w[2 % w.length],'은','는') + ' 아직 좀 그렇고요',
+        '이번엔 오래 쓸 것 같아요'];
+    },
+    function(ang, w, laugh){
+      return [ang,
+        josa(w[3 % w.length],'이','가') + ' 제일 불편해서 그것부터 봤어요',
+        '알아보는 데만 한 달 걸렸어요',
+        '',
+        '결국 직접 확인해보고 정했는데',
+        '실제로 써보니까 이유가 있더라고요' + laugh,
+        '가족들도 다 만족하고 있어요',
+        '아이도 그렇고 저도 그렇고 훨씬 편해졌어요',
+        '전에는 몰랐던 부분이 하나씩 보이네요',
+        '',
+        '다음에 또 할 것 같아요'];
+    }
+  ];
+  const C1_R_PLACE = [
+    '어디서 하셨어요?? 저도 알아보는 중이에요',
+    '여기 어디예요? 저도 같은 고민이라ㅠㅠ',
+    '궁금한데 어디신지 여쭤봐도 될까요'
+  ];
+  const C1_R_PRODUCT = [
+    '이거 혹시 어디 제품인지 알 수 있을까요?',
+    '저도 같은 고민이라ㅠㅠ 정보 좀 주실 수 있나요',
+    '어디서 사셨어요?? 저도 알아보는 중이에요'
+  ];
+  const C2_R_PLACE = [
+    function(brand, w, P){ return ['네 ' + brand + ' 여기예요', josa(w,'이','가') + ' 편하고 ' + P + '도 괜찮아요'].join('\n'); },
+    function(brand, w, P){ return [brand + ' 여기예요ㅎㅎ', '제일 만족한 건 ' + w + ' 부분이에요'].join('\n'); }
+  ];
+  const C2_R_PRODUCT = [
+    function(brand, w, P){ return ['네 ' + brand + ' 거예요', josa(w,'이','가') + ' 편하고 ' + P + '도 괜찮아요'].join('\n'); },
+    function(brand, w, P){ return [brand + ' 제품이에요ㅎㅎ', '제일 만족한 건 ' + w + ' 부분이에요'].join('\n'); }
+  ];
 
   function localGenerate(q, r){
     const g = guideFields();
     const brand = g.brand || '해당 업체';
-    const ind = detectIndustry(g);
+    const ind = industryOf(g);
+    const kind = IND_KIND[ind.name] || 'product';
+    const topic = TOPIC[ind.name] || '제품';
     const pts = splitPoints(g.merits);
-    const P = i => pts[i] || ind.points[i] || ind.points[0];
-    const M = meritList(pts.length ? pts : ind.points);
-    const item = ind.item;
+    const P = function(i){ return pointPhrase(pts[i % Math.max(1, pts.length)] || ind.words[i % ind.words.length]); };
     const out = [];
+
     for(let i=0;i<q;i++){
-      const s = ind.situations[i % ind.situations.length];
-      const w = WORRIES[i % WORRIES.length];
-      const chk = CHECKS[i % CHECKS.length];
-      const v = i % 3;
-      if(v === 0){
-        out.push({
-          type:'질의형',
-          title: item + ' 고르는 게 늘 어려워요ㅠ',
-          body: [
-            s,
-            '그래서 ' + josa(item, '을', '를') + ' 하나 제대로 준비해두려고 하는데',
-            w,
-            '검색해보면 다 좋다고만 하고 실제로 써본 얘기는 잘 없더라고요',
-            chk + ' 위주로 보면 될까요? 다들 어떻게 고르세요?'
-          ].join('\n'),
-          comment1: '저는 ' + brand + ' 이용해봤는데 ' + pointPhrase(P(0)) + '이 좋아서 만족했어요~',
-          reply: '오 그런 곳이 있었네요ㅠ 저도 한번 알아봐야겠어요'
-        });
-      }else if(v === 1){
-        out.push({
-          type:'질의형',
-          title: item + ' 처음 알아보는데 추천 부탁드려요',
-          body: [
-            s,
-            '이번에 ' + josa(item, '을', '를') + ' 새로 알아보고 있는데',
-            w,
-            '이것저것 비교해보니 ' + chk + '도 은근히 중요하더라고요',
-            '혹시 실제로 써보신 분 계시면 어떤 게 좋았는지 알려주실 수 있을까요?'
-          ].join('\n'),
-          comment1: '저는 ' + brand + ' 제품 쓰고 있는데 ' + pointPhrase(P(0)) + '이 특히 괜찮았어요ㅎㅎ',
-          reply: '그렇군요ㅠ 저도 한번 비교해봐야겠어요'
-        });
-      }else{
-        out.push({
-          type:'질의형',
-          title: item + ' 하나 잘못 골라서 후회했어요',
-          body: [
-            '얼마 전에 급하게 ' + josa(item, '을', '를') + ' 골랐다가 크게 후회했어요',
-            w,
-            '알고 보니 생각했던 것과 너무 달라서 다시 알아보는 중이에요',
-            '이번엔 제대로 비교해보고 정하려고 하는데',
-            chk + ' 이 정도면 봐야 할까요? 다들 어떻게 고르세요?'
-          ].join('\n'),
-          comment1: '저는 ' + brand + ' 쪽으로 바꾸고 나서 만족해서 쓰고 있어요~',
-          reply: '아 그런 방법이 있었네요ㅠ 저도 그렇게 해볼게요'
-        });
-      }
+      const p = personaFor(i * 5 + 1);
+      const ang = pickFrom(ind.angles, i);
+      const c1pool = kind === 'product' ? C1_Q_PRODUCT : C1_Q_PLACE;
+      out.push({
+        type: '질의형',
+        title: Q_TITLES[i % Q_TITLES.length](topic),
+        body: Q_BODIES[i % Q_BODIES.length](ang, ind.words).join('\n'),
+        comment1: c1pool[i % c1pool.length](brand, ind.words[i % ind.words.length], P(i)),
+        reply: C2_Q[i % C2_Q.length].join('\n'),
+        persona: p.k
+      });
     }
+
     for(let i=0;i<r;i++){
-      const s = ind.situations[(i+1) % ind.situations.length];
-      const w = WORRIES[(i+1) % WORRIES.length];
-      const v = i % 2;
-      if(v === 0){
-        out.push({
-          type:'후기형',
-          title: item + ' 바꾸고 나서 달라진 점이 있어요',
-          body: [
-            s,
-            '그동안은 ' + w,
-            '이번에 ' + josa(brand, '을', '를') + ' 이용해보게 됐어요',
-            '특히 ' + M + ' 같은 점이 좋았어요',
-            '요즘은 매일 쓰고 있어요',
-            '한두 달 써보니 ' + ind.gain + ' 확실히 편해졌어요',
-            '주변에도 괜찮다고 말하고 다니는 중이에요'
-          ].join('\n'),
-          comment1: item + ' 후기 잘 봤어요~ 혹시 ' + brand + ' 쪽이에요? 저도 알아보고 있었거든요',
-          reply: '네 ' + copula(brand) + 'ㅎㅎ ' + pointPhrase(P(0)) + '이 제일 만족스러워요'
-        });
-      }else{
-        out.push({
-          type:'후기형',
-          title: '고민하던 ' + josa(item, '을', '를') + ' 이번에 정했어요',
-          body: [
-            s,
-            '원래는 ' + w,
-            josa(brand, '을', '를') + ' 써보고 생각이 좀 달라졌어요',
-            '특히 ' + M + ' 같은 점이 좋았어요',
-            '이제는 자연스럽게 이용하게 됐어요',
-            '같은 걸 고민하시는 분들께도 권하고 싶어요'
-          ].join('\n'),
-          comment1: item + ' 어떤 건지 궁금했는데~ ' + brand + ' 제품인가요?',
-          reply: '네 ' + brand + ' 거예요ㅎㅎ ' + pointPhrase(P(0)) + '이 좋더라고요'
-        });
-      }
+      const p = personaFor(i * 5 + 2);
+      const ang = pickFrom(ind.angles, i + 2);
+      const laugh = p.k === '담백투' ? '' : (p.k === '수다투' ? 'ㅎㅎ' : 'ㅋㅋ');
+      const c1pool = kind === 'product' ? C1_R_PRODUCT : C1_R_PLACE;
+      const c2pool = kind === 'product' ? C2_R_PRODUCT : C2_R_PLACE;
+      out.push({
+        type: '후기형',
+        title: R_TITLES[i % R_TITLES.length](topic),
+        body: R_BODIES[i % R_BODIES.length](ang, ind.words, laugh).join('\n'),
+        comment1: c1pool[i % c1pool.length],
+        reply: c2pool[i % c2pool.length](brand, ind.words[i % ind.words.length], P(i)),
+        persona: p.k
+      });
     }
-    return out;
+    return out.map(polishItem);
   }
 
   /* ================= 생성 실행 ================= */
@@ -1248,32 +1642,45 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
         localStorage.setItem(LS.model + state.engine, $('#fModel').value);
         if(prevKey !== key) localStorage.removeItem(LS.conn + state.engine);
         const model = $('#fModel').value;
-        const system = buildSystemPrompt();
         const plan = interleave(q, r);
         const batches = chunkPlan(plan, 4);
         let done = 0;
+        let offset = 0;
         for(let bi=0;bi<batches.length;bi++){
           const batchPlan = batches[bi];
+          const assign = buildAssignments(batchPlan, offset);
+          const system = buildSystemPrompt(assign);
           setProgress(Math.round((bi / batches.length) * 90) + 5,
             (bi+1) + '/' + batches.length + ' 배치 생성 중 · ' + done + '/' + total + '건 완료');
-          const user = buildUserPrompt(batchPlan);
-          let raw = '';
-          let lastErr = null;
-          for(let attempt=0; attempt<2; attempt++){
-            try{
-              raw = state.engine === 'openai'
-                ? await callOpenAI(key, model, system, user)
-                : await callGemini(key, model, system, user);
-              lastErr = null;
-              break;
-            }catch(e){
-              lastErr = e;
-              if(attempt === 0) await new Promise(res => setTimeout(res, 1600));
+          let user = buildUserPrompt(assign);
+          let got = [];
+          for(let round=0; round<2; round++){
+            let raw = '';
+            let lastErr = null;
+            for(let attempt=0; attempt<2; attempt++){
+              try{
+                raw = state.engine === 'openai'
+                  ? await callOpenAI(key, model, system, user)
+                  : await callGemini(key, model, system, user);
+                lastErr = null;
+                break;
+              }catch(e){
+                lastErr = e;
+                if(attempt === 0) await new Promise(res => setTimeout(res, 1600));
+              }
             }
+            if(lastErr) throw lastErr;
+            got = parseJsonLoose(raw).map(polishItem);
+            const avg = got.length ? got.reduce((s, it) => s + it.ai.score, 0) / got.length : 0;
+            if(avg >= 62 || round === 1 || got.length === 0) break;
+            // 사람티 점수가 낮으면 지적된 부분을 알려주고 한 번만 다시 쓴다
+            const worst = [];
+            got.forEach(it => it.ai.hits.forEach(h => { if(worst.indexOf(h) < 0) worst.push(h); }));
+            user = buildUserPrompt(assign) + ' 직전 초안이 광고 글처럼 읽혔다. 지적된 것: ' + worst.slice(0, 8).join(', ') + '. 이 표현과 구조 없이, 상황부터 다시 쓴다.';
+            setProgress(Math.round((bi / batches.length) * 90) + 5, (bi+1) + '번째 배치 다시 쓰는 중 · AI티 점검');
           }
-          if(lastErr) throw lastErr;
-          const got = parseJsonLoose(raw);
           items = items.concat(got);
+          offset += batchPlan.length;
           done += got.length;
           setProgress(Math.round(((bi+1) / batches.length) * 90) + 5, (bi+1) + '/' + batches.length + ' 배치 완료 · ' + items.length + '건');
         }
@@ -1293,8 +1700,11 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       setProgress(100, state.items.length + '건 생성 완료');
       toast(state.items.length + '건 생성 완료');
 
+      const avgScore = state.items.length ? Math.round(state.items.reduce((s, it) => s + ((it.ai && it.ai.score) || 0), 0) / state.items.length) : 0;
       if(state.engine === 'local'){
-        $('#engineNote').innerHTML = '초안 ' + state.items.length + '건을 만들었어요. 문장이 비슷한 틀이 보이면 <b>AI 생성</b>이나 <b>요청문 복사</b>로 다듬는 걸 권합니다.';
+        $('#engineNote').innerHTML = '실제 작가 원고 톤으로 초안 ' + state.items.length + '건을 만들었어요(사람티 평균 <b>' + avgScore + '</b>). 금지 표현·이모지·상호명 노출은 자동으로 걸러냈습니다. 문장이 겹쳐 보이면 <b>ChatGPT 생성</b>으로 다듬어 주세요.';
+      }else{
+        $('#engineNote').innerHTML = '실제 작가 원고 9,264건에서 뽑은 문체·호흡으로 ' + state.items.length + '건을 썼습니다. 사람티 평균 <b>' + avgScore + '</b> · 금지 표현과 상호명 위치는 생성 직후 자동 점검·정제했습니다.';
       }
     }catch(e){
       setStatus('#genStatus', '실패', 'err');
@@ -1348,6 +1758,20 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     return {title:'제목', body:'내용', comment1:'댓글1', reply:'대댓글', all:'전체 세트'}[f] || f;
   }
 
+  function aiLevel(s){
+    if(s >= 85) return 'good';
+    if(s >= 65) return 'mid';
+    return 'bad';
+  }
+  function aiBadge(it){
+    if(!it || !it.ai) return '';
+    const s = it.ai.score;
+    const lv = aiLevel(s);
+    const tip = it.ai.hits.length ? it.ai.hits.join(' / ') : '금지 표현 없음';
+    const label = lv === 'good' ? '사람티 ' + s : (lv === 'mid' ? '주의 ' + s : 'AI티 ' + s);
+    return '<br><span class="aiflag ' + lv + '" title="' + esc(tip) + '">' + label + '</span>';
+  }
+
   function renderItems(){
     const body = $('#resBody');
     const empty = $('#emptyBox');
@@ -1363,7 +1787,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       const t = it.type === '후기형' ? 'r' : 'q';
       return '<tr>' +
         '<td class="nocell" data-label="No"><span class="no">' + esc(it.no) + '</span>' +
-          (it.dup ? '<span class="flag">중복?</span>' : '') + '</td>' +
+          (it.dup ? '<span class="flag">중복?</span>' : '') + aiBadge(it) + '</td>' +
         '<td class="dates" data-label="작성 일자">' + esc(it.date || '') + '</td>' +
         '<td data-label="성향"><span class="type ' + t + '">' + esc(it.type) + '</span></td>' +
         '<td class="cell" data-label="제목"><div class="txt" style="font-weight:700">' + esc(it.title) + '</div>' +
@@ -1384,7 +1808,11 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     const q = state.items.filter(i => i.type === '질의형').length;
     const r = state.items.filter(i => i.type === '후기형').length;
     const dup = state.items.filter(i => i.dup).length;
-    $('#sumChip').innerHTML = '<b>' + state.items.length + '건</b> · 질의 ' + q + ' · 후기 ' + r + (dup ? ' · 중복 의심 ' + dup : '');
+    const scored = state.items.filter(i => i.ai);
+    const avg = scored.length ? Math.round(scored.reduce((s, i) => s + i.ai.score, 0) / scored.length) : null;
+    const warn = state.items.filter(i => i.ai && i.ai.score < 65).length;
+    $('#sumChip').innerHTML = '<b>' + state.items.length + '건</b> · 질의 ' + q + ' · 후기 ' + r + (dup ? ' · 중복 의심 ' + dup : '') +
+      (avg != null ? ' · 사람티 <b>' + avg + '</b>' + (warn ? ' · AI티 의심 ' + warn : '') : '');
   }
 
   $('#resBody').addEventListener('click', e => {
