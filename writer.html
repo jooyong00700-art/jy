@@ -1556,17 +1556,18 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     checkDuplicates();
     renderItems();
     const prevBrand = $('#fBrand').value.trim();
-    if(p.brand) $('#fBrand').value = p.brand;
-    if(p.productUrl) $('#fUrl').value = p.productUrl;
+    $('#fBrand').value = p.brand || '';
+    $('#fUrl').value = p.productUrl || '';
     if(local){
       if(p.concept !== undefined) $('#fConcept').value = p.concept || '';
       if(p.merits !== undefined) $('#fMerits').value = p.merits || '';
       if(p.notes !== undefined) $('#fNotes').value = p.notes || '';
       if(p.guide !== undefined) $('#fGuide').value = p.guide || '';
-      if(p.photo) $('#fPhoto').value = p.photo;
+      $('#fPhoto').value = p.photo || '';
     }else if(p.brand && prevBrand && p.brand !== prevBrand){
       // 공유 원고는 가이드 본문을 담고 있지 않다 → 다른 업체의 가이드가 섞이지 않도록 비운다
       ['#fMerits','#fNotes','#fGuide','#fConcept'].forEach(s => { const el = $(s); if(el) el.value = ''; });
+      $('#fPhoto').value = '';
     }
     updateGuideSummary();
     $('#sharedMeta').textContent = (local ? '내 원고 · ' : '공유 프로젝트 · ') + p.name +
