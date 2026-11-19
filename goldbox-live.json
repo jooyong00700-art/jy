@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-19 23:10",
+  "updatedAt": "2026-11-19 23:35",
   "date": "2026-11-19",
   "source": "https://www.coupang.com/np/goldbox",
   "filter": "ROCKET_MERCHANT (판매자로켓 전용)",
@@ -111,11 +111,11 @@
       "discount": 36,
       "thumb": "https://thumbnail.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/4995/5897dc0a31e9532e0387dc4a5e5a3efeb85aa01b337adc296fba2a7d7d55.jpg",
       "url": "https://www.coupang.com/vp/products/9749503627?itemId=29192129895&vendorItemId=96115771471",
-      "cny": null,
-      "krw": null,
-      "url1688": "",
-      "match": "",
-      "collectedAt": "11/19 22:10"
+      "cny": 138,
+      "krw": 41400,
+      "url1688": "https://detail.1688.com/offer/1005367668447.html",
+      "match": "316스텐 내통 가열식 가습기 (유사·중국 내수형)",
+      "collectedAt": "11/19 23:30"
     },
     {
       "productId": "9352538793",
