@@ -1018,7 +1018,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       words:['증상','진료','상담','예약','대기','설명','치료','경과','재진'],
       angles:['증상이 오래돼서 미루다 온 가족이 걱정한 날','아이가 아파서 밤에 잠을 못 잔 다음 날','부모님 모시고 검진을 받아야 했던 날','다른 곳에서 설명을 못 들어 답답했던 적'],
       wants:['증상과 경과','설명·대기 같은 진료 경험','어디인지']},
-    { name:'뷰티·피부관리·네일·헤어', re:/뷰티|피부관리|에스테틱|관리샵|네일|헤어|미용|속눈썹|눈썹|왁싱|제모|반영구|마사지|스파|체형관리|화장품|스킨|로션|앰플|세럼|토너|클렌저|선크림|향수|메이크업|파운데이션|쿠션|마스크팩|샴푸|바디/,
+    { name:'뷰티·피부관리·네일·헤어', re:/뷰티|피부관리|에스테틱|관리샵|네일|헤어|미용|속눈썹|눈썹|왁싱|제모|반영구|마사지|스파|체형관리|화장품|스킨|로션|앰플|세럼|토너|클렌저|선크림|향수|메이크업|파운데이션|쿠션팩트|마스크팩|샴푸|바디/,
       focus:['피부·모발 상태가 어땠는지','관리 받는 동안의 자극·불편함','받고 나서 당일과 며칠 뒤의 차이'],
       words:['모공','각질','홍조','결','당김','자극','압출','관리','시술','재방문'],
       angles:['환절기라 코 주변이 뒤집어진 요즘','중요한 약속을 앞두고 피부가 안 좋아진 날','아이 낳고 나서 피부가 달라진 느낌','샴푸할 때마다 두피가 가려운 요즘'],
@@ -1038,7 +1038,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       words:['설치','소리','크기','무게','전기','필터','청소','자리','수납'],
       angles:['빨래가 밀려서 주말이 없어진 날','집 안 냄새 때문에 창문을 계속 열어둔 요즘','아이 물건이 늘어서 수납이 버티지 못한 날','매번 손으로 하던 일이 하루 세 번씩 생긴 때'],
       wants:['전후 차이','설치·소리 같은 조건','제품 이름']},
-    { name:'패션·잡화', re:/옷|의류|패션|원피스|바지|코트|니트|셔츠|신발|운동화|가방|백팩|크로스백|토트|지갑|파우치|캐리어|액세서리|주얼리|안경|모자|양말|속옷/,
+    { name:'패션·잡화', re:/옷|의류|패션|원피스|바지|코트|니트|셔츠|신발|운동화|스니커즈|슬리퍼|부츠|샌들|가방|백팩|크로스백|토트|지갑|파우치|캐리어|액세서리|주얼리|안경|모자|양말|속옷/,
       focus:['어떤 상황에 입고 나갔는지','재질·핏·무게 같은 실착 느낌','하루 입고 다닌 뒤의 상태'],
       words:['핏','재질','무게','수납','안감','어깨','허리','세탁'],
       angles:['출근복이 마땅치 않아 매일 같은 옷을 입던 요즘','아이 물건까지 챙기다 가방이 터질 것 같던 날','여행 앞두고 짐이 자꾸 늘어난 때','계절이 바뀌어 옷장을 정리한 주말'],
@@ -1155,7 +1155,9 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       const n = m ? m.length : 0;
       if(n > bestN){ best = s; bestN = n; }
     }
-    return best || IND_GENERIC_STYLE;
+    // 낱말 하나만 스쳐 걸린 경우(예: '쿠션감' 때문에 뷰티로 잡히는 것)는 업종을 단정하지 않는다.
+    // 엉뚱한 업종의 단어가 원고에 섞이는 걸 막기 위해 두 번 이상 걸린 업종만 인정한다.
+    return (best && bestN >= 2) ? best : IND_GENERIC_STYLE;
   }
   function personaFor(seed){
     return PERSONAS[Math.abs(seed) % PERSONAS.length];
@@ -2530,7 +2532,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
   if(/[?&]debug=1/.test(location.search)){
     window.writerDebug = {
       aiReport: aiReport, polishItem: polishItem, polishText: polishText,
-      buildSystemPrompt: buildSystemPrompt, buildAssignments: buildAssignments,
+      buildSystemPrompt: buildSystemPrompt, buildUserPrompt: buildUserPrompt, buildRequestText: buildRequestText, buildAssignments: buildAssignments,
       industryOf: industryOf, setType: setType, conceptDefault: conceptDefault,
       conceptParts: conceptParts, conceptValue: conceptValue, conceptRules: conceptRules,
       guideFields: guideFields, localGenerate: localGenerate, state: state
