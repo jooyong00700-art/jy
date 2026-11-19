@@ -6,6 +6,9 @@
 <meta name="theme-color" content="#0f1a30">
 <meta name="color-scheme" content="light">
 <meta name="robots" content="noindex,nofollow">
+<!-- 쿠팡 403(요청하신 페이지의 사용권한이 없습니다) 우회: 이 문서에서 나가는 요청은 리퍼러를 보내지 않습니다.
+     htmlpreview.github.io 같은 미리보기 주소가 Referer로 넘어가면 쿠팡 Akamai WAF가 차단합니다. -->
+<meta name="referrer" content="no-referrer">
 <title>쿠팡 로켓그로스 소싱시트 · 실시간</title>
 <style>
 :root{
@@ -607,6 +610,84 @@ function num(s){
 }
 function txt(s){ return String(s == null ? "" : s).trim(); }
 
+/* ============================================================
+   쿠팡 상품 링크 — 모바일/PC 분기 + 리퍼러 완전 제거
+   - htmlpreview.github.io 미리보기에서 열면 Referer가 쿠팡 Akamai WAF에
+     걸려 "요청하신 페이지의 사용권한이 없습니다"(403)가 뜬다.
+     → 문서(<meta name="referrer">) + 링크(rel/referrerpolicy) 양쪽에서 차단
+   - 모바일에서는 www.coupang.com 대신 m.coupang.com 으로 연다(앱/웹 전환 자연스러움)
+   - URL 파라미터는 productId·vendorItemId 만 남긴다
+   ============================================================ */
+var CP_MOBILE_MAX = 768;
+function isMobileView(){
+  var ua = "";
+  try{ ua = navigator.userAgent || ""; }catch(e){}
+  if(/Android|iPhone|iPad|iPod|Mobile|SamsungBrowser|Opera Mini|IEMobile/i.test(ua)) return true;
+  try{
+    if(window.matchMedia && window.matchMedia("(max-width: " + CP_MOBILE_MAX + "px)").matches) return true;
+  }catch(e){}
+  return (window.innerWidth || document.documentElement.clientWidth || 9999) <= CP_MOBILE_MAX;
+}
+/* URL·pid·vid → {pid, vid} (없는 값은 "") */
+function cpIds(url, pid, vid){
+  var out = { pid: txt(pid), vid: txt(vid) };
+  var u = txt(url);
+  if(!out.pid){
+    var m = u.match(/\/(?:vp|vm)\/products\/(\d+)/) || u.match(/[?&](?:productId|product_id)=(\d+)/i);
+    if(m) out.pid = m[1];
+  }
+  if(!out.vid){
+    var v = u.match(/[?&]vendorItemId=(\d+)/i);
+    if(v) out.vid = v[1];
+  }
+  if(!/^\d+$/.test(out.pid)) out.pid = "";
+  if(!/^\d+$/.test(out.vid)) out.vid = "";
+  return out;
+}
+/* 쿠팡 상품 URL (모바일이면 m.coupang.com) */
+function cpUrl(pid, vid, rawUrl){
+  var ids = cpIds(rawUrl, pid, vid);
+  if(!ids.pid) return txt(rawUrl);            /* productId 없는 예외 링크는 원본 유지 */
+  var q = ids.vid ? "?vendorItemId=" + encodeURIComponent(ids.vid) : "";
+  return (isMobileView()
+    ? "https://m.coupang.com/vm/products/"
+    : "https://www.coupang.com/vp/products/") + ids.pid + q;
+}
+/* <a> 속성 문자열: 리퍼러 차단 + 새 탭 + 클릭 시점 재계산용 data 속성 */
+function cpAttrs(pid, vid, rawUrl){
+  var ids = cpIds(rawUrl, pid, vid);
+  return ' href="' + esc(cpUrl(ids.pid, ids.vid, rawUrl)) + '"' +
+    ' target="_blank" rel="noreferrer noopener" referrerpolicy="no-referrer"' +
+    ' data-cp-pid="' + esc(ids.pid) + '" data-cp-vid="' + esc(ids.vid) + '"' +
+    (ids.pid ? ' data-cp-link="1"' : "");
+}
+/* 링크 클릭 시점 처리
+   1) 클릭 순간의 화면(모바일/PC)으로 URL 재계산
+   2) 빈 탭(about:blank)을 먼저 열고 그 탭을 쿠팡으로 이동
+      → 주소창에 직접 입력한 것과 같은 요청이 되어 Referer·Sec-Fetch-Site 같은
+        "다른 사이트에서 넘어왔다"는 표시가 남지 않는다(403 차단의 실제 원인)
+   3) 빈 탭이 막히면(팝업 차단) 원래 링크 그대로 이동 — rel↔referrerpolicy로 리퍼러 없음 */
+document.addEventListener("click", function(e){
+  var t = e.target;
+  var a = (t && t.closest) ? t.closest("a[data-cp-link]") : null;
+  if(!a) return;
+  var url = cpUrl(a.getAttribute("data-cp-pid"), a.getAttribute("data-cp-vid"), "");
+  if(!url) return;
+  a.setAttribute("href", url);
+  a.setAttribute("rel", "noreferrer noopener");
+  a.setAttribute("referrerpolicy", "no-referrer");
+  /* 새 탭으로 열기(오른쪽 버튼·Ctrl/⌘/Shift 클릭)는 브라우저 기본 동작에 맡긴다 */
+  if(e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  try{
+    var w = window.open("about:blank", "_blank");
+    if(!w) return;
+    e.preventDefault();
+    try{ w.opener = null; }catch(err){}
+    try{ w.location.replace(url); }
+    catch(err){ w.location.href = url; }
+  }catch(err){ /* 실패하면 href 기본 이동 */ }
+}, true);
+
 /* 월 구매수·리뷰수 파싱
    "1,000명 이상" → 1000 · "2,000명+" → 2000 · "800명+" → 800
    "1천명+" → 1000 · "1.2천" → 1200 · "1만" → 10000 · "1.5만명" → 15000 */
@@ -653,7 +734,7 @@ function toRows(csvText){
     var url = get(cells, "url");
     var pid = get(cells, "pid"), vid = get(cells, "vid");
     if(!/^https?:\/\//i.test(url)){
-      if(pid) url = "https://www.coupang.com/vp/products/" + encodeURIComponent(pid) + (vid ? "?vendorItemId=" + encodeURIComponent(vid) : "");
+      if(pid) url = cpUrl(pid, vid, "");
       else url = "";
     }
     var idx = num(get(cells, "idx"));
@@ -678,6 +759,7 @@ function toRows(csvText){
       url1688: get(cells, "url1688"),
       checked: get(cells, "checked"),
       pid: get(cells, "pid"),
+      vid: get(cells, "vid"),
       key: get(cells, "pid") || get(cells, "vid") || url || get(cells, "name")
     };
   }).filter(function(r){ return r.name || r.idx; });
@@ -821,9 +903,11 @@ function gbNorm(o){
   var cny = gbNum(o.cny); if(cny === null) cny = gbNum(o.cny1688);
   var krw = gbNum(o.krw); if(krw === null) krw = gbNum(o.krw1688);
   if(krw === null && cny !== null) krw = Math.round(cny * 300);
+  var pid = txt(o.productId || o.pid);
   var url = txt(o.url || o.productUrl);
-  if(!url && o.productId) url = "https://www.coupang.com/vp/products/" + encodeURIComponent(o.productId);
+  if(!url && pid) url = cpUrl(pid, "", "");
   return {
+    pid: pid,
     name: txt(o.name || o.title),
     price: gbNum(o.price),
     orig: gbNum(o.orig || o.origPrice || o.listPrice),
@@ -879,8 +963,8 @@ function gbCardHTML(it){
     ? '<div class="cny null">1688 원가 조사 전</div>'
     : '<div class="cny">¥' + (it.cny != null ? fmtCny(it.cny) : "–") +
       (it.krw != null ? '<span class="won"> · ' + nf.format(Math.round(it.krw)) + "원</span>" : "") + "</div>";
-  var btns = (it.url ? '<a class="gb-btn" href="' + esc(it.url) + '" target="_blank" rel="noopener noreferrer">쿠팡 ↗</a>' : "") +
-             (it.url1688 ? '<a class="gb-btn g1688" href="' + esc(it.url1688) + '" target="_blank" rel="noopener noreferrer">1688 ↗</a>' : "");
+  var btns = (it.url ? '<a class="gb-btn"' + cpAttrs(it.pid, "", it.url) + '>쿠팡 ↗</a>' : "") +
+             (it.url1688 ? '<a class="gb-btn g1688" href="' + esc(it.url1688) + '" target="_blank" rel="noreferrer noopener" referrerpolicy="no-referrer">1688 ↗</a>' : "");
   if(!btns) btns = '<span class="gb-btn off">링크 없음</span>';
   var tm = it.time ? '<div class="tm">' + esc(it.time) + "</div>" : "";
   return '<article class="gb-card">' + thumb +
@@ -1143,10 +1227,10 @@ function rowHTML(r){
     ? '<div class="i-date" title="확인 ' + esc(r.checked) + '">' + esc(ck.d) + (ck.t ? '<span class="tm">' + esc(ck.t) + "</span>" : "") + "</div>"
     : "";
   var btn = r.url
-    ? '<a class="btn-go" href="' + esc(r.url) + '" target="_blank" rel="noopener noreferrer">쿠팡 ↗</a>'
+    ? '<a class="btn-go"' + cpAttrs(r.pid, r.vid, r.url) + '>쿠팡 ↗</a>'
     : '<span class="btn-go off">링크없음</span>';
   btn += r.url1688
-    ? '<a class="btn-go btn-1688" href="' + esc(r.url1688) + '" target="_blank" rel="noopener noreferrer">1688 ↗</a>'
+    ? '<a class="btn-go btn-1688" href="' + esc(r.url1688) + '" target="_blank" rel="noreferrer noopener" referrerpolicy="no-referrer">1688 ↗</a>'
     : '<span class="btn-go btn-1688 off">1688</span>';
   btn += '<button class="btn-del" type="button" data-del="' + esc(r.key) + '" title="이 상품 목록에서 삭제" aria-label="삭제">🗑️</button>';
   var thumbHTML = r.thumb
