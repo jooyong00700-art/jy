@@ -367,7 +367,7 @@ footer a{color:var(--blue-ink); font-weight:700}
       try{ document.execCommand('copy'); }catch(_){}
       ta.remove();
     }
-    toast((label || '복사') + ' 완료');
+    toast((label || '내용') + ' 복사 완료');
   }
   function todayStr(){
     const d = new Date();
@@ -686,6 +686,8 @@ footer a{color:var(--blue-ink); font-weight:700}
       const q = +$('#fCountQ').value || 0, r = +$('#fCountR').value || 0;
       $('#fCount').value = q + r;
     }
+    $('#fCount').readOnly = mixed;
+    $('#fCount').style.background = mixed ? '#f5f7fb' : '';
   }
   function currentCounts(){
     if(state.type === '혼합'){
