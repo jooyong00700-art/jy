@@ -138,8 +138,8 @@ tr:hover .mini{opacity:1}
 #toast.on{opacity:1; transform:translateX(-50%) translateY(0)}
 
 footer{padding:22px 16px 8px; text-align:center; font-size:11.5px; color:var(--muted); line-height:1.8}
-footer a{color:var(--blue-ink); font-weight:700}
-
+footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:underline}
+.flink{background:none; border:0; padding:0; font-size:11.5px; cursor:pointer}
 @media (max-width:860px){
   .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .c3,.c4{grid-column:span 2}
@@ -170,8 +170,8 @@ footer a{color:var(--blue-ink); font-weight:700}
       <div>맘카페 원고 작성기<small>가이드 시트 → 원고 자동 작성·공유</small></div>
     </div>
     <div class="spacer"></div>
-    <a class="linkbtn" href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/jooyong00700-art/jy/main/index.html" target="_blank" rel="noopener">📊 통합 대시보드</a>
-    <a class="linkbtn" href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/jooyong00700-art/jy/main/sourcing.html" target="_blank" rel="noopener">📦 소싱시트</a>
+    <button class="linkbtn" id="navDash" type="button">📊 통합 대시보드</button>
+    <button class="linkbtn" id="navSrc" type="button">📦 소싱시트</button>
     <button class="linkbtn primary" id="btnSharedRefresh" type="button">↻ 공유 원고</button>
   </div>
 </header>
@@ -314,7 +314,7 @@ footer a{color:var(--blue-ink); font-weight:700}
 
   <footer>
     리스페토 · 맘카페 원고 작성기 · <span id="sharedMeta">공유 목록 확인 중</span><br>
-    공유 목록 파일: <a id="dataLink" href="https://raw.githubusercontent.com/jooyong00700-art/jy/main/manuscripts-data.json" target="_blank" rel="noopener">manuscripts-data.json</a>
+    공유 목록 파일: <button type="button" class="flink" id="dataLink">manuscripts-data.json</button>
   </footer>
 </main>
 
@@ -1342,6 +1342,10 @@ footer a{color:var(--blue-ink); font-weight:700}
   });
   $('#btnParsePaste').addEventListener('click', loadPaste);
   $('#btnSharedRefresh').addEventListener('click', () => loadShared(false));
+  const openPreview = file => window.open(PREVIEW + RAW + '/' + file, '_blank', 'noopener');
+  $('#navDash').addEventListener('click', () => openPreview('index.html'));
+  $('#navSrc').addEventListener('click', () => openPreview('sourcing.html'));
+  $('#dataLink').addEventListener('click', () => window.open(DATA_URL, '_blank', 'noopener'));
   $('#projSelect').addEventListener('change', e => { if(e.target.value && e.target.value !== '__local') selectProject(e.target.value); });
 
   $$('#segType button').forEach(b => b.addEventListener('click', () => setType(b.dataset.type)));
