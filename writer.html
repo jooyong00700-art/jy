@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0f1a30">
 <meta name="color-scheme" content="light">
-<title>맘카페 원고 작성기 · 리스페토</title>
+<title>윙 원고 스튜디오</title>
 <style>
 :root{
   --navy:#0f1a30; --navy2:#18294a;
@@ -201,8 +201,8 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
 <!-- 로그인 -->
 <div id="gate">
   <form class="gatecard" id="loginForm" autocomplete="off" novalidate>
-    <div class="gatebrand"><span class="dot"></span> 리스페토 원고 스튜디오</div>
-    <p class="gatesub">맘카페 원고 작성기 · 내부용 화면입니다.<br>아이디와 비밀번호를 입력해 주세요.</p>
+    <div class="gatebrand"><span class="dot"></span> 윙 원고 스튜디오</div>
+    <p class="gatesub">맘카페 원고 작성 · 내부용 화면입니다.<br>아이디와 비밀번호를 입력해 주세요.</p>
     <label class="fld"><span>아이디</span><input id="loginId" type="text" inputmode="text" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="아이디"></label>
     <label class="fld"><span>비밀번호</span><input id="loginPw" type="password" autocomplete="current-password" placeholder="비밀번호"></label>
     <div class="gateerr" id="loginErr" role="alert" aria-live="assertive"></div>
@@ -216,7 +216,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
 <header class="top">
   <div class="wrap toprow">
     <div class="brand"><span class="dot"></span>
-      <div>맘카페 원고 작성기<small>가이드 시트 → 원고 자동 작성·공유</small></div>
+      <div>윙 원고 스튜디오<small>가이드 시트 → 원고 자동 작성·공유</small></div>
     </div>
     <div class="spacer"></div>
     <button class="linkbtn primary" id="btnSharedRefresh" type="button">↻ 공유 원고</button>
@@ -251,9 +251,9 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       </details>
 
       <div class="grid">
-        <label class="fld c2"><span>상호명</span><input id="fBrand" type="text" placeholder="예: 비어앳홈"></label>
+        <label class="fld c2"><span>상호명</span><input id="fBrand" type="text" placeholder="예: 브랜드명"></label>
         <label class="fld c2"><span>사진 첨부 여부</span>
-          <select id="fPhoto"><option>있음</option><option>없음</option></select>
+          <select id="fPhoto"><option value="">선택</option><option>있음</option><option>없음</option></select>
         </label>
         <label class="fld c2"><span>업체 관련 URL</span><input id="fUrl" type="text" placeholder="https://…"></label>
 
@@ -261,12 +261,13 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
         <label class="fld c2"><span>질문형 수량</span><input id="fQ" type="text" placeholder="예: 40 / 40"></label>
         <label class="fld c2"><span>후기형 수량</span><input id="fR" type="text" placeholder="예: 60 / 60"></label>
 
-        <label class="fld c6"><span>업체 특장점</span><textarea id="fMerits" rows="2" placeholder="예: 에어프라이어 조리, 기름 없이 바삭, 매콤해서 소스 없이 안 물림"></textarea></label>
+        <label class="fld c6"><span>업체 특장점</span><textarea id="fMerits" rows="2" placeholder="예: 가볍고 수납이 넉넉함, A4 서류가 들어감, 1년 AS"></textarea></label>
         <label class="fld c6"><span>특이사항</span><textarea id="fNotes" rows="2" placeholder="예: 30일 내외 발행, 링크는 댓글에 노출"></textarea></label>
+        <label class="fld c6"><span>🎯 업종 / 컨셉 · 프롬프트 지시사항</span><textarea id="fConcept" rows="3" placeholder="예) 이 업체는 가방 판매 업체고, 가방이 필요한데 어떤 제품이 좋을지 추천받는 컨셉으로 써줘. 일상 맘카페 말투로 자연스럽게 작성"></textarea></label>
         <label class="fld c6"><span>원고 작성 가이드 (본문)</span><textarea id="fGuide" rows="7" placeholder="원고에 들어갔으면 하는 내용을 그대로 붙여넣으세요."></textarea></label>
       </div>
 
-      <div class="hintline" id="guideSummary">가이드를 불러오면 상호명·URL·특장점·가이드 본문이 자동으로 채워집니다. 모든 칸은 직접 수정할 수 있어요.</div>
+      <div class="hintline" id="guideSummary">가이드를 불러오거나 직접 입력한 뒤 원고를 생성해 주세요. 🎯 업종 / 컨셉 프롬프트에 원하는 컨셉을 적으면 원고가 그 지시를 따릅니다.</div>
     </div>
   </section>
 
@@ -332,7 +333,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
 
       <div class="row" style="margin-top:14px">
         <button class="btn primary" id="btnGen" type="button">✍️ 원고 생성</button>
-        <button class="btn" id="btnRequest" type="button">📋 마쭈에게 보낼 요청문 복사</button>
+        <button class="btn" id="btnRequest" type="button">📋 요청문 복사</button>
         <button class="btn ghost" id="btnClear" type="button">목록 비우기</button>
       </div>
 
@@ -376,12 +377,12 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
         </thead>
         <tbody id="resBody"></tbody>
       </table>
-      <div class="empty" id="emptyBox">불러오는 중…</div>
+      <div class="empty" id="emptyBox">가이드를 불러오거나 입력한 뒤 원고를 생성해 주세요.</div>
     </div>
   </section>
 
   <footer>
-    리스페토 · 맘카페 원고 작성기 · <span id="sharedMeta">공유 목록 확인 중</span><br>
+    윙 원고 스튜디오 · <span id="sharedMeta">공유 목록 확인 중</span><br>
     공유 목록 파일: <button type="button" class="flink" id="dataLink">manuscripts-data.json</button>
   </footer>
 </main>
@@ -398,7 +399,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
   const RAW = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH;
   const DATA_URL = RAW + '/manuscripts-data.json';
   const SAMPLE_SHEET = '1xTTbhVDvJTJXrrFjX3xhSrI_ZkUDzbsygLb9toqdHX4';
-  const LS = { key: 'writer.apiKey.', model:'writer.model.', conn:'writer.conn.' };
+  const LS = { key: 'writer.apiKey.', model:'writer.model.', conn:'writer.conn.', projects:'writer.local.projects.v1' };
 
   const $ = s => document.querySelector(s);
   const $$ = s => Array.prototype.slice.call(document.querySelectorAll(s));
@@ -408,8 +409,10 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
   const state = {
     guide: {},
     existing: [],
+    existingFor: '',
     items: [],
     projects: [],
+    localProjects: [],
     projId: null,
     engine: 'openai',
     type: '질의형',
@@ -649,20 +652,30 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     return isNaN(n) ? null : {done:null, total:n};
   }
 
+  function learnedExisting(){
+    const brand = ($('#fBrand').value || '').trim();
+    if(!state.existing.length) return [];
+    // 다른 업체 가이드에서 학습한 원고가 섞이지 않도록 상호명이 바뀌면 제외
+    if(state.existingFor && brand && state.existingFor !== brand) return [];
+    return state.existing;
+  }
+
   function updateGuideSummary(){
     const brand = $('#fBrand').value.trim();
     const total = splitCount($('#fTotal').value);
     const q = splitCount($('#fQ').value);
     const r = splitCount($('#fR').value);
+    const ex = learnedExisting();
     const parts = [];
     if(brand) parts.push('상호명 <b>' + esc(brand) + '</b>');
     if(total) parts.push('총 ' + total.total + '건');
     if(q) parts.push('질문형 ' + (q.done != null ? q.done + '/' + q.total : q.total));
     if(r) parts.push('후기형 ' + (r.done != null ? r.done + '/' + r.total : r.total));
-    if(state.existing.length) parts.push('기존 원고 <b>' + state.existing.length + '건</b> 학습');
+    if($('#fConcept').value.trim()) parts.push('업종/컨셉 지시 <b>반영</b>');
+    if(ex.length) parts.push('기존 원고 <b>' + ex.length + '건</b> 학습');
     $('#guideSummary').innerHTML = parts.length
-      ? parts.join(' · ') + ' — 생성 시 이 가이드와 기존 원고 제목을 함께 참고해 중복을 피합니다.'
-      : '가이드를 불러오면 상호명·URL·특장점·가이드 본문이 자동으로 채워집니다. 모든 칸은 직접 수정할 수 있어요.';
+      ? parts.join(' · ') + ' — 생성 시 이 가이드와 컨셉 프롬프트를 우선 반영하고, 기존 원고는 말투만 참고합니다.'
+      : '가이드를 불러오거나 직접 입력한 뒤 원고를 생성해 주세요. 🎯 업종 / 컨셉 프롬프트에 원하는 컨셉을 적으면 원고가 그 지시를 따릅니다.';
   }
 
   async function loadGuide(){
@@ -693,6 +706,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       }
       if(ex.length){
         state.existing = ex;
+        state.existingFor = ($('#fBrand').value || '').trim();
         updateGuideSummary();
         checkDuplicates();
         setStatus('#guideStatus', '가이드 + 기존 ' + ex.length + '건', 'ok');
@@ -714,7 +728,10 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     const rows = detectTable(txt);
     const g = parseGuideTable(rows);
     if(!g.brand && !g.guide){ toast('가이드 형식을 찾지 못했어요'); return; }
+    state.existing = [];
+    state.existingFor = '';
     fillGuide(g);
+    state.existingFor = ($('#fBrand').value || '').trim();
     setStatus('#guideStatus', '붙여넣기로 불러옴', 'ok');
     toast('가이드를 채웠어요');
   }
@@ -730,7 +747,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     $$('#enginePick .eng').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.engine === eng)));
     if(eng === 'local'){
       $('#aiPanel').hidden = true;
-      $('#engineNote').innerHTML = '키 없이 <b>오프라인 초안</b>을 만듭니다. 문장 틀이 비슷해 보이면 <b>ChatGPT 생성</b>이나 <b>마쭈에게 요청</b>으로 다듬는 걸 권합니다.';
+      $('#engineNote').innerHTML = '키 없이 <b>오프라인 초안</b>을 만듭니다. 문장 틀이 비슷해 보이면 <b>ChatGPT 생성</b>이나 <b>요청문 복사</b>로 다듬는 걸 권합니다.';
       return;
     }
     $('#aiPanel').hidden = false;
@@ -851,51 +868,71 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       url: $('#fUrl').value.trim(),
       merits: $('#fMerits').value.trim(),
       notes: $('#fNotes').value.trim(),
-      guide: $('#fGuide').value.trim()
+      guide: $('#fGuide').value.trim(),
+      concept: $('#fConcept').value.trim()
     };
   }
   function pickExamples(){
-    const q = state.existing.filter(e => e.type.indexOf('질의') > -1 && e.body.length > 60).slice(-1)[0];
-    const r = state.existing.filter(e => e.type.indexOf('후기') > -1 && e.body.length > 60).slice(-1)[0];
+    const ex = learnedExisting();
+    const q = ex.filter(e => e.type.indexOf('질의') > -1 && e.body.length > 60).slice(-1)[0];
+    const r = ex.filter(e => e.type.indexOf('후기') > -1 && e.body.length > 60).slice(-1)[0];
     return {q, r};
   }
   function buildSystemPrompt(){
     const g = guideFields();
     const ex = pickExamples();
-    const titles = state.existing.map(e => e.title).filter(Boolean);
+    const titles = learnedExisting().map(e => e.title).filter(Boolean);
+    const brand = g.brand || '상호명';
     const lines = [];
     lines.push('너는 네이버 맘카페에 글을 올리는 한국인 맘카페 회원이다. 실제 회원이 쓴 것처럼 자연스러운 구어체로 원고를 쓴다.');
+    lines.push('');
+    lines.push('[최우선 지시 — 업종 / 컨셉 프롬프트]');
+    lines.push(g.concept ? g.concept : '(별도 지시 없음. 아래 업체 정보와 원고 작성 가이드에서 업종·제품·상황을 스스로 판단해 그 업체에 맞게 쓴다.)');
     lines.push('');
     lines.push('[업체 정보]');
     lines.push('- 상호명: ' + (g.brand || '(미정)'));
     if(g.url) lines.push('- 업체 관련 URL: ' + g.url);
-    lines.push('- 사진 첨부: ' + g.photo);
+    lines.push('- 사진 첨부: ' + (g.photo || '미정'));
     if(g.merits) lines.push('- 업체 특장점: ' + g.merits);
     if(g.notes) lines.push('- 특이사항: ' + g.notes);
-    if(g.guide) lines.push('- 원고 작성 가이드:\n' + g.guide);
+    if(g.guide) lines.push('- 원고 작성 가이드(본문):\n' + g.guide);
+    lines.push('');
+    lines.push('[지시 우선순위]');
+    lines.push('1) 위 업종/컨셉 프롬프트와 이 업체 정보·가이드를 최우선으로 따른다. 업종·제품·소재·상황·소구점은 전부 이 업체의 것이어야 한다.');
+    lines.push('2) 특정 업종(식품·안주 등)을 기본값으로 가정하지 않는다. 가이드에 없는 다른 업종의 제품이나 상황을 끌어오지 않는다.');
+    lines.push('3) 아래 [원고 유형 규칙]은 맘카페 글의 구성(제목·본문·댓글 역할)만 정한 것이고, 내용은 이 업체에 맞게 새로 쓴다.');
+    lines.push('4) [말투 참고]의 기존 원고는 말투·문장 길이·댓글 구성만 참고하고, 그 소재와 상황은 절대 베끼지 않는다.');
     lines.push('');
     lines.push('[원고 유형 규칙]');
-    lines.push('■ 질의형(질문형)');
+    lines.push('■ 질의형(질문형) — 본문 상호명 미노출 + 고민/질문 → 댓글1에서 상호명 추천 → 대댓글 감사');
     lines.push('- 제목: 궁금증이 드러나는 짧은 질문 (10~26자)');
-    lines.push('- 내용: 4~6줄. 요리·기름 정리, 소스 준비, 배달비, 육퇴 후 야식, 손님 초대 같은 일상의 불편이나 고민을 구체적으로 쓴다.');
+    lines.push('- 내용: 4~6줄. 이 업체의 업종·제품과 관련된 일상의 고민이나 궁금증을 구체적으로 쓴다.');
     lines.push('- 브랜드명은 본문에 절대 쓰지 않는다.');
     lines.push('- 마지막 줄은 다른 회원에게 자연스럽게 묻는 질문으로 끝낸다.');
-    lines.push('- 댓글1: 다른 회원 말투로 자기 경험을 말하며 "' + (g.brand || '상호명') + '"를 자연스럽게 추천한다.');
+    lines.push('- 댓글1: 다른 회원 말투로 자기 경험을 말하며 "' + brand + '"를 자연스럽게 추천한다.');
     lines.push('- 작성자 대댓글: 작성자가 고마워하며 반응한다.');
-    lines.push('■ 후기형');
+    lines.push('■ 후기형 — 일상 에피소드 + 경험 → 댓글1 질문 → 대댓글 상호명 안내');
     lines.push('- 제목: 어떤 상황이었는지 드러나는 짧은 후기 제목');
-    lines.push('- 내용: 6~8줄. 구체적인 일상 에피소드(야근, 비 오는 날, 집들이, 캠핑, 혼술, 아이 간식, 시험 기간, 김장 등)와 제품의 장점(에어프라이어로 간편, 기름 안 씀, 매콤해서 안 물림, 바삭함)을 자연스럽게 풀어쓴다.');
+    lines.push('- 내용: 6~8줄. 이 업체의 제품·서비스를 실제로 써본 구체적인 일상 에피소드와 장점(특장점·가이드에 적힌 내용)을 자연스럽게 풀어쓴다.');
     lines.push('- 브랜드명은 본문에 쓰지 않는다.');
     lines.push('- 댓글1: 제품이나 브랜드를 묻는 다른 회원 댓글.');
-    lines.push('- 작성자 대댓글: "' + (g.brand || '상호명') + '"를 알려준다.');
+    lines.push('- 작성자 대댓글: "' + brand + '"를 알려준다.');
     lines.push('');
     lines.push('[말투]');
     lines.push('ㅋㅋ, ㅎㅎ, ㅠㅠ, ~, ^^ 같은 표현을 자연스럽게 섞은 구어체. 맞춤법은 살짝 흐트러져도 되지만 읽기 불편할 정도로 흐트러뜨리지 않는다. 이모지는 0~1개. 광고 문구·과장·효능 표현·가격 흥정 유도는 쓰지 않는다. 줄바꿈은 \\n 으로 구분하고 각 줄은 20~45자 정도로 짧게 끊는다.');
     if(ex.q || ex.r){
       lines.push('');
-      lines.push('[톤 예시 — 문장 길이와 말투만 참고하고 상황은 절대 베끼지 말 것]');
-      if(ex.q) lines.push('질의형 예시 제목: ' + ex.q.title + ' / 본문: ' + ex.q.body.replace(/\n/g,' ').slice(0,220));
-      if(ex.r) lines.push('후기형 예시 제목: ' + ex.r.title + ' / 본문: ' + ex.r.body.replace(/\n/g,' ').slice(0,220));
+      lines.push('[말투 참고 — 문장 길이·말투·댓글 역할만 참고하고, 소재·상황·제품·소구점은 절대 베끼지 말 것]');
+      if(ex.q){
+        lines.push('질의형 예시 제목: ' + ex.q.title);
+        lines.push('질의형 예시 본문: ' + ex.q.body.replace(/\n/g,' ').slice(0,160));
+        if(ex.q.comment1) lines.push('질의형 예시 댓글1: ' + ex.q.comment1.slice(0,120));
+      }
+      if(ex.r){
+        lines.push('후기형 예시 제목: ' + ex.r.title);
+        lines.push('후기형 예시 본문: ' + ex.r.body.replace(/\n/g,' ').slice(0,160));
+        if(ex.r.comment1) lines.push('후기형 예시 댓글1: ' + ex.r.comment1.slice(0,120));
+      }
     }
     if(titles.length){
       lines.push('');
@@ -908,12 +945,17 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     return lines.join('\n');
   }
   function buildUserPrompt(plan){
+    const g = guideFields();
     const q = plan.filter(t => t === '질의형').length;
     const r = plan.filter(t => t === '후기형').length;
     const parts = [];
     if(q) parts.push('질의형 ' + q + '건');
     if(r) parts.push('후기형 ' + r + '건');
-    return parts.join(', ') + '을 작성해라. 각 원고는 서로 완전히 다른 일상 상황이어야 하고, 기존 제목과 겹치면 안 된다. type 값은 정확히 "질의형" 또는 "후기형"으로 쓴다.';
+    let line = (g.brand ? g.brand + ' 업체의 ' : '') + parts.join(', ') + '을 작성해라.';
+    line += ' 업종과 컨셉은 위 [업종 / 컨셉 프롬프트]와 업체 가이드를 따르고, 다른 업종의 소재는 쓰지 않는다.';
+    line += ' 각 원고는 서로 완전히 다른 일상 상황이어야 하고, 기존 제목과 겹치면 안 된다.';
+    line += ' type 값은 정확히 "질의형" 또는 "후기형"으로 쓴다.';
+    return line;
   }
 
   function parseJsonLoose(text){
@@ -1001,131 +1043,174 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
   }
 
   /* ================= 초안(로컬) 생성 ================= */
-  const QT = [
-    {t:'남편 퇴근 전에 간단히 내놓을 안주 뭐가 좋을까요?',
-     l:['남편이 오늘 조금 늦게 들어온다고 해서요','저녁은 회사에서 먹고 온다는데 맥주는 마시고 싶대요ㅋㅋ','그때마다 뭐 접시 하나 내놔야 하나 고민이에요','과자는 이제 뻔하고 만들어 놓기도 애매하고요','10분 안에 내놓을 만한 안주 있을까요?'],
-     c:'저는 {brand} 새우튀김 에프에 돌려서 내놔요ㅎㅎ 기름 안 써서 뒷정리도 없고 남편도 매콤한 걸 좋아하더라고요',
-     r:'오 그거면 되겠네요ㅋㅋ 저는 매번 과자로 때웠는데 다음엔 그렇게 해봐야겠어요'},
-    {t:'아이 학원 끝나고 저녁 전에 뭐 먹이세요?',
-     l:['초등 딸이 학원 끝나고 오면 저녁 먹기 전에 꼭 출출하다고 해요','그렇다고 빵이나 과자를 계속 주기도 그렇고','저녁을 잘 먹어야 하는데 입맛이 떨어질까 봐 신경 쓰이네요','가볍게 먹이면서 속도 편한 간식 뭐가 있을까요?'],
-     c:'저는 {brand} 새우튀김 조금씩 돌려서 주는데 애가 좋아해요~ 에프라서 제가 손 댈 것도 없고요',
-     r:'아이들이 그런 걸 좋아하죠ㅋㅋ 저도 하나 사다 놔야겠어요'},
-    {t:'시험 기간에 애 야식 뭐 챙겨주세요ㅠ',
-     l:['중학생 아이가 다음 주부터 시험이라 늦게까지 앉아 있어요','옆에서 뭐라도 챙겨줘야 할 것 같아 자꾸 부엌에 가게 되네요','밤 10시 넘어 밥을 차리기도 그렇고','과자만 주자니 애가 물린다고 하고요','속은 든든하고 손은 안 가는 야식 뭐가 좋을까요?'],
-     c:'저희도 시험 기간엔 {brand} 새우튀김 에프에 돌려줘요ㅎㅎ 애가 과자보다 잘 먹더라고요',
-     r:'그런 게 있었네요ㅠ 저는 늘 김밥만 생각했어요ㅋㅋ 한번 챙겨줘야겠어요'},
-    {t:'마트 냉동코너 가면 늘 같은 것만 사요ㅠㅠ',
-     l:['장 보러 가면 냉동코너도 꼭 들르는데','손에 잡히는 건 만두랑 감자튀김이랑 아이스크림뿐이에요ㅋㅋ','새로 사볼까 해도 이름만 보고는 잘 모르겠고','실패하면 냉동실 한쪽에 그대로 쌓여 있더라고요','남편이랑 저녁에 가볍게 먹을 만한 걸로 다들 뭐 사세요?'],
-     c:'저는 {brand} 새우튀김 쟁여놔요ㅎㅎ 에프에 돌리기만 하면 돼서 남편 맥주 안주로도 좋아요',
-     r:'아 그런 게 있었네요~ 다음 장 볼 때 찾아봐야겠어요ㅋㅋ'},
-    {t:'시댁 다녀온 날 저녁은 뭐 해드세요?',
-     l:['주말에 시댁 다녀오면 집에 오자마자 아무것도 하기 싫어요','이동만 해도 진이 빠지는데 저녁까지 차리려니 막막하네요','그렇다고 배달을 시키자니 왠지 아깝고요ㅋㅋ','이런 날 간단히 먹을 만한 거 뭐가 좋을까요?'],
-     c:'저는 그런 날 {brand} 새우튀김 에프에 돌려서 남편이랑 나눠 먹어요ㅎㅎ 10분이면 끝나서 편해요',
-     r:'이동한 날은 진짜 아무것도 못 하죠ㅠㅠ 저도 그렇게 해봐야겠네요'},
-    {t:'애들 다 자고 나면 저만 출출한데 어떻게 하세요?',
-     l:['애들 재우고 나면 저만 배가 고프더라고요','그때 밥을 먹자니 부담되고 그냥 자자니 아쉽고요ㅋㅋ','요즘은 남편이랑 조금씩 나눠 먹을 걸 찾고 있어요','늦은 밤에 부담 없이 먹을 안주 있을까요?'],
-     c:'저희는 {brand} 새우튀김 조금씩 돌려 먹어요~ 기름 안 써서 늦은 밤에도 부담 없더라고요',
-     r:'그거 좋네요ㅋㅋ 밤에 기름 냄비 꺼내는 건 진짜 싫잖아요'},
-    {t:'장마철에 집에서 애들이랑 뭐 해먹으세요?',
-     l:['비가 계속 오니까 주말에 나가질 못하네요','애들은 집에서 심심하다고 난리고요ㅋㅋ','간식거리 만들어주자니 밀가루 반죽은 엄두가 안 나요','집에 있는 걸로 간단히 해줄 만한 간식 뭐가 있을까요?'],
-     c:'비 오는 날엔 {brand} 새우튀김 돌려서 애들이랑 먹어요ㅎㅎ 접시에 담아주면 간식 같아서 좋아하더라고요',
-     r:'비 오는 날엔 그게 최고죠ㅋㅋ 저도 다음에 그렇게 해줘야겠어요'},
-    {t:'남편 휴무일 점심엔 뭐 드세요?',
-     l:['남편이 쉬는 날이면 점심을 집에서 먹게 되는데요','평일엔 대충 먹다가 같이 먹으려니 메뉴가 고민이에요','배달은 자주 시키기 그렇고 간단히 차려주고 싶고요','집에 있는 걸로 뚝딱 해먹을 만한 거 있을까요?'],
-     c:'저는 {brand} 새우튀김 돌려서 밥이랑 같이 내놔요ㅎㅎ 남편이 안주처럼 먹어서 좋아해요',
-     r:'오 그거 괜찮네요ㅋㅋ 저희 남편도 그런 걸 좋아해서요'},
-    {t:'김장 준비하는 주말에 간단히 먹을 거 추천해주세요',
-     l:['이번 주말에 김장 준비 때문에 하루 종일 부엌에 있어요','점심 챙겨 먹을 시간도 없이 바쁘고요ㅠ','그래도 남편이랑 저녁엔 뭐라도 먹어야 하는데','이런 날 손 안 가는 메뉴 뭐가 좋을까요?'],
-     c:'김장날은 {brand} 새우튀김 에프에 돌려서 먹어요ㅋㅋ 다른 요리할 힘도 없는데 이건 금방이라 좋아요',
-     r:'김장날엔 진짜 그게 최고예요ㅋㅋ 저도 이번에 그렇게 해볼게요'},
-    {t:'친구가 집에 놀러 오면 간식 뭐 내놓으세요?',
-     l:['오랜만에 친구가 집에 놀러 오기로 했어요','커피만 내놓기엔 뭔가 아쉽고 케이크를 사자니 부담이고요','집에 있는 걸로 그럴듯하게 내놓을 게 없을까 찾는 중이에요','다들 친구 올 때 뭐 준비하세요?'],
-     c:'저는 {brand} 새우튀김 돌려서 작은 접시에 담아 내놔요ㅎㅎ 커피보다는 맥주가 더 잘 어울리더라고요',
-     r:'그거 좋네요ㅋㅋ 접시에 담으면 진짜 그럴듯해 보여요'},
-    {t:'요즘 남편이랑 집에서 한잔하는 날이 늘었는데 안주 고민이에요',
-     l:['남편이 술을 자주는 아니고 주말에 한두 잔 하는 편이에요','그때마다 안주를 뭘 준비해야 할지 모르겠어요','과자나 마른안주만 계속 먹으니 저도 질리고요','집에서 간단히 만들 수 있는 안주 뭐가 있을까요?'],
-     c:'저희는 {brand} 새우튀김 에프에 돌려서 먹어요~ 기름 안 써서 준비도 금방이고 매콤해서 안 질려요',
-     r:'그런 게 있으면 홈술이 훨씬 편하겠네요ㅋㅋ 저도 찾아봐야겠어요'},
-    {t:'아이 친구들 놀러 오는 날 간식 어떻게 준비하세요?',
-     l:['아이 친구 두 명이 집에 놀러 온다고 해서요','애들 간식 챙기면서 어른 입에도 맞을 걸 준비하고 싶은데','과자랑 음료만 내놓기엔 좀 아쉬워서요ㅋㅋ','아이들도 어른도 먹을 만한 간식 뭐가 좋을까요?'],
-     c:'저는 {brand} 새우튀김 돌려서 내놔요ㅎㅎ 아이들은 간식으로, 남편은 안주로 먹어서 좋더라고요',
-     r:'일석이조네요ㅋㅋ 저도 다음에 그렇게 준비해봐야겠어요'}
+  // 업종별 어휘 · 특장점이 비어 있을 때 쓰는 기본 소구점
+  const IND = [
+    { re:/학원|과외|교육|수강|교습|클래스|레슨|보습/, item:'학원',
+      situations:['아이 학년이 올라가는 요즘','방학 때 뭘 해야 할지 고민인 요즘','아이가 특정 과목을 유독 어려워하는 요즘','형제끼리 시간이 겹치지 않는 요즘'],
+      points:['꼼꼼한 수업 구성','아이 눈높이에 맞는 설명','상담이 자세한 점'], gain:'다니기가' },
+    { re:/병원|의원|치과|한의원|피부과|정형|내과|소아과|진료|클리닉/, item:'병원',
+      situations:['아이가 자주 아픈 요즘','오래된 통증 때문에 고민이 많은 요즘','가족이 함께 검진을 받아야 하는 요즘','집 근처에 괜찮은 곳을 찾는 요즘'],
+      points:['자세한 설명','예약과 대기가 편한 점','꼼꼼한 진료'], gain:'다니기가' },
+    { re:/인테리어|리모델링|가구|커튼|조명|도배|장판|시공|집수리/, item:'인테리어',
+      situations:['이사 앞두고 집을 정리하는 요즘','오래된 집을 손보려고 마음먹은 요즘','아이 방을 새로 꾸며주려는 요즘','주방만이라도 바꾸고 싶은 요즘'],
+      points:['견적이 투명한 점','마감이 깔끔한 점','일정을 지키는 점'], gain:'지내기가' },
+    { re:/유아|아기|육아|키즈|어린이|기저귀|이유식|장난감|유모차|아동/, item:'육아용품',
+      situations:['아이가 이유식을 시작한 요즘','어린이집 등원을 준비하는 요즘','아이 옷 사이즈가 한 번에 커진 요즘','둘째가 태어나 물건을 하나 더 사야 하는 요즘'],
+      points:['안전한 소재','쓰기 편한 구성','세척이 간편한 점'], gain:'챙기기가' },
+    { re:/반려|강아지|고양이|펫|사료|애견/, item:'반려동물 용품',
+      situations:['강아지가 한 살이 된 요즘','산책을 자주 나가게 된 요즘','사료를 바꿔야 할 때가 된 요즘','집에 혼자 있는 시간이 길어진 요즘'],
+      points:['성분이 안전한 점','챙기기 편한 구성','아이가 잘 먹는 점'], gain:'챙기기가' },
+    { re:/헬스|운동|필라테스|요가|PT|체육|수영|클라이밍/, item:'운동 시설',
+      situations:['오랜만에 운동을 다시 시작한 요즘','앉아 있는 시간이 길어진 요즘','체력이 예전 같지 않다는 걸 느끼는 요즘','주말마다 몸이 무거운 요즘'],
+      points:['시간대가 넓은 점','시설이 깨끗한 점','초보자도 따라가기 쉬운 점'], gain:'다니기가' },
+    { re:/가방|백팩|크로스백|토트|지갑|파우치|캐리어|여행가방|핸드백/, item:'가방',
+      situations:['출퇴근할 때 들고 다닐 가방이 필요한 요즘','주말에 아이 물건까지 챙겨 나가는 날','여행 앞두고 짐이 많아진 요즘','노트북을 같이 넣고 다닐 가방을 찾는 요즘'],
+      points:['가벼운 무게','넉넉한 수납','튼튼한 마감'], gain:'들고 다니기가' },
+    { re:/화장품|뷰티|코스메틱|스킨|로션|앰플|향수|메이크업/, item:'화장품',
+      situations:['환절기라 피부가 뒤집어진 요즘','중요한 약속을 앞둔 요즘','메이크업이 자꾸 뜨는 요즘','아이 낳고 나서 피부가 달라진 요즘'],
+      points:['순한 사용감','흡수가 빠른 점','메이크업이 잘 받는 점'], gain:'바르기가' },
+    { re:/식품|간식|안주|먹거리|반찬|새우|튀김|떡|커피|베이커리|과일|정육|수산|주류/, item:'간식·안주',
+      situations:['남편 퇴근이 늦은 날','아이 학원 끝나고 저녁 전인 시간','주말에 집들이가 있는 날','애들 다 재운 늦은 밤','김장하고 난 다음 날'],
+      points:['간편하게 데우기만 하면 되는 점','깔끔한 뒷정리','질리지 않는 맛'], gain:'먹이고 챙기기가' },
+    { re:/옷|의류|패션|원피스|바지|코트|니트|셔츠|신발|운동화/, item:'옷',
+      situations:['출근복이 마땅치 않은 요즘','체형이 조금 바뀐 요즘','주말에 입을 옷이 없어서 고민인 요즘','계절이 바뀌어 옷장을 정리하는 요즘'],
+      points:['재질이 좋은 점','핏이 자연스러운 점','세탁이 편한 점'], gain:'입기가' },
+    { re:/생활|살림|주방|청소|수납|정리|침구|욕실/, item:'생활용품',
+      situations:['신혼집 살림을 하나씩 채우는 요즘','집 정리를 다시 시작한 요즘','계절이 바뀌어 집 안 물건을 바꾸는 요즘','주방 살림을 하나씩 줄이는 요즘'],
+      points:['쓰임새가 많은 점','관리가 쉬운 점','가격 대비 구성'], gain:'쓰기가' }
   ];
+  const IND_GENERIC = { item:'제품',
+    situations:['새로 준비할 게 생긴 요즘','주변에서 추천을 자주 받는 요즘','이것저것 알아보고 있는 요즘','필요한 게 생겨서 찾아보는 요즘'],
+    points:['쓰기 편한 점','마감이 깔끔한 점','가격 대비 만족스러운 점'], gain:'쓰기가' };
 
-  const RT = [
-    {t:'김장 끝났으니 이제 좀 살 것 같네요ㅋㅋ',
-     l:['어제 친정엄마랑 김장하고 왔는데 허리가 다 아프네요ㅠ','배추 절이고 양념 버무리고 나니 하루가 다 갔어요','씻고 앉으니까 남편이 맥주 한잔 하자고 하더라고요','저는 김치통만 정리하고 싶었는데ㅋㅋ','뭘 또 만들기는 싫어서 냉동실에 있던 새우튀김을 에프에 돌렸어요','기름 냄비 꺼낼 힘도 없었는데 에프라서 다행이었네요','매콤해서 소스도 안 만들어도 됐고요','김장날은 역시 이렇게 간단한 게 최고예요'],
-     c:'김장하고 나면 진짜 아무것도 못 하죠ㅠㅠ 그 새우튀김은 어디 제품이에요? 저도 김장날 대비해두게요!',
-     r:'{brand} 새우튀김이에요ㅋㅋ 김장 끝나고 이게 제일 반가웠네요'},
-    {t:'남편 생일인데 케이크 대신 안주 챙겼어요ㅎㅎ',
-     l:['남편 생일이 평일이라 외식은 못 하고','애들 재우고 집에서 조촐하게 맥주 한잔 하기로 했어요','케이크를 사자니 다들 한 조각씩 먹고 남을 것 같고','그냥 안주를 괜찮게 차려주자 싶었거든요','새우튀김을 에프에 돌려 예쁜 접시에 담고','집에 있던 하이볼이랑 같이 내놨는데','남편이 오마카세에서 먹던 안주 같다고 좋아하더라고요ㅋㅋ','별거 아닌데도 분위기 있어 보여서 저도 뿌듯했네요'],
-     c:'생일상에 이런 안주 좋네요~ 혹시 어떤 제품인지 알려주실 수 있나요?',
-     r:'{brand} 새우튀김이에요ㅎㅎ 에프만 돌렸는데 남편이 좋아해서 저도 놀랐어요'},
-    {t:'아이 기말고사 끝난 날 저녁은 이렇게 했어요',
-     l:['아이가 기말고사 끝나고 오자마자 누워버렸어요','며칠 긴장했는지 얼굴이 다 상해서 왔더라고요','저녁은 아이가 좋아하는 걸로 해주고 싶었는데','본인은 아무것도 안 먹고 자겠다고 해서ㅋㅋ','그래도 간단히 먹고 자라고 새우튀김을 돌렸어요','에프에 넣고 기다리기만 하면 되니까 편했고','매콤한 맛이라 소스 없이도 잘 먹더라고요','시험 끝난 애한테는 이런 게 제일 좋은 것 같아요'],
-     c:'시험 끝나면 애들 진이 다 빠지죠ㅠ 이건 어디 제품이에요? 저도 시험 끝나는 날 챙겨주려고요',
-     r:'{brand} 새우튀김이에요ㅎㅎ 소스 없이도 잘 먹어서 저는 애 먹이기 편했어요'},
-    {t:'시댁에서 돌아온 날은 간단하게 먹게 되네요',
-     l:['주말에 시댁 다녀왔는데 차에서만 네 시간이었어요','집에 오자마자 애들부터 씻기고 눕히고 나니','저도 남편도 말할 힘만 남은 상태였어요ㅋㅋ','저녁을 또 차리기는 정말 싫어서','냉동실에 있던 새우튀김을 에프에 돌렸거든요','접시에 담아 맥주 한잔 곁들이니까','이동한 피로가 좀 풀리는 느낌이었어요','이런 날은 진짜 간단한 게 최고예요'],
-     c:'시댁 다녀온 날은 아무것도 못 하죠ㅠ 그 새우튀김 어디서 사셨어요? 저도 쟁여두려고요',
-     r:'{brand} 거예요ㅎㅎ 이동하는 날은 이게 제일 편하더라고요'},
-    {t:'주말 대청소 끝나고 남편이랑 한잔했어요',
-     l:['주말에 남편이랑 대청소를 작정하고 했어요','이불 빨고 창틀 닦고 옷장 정리까지 하니까','허리는 아픈데 집은 깨끗해서 기분은 좋더라고요ㅋㅋ','저녁에 뭐 해먹을 힘은 없어서','새우튀김을 에프에 돌려서 맥주랑 먹었어요','기름 안 쓰니까 정리한 부엌이 그대로 유지돼서 좋았고요','바삭하고 매콤해서 손이 계속 갔네요','청소한 보람은 이런 데서 느끼는 것 같아요'],
-     c:'대청소하고 나면 부엌까지 정리하기 싫죠ㅋㅋ 이건 어느 제품이에요?',
-     r:'{brand} 새우튀김이에요ㅋㅋ 기름 안 써서 부엌 그대로인 게 제일 좋았어요'},
-    {t:'애들 학원 보내고 남은 둘이 먹은 저녁',
-     l:['애들 학원 시간이 겹치는 날이라 집에 남편이랑 저만 있었어요','둘이 먹자니 차리기도 애매하고 해서','냉동실에 있던 새우튀김을 꺼냈어요','에프에 돌리는 동안 남편이 하이볼을 만들어줬고','접시에 담아 마주 앉으니 괜히 분위기가 나더라고요ㅋㅋ','평소엔 애들 챙기느라 정신없는데','이런 날도 있어야겠다는 생각이 들었어요','다음에도 이렇게 해먹으려고요'],
-     c:'둘만 있는 날 이런 저녁 좋네요~ 혹시 어떤 제품인지 알려주세요!',
-     r:'{brand} 새우튀김이에요ㅎㅎ 하이볼이랑 잘 어울려서 남편도 좋아했어요'},
-    {t:'남편 당직 끝나고 온 날 야식 챙겼어요',
-     l:['남편이 당직 끝나고 밤 11시가 넘어서 들어왔어요','저녁을 못 먹었다고 해서 뭐라도 챙겨주려고 했는데','밥을 차리기엔 너무 늦은 시간이라','새우튀김을 에프에 돌려서 내놨어요','기름에 튀기는 게 아니라서 밤에도 냄새가 안 났고요','매콤해서 맥주 한잔이랑 잘 맞더라고요','남편이 이게 뭐냐고 물어보길래 알려줬어요','늦은 시간에 이만한 게 없네요'],
-     c:'당직 끝나고 온 날엔 야식이 필요하죠ㅠ 그거 어디 제품이에요?',
-     r:'{brand} 새우튀김이에요ㅋㅋ 밤에 기름 안 써서 좋았어요'},
-    {t:'장 보고 온 날 바로 돌려 먹어봤어요',
-     l:['장 보러 갔다가 냉동코너에서 새우튀김을 처음 사봤어요','집에 오자마자 궁금해서 한 봉지 돌려봤는데','에프에 넣고 시간만 기다리면 되니까 간편하더라고요','튀김옷이 얇아서 바삭하고','매콤한 맛이라 소스를 따로 안 만들어도 됐어요','남편이 안주로 먹겠다고 해서 결국 다 먹었네요ㅋㅋ','다음에 장 볼 때 더 사와야겠어요'],
-     c:'장 보고 바로 해먹는 거 저도 하는데ㅋㅋ 이건 어느 제품이에요?',
-     r:'{brand} 새우튀김이에요~ 저도 이번에 처음 사봤는데 만족했어요'},
-    {t:'아이 하원 늦어서 저녁이 밀린 날',
-     l:['아이 학원이 늦게 끝나는 날이라 저녁이 계속 밀렸어요','집에 오니까 8시가 넘었고 애는 배고프다고 난리고요ㅋㅋ','밥을 새로 하기엔 시간이 애매해서','새우튀김을 먼저 돌려서 애 입부터 달랬어요','에프라서 금방 나오니까 애 기다리는 시간도 짧았고','저는 그사이 밥을 데워서 같이 먹었네요','이런 날 간단한 게 있으면 정말 든든해요'],
-     c:'저희도 학원 늦는 날엔 순서가 꼬여요ㅠ 이건 어디 제품이에요?',
-     r:'{brand} 새우튀김이에요ㅎㅎ 애 입부터 달래기 딱 좋았어요'},
-    {t:'영화 보면서 간단히 먹으려고 준비했어요',
-     l:['주말에 남편이랑 집에서 영화 보기로 했어요','팝콘만 먹자니 입이 심심할 것 같아서','냉동실에 있던 새우튀김을 돌렸거든요','기름 안 쓰니까 거실에서 먹어도 부담이 없고','매콤해서 소스 없이 집어먹기 좋더라고요','영화 시작 전에 준비 끝나서 편했어요','남편은 영화보다 안주에 더 집중했지만요ㅋㅋ','다음 영화 볼 때도 이렇게 해야겠어요'],
-     c:'영화 볼 때 이런 안주 있으면 좋죠~ 어느 제품인지 궁금해요!',
-     r:'{brand} 새우튀김이에요ㅋㅋ 거실에서 먹기 편해서 좋았어요'},
-    {t:'갑자기 추워져서 집에서만 있었어요',
-     l:['어제부터 갑자기 추워져서 나가기 싫더라고요','애들도 집에만 있겠다고 해서 하루 종일 집콕했어요','저녁에 뭐 해먹을까 고민하다가','냉동실에 있던 새우튀김을 에프에 돌렸어요','따뜻한 방에서 바삭한 거 먹으니 왜 이렇게 맛있는지ㅋㅋ','남편도 맥주 한잔 하겠다고 해서 같이 먹었고요','추운 날 집에서 먹는 게 제일인 것 같아요'],
-     c:'추워지니까 집콕이 최고죠ㅎㅎ 이건 어떤 제품이에요?',
-     r:'{brand} 새우튀김이에요~ 추운 날 방에서 먹으니 더 맛있더라고요'},
-    {t:'아이 생일파티 끝나고 남은 음식 대신 먹었어요',
-     l:['주말에 아이 생일파티를 집에서 했어요','애들 친구들 오니까 정신이 하나도 없더라고요','파티 끝나고 나니 저녁에 뭘 먹을 힘이 없었고','남은 음식은 애들이 다 먹어서 없었어요ㅋㅋ','그래서 새우튀김을 에프에 돌려서 남편이랑 먹었네요','기름 안 써서 파티 끝난 부엌이 그대로여서 다행이었고요','매콤해서 맥주가 술술 넘어갔어요'],
-     c:'파티 끝나면 진이 빠지죠ㅠ 이건 어디 제품이에요? 저도 다음 파티 때 준비하려고요',
-     r:'{brand} 새우튀김이에요ㅋㅋ 파티 끝나고 이게 제일 편했어요'}
+  const WORRIES = [
+    '뭘 골라야 할지 늘 막막했어요',
+    '몇 번 잘못 골라서 이번엔 제대로 알아보고 싶었어요',
+    '가격대가 너무 달라서 기준을 못 잡겠어요',
+    '주변에 물어봐도 다들 자기 쓰는 것만 추천해서요'
   ];
+  const CHECKS = ['실사용 후기','가격과 구성','관리하기 편한지','초보가 쓰기 편한지'];
+
+  function hasJong(s){
+    const c = String(s || '').trim().slice(-1);
+    if(!c) return false;
+    const code = c.charCodeAt(0);
+    if(code < 0xAC00 || code > 0xD7A3) return false;
+    return (code - 0xAC00) % 28 !== 0;
+  }
+  function josa(w, a, b){ return String(w) + (hasJong(w) ? a : b); }
+  function pointPhrase(p){
+    let s = String(p || '').trim().replace(/[.。]$/, '');
+    if(/함$/.test(s)) s = s.replace(/함$/, '한 점');
+    if(/점$/.test(s)) return s;
+    if(/부분$/.test(s)) return s;
+    return s + ' 부분';
+  }
+
+  function detectIndustry(g){
+    const t = [g.concept, g.guide, g.merits, g.notes, g.brand].filter(Boolean).join(' ');
+    for(const ind of IND){ if(ind.re.test(t)) return ind; }
+    return IND_GENERIC;
+  }
+  function splitPoints(s){
+    return String(s || '').split(/\n|[,·、|]+/).map(x => x.trim()).filter(x => x.length > 1).slice(0, 3);
+  }
 
   function localGenerate(q, r){
     const g = guideFields();
-    const brand = g.brand || '해당 제품';
+    const brand = g.brand || '해당 업체';
+    const ind = detectIndustry(g);
+    const pts = splitPoints(g.merits);
+    const P = i => pts[i] || ind.points[i] || ind.points[0];
+    const item = ind.item;
     const out = [];
     for(let i=0;i<q;i++){
-      const t = QT[i % QT.length];
-      out.push({
-        type:'질의형',
-        title: t.t,
-        body: t.l.join('\n'),
-        comment1: t.c.replace(/\{brand\}/g, brand),
-        reply: t.r
-      });
+      const s = ind.situations[i % ind.situations.length];
+      const w = WORRIES[i % WORRIES.length];
+      const chk = CHECKS[i % CHECKS.length];
+      const v = i % 3;
+      if(v === 0){
+        out.push({
+          type:'질의형',
+          title: item + ' 고르는 게 늘 어려워요ㅠ',
+          body: [
+            s,
+            '그때마다 ' + josa(item, '을', '를') + ' 하나 제대로 준비해두려고 하는데',
+            w,
+            '검색해보면 다 좋다고만 하고 실제로 써본 얘기는 잘 없더라고요',
+            chk + ' 위주로 보면 될까요? 다들 어떻게 고르세요?'
+          ].join('\n'),
+          comment1: '저는 ' + brand + ' 이용해봤는데 ' + pointPhrase(P(0)) + '이 좋아서 만족했어요~',
+          reply: '오 그런 곳이 있었네요ㅠ 저도 한번 알아봐야겠어요'
+        });
+      }else if(v === 1){
+        out.push({
+          type:'질의형',
+          title: item + ' 처음 알아보는데 추천 부탁드려요',
+          body: [
+            s,
+            '이번에 ' + josa(item, '을', '를') + ' 새로 알아보고 있는데',
+            w,
+            '이것저것 비교해보니 ' + chk + '도 은근히 중요하더라고요',
+            '혹시 실제로 써보신 분 계시면 어떤 게 좋았는지 알려주실 수 있을까요?'
+          ].join('\n'),
+          comment1: '저는 ' + brand + ' 제품 쓰고 있는데 ' + pointPhrase(P(0)) + '이 특히 괜찮았어요ㅎㅎ',
+          reply: '그렇군요ㅠ 저도 한번 비교해봐야겠어요'
+        });
+      }else{
+        out.push({
+          type:'질의형',
+          title: item + ' 하나 잘못 골라서 후회했어요',
+          body: [
+            '얼마 전에 급하게 ' + josa(item, '을', '를') + ' 골랐다가 크게 후회했어요',
+            w,
+            '알고 보니 생각했던 것과 너무 달라서 다시 알아보는 중이에요',
+            '이번엔 제대로 비교해보고 정하려고 하는데',
+            chk + ' 이 정도면 봐야 할까요? 다들 어떻게 고르세요?'
+          ].join('\n'),
+          comment1: '저는 ' + brand + ' 쪽으로 바꾸고 나서 만족해서 쓰고 있어요~',
+          reply: '아 그런 방법이 있었네요ㅠ 저도 그렇게 해볼게요'
+        });
+      }
     }
     for(let i=0;i<r;i++){
-      const t = RT[i % RT.length];
-      out.push({
-        type:'후기형',
-        title: t.t,
-        body: t.l.join('\n'),
-        comment1: t.c.replace(/\{brand\}/g, brand),
-        reply: t.r.replace(/\{brand\}/g, brand)
-      });
+      const s = ind.situations[(i+1) % ind.situations.length];
+      const w = WORRIES[(i+1) % WORRIES.length];
+      const v = i % 2;
+      if(v === 0){
+        out.push({
+          type:'후기형',
+          title: item + ' 바꾸고 나서 달라진 점이 있어요',
+          body: [
+            s,
+            '그동안은 ' + w,
+            '이번에 ' + brand + '를 이용해보게 됐어요',
+            '그중에서도 ' + pointPhrase(P(0)) + '이 좋았어요',
+            '그리고 ' + pointPhrase(P(1)) + '도 마음에 들었고요',
+            '요즘은 매일 쓰고 있어요',
+            '한두 달 써보니 ' + ind.gain + ' 확실히 편해졌어요',
+            '주변에도 괜찮다고 말하고 다니는 중이에요'
+          ].join('\n'),
+          comment1: item + ' 후기 잘 봤어요~ 혹시 ' + brand + ' 쪽이에요? 저도 알아보고 있었거든요',
+          reply: '네 ' + brand + '예요ㅎㅎ ' + pointPhrase(P(0)) + '이 제일 만족스러워요'
+        });
+      }else{
+        out.push({
+          type:'후기형',
+          title: '고민하던 ' + josa(item, '을', '를') + ' 이번에 정했어요',
+          body: [
+            s,
+            '원래는 ' + w,
+            brand + '를 써보고 생각이 좀 달라졌어요',
+            '그중에서도 ' + pointPhrase(P(0)) + '이 좋았어요',
+            '그리고 ' + pointPhrase(P(1)) + '도 마음에 들었고요',
+            '이제는 자연스럽게 이용하게 됐어요',
+            '같은 걸 고민하시는 분들께도 권하고 싶어요'
+          ].join('\n'),
+          comment1: item + ' 어떤 건지 궁금했는데~ ' + brand + ' 제품인가요?',
+          reply: '네 ' + brand + ' 거예요ㅎㅎ ' + pointPhrase(P(1)) + '이 좋더라고요'
+        });
+      }
     }
     return out;
   }
@@ -1197,8 +1282,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       const start = Math.max(1, parseInt($('#fStart').value,10) || 1);
       const date = $('#fDate').value || todayStr();
       state.items = items.map((it, i) => Object.assign({}, it, {no: start + i, date: date}));
-      state.projId = null;
-      markLocalProject();
+      saveGeneratedProject();
       checkDuplicates();
       renderItems();
       setStatus('#genStatus', state.items.length + '건 생성됨', 'ok');
@@ -1206,7 +1290,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       toast(state.items.length + '건 생성 완료');
 
       if(state.engine === 'local'){
-        $('#engineNote').innerHTML = '초안 ' + state.items.length + '건을 만들었어요. 문장이 비슷한 틀이 보이면 <b>AI 생성</b>이나 <b>마쭈에게 요청</b>으로 다듬는 걸 권합니다.';
+        $('#engineNote').innerHTML = '초안 ' + state.items.length + '건을 만들었어요. 문장이 비슷한 틀이 보이면 <b>AI 생성</b>이나 <b>요청문 복사</b>로 다듬는 걸 권합니다.';
       }
     }catch(e){
       setStatus('#genStatus', '실패', 'err');
@@ -1236,7 +1320,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
   /* ================= 렌더 ================= */
   function checkDuplicates(){
     const seen = new Map();
-    state.existing.forEach(e => {
+    learnedExisting().forEach(e => {
       const k = normTitle(e.title);
       if(k) seen.set(k, (seen.get(k) || 0) + 1);
     });
@@ -1266,7 +1350,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     if(!state.items.length){
       body.innerHTML = '';
       empty.style.display = '';
-      empty.innerHTML = '아직 원고가 없어요.<br><b>가이드를 불러오고 [원고 생성]</b>을 누르거나, 위에서 공유 원고를 선택해 주세요.';
+      empty.innerHTML = '가이드를 불러오거나 입력한 뒤 원고를 생성해 주세요.<br>저장된 프로젝트를 보려면 위 목록에서 업체를 선택하세요.';
       updateSum();
       return;
     }
@@ -1310,7 +1394,8 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
 
   /* ================= 내보내기 ================= */
   function currentBrand(){
-    return $('#fBrand').value.trim() || (state.projects.find(p => p.id === state.projId) || {}).brand || '원고';
+    const p = findProject(state.projId);
+    return $('#fBrand').value.trim() || (p && p.brand) || '원고';
   }
   function exportRows(){
     const useBigo = $('#chkBigo') ? $('#chkBigo').checked : true;
@@ -1370,7 +1455,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     reader.readAsText(file, 'utf-8');
   }
 
-  /* ================= 공유 목록 ================= */
+  /* ================= 프로젝트(업체) 목록 ================= */
   function normalizeProject(p){
     const items = (p.items || p.manuscripts || []).map((it, i) => {
       const n = normalizeItem(it);
@@ -1386,37 +1471,102 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       items: items
     };
   }
-  function markLocalProject(){
-    const sel = $('#projSelect');
-    Array.prototype.slice.call(sel.querySelectorAll('option[value="__local"]')).forEach(o => o.remove());
-    const opt = document.createElement('option');
-    opt.value = '__local';
-    opt.textContent = '내가 만든 원고 · ' + state.items.length + '건';
-    sel.insertBefore(opt, sel.firstChild);
-    sel.value = '__local';
+
+  function loadLocalProjects(){
+    try{
+      const arr = JSON.parse(localStorage.getItem(LS.projects) || '[]');
+      return Array.isArray(arr) ? arr.filter(p => p && p.id) : [];
+    }catch(e){ return []; }
   }
+  function saveLocalProjects(){
+    try{ localStorage.setItem(LS.projects, JSON.stringify(state.localProjects.slice(0, 40))); }catch(e){}
+  }
+  function findProject(id){
+    if(!id) return null;
+    return state.localProjects.find(p => p.id === id) || state.projects.find(p => p.id === id) || null;
+  }
+
+  // 방금 생성한 원고를 그 업체 전용 프로젝트로 저장하고, 그 프로젝트만 보이게 전환
+  function saveGeneratedProject(){
+    const g = guideFields();
+    const brand = g.brand || '이름 없는 업체';
+    const base = brand + ' · ' + state.items.length + '건 · ' + todayStr();
+    let name = base, n = 2;
+    while(state.localProjects.some(p => p.name === name)) name = base + ' (' + (n++) + ')';
+    const proj = {
+      id: 'local-' + Date.now() + '-' + Math.random().toString(36).slice(2,6),
+      name: name,
+      brand: brand,
+      productUrl: g.url,
+      photo: g.photo,
+      concept: g.concept,
+      merits: g.merits,
+      notes: g.notes,
+      guide: g.guide,
+      updatedAt: new Date().toISOString(),
+      items: state.items.map(it => ({no: it.no, date: it.date, type: it.type, title: it.title, body: it.body, comment1: it.comment1, reply: it.reply}))
+    };
+    state.localProjects.unshift(proj);
+    state.localProjects = state.localProjects.slice(0, 40);
+    state.projId = proj.id;
+    saveLocalProjects();
+    buildProjectSelect();
+    $('#sharedMeta').textContent = '내 원고 · ' + name;
+  }
+
   function buildProjectSelect(){
     const sel = $('#projSelect');
-    if(!state.projects.length){
-      sel.innerHTML = '<option value="">공유 원고 없음</option>';
+    const opts = ['<option value="">— 프로젝트를 선택하세요 —</option>'];
+    if(state.localProjects.length){
+      opts.push('<optgroup label="내가 만든 원고">');
+      state.localProjects.forEach(p => {
+        opts.push('<option value="' + esc(p.id) + '">' + esc(p.name) + '</option>');
+      });
+      opts.push('</optgroup>');
+    }
+    if(state.projects.length){
+      opts.push('<optgroup label="공유 원고">');
+      state.projects.forEach(p => {
+        opts.push('<option value="' + esc(p.id) + '">' + esc(p.name) + ' · ' + (p.items ? p.items.length : 0) + '건</option>');
+      });
+      opts.push('</optgroup>');
+    }
+    sel.innerHTML = opts.join('');
+    sel.value = (state.projId && findProject(state.projId)) ? state.projId : '';
+  }
+
+  // 항상 선택한 프로젝트(업체) 1개의 원고만 표시한다
+  function selectProject(id){
+    if(!id){
+      state.projId = null;
+      state.items = [];
+      renderItems();
+      $('#projSelect').value = '';
       return;
     }
-    sel.innerHTML = state.projects.map(p =>
-      '<option value="' + esc(p.id) + '">' + esc(p.name) + ' · ' + p.items.length + '건</option>'
-    ).join('');
-    if(state.projId) sel.value = state.projId;
-  }
-  function selectProject(id){
-    const p = state.projects.find(x => x.id === id);
+    const p = findProject(id);
     if(!p) return;
+    const local = state.localProjects.indexOf(p) > -1;
     state.projId = id;
-    state.items = p.items.map(it => Object.assign({}, it, {dup:false}));
+    state.items = (p.items || []).map(it => Object.assign({}, it, {dup:false}));
     checkDuplicates();
     renderItems();
-    if(p.brand && !$('#fBrand').value.trim()) $('#fBrand').value = p.brand;
-    if(p.productUrl && !$('#fUrl').value.trim()) $('#fUrl').value = p.productUrl;
+    const prevBrand = $('#fBrand').value.trim();
+    if(p.brand) $('#fBrand').value = p.brand;
+    if(p.productUrl) $('#fUrl').value = p.productUrl;
+    if(local){
+      if(p.concept !== undefined) $('#fConcept').value = p.concept || '';
+      if(p.merits !== undefined) $('#fMerits').value = p.merits || '';
+      if(p.notes !== undefined) $('#fNotes').value = p.notes || '';
+      if(p.guide !== undefined) $('#fGuide').value = p.guide || '';
+      if(p.photo) $('#fPhoto').value = p.photo;
+    }else if(p.brand && prevBrand && p.brand !== prevBrand){
+      // 공유 원고는 가이드 본문을 담고 있지 않다 → 다른 업체의 가이드가 섞이지 않도록 비운다
+      ['#fMerits','#fNotes','#fGuide','#fConcept'].forEach(s => { const el = $(s); if(el) el.value = ''; });
+    }
     updateGuideSummary();
-    $('#sharedMeta').textContent = '공유 프로젝트: ' + p.name + (p.updatedAt ? ' · ' + p.updatedAt.slice(0,10) : '');
+    $('#sharedMeta').textContent = (local ? '내 원고 · ' : '공유 프로젝트 · ') + p.name +
+      (p.updatedAt ? ' · ' + String(p.updatedAt).slice(0,10) : '');
     $('#projSelect').value = id;
   }
 
@@ -1437,34 +1587,37 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
         if(!res.ok) throw new Error('HTTP ' + res.status);
         data = JSON.parse(await res.text());
       }catch(e2){
-        if(quiet){ $('#sharedMeta').textContent = '공유 목록을 불러오지 못함'; }
+        if(quiet){ $('#sharedMeta').textContent = '공유 목록을 불러오지 못함 · 저장된 내 원고는 선택할 수 있어요'; }
         else toast('공유 목록을 불러오지 못했어요');
         return;
       }
     }
     try{
       const list = (data.projects || []).map(normalizeProject);
-      if(!list.length) return;
       state.projects = list;
+      if(state.projId && !findProject(state.projId)) state.projId = null;
       buildProjectSelect();
-      selectProject(list[0].id);
-      $('#sharedMeta').textContent = '공유 프로젝트 ' + list.length + '개 · 최근 업데이트 ' + (data.updatedAt ? data.updatedAt.slice(0,16).replace('T',' ') : '-');
-      if(!quiet) toast('공유 원고를 불러왔어요');
+      if(state.projId) selectProject(state.projId);
+      $('#sharedMeta').textContent = list.length
+        ? '공유 원고 ' + list.length + '개 · 최근 업데이트 ' + (data.updatedAt ? String(data.updatedAt).slice(0,16).replace('T',' ') : '-')
+        : '저장된 프로젝트를 선택하면 원고가 표시됩니다';
+      if(!quiet) toast(list.length ? '공유 원고를 불러왔어요' : '공유 원고가 없어요');
     }catch(e){
       toast('공유 데이터 형식이 올바르지 않아요');
     }
   }
 
-  /* ================= 마쭈 요청문 ================= */
+  /* ================= 요청문 복사 ================= */
   function buildRequestText(){
     const g = guideFields();
     const {q, r} = currentCounts();
-    const ex = state.existing.length;
+    const ex = learnedExisting().length;
     const lines = [];
     lines.push('[맘카페 원고 제작 요청]');
     lines.push('· 상호명: ' + (g.brand || '(미입력)'));
     if(g.url) lines.push('· 업체 URL: ' + g.url);
-    lines.push('· 사진 첨부: ' + g.photo);
+    lines.push('· 사진 첨부: ' + (g.photo || '미정'));
+    if(g.concept) lines.push('· 🎯 업종 / 컨셉 프롬프트: ' + g.concept.replace(/\n/g, ' / '));
     const total = splitCount($('#fTotal').value);
     if(total) lines.push('· 총 진행 수량: ' + total.total + '건');
     lines.push('· 이번 요청: ' + [q ? '질문형 ' + q + '건' : '', r ? '후기형 ' + r + '건' : ''].filter(Boolean).join(' + ') + ' (총 ' + (q+r) + '건)');
@@ -1493,7 +1646,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     try{ w = window.open(DATA_URL, '_blank'); }catch(e){}
     if(!w) location.href = DATA_URL;
   });
-  $('#projSelect').addEventListener('change', e => { if(e.target.value && e.target.value !== '__local') selectProject(e.target.value); });
+  $('#projSelect').addEventListener('change', e => selectProject(e.target.value));
 
   $$('#segType button').forEach(b => b.addEventListener('click', () => setType(b.dataset.type)));
   $('#fCountQ').addEventListener('input', () => {
@@ -1518,14 +1671,23 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     $('#loginId').value = '';
     $('#loginPw').value = '';
     $('#loginErr').textContent = '';
+    // 재로그인 시 반드시 통과하도록 로그인 버튼 상태도 되돌린다
+    $('#btnLogin').disabled = false;
     showGate('');
     toast('로그아웃했습니다');
   });
+  ['#fBrand','#fConcept','#fTotal','#fQ','#fR'].forEach(sel => {
+    const el = $(sel);
+    if(el) el.addEventListener('input', updateGuideSummary);
+  });
+  $('#fConcept').addEventListener('change', updateGuideSummary);
   $('#btnGen').addEventListener('click', generate);
   $('#btnRequest').addEventListener('click', () => copyText(buildRequestText(), '요청문'));
   $('#btnClear').addEventListener('click', () => {
     state.items = [];
+    state.projId = null;
     renderItems();
+    $('#projSelect').value = '';
     setStatus('#genStatus', '비었음');
     toast('목록을 비웠어요');
   });
@@ -1547,24 +1709,43 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     return x.toString(36);
   }
   let started = false;
+  // 로그인 직후에는 가이드 입력간·원고 목록을 모두 비운 상태로 시작 (저장된 내 원고는 드롭다운에서 선택)
+  function resetWorkspace(){
+    ['#sheetUrl','#fBrand','#fUrl','#fTotal','#fQ','#fR','#fMerits','#fNotes','#fConcept','#fGuide'].forEach(sel => {
+      const el = $(sel); if(el) el.value = '';
+    });
+    if($('#fPhoto')) $('#fPhoto').value = '';
+    state.guide = {};
+    state.existing = [];
+    state.existingFor = '';
+    state.items = [];
+    state.projId = null;
+    renderItems();
+    updateGuideSummary();
+    setStatus('#guideStatus', '대기', '');
+    setStatus('#genStatus', '준비', '');
+    if($('#projSelect')) $('#projSelect').value = '';
+  }
   function startApp(){
-    if(started) return;
-    started = true;
+    // 로그아웃 → 재로그인 시에도 반드시 앱 화면으로 전환한다 (이전에는 started 가드에서 되돌아 나와 게이트에 머물렀음)
     $('#gate').hidden = true;
     $('#appRoot').hidden = false;
-    document.title = '맘카페 원고 작성기 · 리스페토';
+    document.title = '윙 원고 스튜디오';
     $('#fDate').value = todayStr();
     setType('질의형');
     setEngine('openai');
-    // CSV 비고 열 옵션 (시트 붙여넣기 호환)
-    const bigo = document.createElement('label');
-    bigo.style.cssText = 'display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);font-weight:700;margin-left:2px';
-    bigo.innerHTML = '<input type="checkbox" id="chkBigo" checked style="width:16px;height:16px;min-height:0"> 비고(사용) 열 포함';
-    document.querySelector('.resbar').insertBefore(bigo, document.querySelector('#btnTsv'));
-
+    state.localProjects = loadLocalProjects();
+    resetWorkspace();
+    if(!started){
+      started = true;
+      // CSV 비고 열 옵션 (시트 붙여넣기 호환)
+      const bigo = document.createElement('label');
+      bigo.style.cssText = 'display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);font-weight:700;margin-left:2px';
+      bigo.innerHTML = '<input type="checkbox" id="chkBigo" checked style="width:16px;height:16px;min-height:0"> 비고(사용) 열 포함';
+      document.querySelector('.resbar').insertBefore(bigo, document.querySelector('#btnTsv'));
+    }
+    buildProjectSelect();
     loadShared(true);
-    setTimeout(() => { if(!state.projects.length) renderItems(); }, 1500);
-    setTimeout(() => { if(!state.items.length) renderItems(); }, 4000);
   }
   function showGate(msg){
     $('#appRoot').hidden = true;
@@ -1588,6 +1769,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       $('#loginPw').select();
     }
   });
+  // 로그인 상태 저장값은 있지만 앱이 열리지 않은 경우(이전 세션 오류)에 대비한 복구
   let authed = false;
   try{ authed = localStorage.getItem(AUTH.store) === '1'; }catch(e){}
   if(authed) startApp(); else showGate('');
