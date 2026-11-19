@@ -119,6 +119,11 @@ tr:hover .mini{opacity:1}
 .aiflag.good{color:#137a3b; background:#e7f6ec}
 .aiflag.mid{color:#a26200; background:var(--amber-weak)}
 .aiflag.bad{color:#b42318; background:#fdeceb}
+.conceptfld > span{color:#dc2626 !important; font-weight:900 !important}
+.conceptfld textarea{border:2px solid #ef4444 !important; background:#fff7f7 !important; box-shadow:0 0 0 3px rgba(239,68,68,.12)}
+.conceptfld textarea:focus{border-color:#dc2626 !important; box-shadow:0 0 0 4px rgba(220,38,38,.18) !important}
+.conceptfld textarea::placeholder{color:#e08f8f}
+.reqbadge{display:inline-block; margin-left:4px; padding:1px 6px; border-radius:6px; background:#dc2626; color:#fff; font-size:10px; font-weight:800; letter-spacing:.2px; vertical-align:middle}
 .copyall{margin-top:7px; font-size:11.5px; font-weight:800; color:var(--blue-ink); background:var(--blue-weak); border-radius:8px; padding:5px 9px; border:1px solid #d9e5ff}
 .copyall:hover{background:#e3edff}
 .empty{padding:44px 20px; text-align:center; color:var(--muted); font-size:13px; line-height:1.8}
@@ -256,9 +261,6 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
 
       <div class="grid">
         <label class="fld c2"><span>상호명</span><input id="fBrand" type="text" placeholder="예: 브랜드명"></label>
-        <label class="fld c2"><span>사진 첨부 여부</span>
-          <select id="fPhoto"><option value="">선택</option><option>있음</option><option>없음</option></select>
-        </label>
         <label class="fld c2"><span>업체 관련 URL</span><input id="fUrl" type="text" placeholder="https://…"></label>
 
         <label class="fld c2"><span>총 진행 수량</span><input id="fTotal" type="text" placeholder="예: 100"></label>
@@ -267,7 +269,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
 
         <label class="fld c6"><span>업체 특장점</span><textarea id="fMerits" rows="2" placeholder="예: 가볍고 수납이 넉넉함, A4 서류가 들어감, 1년 AS"></textarea></label>
         <label class="fld c6"><span>특이사항</span><textarea id="fNotes" rows="2" placeholder="예: 30일 내외 발행, 링크는 댓글에 노출"></textarea></label>
-        <label class="fld c6"><span>🎯 업종 / 컨셉 · 프롬프트 지시사항</span><textarea id="fConcept" rows="3" placeholder="예) 이 업체는 가방 판매 업체고, 가방이 필요한데 어떤 제품이 좋을지 추천받는 컨셉으로 써줘. 일상 맘카페 말투로 자연스럽게 작성"></textarea></label>
+        <label class="fld c6 conceptfld"><span>🎯 업종 / 컨셉 · 프롬프트 지시사항 <b class="reqbadge">필수</b></span><textarea id="fConcept" rows="3" placeholder="예) 이 업체는 가방 판매 업체고, 가방이 필요한데 어떤 제품이 좋을지 추천받는 컨셉으로 써줘. 일상 맘카페 말투로 자연스럽게 작성"></textarea></label>
         <label class="fld c6"><span>원고 작성 가이드 (본문)</span><textarea id="fGuide" rows="7" placeholder="원고에 들어갔으면 하는 내용을 그대로 붙여넣으세요."></textarea></label>
       </div>
 
@@ -385,10 +387,6 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     </div>
   </section>
 
-  <footer>
-    윙 원고 스튜디오 · <span id="sharedMeta">공유 목록 확인 중</span><br>
-    공유 목록 파일: <button type="button" class="flink" id="dataLink">manuscripts-data.json</button>
-  </footer>
 </main>
 </div><!-- /appRoot -->
 
@@ -449,6 +447,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     const p = n => String(n).padStart(2,'0');
     return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate());
   }
+  function setSharedMeta(t){ const el = $('#sharedMeta'); if(el) el.textContent = t; }
   function setStatus(id, text, kind){
     const el = $(id);
     el.textContent = text;
@@ -636,7 +635,6 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
 
   function fillGuide(g){
     if(g.brand !== undefined) $('#fBrand').value = g.brand || '';
-    if(g.photo) $('#fPhoto').value = /있/.test(g.photo) ? '있음' : '없음';
     if(g.url !== undefined) $('#fUrl').value = g.url || '';
     if(g.total !== undefined) $('#fTotal').value = g.total || '';
     if(g.q !== undefined) $('#fQ').value = g.q || '';
@@ -1108,7 +1106,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       if(DROP_LINE.some(function(re){ return re.test(l); })) continue;
       l = l.replace(/^(첫째|둘째|셋째|첫\s*번째|두\s*번째|세\s*번째|마지막으로|결론적으로|따라서|즉)[,.]?\s*(로|으로)?\s*/, '');
       SUBST.forEach(function(p){ l = l.replace(p[0], p[1]); });
-      if(brand && type !== '후기형' && l.indexOf(brand) > -1){
+      if(brand && type === '질의형' && l.indexOf(brand) > -1){
         l = l.split(brand).join('').replace(/\s{2,}/g,' ').trim();
         if(l.length < 6) continue;
       }
@@ -1124,11 +1122,12 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     const g = guideFields();
     const brand = (g.brand || '').trim();
     const own = { type: it.type, title: it.title, body: it.body, comment1: it.comment1, reply: it.reply };
-    const cleanTitle = polishText(it.title, brand, it.type);
-    const cleanBody = polishText(it.body, brand, it.type);
+    const strip = it.type === '질의형';
+    const cleanTitle = polishText(it.title, brand, strip ? '질의형' : '');
+    const cleanBody = polishText(it.body, brand, strip ? '질의형' : '');
     const cleanC1 = polishText(it.comment1, brand, '');
     const cleanR = polishText(it.reply, brand, '');
-    own.title = (cleanTitle || String(it.title || '').replace(brand, '')).replace(/^[\s·\-–—]+|[\s·\-–—]+$/g,'').slice(0, 45);
+    own.title = (cleanTitle || String(it.title || '')).replace(/^[\s·\-–—]+|[\s·\-–—]+$/g,'').slice(0, 45);
     own.body = cleanBody.trim() ? cleanBody : String(it.body || '');
     own.comment1 = cleanC1;
     own.reply = cleanR;
@@ -1140,7 +1139,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
   function guideFields(){
     return {
       brand: $('#fBrand').value.trim(),
-      photo: $('#fPhoto').value,
+      photo: '있음',
       url: $('#fUrl').value.trim(),
       merits: $('#fMerits').value.trim(),
       notes: $('#fNotes').value.trim(),
@@ -1861,7 +1860,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       name: currentBrand() + ' · ' + state.items.length + '건 (' + todayStr() + ')',
       brand: currentBrand(),
       productUrl: $('#fUrl').value.trim(),
-      photo: $('#fPhoto').value,
+      photo: '있음',
       createdAt: todayStr(),
       items: state.items.map(it => ({no: it.no, date: it.date, type: it.type, title: it.title, body: it.body, comment1: it.comment1, reply: it.reply}))
     };
@@ -1943,7 +1942,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     state.projId = proj.id;
     saveLocalProjects();
     buildProjectSelect();
-    $('#sharedMeta').textContent = '내 원고 · ' + name;
+    setSharedMeta('내 원고 · ' + name);
   }
 
   function buildProjectSelect(){
@@ -1991,15 +1990,13 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       if(p.merits !== undefined) $('#fMerits').value = p.merits || '';
       if(p.notes !== undefined) $('#fNotes').value = p.notes || '';
       if(p.guide !== undefined) $('#fGuide').value = p.guide || '';
-      $('#fPhoto').value = p.photo || '';
     }else if(p.brand && prevBrand && p.brand !== prevBrand){
       // 공유 원고는 가이드 본문을 담고 있지 않다 → 다른 업체의 가이드가 섞이지 않도록 비운다
       ['#fMerits','#fNotes','#fGuide','#fConcept'].forEach(s => { const el = $(s); if(el) el.value = ''; });
-      $('#fPhoto').value = '';
     }
     updateGuideSummary();
-    $('#sharedMeta').textContent = (local ? '내 원고 · ' : '공유 프로젝트 · ') + p.name +
-      (p.updatedAt ? ' · ' + String(p.updatedAt).slice(0,10) : '');
+    setSharedMeta((local ? '내 원고 · ' : '공유 프로젝트 · ') + p.name +
+      (p.updatedAt ? ' · ' + String(p.updatedAt).slice(0,10) : ''));
     $('#projSelect').value = id;
   }
 
@@ -2020,7 +2017,7 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
         if(!res.ok) throw new Error('HTTP ' + res.status);
         data = JSON.parse(await res.text());
       }catch(e2){
-        if(quiet){ $('#sharedMeta').textContent = '공유 목록을 불러오지 못함 · 저장된 내 원고는 선택할 수 있어요'; }
+        if(quiet){ setSharedMeta('공유 목록을 불러오지 못함 · 저장된 내 원고는 선택할 수 있어요'); }
         else toast('공유 목록을 불러오지 못했어요');
         return;
       }
@@ -2031,9 +2028,9 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
       if(state.projId && !findProject(state.projId)) state.projId = null;
       buildProjectSelect();
       if(state.projId) selectProject(state.projId);
-      $('#sharedMeta').textContent = list.length
+      setSharedMeta(list.length
         ? '공유 원고 ' + list.length + '개 · 최근 업데이트 ' + (data.updatedAt ? String(data.updatedAt).slice(0,16).replace('T',' ') : '-')
-        : '저장된 프로젝트를 선택하면 원고가 표시됩니다';
+        : '저장된 프로젝트를 선택하면 원고가 표시됩니다');
       if(!quiet) toast(list.length ? '공유 원고를 불러왔어요' : '공유 원고가 없어요');
     }catch(e){
       toast('공유 데이터 형식이 올바르지 않아요');
@@ -2074,11 +2071,13 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
   });
   $('#btnParsePaste').addEventListener('click', loadPaste);
   $('#btnSharedRefresh').addEventListener('click', () => loadShared(false));
-  $('#dataLink').addEventListener('click', () => {
-    let w = null;
-    try{ w = window.open(DATA_URL, '_blank'); }catch(e){}
-    if(!w) location.href = DATA_URL;
-  });
+  (function(){ const dl = $('#dataLink'); if(!dl) return;
+    dl.addEventListener('click', () => {
+      let w = null;
+      try{ w = window.open(DATA_URL, '_blank'); }catch(e){}
+      if(!w) location.href = DATA_URL;
+    });
+  })();
   $('#projSelect').addEventListener('change', e => selectProject(e.target.value));
 
   $$('#segType button').forEach(b => b.addEventListener('click', () => setType(b.dataset.type)));
@@ -2147,7 +2146,6 @@ footer a,footer .flink{color:var(--blue-ink); font-weight:700; text-decoration:u
     ['#sheetUrl','#fBrand','#fUrl','#fTotal','#fQ','#fR','#fMerits','#fNotes','#fConcept','#fGuide'].forEach(sel => {
       const el = $(sel); if(el) el.value = '';
     });
-    if($('#fPhoto')) $('#fPhoto').value = '';
     state.guide = {};
     state.existing = [];
     state.existingFor = '';
