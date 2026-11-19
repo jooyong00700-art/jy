@@ -403,6 +403,18 @@ input.inp[type=number]{text-align:right}
   .main{padding:0}
   .card{box-shadow:none; break-inside:avoid}
 }
+
+/* ⚙️ 원가·할인가 / 품목별 칩 */
+.inp{border:1px solid var(--line2);border-radius:7px;padding:5px 8px;font-size:12px;font-family:inherit;background:#fff;color:#101b34}
+.inp:focus{outline:2px solid #c9d8f7;border-color:#8fb0e8}
+.ao-items td{padding:0 0 8px 0 !important;border-bottom:1px solid var(--line2)}
+.ao-chipwrap{display:flex;flex-wrap:wrap;gap:4px;padding:2px 0 2px 2px}
+.ao-chip{display:inline-flex;align-items:center;gap:4px;background:#f2f5fb;border:1px solid #dde5f5;border-radius:999px;padding:2px 8px;font-size:11px;color:#33456b}
+.ao-chip b{font-weight:700;color:#101b34}
+.ao-chip .q{color:#5d6d92}
+.ao-chip .c-ad{color:#b35c00;font-style:normal;font-weight:700}
+.ao-chip .c-og{color:#1c7c54;font-style:normal;font-weight:700}
+.ao-chip .c-pend{color:#98a4bd;font-style:normal}
 </style>
 </head>
 <body>
@@ -485,6 +497,222 @@ const DAILY = [
   {d:'2026-11-17', sales:1534340, profit:295593, ad:210269, qty:88},
   {d:'2026-11-18', sales:1285010, coupon:175800, netSales:1109210, profit:null, ad:193563, qty:63, live:true}
 ];
+
+/* ================= 빅셀 과거 일자별(2026-05~11, 빅셀 캘린더 원문) ================= */
+const HIST = {
+"2026-05-01":[1724830,316546,313815],
+"2026-05-02":[1574700,242860,336184],
+"2026-05-03":[1945150,232637,487303],
+"2026-05-04":[1647610,152106,468761],
+"2026-05-05":[1847240,143603,542411],
+"2026-05-06":[1332280,115731,361201],
+"2026-05-07":[888900,134605,196825],
+"2026-05-08":[1079170,132855,272662],
+"2026-05-09":[1555280,168941,418135],
+"2026-05-10":[1453060,141601,399463],
+"2026-05-11":[1340530,169726,320746],
+"2026-05-12":[1454500,143881,397272],
+"2026-05-13":[1066530,178786,226765],
+"2026-05-14":[1604560,299638,306322],
+"2026-05-15":[1407260,258373,272049],
+"2026-05-16":[1568680,262806,313507],
+"2026-05-17":[1963010,261048,473111],
+"2026-05-18":[1152520,238974,196057],
+"2026-05-19":[1479280,237443,302437],
+"2026-05-20":[1317390,232351,256317],
+"2026-05-21":[1505850,238960,332100],
+"2026-05-22":[1296930,253298,228967],
+"2026-05-23":[1208960,222348,257634],
+"2026-05-24":[1694160,285817,343789],
+"2026-05-25":[2017770,296093,449167],
+"2026-05-26":[1146860,263884,159870],
+"2026-05-27":[1650510,257435,355114],
+"2026-05-28":[1455980,223892,321224],
+"2026-05-29":[1134550,196024,212552],
+"2026-05-30":[1165530,254114,185481],
+"2026-05-31":[1306800,446102,51818],
+"2026-06-01":[1423110,340409,186438],
+"2026-06-02":[1155170,304372,132979],
+"2026-06-03":[1538240,334673,241366],
+"2026-06-04":[1401390,297423,221548],
+"2026-06-05":[1296330,273879,208428],
+"2026-06-06":[1264310,309424,172844],
+"2026-06-07":[1711360,286339,345537],
+"2026-06-08":[1603360,329133,271980],
+"2026-06-09":[1244080,290261,173852],
+"2026-06-10":[1299070,298413,196634],
+"2026-06-11":[1217290,303014,178125],
+"2026-06-12":[1433740,292365,246226],
+"2026-06-13":[1445430,306266,232899],
+"2026-06-14":[1517580,292971,291850],
+"2026-06-15":[1939690,294964,432046],
+"2026-06-16":[1381470,301421,208818],
+"2026-06-17":[1177780,288345,159223],
+"2026-06-18":[1423630,282252,261620],
+"2026-06-19":[1198090,322054,131569],
+"2026-06-20":[1314820,288393,213211],
+"2026-06-21":[2084280,268188,514217],
+"2026-06-22":[1377400,266842,253453],
+"2026-06-23":[1718420,279364,358858],
+"2026-06-24":[1229090,308740,141111],
+"2026-06-25":[1130690,311220,114765],
+"2026-06-26":[1466170,282550,269831],
+"2026-06-27":[1418980,284031,253424],
+"2026-06-28":[1645930,434251,194114],
+"2026-06-29":[1675420,398496,238790],
+"2026-06-30":[1688640,340973,287805],
+"2026-07-01":[1382270,383369,144687],
+"2026-07-02":[1576870,347789,263643],
+"2026-07-03":[1877020,366144,318337],
+"2026-07-04":[2391970,317455,573920],
+"2026-07-05":[1925770,447272,300683],
+"2026-07-06":[1732290,374187,266511],
+"2026-07-07":[2242160,367580,478168],
+"2026-07-08":[1442970,311455,233054],
+"2026-07-09":[1387800,338352,179988],
+"2026-07-10":[1455050,292393,279727],
+"2026-07-11":[1477020,318238,228532],
+"2026-07-12":[1893380,304501,399571],
+"2026-07-13":[1681810,318071,321485],
+"2026-07-14":[1555890,319825,268786],
+"2026-07-15":[1365430,305657,197160],
+"2026-07-16":[1380410,275945,222981],
+"2026-07-17":[1470610,289805,252041],
+"2026-07-18":[1567030,351491,235664],
+"2026-07-19":[1581910,299075,290921],
+"2026-07-20":[1345330,293569,214755],
+"2026-07-21":[1104570,306329,100763],
+"2026-07-22":[1677410,410059,211802],
+"2026-07-23":[1723520,379294,266265],
+"2026-07-24":[1408960,385630,133374],
+"2026-07-25":[1497780,395131,146076],
+"2026-07-26":[1715590,428329,219573],
+"2026-07-27":[1870210,432358,263214],
+"2026-07-28":[1502780,367119,193717],
+"2026-07-29":[1163590,346929,94507],
+"2026-07-30":[1390840,347377,167131],
+"2026-07-31":[1496000,287538,156504],
+"2026-08-01":[1976690,247788,374639],
+"2026-08-02":[2131580,232833,414953],
+"2026-08-03":[2116700,248794,381961],
+"2026-08-04":[1244240,216294,154908],
+"2026-08-05":[1492760,224025,252548],
+"2026-08-06":[1082840,205677,117914],
+"2026-08-07":[1445220,219957,175709],
+"2026-08-08":[1512400,211908,216728],
+"2026-08-09":[1287960,210651,167418],
+"2026-08-10":[1144560,231229,87218],
+"2026-08-11":[1647980,200047,146228],
+"2026-08-12":[1560260,187716,153098],
+"2026-08-13":[1125900,213299,22562],
+"2026-08-14":[1383510,235674,70447],
+"2026-08-15":[1299270,168652,104587],
+"2026-08-16":[1001550,107722,111166],
+"2026-08-17":[1310060,145493,143462],
+"2026-08-18":[1068870,144798,123682],
+"2026-08-19":[1304430,179671,130816],
+"2026-08-20":[1463770,270981,20590],
+"2026-08-21":[1333690,265081,2758],
+"2026-08-22":[2351820,265122,204912],
+"2026-08-23":[2126840,267166,158552],
+"2026-08-24":[2238380,265158,189142],
+"2026-08-25":[1736130,145951,204642],
+"2026-08-26":[1772110,149449,205739],
+"2026-08-27":[1759830,145533,208475],
+"2026-08-28":[2242780,146226,303229],
+"2026-08-29":[2785200,146187,416254],
+"2026-08-30":[2651670,150478,383359],
+"2026-08-31":[2478360,117020,530280],
+"2026-09-01":[2052030,99343,434366],
+"2026-09-02":[1734620,135288,327104],
+"2026-09-03":[1397330,139181,221356],
+"2026-09-04":[1490240,162047,181445],
+"2026-09-05":[1586660,140910,228041],
+"2026-09-06":[1833580,129084,269078],
+"2026-09-07":[1770620,154766,263314],
+"2026-09-08":[1187900,156479,114454],
+"2026-09-09":[1082940,106375,123384],
+"2026-09-10":[1427740,131945,173750],
+"2026-09-11":[1422270,155866,142479],
+"2026-09-12":[1667120,127934,223143],
+"2026-09-13":[1847550,100658,291512],
+"2026-09-14":[1707100,152805,217931],
+"2026-09-15":[1620660,94672,232167],
+"2026-09-16":[1229870,144983,107830],
+"2026-09-17":[1267830,145498,124002],
+"2026-09-18":[1281320,135383,138188],
+"2026-09-19":[1232370,123957,125320],
+"2026-09-20":[1389250,107624,183444],
+"2026-09-21":[1561170,142665,182824],
+"2026-09-22":[998480,114308,95248],
+"2026-09-23":[1141420,128071,100197],
+"2026-09-24":[785550,135083,42197],
+"2026-09-25":[999450,133363,79578],
+"2026-09-26":[1383240,177987,123051],
+"2026-09-27":[1651140,173898,167190],
+"2026-09-28":[1343300,150252,127809],
+"2026-09-29":[1295280,169964,125061],
+"2026-09-30":[1925960,201813,197930],
+"2026-10-01":[1742070,165780,203746],
+"2026-10-02":[1621630,188823,153001],
+"2026-10-03":[1756080,181747,198056],
+"2026-10-04":[1717060,221067,144521],
+"2026-10-05":[2135870,187976,263205],
+"2026-10-06":[1753040,185390,196332],
+"2026-10-07":[1529190,188655,135763],
+"2026-10-08":[1534570,210285,120377],
+"2026-10-09":[1803020,217023,172993],
+"2026-10-10":[1465210,182824,123864],
+"2026-10-11":[1568130,184744,156031],
+"2026-10-12":[1752030,189455,169600],
+"2026-10-13":[1920960,186614,183341],
+"2026-10-14":[1480160,177862,133394],
+"2026-10-15":[1405220,187844,101650],
+"2026-10-16":[1460140,183927,115738],
+"2026-10-17":[1771030,190203,156778],
+"2026-10-18":[1735030,186973,165741],
+"2026-10-19":[1746010,186265,183910],
+"2026-10-20":[1719010,206043,158978],
+"2026-10-21":[1576150,243459,72457],
+"2026-10-22":[1460200,211553,83542],
+"2026-10-23":[1690040,273802,75319],
+"2026-10-24":[1869960,265521,113062],
+"2026-10-25":[2077890,262502,141716],
+"2026-10-26":[1718070,259524,72332],
+"2026-10-27":[1306270,260765,13845],
+"2026-10-28":[1841930,301095,86140],
+"2026-10-29":[1979760,268679,144894],
+"2026-10-30":[1263290,232203,27268],
+"2026-10-31":[1253000,284385,-46523],
+"2026-11-01":[2498750,283204,221586],
+"2026-11-02":[2613950,266901,280757],
+"2026-11-03":[2022880,252173,158945],
+"2026-11-04":[1553940,226030,92669],
+"2026-11-05":[1593760,222601,86785],
+"2026-11-06":[1834840,213265,135836],
+"2026-11-07":[1764700,242637,99070],
+"2026-11-08":[1956750,256552,139519],
+"2026-11-09":[1632160,234767,72004],
+"2026-11-10":[1836470,214918,161946],
+"2026-11-11":[1522750,203781,116879],
+"2026-11-12":[1500470,215245,71256],
+"2026-11-13":[1429830,226780,36057],
+"2026-11-14":[1495990,251714,40866],
+"2026-11-15":[1972540,251844,117477],
+"2026-11-16":[1450580,215999,58547],
+"2026-11-17":[1534340,210269,85324]
+};
+
+/* 연도 합계 (빅셀 매출분석 / 정산분석 실측) */
+const YEAR_TOTAL = {
+  '2024': {sales:320255070, ad:71060635, net:64214430, qty:10857, organic:2802, advert:8055,
+           note:'빨래건조대 10,857개 단일 · 2024-01-01~12-31 (로켓그로스)'},
+  '2025': {sales:785425670, ad:191062652, net:116624771, qty:30115, organic:8175, advert:21940,
+           note:'빨래건조대 27,981 + 신발깔창 2,134 · 2025-01-01~12-31'},
+  '2026': {sales:null, ad:null, net:null, qty:null, note:'2026-05~11 일자별 수집 완료 · 1~4월 미수집'}
+};
+/* 2025 옵션별 정산 실측(빅셀 정산분석 엑셀 원문) — 원가/입출고/배송/수수료 기본값을 여기서 가져온다 */
+const OPT2025 = [{"id": "90451193372", "pid": "8188501167", "name": "올블랙 42~76cm", "st": "", "q": 5075, "s": 147164300, "c": 8810, "io": 1635.8, "sh": 2905.6, "f": 11.88, "net": 9910614}, {"id": "90451193374", "pid": "8188501167", "name": "올화이트 42~76cm", "st": "", "q": 17891, "s": 518719300, "c": 8970, "io": 1634.9, "sh": 2904.1, "f": 11.88, "net": 75383891}, {"id": "90677156164", "pid": "8188501167", "name": "올화이트 42~76cm", "st": "반품-최상", "q": 186, "s": 4569960, "c": 8970, "io": 1604.5, "sh": 2860.3, "f": 11.88, "net": 1839626}, {"id": "90691673256", "pid": "8188501167", "name": "올화이트 42~76cm", "st": "반품-상", "q": 184, "s": 4256680, "c": 8970, "io": 1613.7, "sh": 2887.9, "f": 11.88, "net": 1520103}, {"id": "90758484950", "pid": "8188501167", "name": "올화이트 42~76cm", "st": "반품-중", "q": 243, "s": 5357060, "c": 8970, "io": 1648.5, "sh": 2940.0, "f": 11.88, "net": 1869396}, {"id": "90760689011", "pid": "8188501167", "name": "올블랙 42~76cm", "st": "반품-최상", "q": 61, "s": 1497640, "c": 8810, "io": 1568.9, "sh": 2813.1, "f": 11.88, "net": 581888}, {"id": "90767413937", "pid": "8188501167", "name": "올블랙 42~76cm", "st": "반품-미사용", "q": 70, "s": 1840550, "c": 8810, "io": 1595.0, "sh": 2860.0, "f": 11.88, "net": 770078}, {"id": "90794402114", "pid": "8188501167", "name": "올블랙 42~76cm", "st": "반품-상", "q": 43, "s": 1006300, "c": 8810, "io": 1632.1, "sh": 2926.5, "f": 11.88, "net": 359555}, {"id": "90810838970", "pid": "8188501167", "name": "올화이트 42~76cm", "st": "반품-미사용", "q": 224, "s": 5856270, "c": 8970, "io": 1602.5, "sh": 2871.9, "f": 11.88, "net": 2381164}, {"id": "90867900464", "pid": "8188501167", "name": "올블랙 42~76cm", "st": "반품-중", "q": 49, "s": 1060100, "c": 8810, "io": 1630.9, "sh": 2910.5, "f": 11.88, "net": 364350}, {"id": "92552270128", "pid": "8188501167", "name": "올크림 42~76cm", "st": "", "q": 2389, "s": 69259700, "c": 9100, "io": 1586.3, "sh": 2827.0, "f": 11.88, "net": 9551653}, {"id": "92552270137", "pid": "8188501167", "name": "올핑크 42~76cm", "st": "", "q": 545, "s": 15801200, "c": 9100, "io": 1589.1, "sh": 2838.4, "f": 11.88, "net": -17825}, {"id": "92552270144", "pid": "8188501167", "name": "올라벤더 42~76cm", "st": "", "q": 478, "s": 13860500, "c": 10200, "io": 1604.6, "sh": 2970.7, "f": 11.88, "net": -741289}, {"id": "92641617692", "pid": "8188501167", "name": "올크림 42~76cm", "st": "반품-미사용", "q": 24, "s": 617460, "c": 12000, "io": 1595.0, "sh": 2860.0, "f": 11.88, "net": 153468}, {"id": "92687981208", "pid": "8188501167", "name": "올크림 42~76cm", "st": "반품-중", "q": 17, "s": 335030, "c": 9100, "io": 1595.0, "sh": 2860.0, "f": 11.88, "net": 105595}, {"id": "92699021431", "pid": "8188501167", "name": "올라벤더 42~76cm", "st": "반품-최상", "q": 4, "s": 92800, "c": 10200, "io": 1595.0, "sh": 2860.0, "f": 11.88, "net": 52907}, {"id": "92721109750", "pid": "8188501167", "name": "올핑크 42~76cm", "st": "반품-미사용", "q": 11, "s": 287100, "c": 9100, "io": 1595.0, "sh": 2860.0, "f": 11.88, "net": 107286}, {"id": "92740267117", "pid": "8188501167", "name": "올크림 42~76cm", "st": "반품-최상", "q": 38, "s": 880080, "c": 9100, "io": 1595.0, "sh": 2860.0, "f": 11.88, "net": 294516}, {"id": "92776927843", "pid": "8188501167", "name": "올핑크 42~76cm", "st": "반품-상", "q": 9, "s": 185310, "c": 9100, "io": 1595.0, "sh": 2860.0, "f": 11.88, "net": 41301}, {"id": "92799104655", "pid": "8188501167", "name": "올핑크 42~76cm", "st": "반품-최상", "q": 12, "s": 275360, "c": 9100, "io": 1462.1, "sh": 2621.7, "f": 11.88, "net": 84435}, {"id": "92836610146", "pid": "8188501167", "name": "올라벤더 42~76cm", "st": "반품-상", "q": 4, "s": 82360, "c": 10200, "io": 1595.0, "sh": 2860.0, "f": 11.88, "net": 28687}, {"id": "92870781276", "pid": "8188501167", "name": "올라벤더 42~76cm", "st": "반품-미사용", "q": 6, "s": 156600, "c": 10200, "io": 1595.0, "sh": 2860.0, "f": 11.88, "net": 66515}, {"id": "92907160699", "pid": "8188501167", "name": "올크림 42~76cm", "st": "반품-상", "q": 19, "s": 390130, "c": 9100, "io": 1595.0, "sh": 2860.0, "f": 11.88, "net": 119145}, {"id": "92946590046", "pid": "8188501167", "name": "올라벤더 42~76cm", "st": "반품-중", "q": 2, "s": 39440, "c": 10200, "io": 1595.0, "sh": 2860.0, "f": 11.88, "net": 19021}, {"id": "93299656202", "pid": "8188501167", "name": "올핑크 42~76cm", "st": "반품-중", "q": 5, "s": 98600, "c": 9100, "io": 1595.0, "sh": 2860.0, "f": 11.88, "net": 19110}, {"id": "92496571605", "pid": "9701805278", "name": "(37-38) 2개 블랙", "st": "", "q": 1001, "s": 12812800, "c": 0, "io": 1102.1, "sh": 1471.5, "f": 11.55, "net": 4468944}, {"id": "92496571610", "pid": "9701805278", "name": "280-285mm 2개 블랙+그레이", "st": "", "q": 144, "s": 1843200, "c": 1500, "io": 1106.1, "sh": 1463.2, "f": 11.55, "net": 534249}, {"id": "92496571616", "pid": "9701805278", "name": "230-235mm 2개 블랙+그레이", "st": "", "q": 444, "s": 5683200, "c": 1500, "io": 1100.4, "sh": 1468.2, "f": 11.55, "net": 800042}, {"id": "92496571622", "pid": "9701805278", "name": "(41-42) 2개 블랙", "st": "", "q": 1034, "s": 13235200, "c": 0, "io": 1105.6, "sh": 1464.1, "f": 11.55, "net": -3289638}, {"id": "92496571626", "pid": "9701805278", "name": "260-265mm 2개 블랙+그레이", "st": "", "q": 264, "s": 3379200, "c": 1500, "io": 1103.5, "sh": 1439.8, "f": 11.55, "net": 673734}, {"id": "92496571631", "pid": "9701805278", "name": "270-275mm 2개 블랙+그레이", "st": "", "q": 244, "s": 3123200, "c": 1500, "io": 1100.9, "sh": 1457.0, "f": 11.55, "net": 890308}, {"id": "92496571638", "pid": "9701805278", "name": "(43-44) 2개 블랙", "st": "", "q": 705, "s": 9024000, "c": 0, "io": 1101.2, "sh": 1467.7, "f": 11.55, "net": 4054385}, {"id": "92496571645", "pid": "9701805278", "name": "(45-46) 2개 블랙", "st": "", "q": 425, "s": 5440000, "c": 0, "io": 1095.9, "sh": 1457.7, "f": 11.55, "net": 1958858}, {"id": "92496571651", "pid": "9701805278", "name": "240-245mm 2개 블랙+그레이", "st": "", "q": 517, "s": 6617600, "c": 1500, "io": 1098.8, "sh": 1467.4, "f": 11.55, "net": 1668927}, {"id": "92496571657", "pid": "9701805278", "name": "(39-40) 2개 블랙", "st": "", "q": 767, "s": 9817600, "c": 0, "io": 1103.9, "sh": 1470.4, "f": 11.55, "net": 4510395}, {"id": "92496571664", "pid": "9701805278", "name": "(35-36) 2개 블랙", "st": "", "q": 767, "s": 9817600, "c": 0, "io": 1102.7, "sh": 1455.1, "f": 11.55, "net": 4152695}, {"id": "92496571669", "pid": "9701805278", "name": "250-255mm 2개 블랙+그레이", "st": "", "q": 331, "s": 4236800, "c": 1500, "io": 1104.0, "sh": 1462.4, "f": 11.55, "net": 1134537}, {"id": "92694351361", "pid": "9701805278", "name": "(41-42) 2개 블랙", "st": "반품-미사용", "q": 7, "s": 63110, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 33139}, {"id": "92743629187", "pid": "9701805278", "name": "(35-36) 2개 블랙", "st": "반품-미사용", "q": 6, "s": 54280, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.54, "net": 23504}, {"id": "92774923244", "pid": "9701805278", "name": "(35-36) 2개 블랙", "st": "반품-상", "q": 9, "s": 70400, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 25504}, {"id": "92793807930", "pid": "9701805278", "name": "230-235mm 2개 블랙+그레이", "st": "반품-상", "q": 7, "s": 55940, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 21167}, {"id": "92814331783", "pid": "9701805278", "name": "(39-40) 2개 블랙", "st": "반품-최상", "q": 4, "s": 33920, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 13946}, {"id": "92821032387", "pid": "9701805278", "name": "230-235mm 2개 블랙+그레이", "st": "반품-최상", "q": 8, "s": 68620, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 28014}, {"id": "92830164221", "pid": "9701805278", "name": "(45-46) 2개 블랙", "st": "반품-상", "q": 3, "s": 24320, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 9256}, {"id": "92830171516", "pid": "9701805278", "name": "240-245mm 2개 블랙+그레이", "st": "반품-상", "q": 12, "s": 95500, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 35450}, {"id": "92843983931", "pid": "9701805278", "name": "(41-42) 2개 블랙", "st": "반품-중", "q": 5, "s": 37120, "c": 1500, "io": 880.0, "sh": 1188.0, "f": 11.55, "net": 14993}, {"id": "92851618445", "pid": "9701805278", "name": "(37-38) 2개 블랙", "st": "반품-상", "q": 13, "s": 104340, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 39184}, {"id": "92887231028", "pid": "9701805278", "name": "(41-42) 2개 블랙", "st": "반품-최상", "q": 9, "s": 79240, "c": 1500, "io": 1100.0, "sh": 1402.5, "f": 11.55, "net": 34630}, {"id": "92896387129", "pid": "9701805278", "name": "(45-46) 2개 블랙", "st": "반품-최상", "q": 6, "s": 51460, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 21006}, {"id": "92902990405", "pid": "9701805278", "name": "(43-44) 2개 블랙", "st": "반품-상", "q": 5, "s": 39940, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 14902}, {"id": "92914508826", "pid": "9701805278", "name": "(41-42) 2개 블랙", "st": "반품-상", "q": 9, "s": 70940, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 26235}, {"id": "92915772578", "pid": "9701805278", "name": "240-245mm 2개 블랙+그레이", "st": "반품-최상", "q": 3, "s": 26120, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 15964}, {"id": "92921717152", "pid": "9701805278", "name": "(35-36) 2개 블랙", "st": "반품-최상", "q": 7, "s": 61320, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 30496}, {"id": "92938416714", "pid": "9701805278", "name": "(37-38) 2개 블랙", "st": "반품-최상", "q": 7, "s": 60300, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 29860}, {"id": "92940000699", "pid": "9701805278", "name": "(45-46) 2개 블랙", "st": "반품-미사용", "q": 3, "s": 27010, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 17100}, {"id": "92949436265", "pid": "9701805278", "name": "(39-40) 2개 블랙", "st": "반품-상", "q": 6, "s": 47620, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 17610}, {"id": "92950375352", "pid": "9701805278", "name": "230-235mm 2개 블랙+그레이", "st": "반품-미사용", "q": 7, "s": 63110, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 27228}, {"id": "93033970550", "pid": "9701805278", "name": "260-265mm 2개 블랙+그레이", "st": "반품-미사용", "q": 4, "s": 35970, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 15231}, {"id": "93064208358", "pid": "9701805278", "name": "250-255mm 2개 블랙+그레이", "st": "반품-상", "q": 4, "s": 32000, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 11964}, {"id": "93080202223", "pid": "9701805278", "name": "260-265mm 2개 블랙+그레이", "st": "반품-최상", "q": 7, "s": 59140, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 23714}, {"id": "93084863350", "pid": "9701805278", "name": "(39-40) 2개 블랙", "st": "반품-미사용", "q": 5, "s": 45060, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 19432}, {"id": "93094103782", "pid": "9701805278", "name": "(43-44) 2개 블랙", "st": "반품-미사용", "q": 6, "s": 54020, "c": 1500, "io": 916.7, "sh": 1237.5, "f": 11.55, "net": 25857}, {"id": "93099044607", "pid": "9701805278", "name": "(37-38) 2개 블랙", "st": "반품-미사용", "q": 6, "s": 54150, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 23388}, {"id": "93155643459", "pid": "9701805278", "name": "240-245mm 2개 블랙+그레이", "st": "반품-미사용", "q": 3, "s": 27010, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 12241}, {"id": "93346399676", "pid": "9701805278", "name": "(43-44) 2개 블랙", "st": "반품-중", "q": 3, "s": 19710, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 5178}, {"id": "93394665145", "pid": "9701805278", "name": "250-255mm 2개 블랙+그레이", "st": "반품-최상", "q": 1, "s": 8580, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 3504}, {"id": "93414252060", "pid": "9701805278", "name": "270-275mm 2개 블랙+그레이", "st": "반품-최상", "q": 2, "s": 16900, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 6778}, {"id": "93581857424", "pid": "9701805278", "name": "(43-44) 2개 블랙", "st": "반품-최상", "q": 3, "s": 25220, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 10052}, {"id": "93598883666", "pid": "9701805278", "name": "230-235mm 2개 블랙+그레이", "st": "반품-중", "q": 2, "s": 13310, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.56, "net": 3602}, {"id": "93721193576", "pid": "9701805278", "name": "260-265mm 2개 블랙+그레이", "st": "반품-상", "q": 2, "s": 15360, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 5416}, {"id": "93729808844", "pid": "9701805278", "name": "270-275mm 2개 블랙+그레이", "st": "반품-상", "q": 2, "s": 15360, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 5416}, {"id": "93736633733", "pid": "9701805278", "name": "(39-40) 2개 블랙", "st": "반품-중", "q": 1, "s": 6400, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 1576}, {"id": "94018439366", "pid": "9701805278", "name": "(37-38) 2개 블랙", "st": "반품-중", "q": 2, "s": 12800, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 3152}, {"id": "94163132604", "pid": "9701805278", "name": "270-275mm 2개 블랙+그레이", "st": "반품-미사용", "q": 1, "s": 8960, "c": 1500, "io": 1100.0, "sh": 1485.0, "f": 11.55, "net": 3840}, {"id": "92611169414", "pid": "8011099857", "name": "블루", "st": "", "q": 59, "s": 814200, "c": 2700, "io": 1074.8, "sh": 1815.0, "f": 11.88, "net": -5679}, {"id": "92611169422", "pid": "8011099857", "name": "민트", "st": "", "q": 49, "s": 676200, "c": 2700, "io": 1077.6, "sh": 1785.3, "f": 11.88, "net": -71941}, {"id": "92611169431", "pid": "8011099857", "name": "핑크", "st": "", "q": 59, "s": 814200, "c": 2700, "io": 1077.2, "sh": 1790.3, "f": 11.88, "net": -9784}, {"id": "92611169437", "pid": "8011099857", "name": "퍼플", "st": "", "q": 59, "s": 814200, "c": 2700, "io": 1077.2, "sh": 1790.3, "f": 11.88, "net": 11786}, {"id": "92611169461", "pid": "8011099857", "name": "베이지", "st": "", "q": 57, "s": 786600, "c": 2700, "io": 1077.3, "sh": 1789.4, "f": 11.88, "net": -238198}, {"id": "92611169465", "pid": "8011099857", "name": "그레이", "st": "", "q": 51, "s": 703800, "c": 2700, "io": 1077.9, "sh": 1757.8, "f": 11.88, "net": -217868}, {"id": "93699239616", "pid": "8011099857", "name": "민트", "st": "반품-중", "q": 1, "s": 5240, "c": 2700, "io": 1072.5, "sh": 1815.0, "f": 11.89, "net": -970}, {"id": "91489259433", "pid": "8436562849", "name": "블랙 (남녀공용 FREE)", "st": "반품-상", "q": 2, "s": 33840, "c": 7720, "io": 2227.5, "sh": 3960.0, "f": 11.88, "net": 34605}];
 
 /* ---------- 상품별 매출 변동 (11/17, 빅셀 대시보드) ---------- */
 const PRODUCT_DELTA = [
@@ -694,9 +922,13 @@ function profitOf(p){ return margin(p).profit; }
    - 하드코딩 DAILY + 자동 수집(bigcell-live.json)의 daily 값을 날짜(d) 기준으로 병합
    - DAILY 에 없는 새 날짜(예: 오늘 실시간 행)도 빠짐없이 포함해 보고서·캘린더·이번 달 합계에 반영 */
 function dailySeries(){
+  /* 빅셀 캘린더에서 받은 과거 일자별(2026-05~11): [매출, 광고비, 순이익금] */
+  const histRows = Object.keys(HIST).map(d=>({d, sales:HIST[d][0], ad:HIST[d][1], net:HIST[d][2],
+      profit:(HIST[d][2]!=null && HIST[d][1]!=null) ? HIST[d][2]+HIST[d][1] : null, hist:true}))
+    .filter(h=>!DAILY.some(r=>r.d===h.d));
   const extra = Object.keys(S.dailyOverrides||{})
-    .filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d) && !DAILY.some(r=>r.d===d));
-  const base = DAILY.concat(extra.map(d=>({d, live:true})));
+    .filter(d=>/^\d{4}-\d{2}-\d{2}$/.test(d) && !DAILY.some(r=>r.d===d) && !HIST[d]);
+  const base = DAILY.concat(histRows, extra.map(d=>({d, live:true})));
   base.sort((a,b)=> a.d<b.d ? -1 : (a.d>b.d ? 1 : 0));
   const liveDate = (S.live && S.live.date) || null;
   return base.map(r => {
@@ -717,8 +949,15 @@ function dailySeries(){
     if(estimate && sales!=null){
       profit = Math.round(sales*blendedMargin());
     }
+    /* 원가·할인가 구간이 수정되어 있으면 이익금을 즉시 재계산 */
+    let segCalc = false;
+    if(S.segments && Object.keys(S.segments).length && profit!=null){
+      const exact = segProfitFor(r.d);
+      if(exact!=null){ profit = exact; segCalc = true; estimate = false; }
+      else { const sc = segScale(r.d); if(sc && Math.abs(sc-1) > 0.0005){ profit = Math.round(profit*sc); segCalc = true; } }
+    }
     return Object.assign({}, r, {sales, ad, qty, coupon, netSales, profit, adQty, organicQty,
-      adPending: (adQty==null && qty!=null),
+      adPending: (adQty==null && qty!=null), segCalc,
       net: (profit!=null && ad!=null) ? profit-ad : null,
       live: r.d === liveDate, estimate});
   });
@@ -844,6 +1083,113 @@ function bindChartTips(root){
   });
 }
 
+/* ============================== 원가 · 할인가 구간 엔진 ============================== */
+/* 옵션 마스터: 2025 정산 실측(옵션별) + 현재 상품 마스터 + 라이브 옵션명 */
+const COST_OPTS = (function(){
+  const out = [];
+  const seen = {};
+  const prodName = pid => (PRODUCTS.find(p=>p.id===pid)||{}).short || pid;
+  OUTPUT: for(const o of OPT2025.concat([])){
+    const key = o.id;
+    if(seen[key]) continue;
+    seen[key] = 1;
+    out.push({id:key, pid:o.pid, name:o.name, prod:prodName(o.pid), status:o.st||'',
+      price:null, disc:null, fee:o.f, cost:o.c, inout:o.io, ship:o.sh,
+      q2025:o.q, s2025:o.s, net2025:o.net, seedFrom:'2025-01-01', weight:o.s||0});
+  }
+  /* 현재 판매 상품(원가·판매가 최신) */
+  for(const p of PRODUCTS){
+    const key = p.id;
+    if(seen[key]) continue;
+    seen[key]=1;
+    out.push({id:key, pid:p.id, name:p.short, prod:p.short, status:'운영',
+      price:p.price, disc:p.disc, fee:p.fee, cost:p.cost, inout:p.inout||0, ship:p.ship||0,
+      q2025:0, s2025:0, net2025:0, seedFrom:'2026-01-01', weight:0});
+  }
+  /* 총 가중치 정규화 */
+  const tot = out.reduce((a,o)=>a+(o.weight||0),0) || 1;
+  out.forEach(o=> o.weight = (o.weight||0)/tot);
+  return out;
+})();
+function costSeed(o){
+  return [{from:o.seedFrom, to:'', cost:o.cost, fee:o.fee, inout:o.inout, ship:o.ship,
+           price:o.price, disc:o.disc}];
+}
+function segList(id){
+  if(!S.segments) S.segments = {};
+  if(!S.segments[id]) S.segments[id] = costSeed(COST_OPTS.find(o=>o.id===id)||{seedFrom:'2026-01-01'});
+  return S.segments[id];
+}
+function segAt(id, ds){
+  const list = segList(id).filter(s=> (!s.from || s.from<=ds) && (!s.to || ds<=s.to));
+  list.sort((a,b)=> (a.from||'')<(b.from||'') ? 1 : -1);
+  return list[0] || null;
+}
+function econOf(base, seg){
+  const price = (seg && seg.price!=null) ? seg.price : (base.price!=null?base.price:22990);
+  const disc  = (seg && seg.disc!=null) ? seg.disc : (base.disc||0);
+  const fee   = (seg && seg.fee!=null) ? seg.fee : (base.fee||11.88);
+  const cost  = (seg && seg.cost!=null) ? seg.cost : (base.cost||0);
+  const inout = (seg && seg.inout!=null) ? seg.inout : (base.inout||0);
+  const ship  = (seg && seg.ship!=null) ? seg.ship : (base.ship||0);
+  const room  = price - disc;
+  const feeAmt = room*fee/100;
+  const profit = room - feeAmt - cost - inout - ship;
+  return {price, disc, fee, cost, inout, ship, room, feeAmt, profit, rate: price? profit/price*100 : 0};
+}
+function optEcon(id, ds){
+  const base = COST_OPTS.find(o=>o.id===id); if(!base) return null;
+  return econOf(base, segAt(id, ds));
+}
+function hasSegEdits(){
+  if(!S.segments) return false;
+  return Object.keys(S.segments).some(k=>{
+    const base = COST_OPTS.find(o=>o.id===k); if(!base) return true;
+    const seed = costSeed(base)[0], cur = S.segments[k][0];
+    if(!cur || S.segments[k].length!==1) return true;
+    return ['cost','fee','inout','ship','price','disc'].some(f=> (seed[f]??null)!==(cur[f]??null));
+  });
+}
+/* 원가 구간 반영 비율: 기본 대비 개당 이익금 변화 (2025 매출 가중) */
+let _segCache = {};
+function clearSegCache(){ _segCache = {}; }
+function segScale(ds){
+  if(_segCache[ds]!=null) return _segCache[ds];
+  let num=0, den=0;
+  COST_OPTS.forEach(o=>{
+    const e0 = econOf(o, costSeed(o)[0]);
+    const e1 = optEcon(o.id, ds);
+    if(!e1) return;
+    const w = Math.max(o.weight||0, 0.001);
+    num += e1.profit*w; den += e0.profit*w;
+  });
+  const v = den ? num/den : 1;
+  _segCache[ds] = v;
+  return v;
+}
+/* 특정 일자의 상품·옵션별 판매 내역 (빅셀/윙/라이브에서 확보된 것만) */
+function byItemFor(ds){
+  const t = S.live || {};
+  if(ds===t.date && Array.isArray(t.options) && t.options.length)
+    return t.options.map(o=>({name:o.name, qty:o.qty, adQty:null, organicQty:null, sales:o.sales, margin:o.margin}));
+  if(ds==='2026-11-18' && DEFAULTS.live.options)
+    return DEFAULTS.live.options.map(o=>({name:o.name, qty:o.qty, adQty:null, organicQty:null, sales:o.sales, margin:o.margin}));
+  return null;
+}
+function segProfitFor(ds){
+  const bi = byItemFor(ds);
+  if(!bi || !bi.length) return null;
+  let sum = 0, matched = 0;
+  bi.forEach(x=>{
+    const name = String(x.name||'');
+    const o = COST_OPTS.find(c=> name.indexOf(c.name)>=0 || (c.name.indexOf('올화이트')>=0 && name.indexOf('올화이트')>=0));
+    if(!o) return;
+    const e = optEcon(o.id, ds); if(!e) return;
+    sum += e.profit * (x.qty||0); matched += (x.qty||0);
+  });
+  return matched ? Math.round(sum) : null;
+}
+
 /* ============================== 네비게이션 ============================== */
 const NAV = [
   {g:'홈', items:[{id:'dashboard', ico:'🏠', label:'대시보드'}]},
@@ -853,6 +1199,7 @@ const NAV = [
     {id:'ads', ico:'📣', label:'광고 캠페인'},
     {id:'settle', ico:'💰', label:'정산·손익'}]},
   {g:'관리', items:[
+    {id:'cost', ico:'⚙️', label:'원가·할인가 관리'},
     {id:'stock', ico:'📦', label:'재고·품절'},
     {id:'rank', ico:'🔍', label:'노출순위'},
     {id:'report', ico:'💬', label:'알림톡 리포트'}]},
@@ -863,6 +1210,7 @@ const TABS = [
   {id:'daily', ico:'📈', label:'실적'},
   {id:'products', ico:'🧮', label:'마진'},
   {id:'settle', ico:'💰', label:'정산'},
+  {id:'cost', ico:'⚙️', label:'원가·할인'},
   {id:'report', ico:'💬', label:'리포트'}
 ];
 let view = 'dashboard';
@@ -1150,14 +1498,18 @@ function calendarCard(){
   const settles = Object.keys(settleByDate).filter(k=>k.startsWith(opt.calMonth));
   const calRows = mRows.slice(-14);
   const mini = lineChart(calRows.length>1?calRows:mRows, ['sales','profit','ad','net'], {compact:true, h:130});
+  const emptyNote = mRows.length ? '' : `<div class="hint" style="padding:9px 14px;background:#fff8e6;border-bottom:1px solid var(--line2);color:#8a6d1f">
+      <b>${y}년 ${mm}월</b> 일자별 데이터가 없습니다. ${YEAR_TOTAL[y] ? `빅셀 ${y}년 연간 합계 — 매출 <b>${won(YEAR_TOTAL[y].sales)}원</b> · 광고비 <b>${won(YEAR_TOTAL[y].ad)}원</b> · 순이익금 <b>${won(YEAR_TOTAL[y].net)}원</b> (${esc(YEAR_TOTAL[y].note)})` : '아직 받지 않은 기간입니다.'}</div>`;
   return `<div class="card">
     ${sectionHead('월간 흐름 캘린더','',
       `<div class="cal-legend">
         <span><i style="background:#101b34"></i>매출</span><span><i style="background:#f59f00"></i>광고비</span><span><i style="background:#2f6bff"></i>순이익금</span>
         <span><i style="background:#2158c9"></i>정산금 입금</span><span><i style="background:#f59f00;border-radius:50%"></i>메모</span></div>`)}
+    ${emptyNote}
     <div class="cal-wrap">
       <div class="cal-side">
         <div class="yearbar"><button data-act="yearMinus">‹</button><b>${y}년</b><button data-act="yearPlus">›</button></div>
+        <div class="toolbar" style="gap:4px;margin:0 0 6px">${[2024,2025,2026].map(yy=>`<button class="btn ${yy===y?'primary':''}" style="padding:3px 9px;font-size:11px" data-act="yearPick" data-y="${yy}">${yy}년</button>`).join('')}</div>
         <div class="months">${Array.from({length:12},(_,i)=>{
           const mk = `${y}-${pad(i+1)}`;
           return `<button class="${opt.calMonth===mk?'on':''}" data-act="monthPick" data-m="${mk}">${i+1}월</button>`;
@@ -1211,13 +1563,18 @@ function adOrganicCard(){
     const bar = has
       ? `<div class="ao-bar" title="광고 ${r.adQty} · 자연 ${r.organicQty}"><i class="ad" style="width:${pct1(ap)}%"></i><i class="og" style="width:${pct1(op)}%"></i></div>`
       : `<div class="ao-bar pend" title="광고 전환 판매수는 익일 확정됩니다"><i></i></div>`;
+    const items = byItemFor(r.d) || [];
+    const chips = items.length ? `<tr class="ao-items"><td colspan="5"><div class="ao-chipwrap">${
+      items.map(x=>`<span class="ao-chip"><b>${esc(String(x.name).replace(/\s*특가\(.*\)/,''))}</b> <span class="q">${x.qty}개</span>${
+        (x.adQty!=null) ? ` <i class="c-ad">광고 ${x.adQty}</i> <i class="c-og">자연 ${x.organicQty}</i>` : ' <i class="c-pend">광고/자연 미집계</i>`}</span>`).join('')
+    }</div></td></tr>` : '';
     return `<tr class="${isToday?'today':''}">
       <td class="l"><b class="ao-d">${fmtDate(r.d)}</b>${isToday?' <span class="tag live">오늘</span>':''}</td>
       <td class="num"><b class="ao-n">${r.qty}개</b>${bar}</td>
       <td class="num">${has?`<b class="ao-ad">${r.adQty}개</b> <span class="ao-p">${pct1(ap)}%</span>`:'<span class="flat">광고 집계 전</span>'}</td>
       <td class="num">${has?`<b class="ao-og">${r.organicQty}개</b> <span class="ao-p">${pct1(op)}%</span>`:'<span class="flat">—</span>'}</td>
       <td class="num">${status}</td>
-    </tr>`;
+    </tr>${chips}`;
   }).join('');
   const conf = rows.filter(r=>r.adQty!=null && r.organicQty!=null);
   const confQ = conf.reduce((a,r)=>a+r.qty,0);
@@ -1908,6 +2265,34 @@ document.addEventListener('change', ev=>{
 });
 
 /* ============================== 날짜 상세 모달 ============================== */
+/* ---- 날짜 모달: 상품·옵션별 판매 내역 ---- */
+function dayItemsHTML(ds, r){
+  const items = byItemFor(ds);
+  if(!items || !items.length){
+    return `<div class="sec-t">상품 · 옵션별 판매 내역</div>
+      <div class="blank">이 날짜의 옵션별 판매 내역은 아직 없습니다. (빅셀은 옵션별 일별 판매를 제공하지 않고, 쿠팡 윙 재고현황·광고센터에서만 확인됩니다)</div>`;
+  }
+  const rows = items.map(x=>{
+    const name = String(x.name||'');
+    const o = COST_OPTS.find(c=> name.indexOf(c.name)>=0);
+    const e = o ? optEcon(o.id, ds) : null;
+    const margin = x.margin!=null ? x.margin : (e ? e.profit*(x.qty||0) : null);
+    return `<tr>
+      <td class="l"><b>${esc(name)}</b>${o?`<div class="hint" style="font-size:10px">${esc(o.id)}</div>`:''}</td>
+      <td class="num">${x.qty!=null?x.qty+'개':'-'}</td>
+      <td class="num">${x.adQty!=null?x.adQty+'개':'<span class="flat">—</span>'}</td>
+      <td class="num">${x.organicQty!=null?x.organicQty+'개':'<span class="flat">—</span>'}</td>
+      <td class="num">${won(x.sales)}</td>
+      <td class="num">${won(margin)}</td>
+    </tr>`;
+  }).join('');
+  const known = items.some(x=>x.adQty!=null);
+  return `<div class="sec-t">상품 · 옵션별 판매 내역 <span class="cnt">${items.length}개 옵션</span></div>
+    <div class="tbl-wrap"><table class="tbl"><thead><tr><th class="l">옵션</th><th>판매수</th><th>광고</th><th>자연</th><th>매출</th><th>이익금</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>
+    <div class="hint" style="margin-top:4px">${known?'광고/자연 판매수는 쿠팡 광고센터 전환 판매수 기준입니다.':'이 날짜는 옵션별 광고/자연 분리가 아직 확정되지 않았습니다(광고 전환은 익일 확정).'}</div>`;
+}
+
 function openDay(ds){
   const rows = dailySeries();
   const r = rows.find(x=>x.d===ds);
@@ -1927,13 +2312,16 @@ function openDay(ds){
     <div class="mb">
       ${r ? `
       <div class="kv">
-        <div class="b"><div class="l">매출</div><div class="n num">${wonW(r.sales)}</div><div class="d num">${deltaHTML(p?deltaPct(r.sales,p.sales):null)} 전날 대비</div></div>
-        <div class="b"><div class="l">광고비</div><div class="n num">${wonW(r.ad)}</div><div class="d num">${deltaHTML(p?deltaPct(r.ad,p.ad):null)} 전날 대비</div></div>
-        <div class="b"><div class="l">순이익금</div><div class="n num" style="color:var(--blue)">${wonW(r.net)}</div><div class="d num">${deltaHTML(p?deltaPct(r.net,p.net):null)} 전날 대비</div></div>
+        <div class="b"><div class="l">매출 <span class="tag coup">쿠폰 전</span></div><div class="n num">${wonW(r.sales)}</div><div class="d num">${deltaHTML(p?deltaPct(r.sales,p.sales):null)} 전일 대비</div></div>
+        <div class="b"><div class="l">쿠폰 할인</div><div class="n num" style="color:var(--up)">−${won(r.coupon||0)}</div><div class="d num">실매출 <b>${wonW(netSalesOf(r))}</b></div></div>
+        <div class="b"><div class="l">광고비 <span class="tag">VAT포함</span></div><div class="n num">${wonW(r.ad)}</div><div class="d num">VAT별도 ${won(Math.round((r.ad||0)/1.1))}원 · ${deltaHTML(p?deltaPct(r.ad,p.ad):null)}</div></div>
+        <div class="b"><div class="l">순이익금</div><div class="n num" style="color:var(--blue)">${wonW(r.net)}</div><div class="d num">${deltaHTML(p?deltaPct(r.net,p.net):null)} 전일 대비</div></div>
       </div>
-      <div class="stat-line"><span class="lb">이익금</span><span class="vl num">${wonW(r.profit)}</span></div>
-      <div class="stat-line"><span class="lb">이익률 / 광고비율</span><span class="vl num">${pct1(r.profit/r.sales*100)}% / ${pct1(r.ad/r.sales*100)}%</span></div>
-      <div class="stat-line"><span class="lb">순이익률</span><span class="vl num">${pct1((r.net)/r.sales*100)}%</span></div>
+      <div class="stat-line"><span class="lb">이익금 (광고 전 마진)</span><span class="vl num">${wonW(r.profit)}${r.segCalc?' <span class="tag">원가구간 반영</span>':''}</span></div>
+      <div class="stat-line"><span class="lb">이익률 / 광고비율</span><span class="vl num">${r.sales?pct1(r.profit/r.sales*100):'-'}% / ${r.sales?pct1(r.ad/r.sales*100):'-'}%</span></div>
+      <div class="stat-line"><span class="lb">순이익률</span><span class="vl num">${r.sales&&r.net!=null?pct1(r.net/r.sales*100):'-'}%</span></div>
+      <div class="stat-line"><span class="lb">판매수 (광고 / 자연)</span><span class="vl num">${r.qty!=null?`${r.qty}개${r.adQty!=null?` · 광고 ${r.adQty} · 자연 ${r.organicQty}`:' · 광고/자연 집계 전'}`:'-'}</span></div>
+      ${dayItemsHTML(ds, r)}
       ` : `<div class="blank" style="margin-bottom:12px">${fmtDate(ds)} 매출 데이터가 아직 없습니다.</div>`}
 
       <div class="sec-t">구매대행 입고 예정 <span class="cnt">0건</span></div>
@@ -1964,6 +2352,7 @@ function openDay(ds){
 }
 function closeModal(){ const r = document.getElementById('modalRoot'); if(r) r.innerHTML=''; }
 ACTIONS.dayOpen = (d)=>{ opt.selDate=d.d; openDay(d.d); };
+ACTIONS.yearPick = (d)=>{ const mm=opt.calMonth.slice(5,7); opt.calMonth = d.y+'-'+mm; render(); };
 ACTIONS.memoAdd = (d)=>{ closeModal(); memoForm(d.d); };
 ACTIONS.memoEdit = (d)=>{ closeModal(); memoForm(d.k.split('#')[0], d.k); };
 ACTIONS.memoDel = (d)=>{ delete S.memos[d.k]; save(); closeModal(); render(); };
@@ -2348,6 +2737,116 @@ function lpCopy(){
   } else { manual(); }
 }
 ACTIONS.liveOpen = ()=> openLivePanel();
+
+/* ============================== ⚙️ 원가 · 할인가 관리 ============================== */
+opt.costDate = opt.costDate || '2026-11-19';
+opt.costSel  = opt.costSel  || (COST_OPTS[0] && COST_OPTS[0].id);
+opt.costQ    = opt.costQ    || '';
+
+VIEWS.cost = function(){
+  const q = (opt.costQ||'').trim();
+  const list = COST_OPTS.filter(o=> !q || (o.name+' '+o.prod+' '+o.id).indexOf(q)>=0);
+  const selId = COST_OPTS.some(o=>o.id===opt.costSel) ? opt.costSel : (list[0]&&list[0].id);
+  const o = COST_OPTS.find(x=>x.id===selId) || COST_OPTS[0];
+  const ds = opt.costDate;
+  const segs = o ? segList(o.id).slice().sort((a,b)=> (a.from||'')<(b.from||'')?1:-1) : [];
+  const e = o ? optEcon(o.id, ds) : null;
+  const edited = hasSegEdits();
+  const scale = segScale(ds);
+
+  const optRows = list.map(x=>{
+    const ee = optEcon(x.id, ds);
+    return `<button class="nav-item ${x.id===selId?'on':''}" style="width:100%;text-align:left;padding:7px 10px" data-act="costPick" data-id="${x.id}">
+      <span style="display:block;font-weight:700;font-size:12.5px">${esc(x.name)}${x.status?` <span class="pill">${esc(x.status)}</span>`:''}</span>
+      <span style="display:block;font-size:11px;color:#5d6d92">${esc(x.prod)} · 원가 ${won(ee&&ee.cost)}원 · 이익 ${won(ee&&ee.profit)}원</span></button>`;
+  }).join('');
+
+  const segRows = o ? segs.map((sg,i)=>{
+    const cell = (k, ph, w) => `<td><input class="inp" style="width:${w||76}px" type="text" value="${sg[k]==null?'':sg[k]}" placeholder="${ph||''}" data-act="segSet" data-id="${o.id}" data-i="${i}" data-k="${k}"></td>`;
+    return `<tr>
+      ${cell('from','2025-01-01',86)}${cell('to','(계속)',86)}${cell('price','판매가')}${cell('disc','할인가')}
+      ${cell('fee','수수료%',64)}${cell('cost','원가')}${cell('inout','입출고')}${cell('ship','배송비')}
+      <td class="num"><button class="btn ghost" style="color:var(--up)" data-act="segDel" data-id="${o.id}" data-i="${i}">삭제</button></td>
+    </tr>`;
+  }).join('') : '';
+
+  const preview = o && e ? `
+    <div class="stat-line"><span class="lb">적용 구간</span><span class="vl">${segAt(o.id,ds) ? esc(segAt(o.id,ds).from||'-')+' ~ '+esc(segAt(o.id,ds).to||'계속') : '기본값'}</span></div>
+    <div class="stat-line"><span class="lb">판매가 − 할인가</span><span class="vl num">${won(e.price)} − ${won(e.disc)} = ${won(e.room)}원</span></div>
+    <div class="stat-line"><span class="lb">마켓수수료 ${pct1(e.fee)}%</span><span class="vl num">− ${won(e.feeAmt)}원</span></div>
+    <div class="stat-line"><span class="lb">원가</span><span class="vl num">− ${won(e.cost)}원</span></div>
+    <div class="stat-line"><span class="lb">입출고비 (VAT포함)</span><span class="vl num">− ${won(e.inout)}원</span></div>
+    <div class="stat-line"><span class="lb">배송비 (VAT포함)</span><span class="vl num">− ${won(e.ship)}원</span></div>
+    <div class="stat-line" style="border-top:1px solid var(--line2)"><span class="lb"><b>개당 이익금</b></span><span class="vl num" style="color:var(--good)"><b>${won(e.profit)}원</b> (${pct1(e.rate)}%)</span></div>
+  ` : '';
+
+  return topbar('⚙️ 원가 · 할인가 관리','상품·옵션별 원가 · 마켓수수료 · 입출고/배송비 · 판매가 · 할인가를 <b>날짜 구간</b>으로 관리합니다',
+      `<button class="btn" data-act="segExport">JSON 내보내기</button>
+       <label class="btn" style="cursor:pointer">JSON 불러오기<input type="file" accept=".json" style="display:none" data-act="segImport"></label>
+       <button class="btn ghost" data-act="segReset">기본값 초기화</button>`)
+  + `<div class="kpis" style="margin-bottom:14px">
+      <div class="kpi"><div class="lab">선택 옵션</div><div class="val" style="font-size:15px">${o?esc(o.name):'-'}</div><div class="delta"><span class="flat">${o?esc(o.prod)+' · '+esc(o.id):''}</span></div></div>
+      ${kpiCard(`${fmtDate(ds)} 기준 개당 이익금`, won(e&&e.profit)+'원', `<span class="flat">이익률 ${pct1(e&&e.rate)}%</span>`)}
+      ${kpiCard('원가 구간 반영 배율', pct1(scale*100)+'%', `<span class="flat">${edited?'원가·할인가 수정 반영 중':'빅셀 기본값 그대로'}</span>`)}
+      ${kpiCard('등록된 구간', segs.length+'개', `<span class="flat">기준일 ${fmtDate(ds)}</span>`)}
+    </div>`
+  + `<div class="two">
+      <div class="card" style="min-width:300px">
+        ${sectionHead('상품 · 옵션','빅셀 등록 옵션 전체')}
+        <div style="padding:10px 12px"><input class="inp" style="width:100%" type="text" placeholder="옵션명 · 상품명 · 옵션ID 검색" value="${esc(opt.costQ)}" data-act="costSearch"></div>
+        <div style="max-height:520px;overflow:auto;padding:0 8px 10px">${optRows || '<div class="blank">검색 결과가 없습니다.</div>'}</div>
+      </div>
+      <div class="card">
+        ${sectionHead(`${o?esc(o.name):'옵션'} 원가 · 할인가 구간`, '기준일부터 적용 · 종료일 비우면 계속 적용',
+          `<input class="inp" type="date" value="${ds}" data-act="costDate">`)}
+        <div class="tbl-wrap"><table class="tbl">
+          <thead><tr><th class="l">시작일</th><th>종료일</th><th>판매가</th><th>할인가</th><th>수수료%</th><th>원가</th><th>입출고</th><th>배송비</th><th></th></tr></thead>
+          <tbody>${segRows || '<tr><td class="l" colspan="9"><span class="flat">등록된 구간이 없습니다.</span></td></tr>'}</tbody>
+        </table></div>
+        <div style="padding:10px 12px"><button class="btn primary" data-act="segAdd" data-id="${o?o.id:''}">＋ 구간 추가</button>
+          <span class="hint" style="margin-left:8px">빈 칸은 기본값(상품 마스터)을 사용합니다. 숫자는 원/％ 단위.</span></div>
+        <div style="padding:0 14px 14px">${preview}</div>
+        <div class="card-b" style="border-top:1px solid var(--line2)"><div class="hint">
+          <b>빅셀 방식 그대로</b> — 원가/할인가는 “기준일부터 적용되는 구간”으로 저장됩니다(빅셀 상품관리 → 원가 입력 히스토리와 동일한 개념).
+          여기서 값을 바꾸면 일자별 이익금·순이익이 즉시 다시 계산되고, 브라우저(localStorage)에 보관되며 JSON으로 내보내기/불러오기가 됩니다.
+        </div></div>
+      </div>
+    </div>`;
+};
+
+ACTIONS.costPick = d=>{ opt.costSel = d.id; render(); };
+ACTIONS.costDate = (d, el)=>{ opt.costDate = el.value || opt.costDate; render(); };
+ACTIONS.costSearch = (d, el)=>{ opt.costQ = el.value; const app=document.getElementById('app'); if(app){ app.innerHTML = VIEWS[view](); afterRender(app); } const i=document.querySelector('[data-act="costSearch"]'); if(i){ i.focus(); i.setSelectionRange(i.value.length,i.value.length);} };
+ACTIONS.segSet = (d, el)=>{
+  const id=d.id, i=+d.i, k=d.k;
+  const seg = (S.segments[id]||[])[i]; if(!seg) return;
+  const raw = String(el.value||'').trim();
+  if(k==='from'||k==='to'){ seg[k] = raw; }
+  else { const v = raw==='' ? null : Number(raw.replace(/[^0-9.\-]/g,'')); seg[k] = isNaN(v) ? null : v; }
+  clearSegCache(); save(); render();
+};
+ACTIONS.segAdd = (d)=>{
+  const id=d.id; if(!id) return;
+  const list = segList(id); const last = list.slice().sort((a,b)=>(a.from||'')<(b.from||'')?1:-1)[0]||{};
+  list.push({from: opt.costDate, to:'', cost:last.cost, fee:last.fee, inout:last.inout, ship:last.ship, price:last.price, disc:last.disc});
+  clearSegCache(); save(); render();
+};
+ACTIONS.segDel = (d)=>{ const id=d.id, i=+d.i; const list=S.segments[id]||[]; list.splice(i,1); if(!list.length) delete S.segments[id]; save(); render(); };
+ACTIONS.segReset = ()=>{ if(!confirm('원가·할인가 구간을 모두 지우고 빅셀 기본값으로 되돌릴까요?')) return; S.segments={}; clearSegCache(); save(); render(); };
+ACTIONS.segExport = ()=>{
+  const data = {exportedAt:new Date().toISOString(), segments:S.segments};
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='rispeto-원가할인가-'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+};
+ACTIONS.segImport = (d, el)=>{
+  const f = el.files && el.files[0]; if(!f) return;
+  const fr = new FileReader();
+  fr.onload = ()=>{ try{ const j=JSON.parse(fr.result); const seg=j.segments||j; if(typeof seg!=='object') throw 0;
+      S.segments = Object.assign({}, S.segments, seg); clearSegCache(); save(); render(); alert('원가·할인가 구간을 불러왔습니다.'); }
+    catch(e){ alert('파일을 읽을 수 없습니다. (JSON 형식 확인)'); } };
+  fr.readAsText(f);
+};
 
 /* ============================== 시작 ============================== */
 render();
