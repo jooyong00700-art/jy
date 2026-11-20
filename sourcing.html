@@ -1028,6 +1028,7 @@ function gbNorm(o){
     cny: cny,
     krw: krw,
     url1688: txt(o.url1688),
+    match: txt(o.match),
     time: txt(o.collectedAt || o.checked || o.time)
   };
 }
@@ -1071,7 +1072,7 @@ function gbCardHTML(it){
   var dc = it.discount != null ? '<span class="dc">' + Math.round(it.discount) + "%</span>" : "";
   var orig = it.orig != null ? "<s>" + nf.format(Math.round(it.orig)) + "원</s>" : "";
   var cost = (it.cny == null && it.krw == null)
-    ? '<div class="cny null">1688 원가 조사 전</div>'
+    ? '<div class="cny null">' + (it.match ? esc(it.match) : "1688 원가 조사 전") + '</div>'
     : '<div class="cny">¥' + (it.cny != null ? fmtCny(it.cny) : "–") +
       (it.krw != null ? '<span class="won"> · ' + nf.format(Math.round(it.krw)) + "원</span>" : "") + "</div>";
   var btns = (it.url ? '<a class="gb-btn"' + cpAttrs(it.pid, "", it.url, it.name) + '>쿠팡 ↗</a>' : "") +
