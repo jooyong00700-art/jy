@@ -2036,36 +2036,40 @@ function todayCampaignsCard(live){
 }
 
 /* ---- 매출 보고서 ---- */
+/* 날짜 한 줄 렌더 (행별 🔄 재수집 버튼 포함) — 행 단위 갱신에서도 그대로 재사용 */
+function reportRowHTML(rows, r){
+  const p = rows[rows.indexOf(r)-1];
+  const d = k => p ? deltaPct(k==='sales'?netSalesOf(r):r[k], k==='sales'?netSalesOf(p):p[k]) : null;
+  const cellDelta = k => {
+    const v = d(k);
+    if(opt.repUnit==='pct') return deltaHTML(v);
+    const rv = k==='sales'?netSalesOf(r):r[k], pv = p?(k==='sales'?netSalesOf(p):p[k]):null;
+    if(v==null || !p || rv==null || pv==null) return '<span class="flat">-</span>';
+    const diff = rv-pv;
+    return `<span class="${diff>0?'up':(diff<0?'down':'flat')}">${diff>0?'+':''}${won(diff)}</span>`;
+  };
+  return `<tr data-row-d="${r.d}">
+    <td class="l"><b>${fmtDate(r.d)}</b>${r.live?' <span class="tag live">LIVE</span>':''}${r.estimate?' <span class="tag estimate">추정</span>':''}${r.qty!=null?`<div class="qsplit">${(r.adQty!=null&&r.organicQty!=null)?`<b class="num" style="color:#16202f">${r.qty}개</b><span class="qa">광고 ${r.adQty}</span><span class="qo">자연 ${r.organicQty}</span>`:`<b class="num" style="color:#16202f">${r.qty}개</b><span class="qp">광고 집계 전</span>`}</div>`:''}</td>
+    <td class="num">${wonW(netSalesOf(r))}<div style="font-size:11px">${cellDelta('sales')}</div></td>
+    <td class="num">${wonW(r.profit)}<div style="font-size:11px">${cellDelta('profit')}</div></td>
+    <td class="num">${wonW(r.ad)}<div style="font-size:11px">${cellDelta('ad')}</div></td>
+    <td class="num"><b>${wonW(r.net)}</b><div style="font-size:11px">${cellDelta('net')}</div></td>
+    <td class="num rfx-cell"><button type="button" class="rfx-row" data-act="rowRefresh" data-d="${r.d}" title="${r.d} 매출만 다시 불러오기 · 쿠팡(윙·광고센터) 재수집 요청 문구" aria-label="${fmtDate(r.d)} 날짜 행 새로고침">🔄</button></td>
+  </tr>`;
+}
 function reportCard(rows){
   const list = rows.slice().reverse().slice(0, 14);
   const keys = ['sales','profit','ad','net'];
   const table = `<div class="tbl-wrap"><table class="tbl">
-    <thead><tr><th class="l">날짜</th><th>매출(쿠폰제외)</th><th>광고전 마진</th><th>광고비(VAT포함)</th><th>순이익금</th></tr></thead>
-    <tbody>${list.map((r,i)=>{
-      const p = rows[rows.indexOf(r)-1];
-      const d = k => p ? deltaPct(k==='sales'?netSalesOf(r):r[k], k==='sales'?netSalesOf(p):p[k]) : null;
-      const cellDelta = k => {
-        const v = d(k);
-        if(opt.repUnit==='pct') return deltaHTML(v);
-        const rv = k==='sales'?netSalesOf(r):r[k], pv = p?(k==='sales'?netSalesOf(p):p[k]):null;
-        if(v==null || !p || rv==null || pv==null) return '<span class="flat">-</span>';
-        const diff = rv-pv;
-        return `<span class="${diff>0?'up':(diff<0?'down':'flat')}">${diff>0?'+':''}${won(diff)}</span>`;
-      };
-      return `<tr>
-        <td class="l"><b>${fmtDate(r.d)}</b>${r.live?' <span class="tag live">LIVE</span>':''}${r.estimate?' <span class="tag estimate">추정</span>':''}${r.qty!=null?`<div class="qsplit">${(r.adQty!=null&&r.organicQty!=null)?`<b class="num" style="color:#16202f">${r.qty}개</b><span class="qa">광고 ${r.adQty}</span><span class="qo">자연 ${r.organicQty}</span>`:`<b class="num" style="color:#16202f">${r.qty}개</b><span class="qp">광고 집계 전</span>`}</div>`:''}</td>
-        <td class="num">${wonW(netSalesOf(r))}<div style="font-size:11px">${cellDelta('sales')}</div></td>
-        <td class="num">${wonW(r.profit)}<div style="font-size:11px">${cellDelta('profit')}</div></td>
-        <td class="num">${wonW(r.ad)}<div style="font-size:11px">${cellDelta('ad')}</div></td>
-        <td class="num"><b>${wonW(r.net)}</b><div style="font-size:11px">${cellDelta('net')}</div></td>
-      </tr>`;
-    }).join('')}</tbody>
+    <thead><tr><th class="l">날짜</th><th>매출(쿠폰제외)</th><th>광고전 마진</th><th>광고비(VAT포함)</th><th>순이익금</th><th class="rfx-th">갱신</th></tr></thead>
+    <tbody>${list.map(r=>reportRowHTML(rows,r)).join('')}</tbody>
   </table></div>`;
   const chart = legend(keys,['매출','이익금','광고비','순이익금']) + `<div data-rows="report">${lineChart(rows.slice(-14), keys, {step:500000})}</div>`;
   return `<div class="card">
     ${sectionHead('매출 보고서','최근 14일',
-      `<div class="seg" data-seg="repUnit"><button class="${opt.repUnit==='pct'?'on':''}" data-act="repUnit" data-v="pct">%</button><button class="${opt.repUnit==='amt'?'on':''}" data-act="repUnit" data-v="amt">금액</button></div>
-       <div class="seg" data-seg="repMode"><button class="${opt.repMode==='table'?'on':''}" data-act="repMode" data-v="table">표</button><button class="${opt.repMode==='chart'?'on':''}" data-act="repMode" data-v="chart">차트</button></div>`)}
+      `<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap">${refreshButtonsHTML()}
+      <div class="seg" data-seg="repUnit"><button class="${opt.repUnit==='pct'?'on':''}" data-act="repUnit" data-v="pct">%</button><button class="${opt.repUnit==='amt'?'on':''}" data-act="repUnit" data-v="amt">금액</button></div>
+      <div class="seg" data-seg="repMode"><button class="${opt.repMode==='table'?'on':''}" data-act="repMode" data-v="table">표</button><button class="${opt.repMode==='chart'?'on':''}" data-act="repMode" data-v="chart">차트</button></div></div>`)}
     <div class="card-b ${opt.repMode==='table'?'flush':''}">${opt.repMode==='table'?table:chart}</div>
   </div>`;
 }
@@ -3498,8 +3502,8 @@ ACTIONS.segImport = (d, el)=>{
    - 🔄 매출 새로고침: bigcell-live/history/products.json을 캐시 없이 즉시 다시 읽어
      실시간 매출(S.live)·일자별(daily)·윙 판매가·상품 목록을 최신화하고 화면 전체를 다시 그린다.
    - 🔁 이번달 전체 재수집: 같은 재로드 후 원가·할인가 규칙까지 적용해 이번 달 전체를
-     처음부터 다시 계산하고, 서버(빅셀·윙) 재수집이 필요할 때 쓸 요청 문구를 복사해 준다.
-   - 정적 HTML에서는 브라우저 보안(CORS/로그인) 때문에 빅셀·윙에 직접 접속할 수 없다.
+     처음부터 다시 계산하고, 서버(쿠팡 윙·광고센터) 재수집이 필요할 때 쓸 요청 문구를 복사해 준다.
+   - 정적 HTML에서는 브라우저 보안(CORS/로그인) 때문에 쿠팡 윙·광고센터에 직접 접속할 수 없다.
    ============================================================ */
 const RFX = {
   liveUrl:'https://raw.githubusercontent.com/jooyong00700-art/jy/main/bigcell-live.json',
@@ -3518,6 +3522,16 @@ const RFX = {
   .rfx .rfx-at{font-size:11px; color:#7b869a; font-weight:600; white-space:nowrap}
   .rfx .rfx-at b{color:#43506a}
   .rfx .rfx-btn[disabled]{opacity:.55; cursor:progress}
+  .rfx-th{padding-left:6px!important; padding-right:6px!important; text-align:center!important; font-size:11px!important}
+  .rfx-cell{padding:5px 6px!important; text-align:center!important}
+  .rfx-row{display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; padding:0;
+    border:1px solid #dfe5f0; border-radius:8px; background:#fff; color:#2f6bff; font-size:13px; line-height:1;
+    cursor:pointer; transition:border-color .15s, background .15s}
+  .rfx-row:hover{border-color:#9dbcff; background:#f4f8ff}
+  .rfx-row:active{transform:scale(.94)}
+  .rfx-row[disabled]{opacity:.5; cursor:progress; transform:none}
+  @keyframes rfxFlash{0%{background:#fff6d6} 70%{background:#fff6d6} 100%{background:transparent}}
+  tr.rfx-flash>td{animation:rfxFlash 1.9s ease-out}
   .toast-wrap{position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:220;
     display:flex; flex-direction:column; align-items:center; gap:8px; pointer-events:none; max-width:94vw}
   .toast{background:#0f1a30; color:#fff; font-size:13px; font-weight:700; padding:11px 16px; border-radius:12px;
@@ -3689,6 +3703,131 @@ ACTIONS.revenueRefresh = async function(){
   }
 };
 
+/* ---------- 🔄 날짜 행 개별 새로고침 · 재수집 요청 ---------- */
+function rfxDayRow(d){ return dailySeries().find(r=>r.d===d) || null; }
+function rfxDaySnapshot(d){
+  const r = rfxDayRow(d);
+  return r ? {sales:netSalesOf(r), profit:r.profit, ad:r.ad, net:r.net, qty:r.qty, estimate:r.estimate, segCalc:r.segCalc} : null;
+}
+/* 헤더의 '최근 갱신' 라벨을 화면 전체 재렌더 없이 갱신 */
+function rfxPaintStamp(){
+  if(!RFX.lastAt) return;
+  document.querySelectorAll('.rfx').forEach(w=>{
+    let at = w.querySelector('.rfx-at');
+    if(!at){ at = document.createElement('span'); at.className = 'rfx-at'; w.appendChild(at); }
+    at.innerHTML = '최근 갱신 <b>' + esc(RFX.lastAt) + '</b>';
+  });
+}
+/* 그 날짜 행만 다시 계산해 DOM을 바로 바꿔치기 — 다른 날짜 행·화면 상태는 그대로 */
+function rfxRedrawDayRow(d){
+  if(typeof reportRowHTML !== 'function') return false;
+  const rows = dailySeries();
+  const r = rows.find(x=>x.d===d);
+  const tr = document.querySelector(`tr[data-row-d="${d}"]`);
+  if(!r || !tr) return false;
+  const holder = document.createElement('tbody');
+  holder.innerHTML = reportRowHTML(rows, r);
+  const nr = holder.firstElementChild;
+  if(!nr) return false;
+  tr.replaceWith(nr);
+  const nb = nr.querySelector('.rfx-row');
+  if(nb) nb.onclick = ev=>{ ev.stopPropagation(); ACTIONS.rowRefresh({d: nb.dataset.d}, nb); };
+  nr.classList.add('rfx-flash');
+  setTimeout(()=>nr.classList.remove('rfx-flash'), 2000);
+  return true;
+}
+function rfxCopyPhrase(phrase){
+  const done = ()=>toast('요청 문구를 복사했습니다', 'ok', '채팅에 붙여 보내면 재수집을 진행합니다');
+  const manual = ()=>{
+    const inp = document.getElementById('rfxPhrase');
+    if(!inp) return;
+    inp.focus(); inp.select();
+    try{ document.execCommand('copy'); done(); }
+    catch(e){ toast('복사가 안 됩니다', 'warn', '입력창의 문구를 길게 눌러 직접 복사하세요'); }
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(phrase).then(done).catch(manual);
+  } else { manual(); }
+}
+ACTIONS.rowRefresh = async function(ds){
+  if(RFX.busy) return;
+  const d = String((ds && ds.d) || '');
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(d)){ toast('날짜를 확인할 수 없습니다', 'err'); return; }
+  RFX.busy = true;
+  const btn = document.querySelector(`.rfx-row[data-d="${d}"]`);
+  if(btn){ btn.disabled = true; btn.textContent = '⏳'; }
+  const before = rfxDaySnapshot(d);
+  try{
+    const {res, fails} = await rfxFetchAll();
+    const info = rfxApplyAll(res);
+    /* 원가·할인가 규칙까지 반영해 그 날짜를 다시 계산 */
+    if(!S.segments) S.segments = {};
+    clearSegCache(); save();
+    RFX.lastFails = fails;
+    RFX.lastAt = rfxStamp(info);
+    RFX.busy = false;
+    const redrawn = rfxRedrawDayRow(d);
+    if(redrawn){
+      rfxPaintStamp();
+    } else {
+      /* 표가 아닌 화면(차트 모드 등)이거나 행이 없으면 전체 렌더로 되돌림 */
+      save(); render();
+    }
+    const after = rfxDaySnapshot(d);
+    rfxDayModal(d, after, before, fails, info);
+  }catch(e){
+    RFX.busy = false;
+    if(btn){ btn.disabled = false; btn.textContent = '🔄'; }
+    toast('이 날짜 새로고침 실패', 'err', esc((e && e.message) || '알 수 없는 오류'));
+  }
+};
+function rfxDayModal(d, after, before, fails, info){
+  const phrase = `${d} 매출 쿠팡(윙·광고센터)에서 재수집해줘`;
+  const segN = Object.keys(S.segments || {}).length;
+  const dS = (before && after) ? (after.sales - before.sales) : 0;
+  const dN = (before && after) ? ((after.net||0) - (before.net||0)) : 0;
+  const deltaLine = (dS || dN)
+    ? `<div class="hint" style="margin-top:2px">새로 받은 값 반영 — 매출 <b>${dS>0?'+':''}${won(dS)}원</b> · 순이익금 <b>${dN>0?'+':''}${won(dN)}원</b></div>` : '';
+  const failLine = fails.length
+    ? `<div style="margin:10px 0 0; padding:9px 11px; border:1px solid #ffd8a8; background:#fff8ee; border-radius:10px; font-size:12px; color:#8a5a00; line-height:1.6">
+         ⚠ 일부 파일을 못 받았습니다 — ${esc(fails.join(' · '))}. 위 수치는 받은 데이터 + 저장된 수치로 계산했습니다.</div>` : '';
+  const body = after ? `
+      <div class="stat-line"><span class="lb">날짜</span><span class="vl num">${d}</span></div>
+      <div class="stat-line"><span class="lb">매출 (쿠폰 제외)</span><span class="vl num">${won(after.sales)}원</span></div>
+      <div class="stat-line"><span class="lb">이익금 (광고 전 마진)</span><span class="vl num">${won(after.profit)}원</span></div>
+      <div class="stat-line"><span class="lb">광고비 (VAT 포함)</span><span class="vl num">${won(after.ad)}원</span></div>
+      <div class="stat-line"><span class="lb"><b>순이익금</b></span><span class="vl num"><b>${won(after.net)}원</b></span></div>
+      <div class="stat-line"><span class="lb">판매수</span><span class="vl">${after.qty!=null?after.qty+'개':'-'}</span></div>
+      <div class="stat-line"><span class="lb">원가·할인가 규칙</span><span class="vl">${after.segCalc?'적용됨 (이 날짜 기준 구간)':(segN?'이 날짜 적용 구간 없음 (기본값)':'수정 없음 (기본값)')}</span></div>
+      <div class="stat-line"><span class="lb">데이터 업데이트</span><span class="vl">${esc(info && info.updatedAt ? info.updatedAt : RFX.lastAt)}</span></div>
+      ${deltaLine}`
+    : `<div class="hint" style="line-height:1.7">이 날짜의 매출 데이터가 아직 없습니다. 아래 문구로 재수집을 요청하면 이 행이 채워집니다.</div>`;
+  const html = `<div class="mask" id="mask"><div class="modal" style="width:min(560px,100%)">
+    <div class="mh"><h3>🔄 ${fmtDate(d)} 행 갱신</h3><button class="x" data-close="1">✕</button></div>
+    <div class="mb">
+      <div class="hint" style="font-size:12.5px; line-height:1.7; margin-bottom:12px">
+        최신 저장 데이터와 원가·할인가 규칙으로 <b>${d}</b> 행만 다시 계산했습니다. 쿠팡(윙·광고센터) 원본을 다시 긁어와야 하면 아래 요청 문구를 복사해 마쭈에게 보내세요.
+      </div>
+      ${body}
+      ${failLine}
+      <div class="sec-t" style="margin-top:16px">이 날짜 재수집 요청</div>
+      <div style="display:flex; gap:7px; align-items:stretch; flex-wrap:wrap">
+        <input class="inp" id="rfxPhrase" readonly value="${esc(phrase)}" style="flex:1 1 230px; font-weight:700">
+        <button class="btn primary" id="rfxCopy">📋 ${d} 재수집 요청 복사</button>
+      </div>
+      <div class="hint" style="margin-top:7px">복사한 문구를 채팅에 붙여 보내면 마쭈가 쿠팡 윙·광고센터에서 ${d} 매출을 다시 수집해 이 행에 반영합니다.</div>
+      <div class="mfoot"><button class="btn" data-close="1">닫기</button></div>
+    </div>
+  </div></div>`;
+  const root = document.getElementById('modalRoot') || (()=>{ const d2 = document.createElement('div'); d2.id='modalRoot'; document.body.appendChild(d2); return d2; })();
+  root.innerHTML = html;
+  root.querySelectorAll('[data-close]').forEach(b=>b.onclick = closeModal);
+  const mask = document.getElementById('mask');
+  if(mask) mask.onclick = ev=>{ if(ev.target.id==='mask') closeModal(); };
+  const cp = document.getElementById('rfxCopy');
+  if(cp) cp.onclick = ()=>rfxCopyPhrase(phrase);
+}
+
 /* ---------- 🔁 이번달 전체 재수집 ---------- */
 ACTIONS.monthRecollect = async function(){
   if(RFX.busy) return;
@@ -3716,8 +3855,8 @@ function rfxRecollectModal(m, sum, before, fails, info){
   const y = parts[0], mm = Number(parts[1]);
   const cur = String((S.live && S.live.date) || '').slice(0,7);
   const phrase = (m === cur)
-    ? `이번달(${m}) 전체 매출 빅셀·윙에서 재수집해줘`
-    : `${m} 전체 매출 빅셀·윙에서 재수집해줘`;
+    ? `이번달(${m}) 전체 매출 쿠팡(윙·광고센터)에서 재수집해줘`
+    : `${m} 전체 매출 쿠팡(윙·광고센터)에서 재수집해줘`;
   const segN = Object.keys(S.segments || {}).length;
   const dSales = sum.sales - before.sales, dNet = sum.net - before.net;
   const deltaLine = (dSales || dNet)
@@ -3729,7 +3868,7 @@ function rfxRecollectModal(m, sum, before, fails, info){
     <div class="mh"><h3>🔁 ${y}년 ${mm}월 전체 재계산 완료</h3><button class="x" data-close="1">✕</button></div>
     <div class="mb">
       <div class="hint" style="font-size:12.5px; line-height:1.7; margin-bottom:12px">
-        최신 저장 데이터 기준 이번 달 재계산을 완료했습니다. 빅셀/쿠팡 윙 서버에서 이번 달 전체를 다시 긁어와야 하면 아래 버튼을 눌러 마쭈에게 바로 요청하세요.
+        최신 저장 데이터 기준 이번 달 재계산을 완료했습니다. 쿠팡(윙·광고센터)에서 이번 달 전체를 다시 긁어와야 하면 아래 버튼을 눌러 마쭈에게 바로 요청하세요.
       </div>
       <div class="stat-line"><span class="lb">재계산 기간</span><span class="vl num">${y}-${pad(mm)} · ${sum.days}일</span></div>
       <div class="stat-line"><span class="lb">매출 (쿠폰 제외)</span><span class="vl num">${won(sum.sales)}원</span></div>
@@ -3745,7 +3884,7 @@ function rfxRecollectModal(m, sum, before, fails, info){
         <input class="inp" id="rfxPhrase" readonly value="${esc(phrase)}" style="flex:1 1 230px; font-weight:700">
         <button class="btn primary" id="rfxCopy">📋 문구 복사</button>
       </div>
-      <div class="hint" style="margin-top:7px">복사한 문구를 채팅에 그대로 붙여 보내면 마쭈가 빅셀·쿠팡 윙에서 ${y}년 ${mm}월 일자별 매출을 다시 수집해 이 대시보드에 반영합니다.</div>
+      <div class="hint" style="margin-top:7px">복사한 문구를 채팅에 그대로 붙여 보내면 마쭈가 쿠팡 윙·광고센터에서 ${y}년 ${mm}월 일자별 매출을 다시 수집해 이 대시보드에 반영합니다.</div>
       <div class="mfoot"><button class="btn" data-close="1">닫기</button></div>
     </div>
   </div></div>`;
@@ -3754,20 +3893,8 @@ function rfxRecollectModal(m, sum, before, fails, info){
   root.querySelectorAll('[data-close]').forEach(b=>b.onclick = closeModal);
   const mask = document.getElementById('mask');
   if(mask) mask.onclick = ev=>{ if(ev.target.id==='mask') closeModal(); };
-  const inp = document.getElementById('rfxPhrase');
   const cp = document.getElementById('rfxCopy');
-  if(cp) cp.onclick = ()=>{
-    const done = ()=>toast('요청 문구를 복사했습니다', 'ok', '채팅에 붙여 보내면 재수집을 진행합니다');
-    const manual = ()=>{
-      if(!inp) return;
-      inp.focus(); inp.select();
-      try{ document.execCommand('copy'); done(); }
-      catch(e){ toast('복사가 안 됩니다', 'warn', '입력창의 문구를 길게 눌러 직접 복사하세요'); }
-    };
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(phrase).then(done).catch(manual);
-    } else { manual(); }
-  };
+  if(cp) cp.onclick = ()=>rfxCopyPhrase(phrase);
 }
 
 /* ============================== 시작 ============================== */
