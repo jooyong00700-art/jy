@@ -3875,7 +3875,7 @@ function rfxRecollectModal(m, sum, before, fails, info){
       <div class="stat-line"><span class="lb">이익금 (광고 전 마진)</span><span class="vl num">${won(sum.profit)}원</span></div>
       <div class="stat-line"><span class="lb">광고비 (VAT 포함)</span><span class="vl num">${won(sum.ad)}원</span></div>
       <div class="stat-line"><span class="lb"><b>순이익금</b></span><span class="vl num"><b>${won(sum.net)}원</b></span></div>
-      <div class="stat-line"><span class="lb">원가·할인가 규칙</span><span class="vl">${segN?`적용 중 · 구간 ${segN}개 상품`:'수정 없음 (빅셀 기본값)'}</span></div>
+      <div class="stat-line"><span class="lb">원가·할인가 규칙</span><span class="vl">${segN?`적용 중 · 구간 ${segN}개 상품`:'수정 없음 (기본값)'}</span></div>
       <div class="stat-line"><span class="lb">데이터 업데이트</span><span class="vl">${esc(info && info.updatedAt ? info.updatedAt : RFX.lastAt)}</span></div>
       ${deltaLine}
       ${failLine}
