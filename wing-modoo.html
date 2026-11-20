@@ -167,6 +167,42 @@ body.menu-open .mobile-menu{max-height:440px}
 .center-tit p.sub{margin-top:16px;font-size:17px;color:#5c655f;letter-spacing:-.3px}
 .center-tit .only-m{display:none}
 
+/* ---------- 팀 무한 슬라이드 (히어로 ↔ 차별화 경계) ---------- */
+.team-strip{position:relative;overflow:hidden;padding:0 0 56px;
+  background:linear-gradient(180deg,#fff 0%,#F6FCF8 48%,#F8F8F8 100%)}
+.team-strip::before{content:"";position:absolute;left:50%;top:0;transform:translateX(-50%);
+  width:min(1240px,100%);height:1px;background:linear-gradient(90deg,transparent,rgba(0,199,60,.22) 20%,rgba(0,199,60,.22) 80%,transparent)}
+.team-head{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:7px;
+  padding:36px 20px 0;margin-bottom:30px;text-align:center}
+.team-head .t-kicker{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:900;
+  letter-spacing:2.4px;color:var(--green-d)}
+.team-head .t-kicker::before,.team-head .t-kicker::after{content:"";width:22px;height:2px;border-radius:2px;background:var(--green-mint)}
+.team-head .t-lead{max-width:760px;font-size:20px;font-weight:800;color:#242424;letter-spacing:-.7px;line-height:1.5;word-break:keep-all}
+.team-head .t-lead b{color:var(--green-d)}
+.team-marquee{position:relative;width:100%;overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 91%,transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 9%,#000 91%,transparent 100%)}
+.team-track{display:flex;align-items:center;width:max-content;will-change:transform;
+  animation:teamScroll 44s linear infinite}
+.team-strip:hover .team-track,.team-track:focus-within{animation-play-state:paused}
+.team-set{display:flex;align-items:center;gap:22px;padding-right:22px;flex:0 0 auto}
+@keyframes teamScroll{from{transform:translate3d(0,0,0)}to{transform:translate3d(-25%,0,0)}}
+.team-card{display:flex;align-items:center;gap:16px;flex:0 0 auto;width:262px;padding:13px 22px 13px 13px;
+  background:#fff;border-radius:60px;text-align:left;
+  box-shadow:0 18px 34px -26px rgba(0,50,25,.55),inset 0 0 0 1px rgba(0,199,60,.10);
+  transition:transform .4s cubic-bezier(.2,.7,.2,1),box-shadow .4s ease}
+.team-card:hover{transform:translateY(-4px);
+  box-shadow:0 24px 38px -24px rgba(0,60,30,.5),inset 0 0 0 1.5px rgba(0,199,60,.34)}
+.team-photo{width:76px;height:76px;flex:0 0 auto;border-radius:50%;overflow:hidden;background:var(--green-l);
+  box-shadow:0 0 0 3px #fff,0 0 0 4.5px rgba(0,199,60,.15)}
+.team-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;background:var(--green-l)}
+/* 실제 사진(검은 배경) 카드 — 테두리와 자연스럽게 어우러지도록 */
+.team-photo--dark{background:#0b0b0b;box-shadow:0 0 0 3px #fff,0 0 0 4.5px rgba(22,22,22,.20)}
+.team-photo--dark img{object-position:center top;background:#0b0b0b}
+.team-meta{display:grid;gap:1px;min-width:0}
+.team-meta .t-name{font-size:20px;font-weight:900;letter-spacing:-.9px;color:#1b1b1b;line-height:1.25;white-space:nowrap}
+.team-meta .t-role{font-size:13px;font-weight:800;color:var(--green-d);letter-spacing:.2px;line-height:1.4}
+
 /* ---------- 차별화 3가지 ---------- */
 .diff{background:var(--soft)}
 .diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:74px}
@@ -597,6 +633,33 @@ body.menu-open .mobile-menu{max-height:440px}
   .modal-box{padding:24px 20px 20px;border-radius:16px}
   .toast{font-size:12.5px;padding:11px 16px;bottom:84px;width:max-content;max-width:88vw}
 }
+/* ---------- 팀 슬라이드 반응형 ---------- */
+@media (max-width:1080px){
+  .team-head .t-lead{font-size:18px}
+  .team-card{width:246px;gap:14px;padding:12px 20px 12px 12px}
+  .team-photo{width:68px;height:68px}
+  .team-meta .t-name{font-size:18px}
+  .team-meta .t-role{font-size:12.5px}
+}
+@media (max-width:768px){
+  .team-strip{padding-bottom:40px}
+  .team-head{padding-top:26px;margin-bottom:22px;gap:5px}
+  .team-head .t-kicker{font-size:11px;letter-spacing:2px}
+  .team-head .t-kicker::before,.team-head .t-kicker::after{width:14px}
+  .team-head .t-lead{font-size:14.5px;letter-spacing:-.3px;line-height:1.55}
+  .team-set{gap:12px;padding-right:12px}
+  .team-card{width:206px;gap:11px;padding:9px 16px 9px 9px;border-radius:50px}
+  .team-photo{width:56px;height:56px;box-shadow:0 0 0 2px #fff,0 0 0 3.2px rgba(0,199,60,.15)}
+  .team-photo--dark{box-shadow:0 0 0 2px #fff,0 0 0 3.2px rgba(22,22,22,.20)}
+  .team-meta .t-name{font-size:16px}
+  .team-meta .t-role{font-size:11.5px}
+  .team-track{animation-duration:34s}
+  .team-marquee{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%)}
+}
+@media (prefers-reduced-motion:reduce){
+  .team-track{animation:none!important}
+}
+.no-anim .team-track{animation:none}
 @media (max-width:420px){
   .hero h1{font-size:30px}
   .hero-btns .btn{font-size:14px;padding:12px 16px}
@@ -709,6 +772,122 @@ body.menu-open .mobile-menu{max-height:440px}
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 팀 무한 슬라이드 ================= -->
+<section class="team-strip" aria-label="주식회사 윙 팀 소개">
+  <div class="container team-head" data-reveal>
+    <p class="t-kicker">WING TEAM</p>
+    <p class="t-lead">상담 접수부터 원고 기획·댓글 관리까지, <b>6명의 전문 인력</b>이 팀으로 움직입니다</p>
+  </div>
+  <div class="team-marquee">
+    <div class="team-track">
+    <div class="team-set">
+      <article class="team-card">
+        <div class="team-photo"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-1.jpg" alt="이주용 대표" width="76" height="76" loading="eager" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-1.jpg'"></div>
+        <div class="team-meta"><p class="t-name">이주용</p><p class="t-role">대표</p></div>
+      </article>
+      <article class="team-card">
+        <div class="team-photo"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-2.jpg" alt="윤강빈 이사" width="76" height="76" loading="eager" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-2.jpg'"></div>
+        <div class="team-meta"><p class="t-name">윤강빈</p><p class="t-role">이사</p></div>
+      </article>
+      <article class="team-card">
+        <div class="team-photo team-photo--dark"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-3-leehojin.jpg" alt="이호진 부장" width="76" height="76" loading="eager" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-3-leehojin.jpg'"></div>
+        <div class="team-meta"><p class="t-name">이호진</p><p class="t-role">부장</p></div>
+      </article>
+      <article class="team-card">
+        <div class="team-photo"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-4.jpg" alt="이찬혁 팀장" width="76" height="76" loading="eager" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-4.jpg'"></div>
+        <div class="team-meta"><p class="t-name">이찬혁</p><p class="t-role">팀장</p></div>
+      </article>
+      <article class="team-card">
+        <div class="team-photo"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-5.jpg" alt="우태균 차장" width="76" height="76" loading="eager" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-5.jpg'"></div>
+        <div class="team-meta"><p class="t-name">우태균</p><p class="t-role">차장</p></div>
+      </article>
+      <article class="team-card">
+        <div class="team-photo"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-6.jpg" alt="이을용 실장" width="76" height="76" loading="eager" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-6.jpg'"></div>
+        <div class="team-meta"><p class="t-name">이을용</p><p class="t-role">실장</p></div>
+      </article>
+    </div>
+    <div class="team-set" aria-hidden="true">
+      <article class="team-card">
+        <div class="team-photo"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-1.jpg" alt="이주용 대표" width="76" height="76" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-1.jpg'"></div>
+        <div class="team-meta"><p class="t-name">이주용</p><p class="t-role">대표</p></div>
+      </article>
+      <article class="team-card">
+        <div class="team-photo"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-2.jpg" alt="윤강빈 이사" width="76" height="76" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-2.jpg'"></div>
+        <div class="team-meta"><p class="t-name">윤강빈</p><p class="t-role">이사</p></div>
+      </article>
+      <article class="team-card">
+        <div class="team-photo team-photo--dark"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-3-leehojin.jpg" alt="이호진 부장" width="76" height="76" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-3-leehojin.jpg'"></div>
+        <div class="team-meta"><p class="t-name">이호진</p><p class="t-role">부장</p></div>
+      </article>
+      <article class="team-card">
+        <div class="team-photo"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-4.jpg" alt="이찬혁 팀장" width="76" height="76" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-4.jpg'"></div>
+        <div class="team-meta"><p class="t-name">이찬혁</p><p class="t-role">팀장</p></div>
+      </article>
+      <article class="team-card">
+        <div class="team-photo"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-5.jpg" alt="우태균 차장" width="76" height="76" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-5.jpg'"></div>
+        <div class="team-meta"><p class="t-name">우태균</p><p class="t-role">차장</p></div>
+      </article>
+      <article class="team-card">
+        <div class="team-photo"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-6.jpg" alt="이을용 실장" width="76" height="76" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-6.jpg'"></div>
+        <div class="team-meta"><p class="t-name">이을용</p><p class="t-role">실장</p></div>
+      </article>
+    </div>
+    <div class="team-set" aria-hidden="true">
+      <article class="team-card">
+        <div class="team-photo"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-1.jpg" alt="이주용 대표" width="76" height="76" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-1.jpg'"></div>
+        <div class="team-meta"><p class="t-name">이주용</p><p class="t-role">대표</p></div>
+      </article>
+      <article class="team-card">
+        <div class="team-photo"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-2.jpg" alt="윤강빈 이사" width="76" height="76" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-2.jpg'"></div>
+        <div class="team-meta"><p class="t-name">윤강빈</p><p class="t-role">이사</p></div>
+      </article>
+      <article class="team-card">
+        <div class="team-photo team-photo--dark"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-3-leehojin.jpg" alt="이호진 부장" width="76" height="76" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-3-leehojin.jpg'"></div>
+        <div class="team-meta"><p class="t-name">이호진</p><p class="t-role">부장</p></div>
+      </article>
+      <article class="team-card">
+        <div class="team-photo"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-4.jpg" alt="이찬혁 팀장" width="76" height="76" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-4.jpg'"></div>
+        <div class="team-meta"><p class="t-name">이찬혁</p><p class="t-role">팀장</p></div>
+      </article>
+      <article class="team-card">
+        <div class="team-photo"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-5.jpg" alt="우태균 차장" width="76" height="76" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-5.jpg'"></div>
+        <div class="team-meta"><p class="t-name">우태균</p><p class="t-role">차장</p></div>
+      </article>
+      <article class="team-card">
+        <div class="team-photo"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-6.jpg" alt="이을용 실장" width="76" height="76" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-6.jpg'"></div>
+        <div class="team-meta"><p class="t-name">이을용</p><p class="t-role">실장</p></div>
+      </article>
+    </div>
+    <div class="team-set" aria-hidden="true">
+      <article class="team-card">
+        <div class="team-photo"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-1.jpg" alt="이주용 대표" width="76" height="76" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-1.jpg'"></div>
+        <div class="team-meta"><p class="t-name">이주용</p><p class="t-role">대표</p></div>
+      </article>
+      <article class="team-card">
+        <div class="team-photo"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-2.jpg" alt="윤강빈 이사" width="76" height="76" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-2.jpg'"></div>
+        <div class="team-meta"><p class="t-name">윤강빈</p><p class="t-role">이사</p></div>
+      </article>
+      <article class="team-card">
+        <div class="team-photo team-photo--dark"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-3-leehojin.jpg" alt="이호진 부장" width="76" height="76" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-3-leehojin.jpg'"></div>
+        <div class="team-meta"><p class="t-name">이호진</p><p class="t-role">부장</p></div>
+      </article>
+      <article class="team-card">
+        <div class="team-photo"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-4.jpg" alt="이찬혁 팀장" width="76" height="76" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-4.jpg'"></div>
+        <div class="team-meta"><p class="t-name">이찬혁</p><p class="t-role">팀장</p></div>
+      </article>
+      <article class="team-card">
+        <div class="team-photo"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-5.jpg" alt="우태균 차장" width="76" height="76" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-5.jpg'"></div>
+        <div class="team-meta"><p class="t-name">우태균</p><p class="t-role">차장</p></div>
+      </article>
+      <article class="team-card">
+        <div class="team-photo"><img src="https://raw.githubusercontent.com/jooyong00700-art/jy/main/assets/team/member-6.jpg" alt="이을용 실장" width="76" height="76" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='assets/team/member-6.jpg'"></div>
+        <div class="team-meta"><p class="t-name">이을용</p><p class="t-role">실장</p></div>
+      </article>
+    </div>
     </div>
   </div>
 </section>
