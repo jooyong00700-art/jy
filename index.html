@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+<script>
+/* 커스텀 도메인 접속 시 랜딩페이지(wing-modoo)로 이동 / github.io 접속은 기존 대시보드 유지 */
+(function(){try{var h=(location.hostname||'').toLowerCase();if((h==='wing-ss.com'||h==='www.wing-ss.com')&&(location.pathname==='/'||location.pathname==='/index.html')){location.replace('wing-modoo.html'+location.search+location.hash);}}catch(e){}})();
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#101b34">
