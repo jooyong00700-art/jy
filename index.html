@@ -2145,9 +2145,10 @@ function calendarCard(){
       <b>${y}년 ${mm}월</b> 일자별 데이터가 없습니다. ${YEAR_TOTAL[y] ? `빅셀 ${y}년 연간 합계 — 매출 <b>${won(YEAR_TOTAL[y].sales)}원</b> · 광고비 <b>${won(YEAR_TOTAL[y].ad)}원</b> · 순이익금 <b>${won(YEAR_TOTAL[y].net)}원</b> (${esc(YEAR_TOTAL[y].note)})` : '아직 받지 않은 기간입니다.'}</div>`;
   return `<div class="card">
     ${sectionHead('월간 흐름 캘린더','',
-      `<div class="cal-legend">
+      `<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap">${refreshButtonsHTML()}
+      <div class="cal-legend">
         <span><i style="background:#101b34"></i>매출</span><span><i style="background:#f59f00"></i>광고비</span><span><i style="background:#2f6bff"></i>순이익금</span>
-        <span><i style="background:#2158c9"></i>정산금 입금</span><span><i style="background:#f59f00;border-radius:50%"></i>메모</span></div>`)}
+        <span><i style="background:#2158c9"></i>정산금 입금</span><span><i style="background:#f59f00;border-radius:50%"></i>메모</span></div></div>`)}
     ${emptyNote}
     <div class="cal-wrap">
       <div class="cal-side">
@@ -2232,7 +2233,7 @@ function adOrganicCard(){
     </tr>` : '';
   return `<div class="card" style="margin-bottom:14px">
     ${sectionHead('📊 날짜별 광고 · 자연 판매수', `${fmtDate(AO_START)} 이후 · 최신순 자동 갱신`,
-      `<div class="ao-lg"><span><i class="ad"></i>광고</span><span><i class="og"></i>자연</span></div>`)}
+      `<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap">${refreshButtonsHTML()}<div class="ao-lg"><span><i class="ad"></i>광고</span><span><i class="og"></i>자연</span></div></div>`)}
     <div class="tbl-wrap"><table class="tbl ao-tbl">
       <thead><tr><th class="l">날짜</th><th>총 판매수</th><th>광고<span class="ao-w"> 판매수</span><span class="ao-sub"> (비중)</span></th><th>자연<span class="ao-w"> 판매수</span><span class="ao-sub"> (비중)</span></th><th>상태</th></tr></thead>
       <tbody>${body || '<tr><td class="l" colspan="5"><span class="flat">표시할 판매수 데이터가 없습니다.</span></td></tr>'}${totalRow}</tbody>
@@ -2273,7 +2274,8 @@ VIEWS.daily = function(){
   const rate = sumOf(rows,'sales') ? sumOf(rows,'profit')/sumOf(rows,'sales')*100 : 0;
   const adRate = sumOf(rows,'sales') ? sumOf(rows,'ad')/sumOf(rows,'sales')*100 : 0;
   return topbar('일자별 실적','매출 · 이익금 · 광고비 · 순이익금 추이',
-    `<div class="seg">${[['7','7일'],['14','14일'],['30','30일'],['all','전체']].map(([v,l])=>`<button class="${opt.dailyRange===v?'on':''}" data-act="dailyRange" data-v="${v}">${l}</button>`).join('')}</div>`)
+    `${refreshButtonsHTML()}
+    <div class="seg">${[['7','7일'],['14','14일'],['30','30일'],['all','전체']].map(([v,l])=>`<button class="${opt.dailyRange===v?'on':''}" data-act="dailyRange" data-v="${v}">${l}</button>`).join('')}</div>`)
   + `<div class="kpis" style="margin-bottom:14px">
       ${kpiCard('기간 매출', won(sumOf(rows,'sales'))+'원', `<span class="flat">${rows.length}일</span>`)}
       ${kpiCard('기간 이익금', won(sumOf(rows,'profit'))+'원', `<span class="flat">이익률 <b>${pct1(rate)}%</b></span>`)}
@@ -3490,6 +3492,279 @@ ACTIONS.segImport = (d, el)=>{
     catch(e){ alert('파일을 읽을 수 없습니다. (JSON 형식 확인)'); } };
   fr.readAsText(f);
 };
+
+/* ============================================================
+   매출 새로고침 · 이번달 전체 재수집
+   - 🔄 매출 새로고침: bigcell-live/history/products.json을 캐시 없이 즉시 다시 읽어
+     실시간 매출(S.live)·일자별(daily)·윙 판매가·상품 목록을 최신화하고 화면 전체를 다시 그린다.
+   - 🔁 이번달 전체 재수집: 같은 재로드 후 원가·할인가 규칙까지 적용해 이번 달 전체를
+     처음부터 다시 계산하고, 서버(빅셀·윙) 재수집이 필요할 때 쓸 요청 문구를 복사해 준다.
+   - 정적 HTML에서는 브라우저 보안(CORS/로그인) 때문에 빅셀·윙에 직접 접속할 수 없다.
+   ============================================================ */
+const RFX = {
+  liveUrl:'https://raw.githubusercontent.com/jooyong00700-art/jy/main/bigcell-live.json',
+  histUrl:'https://raw.githubusercontent.com/jooyong00700-art/jy/main/bigcell-history.json',
+  prodUrl:'https://raw.githubusercontent.com/jooyong00700-art/jy/main/bigcell-products.json',
+  busy:false, lastAt:'', lastFails:[]
+};
+(function rfxStyle(){
+  const st = document.createElement('style');
+  st.id = 'rfxStyle';
+  st.textContent = `
+  .rfx{display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap}
+  .rfx .rfx-btn{border-radius:9px; padding:6px 11px; font-size:12px; font-weight:800}
+  .rfx .rfx-month{border-color:#c7d8ff; background:#f4f8ff; color:#2158c9}
+  .rfx .rfx-month:hover{border-color:#9dbcff; color:#1d3f8f}
+  .rfx .rfx-at{font-size:11px; color:#7b869a; font-weight:600; white-space:nowrap}
+  .rfx .rfx-at b{color:#43506a}
+  .rfx .rfx-btn[disabled]{opacity:.55; cursor:progress}
+  .toast-wrap{position:fixed; left:50%; bottom:26px; transform:translateX(-50%); z-index:220;
+    display:flex; flex-direction:column; align-items:center; gap:8px; pointer-events:none; max-width:94vw}
+  .toast{background:#0f1a30; color:#fff; font-size:13px; font-weight:700; padding:11px 16px; border-radius:12px;
+    box-shadow:0 14px 34px -12px rgba(9,17,33,.55); opacity:0; transform:translateY(10px);
+    transition:opacity .18s, transform .18s; max-width:92vw; line-height:1.5}
+  .toast.on{opacity:1; transform:translateY(0)}
+  .toast.ok{background:#0b7f5c}
+  .toast.warn{background:#8a5a00}
+  .toast.err{background:#c92a2a}
+  .toast .sub2{display:block; font-weight:600; font-size:11.5px; color:#d3ddef; margin-top:3px}
+  @media (max-width:760px){
+    .rfx{width:100%}
+    .rfx .rfx-btn{flex:1 1 auto; justify-content:center; min-height:40px; font-size:12.5px}
+    .rfx .rfx-at{width:100%; text-align:right}
+    .toast-wrap{bottom:calc(78px + env(safe-area-inset-bottom))}
+  }`;
+  document.head.appendChild(st);
+})();
+
+/* 화면 곳곳에 같은 두 버튼을 배치 */
+function refreshButtonsHTML(){
+  return `<div class="rfx">
+    <button type="button" class="btn rfx-btn" data-act="revenueRefresh" title="bigcell-live · history · products JSON을 캐시 없이 다시 읽어 매출·판매수·상품·윙 판매가를 최신화합니다">🔄 매출 새로고침</button>
+    <button type="button" class="btn rfx-btn rfx-month" data-act="monthRecollect" title="최신 저장 데이터와 원가·할인가 규칙으로 이번 달 전체를 다시 계산합니다">🔁 이번달 전체 재수집</button>
+    ${RFX.lastAt?`<span class="rfx-at">최근 갱신 <b>${esc(RFX.lastAt)}</b></span>`:''}
+  </div>`;
+}
+function rfxSetBusy(on){
+  RFX.busy = on;
+  document.querySelectorAll('[data-act="revenueRefresh"],[data-act="monthRecollect"]').forEach(b=>{
+    if(on){
+      if(!b.dataset.orig) b.dataset.orig = b.textContent.trim();
+      b.disabled = true; b.textContent = '⏳ 갱신 중…';
+    } else {
+      b.disabled = false;
+      if(b.dataset.orig) b.textContent = b.dataset.orig;
+    }
+  });
+}
+function toast(msg, kind, sub){
+  let wrap = document.getElementById('toastWrap');
+  if(!wrap){
+    wrap = document.createElement('div'); wrap.id = 'toastWrap'; wrap.className = 'toast-wrap';
+    document.body.appendChild(wrap);
+  }
+  const el = document.createElement('div');
+  el.className = 'toast ' + (kind || '');
+  el.innerHTML = msg + (sub ? `<span class="sub2">${sub}</span>` : '');
+  wrap.appendChild(el);
+  requestAnimationFrame(()=>el.classList.add('on'));
+  setTimeout(()=>{ el.classList.remove('on'); setTimeout(()=>el.remove(), 260); }, kind==='err'?7000:4500);
+}
+
+/* ---------- 원격 JSON 반영 ---------- */
+function rfxApplyDaily(list){
+  let n = 0;
+  (list || []).forEach(x=>{
+    if(!x || !x.d) return;
+    const o = Object.assign({}, x);
+    const c = couponNum(o.coupon), ns = couponNum(o.netSales);
+    if(c==null && ns!=null) o.coupon = Math.max(0, (Number(o.sales)||0)-ns);
+    if(ns==null && c!=null) o.netSales = Math.max(0, (Number(o.sales)||0)-c);
+    S.dailyOverrides[x.d] = Object.assign({}, S.dailyOverrides[x.d], o);
+    n++;
+  });
+  return n;
+}
+function rfxApplyHistory(daily){
+  if(!daily || typeof daily!=='object') return 0;
+  let n = 0;
+  Object.keys(daily).forEach(d=>{
+    const v = daily[d];
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(d) || !v || v.sales==null) return;
+    const ad = (v.ad!=null) ? Number(v.ad)||0 : 0;
+    let net = (v.net!=null) ? Number(v.net) : ((v.profit!=null) ? Number(v.profit)-ad : null);
+    HIST[d] = [Number(v.sales)||0, ad, net];
+    n++;
+  });
+  return n;
+}
+function rfxApplyWing(w){
+  if(!w || typeof w!=='object' || typeof BC7==='undefined' || !BC7.wing) return 0;
+  ['updatedAt','source','sales','qty','prices','stock','changed','note'].forEach(k=>{ if(w[k]!=null) BC7.wing[k] = w[k]; });
+  return 1;
+}
+function rfxApplyProducts(p){
+  if(!p || typeof p!=='object' || typeof BC7==='undefined') return 0;
+  let n = 0;
+  if(Array.isArray(p.rfm) && p.rfm.length){ BC7.rfm = p.rfm; n++; }
+  if(Array.isArray(p.p3p) && p.p3p.length){ BC7.p3p = p.p3p; n++; }
+  if(p.discountHistory && typeof p.discountHistory==='object'){ BC7.dh = p.discountHistory; n++; }
+  if(p.costHistory && typeof p.costHistory==='object'){ BC7.ch = p.costHistory; n++; }
+  if(p.collectedAt) BC7.collectedAt = p.collectedAt;
+  /* 대시보드 상품 마스터(재고·마진)의 판매가·할인가·수수료·원가·입출고·배송비도 최신값으로 */
+  if(Array.isArray(p.rfm)){
+    p.rfm.forEach(x=>{
+      const hit = PRODUCTS.find(y=>y.id===x.pid);
+      if(!hit) return;
+      ['name','short','icon','price','disc','fee','cost','inout','ship'].forEach(k=>{ if(x[k]!=null) hit[k] = x[k]; });
+    });
+  }
+  return n;
+}
+function rfxApplyAll(res){
+  const info = {live:0, days:0, hist:0, wing:0, products:0, updatedAt:''};
+  if(res.live){
+    if(res.live.live){ S.live = applyLive(res.live.live, S.live); info.live = 1; }
+    if(Array.isArray(res.live.daily)) info.days = rfxApplyDaily(res.live.daily);
+    if(res.live.wingPrices) info.wing = rfxApplyWing(res.live.wingPrices);
+    info.updatedAt = String(res.live.updatedAt || '');
+  }
+  if(res.hist) info.hist = rfxApplyHistory(res.hist.daily);
+  if(res.prod) info.products = rfxApplyProducts(res.prod);
+  return info;
+}
+async function rfxFetchAll(){
+  const t = Date.now();
+  const urls = {live:RFX.liveUrl, hist:RFX.histUrl, prod:RFX.prodUrl};
+  const res = {}, fails = [];
+  const label = {live:'빅셀 실시간', hist:'일자별 캘린더', prod:'상품·윙' };
+  await Promise.all(Object.keys(urls).map(async k=>{
+    const base = urls[k];
+    const url = base + (base.indexOf('?')>=0?'&':'?') + 't=' + t;
+    try{ res[k] = await fetchSyncJson(url); }
+    catch(e){ fails.push(label[k] + ' (' + ((e && e.message) || '실패') + ')'); }
+  }));
+  return {res, fails};
+}
+function rfxStamp(info){
+  const t = (info && info.updatedAt) ? String(info.updatedAt) : '';
+  if(t.length >= 16) return t.slice(11,16);
+  if(/^\d{2}:\d{2}$/.test(t)) return t;
+  return new Date().toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'});
+}
+function rfxMonth(){ return (opt && opt.calMonth) ? opt.calMonth : String((S.live && S.live.date) || '').slice(0,7); }
+function rfxMonthSummary(m){
+  const rows = dailySeries().filter(r=>r.d && r.d.indexOf(m)===0);
+  return {
+    days: rows.length,
+    sales: rows.reduce((a,r)=>a+netSalesOf(r), 0),
+    profit: sumOf(rows,'profit'),
+    ad: sumOf(rows,'ad'),
+    net: rows.reduce((a,r)=>a+(r.net!=null?r.net:0), 0)
+  };
+}
+
+/* ---------- 🔄 매출 새로고침 ---------- */
+ACTIONS.revenueRefresh = async function(){
+  if(RFX.busy) return;
+  rfxSetBusy(true);
+  try{
+    const {res, fails} = await rfxFetchAll();
+    const info = rfxApplyAll(res);
+    RFX.lastFails = fails;
+    RFX.lastAt = rfxStamp(info);
+    clearSegCache(); save();
+    rfxSetBusy(false); render();
+    if(!Object.keys(res).length){
+      toast('새로고침 실패', 'err', esc(fails.join(' · ')));
+    } else if(fails.length){
+      toast('최신 데이터 반영 완료 (업데이트: ' + esc(RFX.lastAt) + ')', 'warn', esc('일부 실패 · ' + fails.join(' · ')));
+    } else {
+      toast('최신 데이터 반영 완료 (업데이트: ' + esc(RFX.lastAt) + ')', 'ok');
+    }
+  }catch(e){
+    rfxSetBusy(false);
+    toast('새로고침 실패', 'err', esc((e && e.message) || '알 수 없는 오류'));
+  }
+};
+
+/* ---------- 🔁 이번달 전체 재수집 ---------- */
+ACTIONS.monthRecollect = async function(){
+  if(RFX.busy) return;
+  const m = rfxMonth();
+  const before = rfxMonthSummary(m);
+  rfxSetBusy(true);
+  try{
+    const {res, fails} = await rfxFetchAll();
+    const info = rfxApplyAll(res);
+    /* 원가·할인가 규칙(S.segments)이 있으면 이번 달 전일 이익금을 구간 기준으로 다시 계산 */
+    if(!S.segments) S.segments = {};
+    clearSegCache(); save();
+    RFX.lastFails = fails;
+    RFX.lastAt = rfxStamp(info);
+    rfxSetBusy(false); render();
+    const after = rfxMonthSummary(m);
+    rfxRecollectModal(m, after, before, fails, info);
+  }catch(e){
+    rfxSetBusy(false);
+    toast('이번달 재수집 실패', 'err', esc((e && e.message) || '알 수 없는 오류'));
+  }
+};
+function rfxRecollectModal(m, sum, before, fails, info){
+  const parts = String(m).split('-');
+  const y = parts[0], mm = Number(parts[1]);
+  const phrase = `이번달(${m}) 전체 매출 빅셀·윙에서 재수집해줘`;
+  const segN = Object.keys(S.segments || {}).length;
+  const dSales = sum.sales - before.sales, dNet = sum.net - before.net;
+  const deltaLine = (dSales || dNet)
+    ? `<div class="hint" style="margin-top:2px">새로 받은 값 반영 — 매출 <b>${dSales>0?'+':''}${won(dSales)}원</b> · 순이익금 <b>${dNet>0?'+':''}${won(dNet)}원</b></div>` : '';
+  const failLine = fails.length
+    ? `<div style="margin:10px 0 0; padding:9px 11px; border:1px solid #ffd8a8; background:#fff8ee; border-radius:10px; font-size:12px; color:#8a5a00; line-height:1.6">
+         ⚠ 일부 원격 파일을 못 받았습니다 — ${esc(fails.join(' · '))}. 위 수치는 받은 데이터 + 저장된 수치로 계산했습니다.</div>` : '';
+  const html = `<div class="mask" id="mask"><div class="modal" style="width:min(560px,100%)">
+    <div class="mh"><h3>🔁 ${y}년 ${mm}월 전체 재계산 완료</h3><button class="x" data-close="1">✕</button></div>
+    <div class="mb">
+      <div class="hint" style="font-size:12.5px; line-height:1.7; margin-bottom:12px">
+        최신 저장 데이터 기준 이번 달 재계산을 완료했습니다. 빅셀/쿠팡 윙 서버에서 이번 달 전체를 다시 긁어와야 하면 아래 버튼을 눌러 마쭈에게 바로 요청하세요.
+      </div>
+      <div class="stat-line"><span class="lb">재계산 기간</span><span class="vl num">${y}-${pad(mm)} · ${sum.days}일</span></div>
+      <div class="stat-line"><span class="lb">매출 (쿠폰 제외)</span><span class="vl num">${won(sum.sales)}원</span></div>
+      <div class="stat-line"><span class="lb">이익금 (광고 전 마진)</span><span class="vl num">${won(sum.profit)}원</span></div>
+      <div class="stat-line"><span class="lb">광고비 (VAT 포함)</span><span class="vl num">${won(sum.ad)}원</span></div>
+      <div class="stat-line"><span class="lb"><b>순이익금</b></span><span class="vl num"><b>${won(sum.net)}원</b></span></div>
+      <div class="stat-line"><span class="lb">원가·할인가 규칙</span><span class="vl">${segN?`적용 중 · 구간 ${segN}개 상품`:'수정 없음 (빅셀 기본값)'}</span></div>
+      <div class="stat-line"><span class="lb">데이터 업데이트</span><span class="vl">${esc(info && info.updatedAt ? info.updatedAt : RFX.lastAt)}</span></div>
+      ${deltaLine}
+      ${failLine}
+      <div class="sec-t" style="margin-top:16px">서버 재수집 요청 문구</div>
+      <div style="display:flex; gap:7px; align-items:stretch; flex-wrap:wrap">
+        <input class="inp" id="rfxPhrase" readonly value="${esc(phrase)}" style="flex:1 1 230px; font-weight:700">
+        <button class="btn primary" id="rfxCopy">📋 문구 복사</button>
+      </div>
+      <div class="hint" style="margin-top:7px">복사한 문구를 채팅에 그대로 붙여 보내면 마쭈가 빅셀·쿠팡 윙에서 ${y}년 ${mm}월 일자별 매출을 다시 수집해 이 대시보드에 반영합니다.</div>
+      <div class="mfoot"><button class="btn" data-close="1">닫기</button></div>
+    </div>
+  </div></div>`;
+  const root = document.getElementById('modalRoot') || (()=>{ const d = document.createElement('div'); d.id='modalRoot'; document.body.appendChild(d); return d; })();
+  root.innerHTML = html;
+  root.querySelectorAll('[data-close]').forEach(b=>b.onclick = closeModal);
+  const mask = document.getElementById('mask');
+  if(mask) mask.onclick = ev=>{ if(ev.target.id==='mask') closeModal(); };
+  const inp = document.getElementById('rfxPhrase');
+  const cp = document.getElementById('rfxCopy');
+  if(cp) cp.onclick = ()=>{
+    const done = ()=>toast('요청 문구를 복사했습니다', 'ok', '채팅에 붙여 보내면 재수집을 진행합니다');
+    const manual = ()=>{
+      if(!inp) return;
+      inp.focus(); inp.select();
+      try{ document.execCommand('copy'); done(); }
+      catch(e){ toast('복사가 안 됩니다', 'warn', '입력창의 문구를 길게 눌러 직접 복사하세요'); }
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(phrase).then(done).catch(manual);
+    } else { manual(); }
+  };
+}
 
 /* ============================== 시작 ============================== */
 render();
