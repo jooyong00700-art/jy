@@ -1507,13 +1507,13 @@ body.menu-open .mobile-menu{max-height:440px}
    CONFIG — 실제 정보가 정해지면 여기만 수정하면 됩니다.
    phone: 값이 있으면 '전화로 안내받기'가 바로 전화 연결(tel:)로 동작
    email: 값이 있으면 접수 완료 화면에 '메일로 보내기'가 열립니다
-   formEndpoint: 값이 있으면 접수 시 해당 주소로 POST 전송(Formspree 등)
+   formEndpoint: 값이 있으면 접수 시 해당 주소로 POST 전송(FormSubmit AJAX)
                   비어 있으면 브라우저에서 접수 안내만 표시
    ============================================================ */
 const CONFIG = {
   phone: "",
-  email: "",
-  formEndpoint: ""
+  email: "thfwysla@naver.com",
+  formEndpoint: "https://formsubmit.co/ajax/thfwysla@naver.com"
 };
 
 (function () {
@@ -1781,6 +1781,27 @@ const CONFIG = {
     };
   }
 
+  // FormSubmit AJAX 규격 payload (_subject / _template 등 밑줄 키는 폼 설정값)
+  function buildPayload(r) {
+    const p = n => String(n).padStart(2, "0");
+    const d = r.at;
+    const when = d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) +
+      " " + p(d.getHours()) + ":" + p(d.getMinutes());
+    const who = r.name + (r.biz ? " (" + r.biz + ")" : "");
+    return {
+      _subject: "[주식회사 윙] 신규 상담 신청 - " + who,
+      _template: "table",
+      _captcha: "false",
+      "접수번호": r.no,
+      "접수 시각": when,
+      "성함 / 상호": who,
+      "연락처": r.phone,
+      "지역": r.area || "-",
+      "관심 상품": r.product,
+      "문의 내용": r.message || "-"
+    };
+  }
+
   function renderDone(record) {
     $("#rNo").textContent = record.no;
     $("#rName").textContent = record.name + (record.biz ? " (" + record.biz + ")" : "");
@@ -1811,9 +1832,12 @@ const CONFIG = {
         const res = await fetch(CONFIG.formEndpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json", "Accept": "application/json" },
-          body: JSON.stringify(record)
+          body: JSON.stringify(buildPayload(record))
         });
-        if (!res.ok) throw new Error("send-failed");
+        let data = null;
+        try { data = await res.json(); } catch (e) { data = null; }
+        const sent = res.ok && (!data || String(data.success).toLowerCase() !== "false");
+        if (!sent) throw new Error("send-failed");
         renderDone(record);
       } catch (err) {
         toast("전송이 지연되고 있습니다. 잠시 후 다시 시도해 주세요.");
