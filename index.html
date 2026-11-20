@@ -3671,7 +3671,11 @@ function bcCostHist(pid){
   if(Array.isArray(S.pm.ch[pid])) return S.pm.ch[pid];
   return (BC7.ch[pid]||[]).map(r=>Object.assign({}, r));
 }
-function bcMoney(n){ return (n==null||isNaN(n)) ? '-' : '₩'+Math.round(n).toLocaleString('ko-KR'); }
+function bcMoney(n){
+  if(n==null || isNaN(n)) return '-';
+  const v = Math.round(n);
+  return (v<0 ? '-₩' : '₩') + Math.abs(v).toLocaleString('ko-KR');
+}
 
 /* ---------- 7개 메뉴 바 ---------- */
 const BC_MENUS = [
@@ -3740,7 +3744,7 @@ VIEWS.pmr = function(){
       return `<tr class="sub">
         <td class="l">${bcEsc(o.sku)}</td>
         <td class="l mono">${bcEsc(o.optId)}<button class="cp" data-act="copyId" data-id="${o.optId}" title="복사">⧉</button></td>
-        <td class="l">${bcEsc(o.name)}${o.state==='반품'?' <span class="tag gray">반품</span>':''}${o.wingDiff?' <span class="tag wing">윙</span>':''}</td>
+        <td class="l">${bcEsc(o.name)}${(o.state==='반품' && !/반품/.test(o.name))?' <span class="tag gray">반품</span>':''}${o.wingDiff?' <span class="tag wing">윙</span>':''}</td>
         <td class="r num">${bcMoney(oc.price)}</td>
         <td class="r num">${bcMoney(oc.disc)}</td>
         <td class="r num ${oc.profit<0?'neg':''}">${bcMoney(oc.profit)}<span class="pct">(${oc.pct.toFixed(2)}%)</span></td>
