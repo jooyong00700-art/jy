@@ -1626,9 +1626,11 @@ function liveRow(){
   const netSales = Math.max(0, sales - coupon);
   const ad = n(t.adExVat)!=null ? Math.round(n(t.adExVat)*(S.vat||1.1))
              : (row && row.ad!=null ? row.ad : 0);
-  /* 실제 옵션별 마진 합계(live.profit)가 있으면 추정치(blendedMargin)보다 우선 사용 */
+  /* 실제 옵션별 마진 합계(options 합계 또는 live.profit)가 있으면 추정치(blendedMargin)보다 우선 사용 */
   let profit = null, estimate = false;
-  if(n(t.profit)!=null) profit = n(t.profit);
+  if(Array.isArray(t.options) && t.options.length && t.options.some(o=>n(o.margin)!=null)){
+    profit = t.options.reduce((s,o)=> s + (n(o.margin)||0), 0);
+  } else if(n(t.profit)!=null) profit = n(t.profit);
   else if(row && row.profit!=null && row.sales===sales) profit = row.profit;
   if(profit==null){ profit = Math.round(sales*blendedMargin()); estimate = true; }
   if(t.profitEstimate) estimate = true;
