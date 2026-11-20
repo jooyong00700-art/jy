@@ -689,6 +689,98 @@ body.menu-open .mobile-menu{max-height:440px}
 @media (prefers-color-scheme:dark){
   html,body{background-color:#ffffff !important;color:#202020}
 }
+
+/* ============================================================
+   관리자 모드 (Admin) — 푸터 진입 · 로그인 · 편집 드로어
+   ============================================================ */
+.admin-entry{display:inline-flex;align-items:center;gap:7px;margin-top:16px;padding:8px 17px;
+  border:1px solid #3a3a3a;border-radius:22px;background:transparent;color:#8b8b8b;
+  font-family:var(--font);font-size:12px;font-weight:800;letter-spacing:.5px;cursor:pointer;transition:.25s}
+.admin-entry:hover{color:#fff;border-color:var(--green);background:rgba(0,199,60,.14)}
+.admin-entry svg{width:14px;height:14px}
+.wing-logo-img{display:block;object-fit:contain}
+.wing-logo-img.mark{width:40px;height:40px}
+.wing-logo-img.f-mark{width:52px;height:52px;margin:0 auto 12px;opacity:.95}
+@media (max-width:768px){.wing-logo-img.mark{width:34px;height:34px}}
+.foot-info .row[hidden]{display:none!important}
+
+/* 로그인 모달 */
+.adm-login .adm-lf{display:block;margin-bottom:12px}
+.adm-login .adm-lf span{display:block;font-size:13px;font-weight:800;color:#2c352f;margin-bottom:6px}
+.adm-login input{width:100%;font-family:inherit;font-size:15px;color:#202020;border:1.5px solid #E3EDE6;
+  background:#F7FAF8;border-radius:11px;padding:13px 14px;outline:none;transition:.2s}
+.adm-login input:focus{border-color:var(--green);background:#fff;box-shadow:0 0 0 4px rgba(0,199,60,.10)}
+.adm-lerr{display:none;margin:-2px 0 12px;font-size:12.5px;font-weight:700;color:#E8433F}
+.adm-lerr.on{display:block}
+.adm-lbtn{width:100%;font-size:17px;padding:15px 20px}
+.adm-shake{animation:admShake .34s}
+@keyframes admShake{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+
+/* 편집 드로어 */
+.adm{position:fixed;top:0;right:0;bottom:0;z-index:210;width:min(486px,100%);
+  display:flex;flex-direction:column;background:#fff;color:var(--ink);
+  box-shadow:-26px 0 70px -34px rgba(0,0,0,.55);transform:translateX(103%);visibility:hidden;
+  transition:transform .36s cubic-bezier(.2,.8,.2,1),visibility .36s}
+.adm.on{transform:none;visibility:visible}
+.adm-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+  padding:17px 18px 12px;border-bottom:1px solid #eef2ef;flex:0 0 auto}
+.adm-title b{display:block;font-size:17px;font-weight:900;letter-spacing:-.6px;color:#141414}
+.adm-title span{display:block;font-size:11.5px;color:#98a29b;margin-top:2px}
+.adm-head-btns{display:flex;gap:6px;flex:0 0 auto}
+.adm-x{border:1px solid #e2eae5;background:#f8fbf9;color:#5b665f;font-family:inherit;font-size:12px;
+  font-weight:800;padding:7px 11px;border-radius:9px;cursor:pointer;transition:.2s;white-space:nowrap}
+.adm-x:hover{border-color:var(--green);color:var(--green);background:#fff}
+.adm-tabs{display:flex;flex-wrap:wrap;gap:6px;padding:12px 16px;background:#fbfdfc;
+  border-bottom:1px solid #eef2ef;flex:0 0 auto}
+.adm-tab{border:1px solid #e2eae5;background:#fff;color:#4a544d;font-family:inherit;font-size:12px;
+  font-weight:800;padding:7px 11px;border-radius:20px;cursor:pointer;transition:.2s;letter-spacing:-.2px}
+.adm-tab:hover{border-color:#bfe3cb;color:var(--green-d)}
+.adm-tab.on{background:var(--green);border-color:var(--green);color:#fff}
+.adm-body{flex:1 1 auto;overflow:auto;padding:16px 16px 20px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.adm-body::-webkit-scrollbar{width:8px}
+.adm-body::-webkit-scrollbar-thumb{background:#dfe9e3;border-radius:8px}
+.adm-sec{margin-bottom:18px;padding-bottom:4px}
+.adm-sec > h4{margin:0 0 10px;font-size:12px;font-weight:900;color:#0f8b3c;letter-spacing:.6px;text-transform:uppercase;
+  display:flex;align-items:center;gap:7px}
+.adm-sec > h4::after{content:"";flex:1;height:1px;background:#eef3f0}
+.adm-field{margin-bottom:12px}
+.adm-field > label{display:block;font-size:12px;font-weight:800;color:#3a443c;margin-bottom:5px;letter-spacing:-.1px}
+.adm-field input[type=text],.adm-field textarea{width:100%;font-family:inherit;font-size:13.5px;color:#202020;
+  border:1.5px solid #e3ede6;background:#f8fbf9;border-radius:9px;padding:9px 11px;outline:none;transition:.2s}
+.adm-field textarea{min-height:62px;resize:vertical;line-height:1.55}
+.adm-field input[type=text]:focus,.adm-field textarea:focus{border-color:var(--green);background:#fff;box-shadow:0 0 0 3px rgba(0,199,60,.1)}
+.adm-field.dirty input[type=text],.adm-field.dirty textarea{border-color:#FFD34D;background:#FFFDF2}
+.adm-rowimg{display:flex;gap:11px;align-items:center}
+.adm-thumb{width:58px;height:58px;border-radius:50%;object-fit:cover;background:#f2f6f3;border:1px solid #e3ede6;flex:0 0 auto}
+.adm-thumb.sq{border-radius:11px;object-fit:contain;padding:5px}
+.adm-thumb.empty{display:grid;place-items:center;font-size:10.5px;font-weight:800;color:#a9b5ae}
+.adm-imginfo{display:grid;gap:6px;min-width:0;flex:1}
+.adm-imginfo .btns{display:flex;gap:6px;flex-wrap:wrap}
+.adm-mini{border:1px solid #cfe3d7;background:#fff;color:#0f8b3c;font-family:inherit;font-size:11.5px;
+  font-weight:800;padding:6px 10px;border-radius:8px;cursor:pointer;transition:.2s}
+.adm-mini:hover{background:#f2fbf6}
+.adm-mini.ghost{color:#7b857e;border-color:#e2eae5}
+.adm-hint{font-size:10.5px;color:#a3ada6;line-height:1.45;margin:4px 0 0}
+.adm-foot{border-top:1px solid #eef2ef;padding:11px 16px 13px;display:grid;gap:8px;background:#fbfdfc;flex:0 0 auto}
+.adm-save{width:100%;border:0;border-radius:11px;background:var(--green);color:#fff;font-family:inherit;
+  font-size:15px;font-weight:900;padding:13px;cursor:pointer;transition:.2s;box-shadow:0 12px 22px -16px rgba(0,199,60,.9)}
+.adm-save:hover{background:#111}
+.adm-row3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.adm-row3 button{font-family:inherit;font-size:11.5px;font-weight:800;padding:9px 4px;border-radius:9px;
+  border:1.5px solid #dfe9e3;background:#fff;color:#3a443c;cursor:pointer;transition:.2s}
+.adm-row3 button:hover{border-color:var(--green);color:var(--green)}
+.adm-note{font-size:10.5px;color:#a3ada6;line-height:1.45;margin:0}
+.adm-status{font-size:11px;color:#0f8b3c;font-weight:800;text-align:center;min-height:14px;margin:0}
+.adm-fab{position:fixed;right:26px;bottom:104px;z-index:96;display:none;align-items:center;gap:7px;
+  border:0;border-radius:30px;background:#1d2620;color:#fff;font-family:inherit;font-size:12.5px;
+  font-weight:800;padding:11px 16px;cursor:pointer;box-shadow:0 14px 26px -14px rgba(0,0,0,.75)}
+.adm-fab.show{display:inline-flex}
+.adm-fab svg{width:15px;height:15px}
+@media (max-width:768px){
+  .adm-fab{right:16px;bottom:88px}
+  .adm-body{padding:14px 14px 18px}
+}
+
 </style>
 </head>
 <body>
@@ -738,7 +830,7 @@ body.menu-open .mobile-menu{max-height:440px}
   <div class="container hero-inner">
     <div class="hero-copy">
       <p class="eyebrow" data-reveal>쿠팡·스마트스토어 셀러를 위한 입소문 마케팅</p>
-      <h1 data-reveal>주식회사 윙<span class="line2"><em>맘카페</em> 바이럴마케팅</span></h1>
+      <h1 data-reveal><span class="h1-l1">주식회사 윙</span><span class="line2"><em>맘카페</em> <span class="h1-l2">바이럴마케팅</span></span></h1>
       <ul class="hero-points" data-reveal>
         <li>100% 실사용 계정, 실명 인증 카페 관리팀이 직접 소통하며</li>
         <li>광고주 니즈 파악부터 콘텐츠·댓글 관리까지</li>
@@ -746,7 +838,7 @@ body.menu-open .mobile-menu{max-height:440px}
         <li>판매로 이어지는 바이럴마케팅을 약속드립니다.</li>
       </ul>
       <div class="hero-btns" data-reveal>
-        <a class="btn" href="#section06">상담 신청하기 <span class="ar">→</span></a>
+        <a class="btn" href="#section06"><span class="lbl">상담 신청하기</span> <span class="ar">→</span></a>
         <button class="btn" type="button" id="heroCall">전화로 안내받기</button>
       </div>
     </div>
@@ -1310,22 +1402,33 @@ body.menu-open .mobile-menu{max-height:440px}
     </svg>
     <p class="f-name">주식회사 윙 (WING)</p>
 
-    <!-- ▼ 사업자 정보: 실제 정보로 교체해 주세요 (지어낸 정보는 넣지 않았습니다) -->
+    <!-- ▼ 사업자 정보: 푸터의 Admin 에서 바로 수정할 수 있습니다 -->
     <div class="foot-info">
       <div class="row">
-        <span><span class="k">사업자등록번호</span> 000-00-00000</span>
-        <span><span class="k">대표</span> 홍길동</span>
-        <span><span class="k">통신판매업 신고</span> 제0000-0000-0000호</span>
+        <span><span class="k">사업자등록번호</span> <span id="footBizNo">000-00-00000</span></span>
+        <span><span class="k">대표</span> <span id="footCeo">홍길동</span></span>
+        <span><span class="k">통신판매업 신고</span> <span id="footMailOrder">제0000-0000-0000호</span></span>
       </div>
       <div class="row">
-        <span><span class="k">주소</span> 주소를 입력해 주세요</span>
+        <span><span class="k">주소</span> <span id="footAddr">주소를 입력해 주세요</span></span>
       </div>
       <div class="row">
-        <span><span class="k">이메일</span> <a href="mailto:contact@example.com">contact@example.com</a></span>
-        <span><span class="k">전화</span> 000-0000-0000</span>
+        <span><span class="k">이메일</span> <a id="footEmail" href="mailto:contact@example.com">contact@example.com</a></span>
+        <span><span class="k">전화</span> <a id="footPhone">000-0000-0000</a></span>
+      </div>
+      <div class="row" id="footKakaoRow" hidden>
+        <span><span class="k">카카오톡</span> <a id="footKakao" href="#" target="_blank" rel="noopener"><span id="footKakaoLabel">채널 상담</span></a></span>
       </div>
     </div>
     <p class="foot-note">※ 위 사업자 정보는 시안용 자리표시자입니다. 실제 정보로 교체해 주세요.</p>
+    <div><button class="admin-entry" id="adminOpen" type="button" aria-label="관리자 모드 열기">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="4" y="10.5" width="16" height="9.5" rx="2.4" stroke="currentColor" stroke-width="1.7"/>
+        <path d="M8 10.5V7.6a4 4 0 018 0v2.9" stroke="currentColor" stroke-width="1.7"/>
+        <circle cx="12" cy="15.2" r="1.5" fill="currentColor"/>
+      </svg>
+      Admin
+    </button></div>
     <a class="foot-top" href="#top">맨 위로 ↑</a>
     <div class="foot-copy">ⓒ WING All rights reserved.</div>
   </div>
@@ -1517,13 +1620,16 @@ const CONFIG = {
     hideModal();
   });
 
+  /* 관리자 모드에서 입력한 대표번호가 있으면 그것을 우선 사용 */
+  function activePhone() { return (window.WING_PHONE || CONFIG.phone || ""); }
   function openCallModal() {
     const numBox = $("#callNumberBox");
     const fallback = $("#callFallback");
-    if (CONFIG.phone) {
+    const ph = activePhone();
+    if (ph) {
       numBox.hidden = false;
       fallback.hidden = true;
-      $("#callNumber").textContent = CONFIG.phone;
+      $("#callNumber").textContent = ph;
     } else {
       numBox.hidden = true;
       fallback.hidden = false;
@@ -1534,7 +1640,8 @@ const CONFIG = {
     const el = $(sel);
     if (!el) return;
     el.addEventListener("click", () => {
-      if (CONFIG.phone) { window.location.href = "tel:" + CONFIG.phone.replace(/[^0-9+]/g, ""); return; }
+      const ph = activePhone();
+      if (ph) { window.location.href = "tel:" + ph.replace(/[^0-9+]/g, ""); return; }
       openCallModal();
     });
   });
@@ -1754,6 +1861,732 @@ const CONFIG = {
     setTimeout(() => form.querySelector("[name=name]").focus({ preventScroll: true }), 420);
   });
 })();
+</script>
+<!-- ================= 관리자 로그인 ================= -->
+<div class="modal" id="admLoginModal" role="dialog" aria-modal="true" aria-labelledby="admLoginTitle">
+  <div class="modal-bg" data-adm-close></div>
+  <div class="modal-box adm-login" id="admLoginBox">
+    <button class="modal-close" type="button" data-adm-close aria-label="닫기">✕</button>
+    <h3 id="admLoginTitle">관리자 로그인</h3>
+    <p class="m-sub">관리자 계정으로 로그인하면 페이지 문구·사진을 직접 수정할 수 있습니다.</p>
+    <form id="admLoginForm" autocomplete="off">
+      <label class="adm-lf"><span>아이디</span><input type="text" id="admId" autocomplete="username" placeholder="아이디"></label>
+      <label class="adm-lf"><span>비밀번호</span><input type="password" id="admPw" autocomplete="current-password" placeholder="비밀번호"></label>
+      <p class="adm-lerr" id="admLoginErr">아이디 또는 비밀번호가 올바르지 않습니다.</p>
+      <button class="btn adm-lbtn" type="submit">로그인</button>
+    </form>
+  </div>
+</div>
+
+<!-- ================= 관리자 편집 패널 ================= -->
+<aside class="adm" id="admPanel" aria-label="관리자 편집 패널"></aside>
+<button class="adm-fab" id="admReopen" type="button" aria-label="관리자 패널 열기">
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <rect x="4" y="10.5" width="16" height="9.5" rx="2.4" stroke="currentColor" stroke-width="1.7"/>
+    <path d="M8 10.5V7.6a4 4 0 018 0v2.9" stroke="currentColor" stroke-width="1.7"/>
+    <circle cx="12" cy="15.2" r="1.5" fill="currentColor"/>
+  </svg>
+  <span>관리자</span>
+</button>
+
+
+<script>
+/* ============================================================
+   관리자 모드 (Admin) — 로그인 · 섹션별 편집 · 저장/백업/초기화
+   · 모든 수정값은 localStorage 에 저장되고, 방문 시 자동 적용됩니다.
+   ============================================================ */
+(function () {
+  "use strict";
+
+  var SKEY = "wingAdmin.settings.v1";
+  var AKEY = "wingAdmin.auth";
+  var ADMIN_ID = "win33";
+  var ADMIN_PW = "4885";
+
+  var $ = function (s, e) { return (e || document).querySelector(s); };
+  var $$ = function (s, e) { return Array.prototype.slice.call((e || document).querySelectorAll(s)); };
+  var escHtml = function (s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  };
+  var escAttr = function (s) {
+    return escHtml(s).replace(/"/g, "&quot;");
+  };
+
+  /* ---------------------------------------------------------
+     텍스트 <-> HTML 변환
+     · *강조*  → <em>강조</em>   (초록 포인트)
+     · **굵게** → <b>굵게</b>
+     · 줄바꿈   → <br> (원본이 br-m 이면 br-m 유지)
+     --------------------------------------------------------- */
+  function htmlToText(html) {
+    return String(html)
+      .replace(/<br[^>]*>/gi, "\n")
+      .replace(/<em[^>]*>/gi, "*").replace(/<\/em>/gi, "*")
+      .replace(/<b[^>]*>/gi, "**").replace(/<\/b>/gi, "**")
+      .replace(/<[^>]+>/g, "")
+      .replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&")
+      .replace(/[ \t]+\n/g, "\n").replace(/\n{2,}/g, "\n")
+      .replace(/^\s+|\s+$/g, "");
+  }
+  function textToHtml(text, brClass) {
+    var br = brClass ? '<br class="' + brClass + '">' : "<br>";
+    return escHtml(text)
+      .replace(/\*\*([^*]+)\*\*/g, "<b>$1</b>")
+      .replace(/\*([^*]+)\*/g, "<em>$1</em>")
+      .replace(/\n/g, br);
+  }
+
+  /* ---------------------------------------------------------
+     저장소
+     --------------------------------------------------------- */
+  function load() {
+    try {
+      var raw = localStorage.getItem(SKEY);
+      var o = raw ? JSON.parse(raw) : {};
+      return (o && typeof o === "object") ? o : {};
+    } catch (e) { return {}; }
+  }
+  function persist(obj) {
+    try {
+      localStorage.setItem(SKEY, JSON.stringify(obj));
+      return true;
+    } catch (e) {
+      toast("브라우저 저장 공간이 부족합니다. 사진을 더 작게 올려 주세요.");
+      return false;
+    }
+  }
+  function authed() {
+    try { return sessionStorage.getItem(AKEY) === "1"; } catch (e) { return false; }
+  }
+  function setAuthed(on) {
+    try { if (on) sessionStorage.setItem(AKEY, "1"); else sessionStorage.removeItem(AKEY); } catch (e) {}
+  }
+
+  /* ---------------------------------------------------------
+     필드 정의 — 화면의 실제 요소를 CSS 선택자로 묶는다
+     --------------------------------------------------------- */
+  var GROUPS = [
+    { id: "brand", name: "브랜드·연락처" },
+    { id: "hero", name: "히어로" },
+    { id: "team", name: "팀원" },
+    { id: "diff", name: "차별화·서비스" },
+    { id: "price", name: "가격·패키지" },
+    { id: "etc", name: "진행·문의" }
+  ];
+  var FIELDS = [];
+  function F(g, k, label, sel, opt) {
+    var f = { g: g, k: k, label: label, sel: sel, type: "text" };
+    if (opt) for (var p in opt) if (opt.hasOwnProperty(p)) f[p] = opt[p];
+    FIELDS.push(f);
+  }
+  var NC = function (i) { return ":nth-child(" + i + ")"; };
+
+  /* ── 브랜드 · 로고 · 연락처 ── */
+  F("brand", "brand.word", "로고 텍스트", ".brand .word b");
+  F("brand", "brand.sub", "로고 옆 회사명", ".brand .word span");
+  F("brand", "brand.logo", "로고 이미지", ".brand svg.mark, .foot svg.f-mark", { type: "logo", sec: "로고" });
+  F("brand", "foot.name", "푸터 회사명", ".foot .f-name", { sec: "사업자 정보" });
+  F("brand", "foot.bizno", "사업자등록번호", "#footBizNo");
+  F("brand", "foot.ceo", "대표자", "#footCeo");
+  F("brand", "foot.mailorder", "통신판매업 신고", "#footMailOrder");
+  F("brand", "foot.addr", "주소", "#footAddr");
+  F("brand", "foot.email", "이메일", "#footEmail", {
+    post: function (v) { var a = $("#footEmail"); if (a) a.setAttribute("href", "mailto:" + v); }
+  });
+  F("brand", "foot.phone", "대표 전화번호", "#footPhone", {
+    sec: "연락처 · 상담 링크",
+    hint: "번호를 입력하면 ‘전화로 안내받기’ 버튼이 바로 전화 연결로 동작합니다.",
+    post: function (v) { applyPhone(v); }
+  });
+  F("brand", "foot.kakaoUrl", "카카오톡/상담 링크 URL", "#footKakao", {
+    type: "url",
+    hint: "https:// 로 시작하는 주소를 넣으면 푸터에 링크가 표시됩니다. 비우면 숨김.",
+    post: function (v) {
+      var row = $("#footKakaoRow");
+      var a = $("#footKakao");
+      if (a) a.setAttribute("href", v || "#");
+      if (row) { if (v) row.removeAttribute("hidden"); else row.setAttribute("hidden", ""); }
+    }
+  });
+  F("brand", "foot.kakaoLabel", "카카오톡 링크 문구", "#footKakaoLabel");
+  F("brand", "foot.note", "푸터 안내 문구", ".foot-note", { area: true });
+
+  /* ── 히어로 ── */
+  F("hero", "hero.eyebrow", "서브 카피", ".hero .eyebrow");
+  F("hero", "hero.h1a", "메인 헤드라인 1줄", ".hero h1 .h1-l1", { sec: "메인 헤드라인" });
+  F("hero", "hero.h1b", "메인 헤드라인 — 강조 단어", ".hero h1 .line2 em", { hint: "이 칸은 초록색으로 표시됩니다." });
+  F("hero", "hero.h1c", "메인 헤드라인 2줄 (강조 단어 뒤)", ".hero h1 .line2 .h1-l2");
+  F("hero", "hero.p1", "불릿 포인트 1", ".hero-points li" + NC(1), { sec: "불릿 포인트" });
+  F("hero", "hero.p2", "불릿 포인트 2", ".hero-points li" + NC(2));
+  F("hero", "hero.p3", "불릿 포인트 3", ".hero-points li" + NC(3));
+  F("hero", "hero.p4", "불릿 포인트 4", ".hero-points li" + NC(4));
+  F("hero", "hero.btn1", "버튼 1 문구", ".hero-btns .lbl", { sec: "버튼" });
+  F("hero", "hero.btn2", "버튼 2 문구", "#heroCall");
+
+  /* ── 팀원 슬라이드 (6명) ── */
+  F("team", "team.kicker", "팀 소개 상단 문구", ".team-head .t-kicker");
+  F("team", "team.lead", "팀 소개 문장", ".team-head .t-lead", { area: true, hint: "**별표 두 개**로 감싼 부분은 초록 굵게 표시됩니다." });
+  for (var ti = 1; ti <= 6; ti++) {
+    F("team", "team." + ti + ".name", "팀원 " + ti + " · 이름", ".team-set .team-card" + NC(ti) + " .t-name", { sec: "팀원 " + ti });
+    F("team", "team." + ti + ".role", "팀원 " + ti + " · 직책", ".team-set .team-card" + NC(ti) + " .t-role");
+    F("team", "team." + ti + ".photo", "팀원 " + ti + " · 프로필 사진", ".team-set .team-card" + NC(ti) + " img", { type: "img" });
+  }
+
+  /* ── 차별화 3가지 ── */
+  F("diff", "diff.kicker", "차별화 · 상단 문구", "#section02 .center-tit .kicker");
+  F("diff", "diff.title", "차별화 · 제목", "#section02 .center-tit h2", { area: true });
+  for (var di = 1; di <= 3; di++) {
+    var db = "#section02 .diff-card" + NC(di);
+    F("diff", "diff." + di + ".title", "차별화 " + di + " · 제목", db + " h3", { sec: "차별화 " + di });
+    F("diff", "diff." + di + ".desc", "차별화 " + di + " · 설명", db + " > p:not(.diff-no)", { area: true });
+  }
+  /* ── 서비스 유형 4가지 ── */
+  F("diff", "svc.kicker", "서비스 · 상단 문구", "#section03 .center-tit .kicker", { sec: "서비스 유형" });
+  F("diff", "svc.title", "서비스 · 제목", "#section03 .center-tit h2");
+  F("diff", "svc.sub", "서비스 · 소제목", "#section03 .center-tit .sub", { area: true });
+  for (var si = 1; si <= 4; si++) {
+    var sb = "#section03 .svc-card" + NC(si);
+    F("diff", "svc." + si + ".no", "유형 " + si + " · 번호", sb + " .svc-no", { sec: "유형 " + si });
+    F("diff", "svc." + si + ".title", "유형 " + si + " · 제목", sb + " h3");
+    F("diff", "svc." + si + ".desc", "유형 " + si + " · 설명", sb + " .svc-text > p:not(.svc-no)", { area: true });
+  }
+
+  /* ── 가격 · 패키지 ── */
+  F("price", "price.title", "가격 · 제목", "#section04 .center-tit h2");
+  F("price", "price.sub", "가격 · 소제목", "#section04 .center-tit .sub", { area: true });
+  F("price", "price.g1.title", "단건 상품 · 그룹명", "#section04 .price-group" + NC(2) + " .group-head h4", { sec: "그룹 제목" });
+  F("price", "price.g1.sub", "단건 상품 · 그룹 설명", "#section04 .price-group" + NC(2) + " .group-head span");
+  F("price", "price.g2.title", "패키지 상품 · 그룹명", "#section04 .price-group" + NC(3) + " .group-head h4");
+  F("price", "price.g2.sub", "패키지 상품 · 그룹 설명", "#section04 .price-group" + NC(3) + " .group-head span");
+  for (var pi = 1; pi <= 4; pi++) {
+    var pb = "#section04 .price-grid .pcard" + NC(pi) + " ";
+    var ps = "카드 " + pi + " · ";
+    F("price", "pc." + pi + ".brand", ps + "브랜드 문구", pb + ".p-brand", { sec: "단건 상품 카드 " + pi });
+    F("price", "pc." + pi + ".name", ps + "상품명", pb + ".p-name");
+    F("price", "pc." + pi + ".badge", ps + "배지", pb + ".p-badge");
+    F("price", "pc." + pi + ".tag", ps + "태그", pb + ".p-tag");
+    F("price", "pc." + pi + ".desc", ps + "설명", pb + ".p-desc", { area: true });
+    F("price", "pc." + pi + ".was", ps + "취소선 가격", pb + ".p-was, " + pb + ".p-was2");
+    F("price", "pc." + pi + ".per", ps + "가격 앞 문구", pb + ".p-price .per");
+    F("price", "pc." + pi + ".num", ps + "가격 숫자", pb + ".p-price .num");
+    F("price", "pc." + pi + ".vat", ps + "부가세 문구", pb + ".p-vat");
+    F("price", "pc." + pi + ".cta", ps + "버튼 문구", pb + ".p-cta");
+  }
+  F("price", "price.note", "가격 하단 안내", ".price-note", { area: true, sec: "안내 문구" });
+  for (var gi = 1; gi <= 2; gi++) {
+    var gb = "#section04 .pkg-grid .pkg" + NC(gi) + " ";
+    F("price", "pkg." + gi + ".name", "패키지 " + gi + " · 이름", gb + ".pkg-head h3", { sec: "패키지 " + gi });
+    F("price", "pkg." + gi + ".unit", "패키지 " + gi + " · 단건가 표기", gb + ".pkg-head .unit");
+    var rows = gi === 1 ? 2 : 3;
+    for (var ri = 1; ri <= rows; ri++) {
+      var rb = gb + ".pkg-row" + NC(ri) + " ";
+      var rs = "패키지 " + gi + " · " + ri + "행 ";
+      F("price", "pkg." + gi + "." + ri + ".qty", rs + "수량", rb + ".qty", { type: "lead" });
+      F("price", "pkg." + gi + "." + ri + ".per", rs + "건당", rb + ".per");
+      F("price", "pkg." + gi + "." + ri + ".off", rs + "할인", rb + ".off");
+      F("price", "pkg." + gi + "." + ri + ".total", rs + "금액", rb + ".total", { type: "lead" });
+    }
+    F("price", "pkg." + gi + ".cta", "패키지 " + gi + " · 버튼 문구", gb + ".pkg-foot a");
+  }
+
+  /* ── 진행 프로세스 · 상담 ── */
+  F("etc", "proc.kicker", "프로세스 · 상단 문구", "#how .center-tit .kicker");
+  F("etc", "proc.title", "프로세스 · 제목", "#how .center-tit h2", { area: true });
+  F("etc", "proc.sub", "프로세스 · 소제목", "#how .center-tit .sub", { area: true });
+  for (var hi = 1; hi <= 5; hi++) {
+    F("etc", "proc." + hi + ".h", "프로세스 " + hi + " · 제목", "#how .step" + NC(hi) + " h4", { sec: "프로세스 " + hi });
+    F("etc", "proc." + hi + ".p", "프로세스 " + hi + " · 설명", "#how .step" + NC(hi) + " p", { area: true });
+  }
+  F("etc", "cta.title", "상담 섹션 · 제목", "#section06 h2", { area: true, sec: "상담 · 문의 폼" });
+  F("etc", "cta.sub", "상담 섹션 · 소제목", "#section06 .c-sub", { area: true });
+  F("etc", "form.title", "문의 폼 · 제목", ".form-head h3");
+  F("etc", "form.desc", "문의 폼 · 설명", ".form-head p", { area: true });
+
+  /* ---------------------------------------------------------
+     기본값 캡처 (DOM 원본 그대로 보관 → 초기화에 사용)
+     --------------------------------------------------------- */
+  var BYKEY = {};
+  FIELDS.forEach(function (f) {
+    BYKEY[f.k] = f;
+    f.els = $$(f.sel);
+    f.missing = f.els.length === 0;
+    if (f.missing) return;
+    f.els.forEach(function (el) {
+      if (f.type === "img") el.__wingDef = el.getAttribute("src") || "";
+      else if (f.type === "logo") el.__wingDef = el.style.display || "";
+      else if (f.type === "url") el.__wingDef = el.getAttribute("href") || "";
+      else el.__wingDef = el.innerHTML;
+    });
+    var first = f.els[0];
+    if (f.type === "img") f.def = first.getAttribute("src") || "";
+    else if (f.type === "logo" || f.type === "url") f.def = "";
+    else if (f.type === "lead") {
+      f.def = first.firstChild && first.firstChild.nodeType === 3 ? first.firstChild.nodeValue.replace(/^\s+|\s+$/g, "") : htmlToText(first.innerHTML);
+    } else {
+      f.def = htmlToText(first.innerHTML);
+      f.brClass = /class="br-m"/.test(first.innerHTML) ? "br-m" : "";
+    }
+  });
+
+  /* ---------------------------------------------------------
+     적용 / 초기화
+     --------------------------------------------------------- */
+  var logoEls = $$(".brand svg.mark, .foot svg.f-mark");
+
+  function applyLogo(v) {
+    logoEls.forEach(function (svg) {
+      var nx = svg.nextElementSibling;
+      var img = nx && nx.className && String(nx.className).indexOf("wing-logo-img") > -1 ? nx : null;
+      if (v) {
+        if (!img) {
+          img = document.createElement("img");
+          img.className = "wing-logo-img " + (svg.getAttribute("class") || "");
+          img.alt = "로고";
+          svg.parentNode.insertBefore(img, svg.nextSibling);
+        }
+        img.src = v;
+        svg.style.display = "none";
+      } else {
+        if (img && img.parentNode) img.parentNode.removeChild(img);
+        svg.style.display = svg.__wingDef || "";
+      }
+    });
+  }
+
+  function applyPhone(v) {
+    window.WING_PHONE = v || "";
+    var num = $("#callNumber");
+    if (num && v) num.textContent = v;
+    var a = $("#footPhone");
+    if (a && v) a.setAttribute("href", "tel:" + v.replace(/[^0-9+]/g, ""));
+  }
+
+  function setValue(f, el, v) {
+    if (f.type === "img") { el.setAttribute("src", v); return; }
+    if (f.type === "url") { el.setAttribute("href", v || "#"); return; }
+    if (f.type === "lead") {
+      if (el.firstChild && el.firstChild.nodeType === 3) el.firstChild.nodeValue = v;
+      else el.insertBefore(document.createTextNode(v), el.firstChild);
+      return;
+    }
+    el.innerHTML = textToHtml(v, f.brClass);
+  }
+
+  function resetDefaults() {
+    FIELDS.forEach(function (f) {
+      if (f.missing) return;
+      f.els.forEach(function (el) {
+        if (f.type === "img") el.setAttribute("src", el.__wingDef);
+        else if (f.type === "logo") el.style.display = el.__wingDef;
+        else if (f.type === "url") el.setAttribute("href", el.__wingDef);
+        else el.innerHTML = el.__wingDef;
+      });
+    });
+    applyLogo("");
+    var kr = $("#footKakaoRow");
+    if (kr) kr.setAttribute("hidden", "");
+    var fp = $("#footPhone");
+    if (fp) fp.removeAttribute("href");
+  }
+
+  function applyAll() {
+    resetDefaults();
+    var s = load();
+    Object.keys(s).forEach(function (k) {
+      var f = BYKEY[k];
+      if (!f || f.missing) return;
+      var v = s[k];
+      if (f.type === "logo") { applyLogo(v); return; }
+      if (f.type === "url") {
+        if (f.post) f.post(v);
+        return;
+      }
+      f.els.forEach(function (el) { setValue(f, el, v); });
+      if (f.post) f.post(v);
+    });
+    window.WING_SETTINGS = s;
+    window.WING_PHONE = s["foot.phone"] || "";
+    if (s["foot.phone"]) applyPhone(s["foot.phone"]);
+  }
+
+  /* ---------------------------------------------------------
+     토스트
+     --------------------------------------------------------- */
+  var tTimer = null;
+  function toast(msg) {
+    var t = document.getElementById("toast");
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add("on");
+    clearTimeout(tTimer);
+    tTimer = setTimeout(function () { t.classList.remove("on"); }, 2600);
+  }
+
+  /* ---------------------------------------------------------
+     관리자 패널 UI
+     --------------------------------------------------------- */
+  var panel = document.getElementById("admPanel");
+  var loginModal = document.getElementById("admLoginModal");
+  var loginBox = document.getElementById("admLoginBox");
+  var reopenBtn = document.getElementById("admReopen");
+  var imgPending = {};
+  var curGroup = "brand";
+  var panelBuilt = false;
+
+  function buildPanel() {
+    if (panelBuilt) return;
+    panelBuilt = true;
+    var tabs = GROUPS.map(function (g) {
+      return '<button class="adm-tab' + (g.id === curGroup ? " on" : "") + '" type="button" data-g="' + g.id + '">' + g.name + "</button>";
+    }).join("");
+    panel.innerHTML =
+      '<div class="adm-head">' +
+        '<div class="adm-title"><b>관리자 모드</b><span>수정 후 [저장 및 적용]을 누르면 바로 반영됩니다</span></div>' +
+        '<div class="adm-head-btns">' +
+          '<button class="adm-x" type="button" id="admLogout">로그아웃</button>' +
+          '<button class="adm-x" type="button" id="admClose" aria-label="닫기">✕</button>' +
+        "</div>" +
+      "</div>" +
+      '<div class="adm-tabs" id="admTabs">' + tabs + "</div>" +
+      '<div class="adm-body" id="admBody"></div>' +
+      '<div class="adm-foot">' +
+        '<p class="adm-status" id="admStatus"></p>' +
+        '<button class="adm-save" type="button" id="admSave">저장 및 적용</button>' +
+        '<div class="adm-row3">' +
+          '<button type="button" id="admExport">JSON 내보내기</button>' +
+          '<button type="button" id="admImport">JSON 가져오기</button>' +
+          '<button type="button" id="admReset">기본값 초기화</button>' +
+        "</div>" +
+        '<input type="file" id="admImportFile" accept=".json,application/json" hidden>' +
+        '<p class="adm-note">* 저장한 내용은 이 브라우저에 보관되어 다음 방문에도 그대로 보입니다. 다른 사람에게도 적용하려면 JSON을 내보내 파일에 반영해 배포하세요.</p>' +
+      "</div>";
+
+    $("#admTabs").addEventListener("click", function (e) {
+      var b = e.target.closest("[data-g]");
+      if (!b) return;
+      curGroup = b.getAttribute("data-g");
+      $$(".adm-tab", panel).forEach(function (t) { t.classList.toggle("on", t === b); });
+      renderGroup(curGroup);
+    });
+    $("#admClose").addEventListener("click", closePanel);
+    $("#admLogout").addEventListener("click", function () {
+      setAuthed(false);
+      closePanel();
+      reopenBtn.classList.remove("show");
+      toast("관리자 모드에서 로그아웃했습니다.");
+    });
+    $("#admSave").addEventListener("click", doSave);
+    $("#admExport").addEventListener("click", doExport);
+    $("#admImport").addEventListener("click", function () { $("#admImportFile").click(); });
+    $("#admReset").addEventListener("click", doReset);
+    $("#admImportFile").addEventListener("change", doImport);
+    panel.addEventListener("click", onPanelClick);
+    panel.addEventListener("change", onPanelChange);
+    panel.addEventListener("input", onPanelInput);
+  }
+
+  function fieldRow(f) {
+    var div = document.createElement("div");
+    div.className = "adm-field";
+    div.setAttribute("data-row", f.k);
+    var saved = load();
+
+    if (f.type === "img" || f.type === "logo") {
+      var pending = imgPending[f.k];
+      var cur = pending !== undefined ? pending : (saved[f.k] || "");
+      var thumb = cur
+        ? '<img class="adm-thumb' + (f.type === "logo" ? " sq" : "") + '" alt="미리보기" src="' + escAttr(cur) + '">'
+        : '<span class="adm-thumb' + (f.type === "logo" ? " sq" : "") + ' empty">기본</span>';
+      div.innerHTML =
+        "<label>" + f.label + "</label>" +
+        '<div class="adm-rowimg">' + thumb +
+          '<div class="adm-imginfo"><div class="btns">' +
+            '<button type="button" class="adm-mini" data-pick="' + f.k + '">이미지 업로드</button>' +
+            '<button type="button" class="adm-mini ghost" data-clear="' + f.k + '">기본으로</button>' +
+          "</div>" +
+          '<p class="adm-hint">' + (f.type === "logo" ? "정사각형 로고(PNG) 권장 · 256px로 자동 축소 저장" : "정사각형 사진 권장 · 512px로 자동 축소 저장") + "</p>" +
+          "</div></div>" +
+        '<input type="file" accept="image/*" data-file="' + f.k + '" hidden>';
+      return div;
+    }
+
+    var val = Object.prototype.hasOwnProperty.call(saved, f.k) ? saved[f.k] : f.def;
+    var fieldHtml;
+    if (f.area) {
+      fieldHtml = '<textarea data-fk="' + f.k + '">' + escHtml(val) + "</textarea>";
+    } else {
+      fieldHtml = '<input type="text" data-fk="' + f.k + '" value="' + escAttr(val) + '">';
+    }
+    div.innerHTML = "<label>" + f.label + "</label>" + fieldHtml +
+      (f.hint ? '<p class="adm-hint">' + f.hint + "</p>" : "");
+    return div;
+  }
+
+  function renderGroup(g) {
+    var body = $("#admBody");
+    if (!body) return;
+    body.innerHTML = "";
+    var lastSec = null;
+    var shown = 0;
+    FIELDS.forEach(function (f) {
+      if (f.g !== g || f.missing) return;
+      if (f.sec && f.sec !== lastSec) {
+        lastSec = f.sec;
+        var h = document.createElement("div");
+        h.className = "adm-sec";
+        h.innerHTML = "<h4>" + f.sec + "</h4>";
+        body.appendChild(h);
+      }
+      body.appendChild(fieldRow(f));
+      shown++;
+    });
+    if (!shown) body.innerHTML = '<p class="adm-note">이 섹션에는 편집할 항목이 없습니다.</p>';
+    body.scrollTop = 0;
+  }
+
+  function onPanelInput(e) {
+    var inp = e.target.closest("[data-fk]");
+    if (!inp) return;
+    var f = BYKEY[inp.getAttribute("data-fk")];
+    if (!f) return;
+    var row = inp.closest(".adm-field");
+    var v = inp.value.replace(/^\s+|\s+$/g, "");
+    var def = f.type === "lead" ? f.def : f.def;
+    if (row) row.classList.toggle("dirty", v !== def);
+  }
+
+  function onPanelClick(e) {
+    var pick = e.target.closest("[data-pick]");
+    if (pick) {
+      var k = pick.getAttribute("data-pick");
+      var inp = panel.querySelector('[data-file="' + k + '"]');
+      if (inp) inp.click();
+      return;
+    }
+    var clr = e.target.closest("[data-clear]");
+    if (clr) {
+      var k2 = clr.getAttribute("data-clear");
+      imgPending[k2] = "";
+      renderGroup(curGroup);
+      return;
+    }
+  }
+
+  function onPanelChange(e) {
+    var fi = e.target.closest("[data-file]");
+    if (!fi) return;
+    var k = fi.getAttribute("data-file");
+    var file = fi.files && fi.files[0];
+    if (!file) return;
+    var isLogo = k === "brand.logo";
+    pickImage(file, isLogo ? 256 : 512, isLogo).then(function (dataUrl) {
+      imgPending[k] = dataUrl;
+      renderGroup(curGroup);
+      toast("이미지를 불러왔습니다. [저장 및 적용]을 눌러주세요.");
+    }).catch(function () {
+      toast("이미지를 읽지 못했습니다. 다른 파일로 시도해 주세요.");
+    });
+    fi.value = "";
+  }
+
+  /* 이미지 축소(용량 절감) */
+  function pickImage(file, maxSide, asPng) {
+    return new Promise(function (resolve, reject) {
+      var fr = new FileReader();
+      fr.onload = function () {
+        var im = new Image();
+        im.onload = function () {
+          var scale = Math.min(1, maxSide / Math.max(im.width, im.height));
+          var w = Math.max(1, Math.round(im.width * scale));
+          var h = Math.max(1, Math.round(im.height * scale));
+          var c = document.createElement("canvas");
+          c.width = w; c.height = h;
+          var ctx = c.getContext("2d");
+          if (!asPng) { ctx.fillStyle = "#ffffff"; ctx.fillRect(0, 0, w, h); }
+          ctx.drawImage(im, 0, 0, w, h);
+          try {
+            resolve(asPng ? c.toDataURL("image/png") : c.toDataURL("image/jpeg", 0.88));
+          } catch (err) { reject(err); }
+        };
+        im.onerror = function () { reject(new Error("image")); };
+        im.src = fr.result;
+      };
+      fr.onerror = function () { reject(new Error("read")); };
+      fr.readAsDataURL(file);
+    });
+  }
+
+  /* ---------------------------------------------------------
+     저장 · 내보내기 · 가져오기 · 초기화
+     --------------------------------------------------------- */
+  function doSave() {
+    var out = {};
+    var prev = load();
+    for (var pk in prev) if (prev.hasOwnProperty(pk)) out[pk] = prev[pk];
+
+    FIELDS.forEach(function (f) {
+      if (f.type === "img" || f.type === "logo") {
+        if (Object.prototype.hasOwnProperty.call(imgPending, f.k)) {
+          var iv = imgPending[f.k];
+          if (iv) out[f.k] = iv; else delete out[f.k];
+        }
+        return;
+      }
+      var inp = panel.querySelector('[data-fk="' + f.k.replace(/"/g, '\\"') + '"]');
+      if (!inp) return;
+      var v = inp.value.replace(/^\s+|\s+$/g, "");
+      if (v !== f.def) out[f.k] = v;
+      else if (Object.prototype.hasOwnProperty.call(out, f.k)) delete out[f.k];
+    });
+
+    if (!persist(out)) return;
+    imgPending = {};
+    applyAll();
+    renderGroup(curGroup);
+    var st = $("#admStatus");
+    if (st) {
+      var d = new Date();
+      var p = function (n) { return String(n).length < 2 ? "0" + n : "" + n; };
+      st.textContent = "저장 완료 · " + p(d.getHours()) + ":" + p(d.getMinutes()) + " 기준";
+    }
+    toast("저장 및 적용되었습니다.");
+  }
+
+  function stamp() {
+    var d = new Date();
+    var p = function (n) { return n < 10 ? "0" + n : "" + n; };
+    return "" + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + "-" + p(d.getHours()) + p(d.getMinutes());
+  }
+
+  function doExport() {
+    var s = load();
+    var blob = new Blob([JSON.stringify(s, null, 2)], { type: "application/json" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "wing-settings-" + stamp() + ".json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(url); }, 5000);
+    toast("설정 파일을 내보냈습니다.");
+  }
+
+  function doImport(e) {
+    var fi = e.target;
+    var file = fi.files && fi.files[0];
+    if (!file) return;
+    var fr = new FileReader();
+    fr.onload = function () {
+      try {
+        var o = JSON.parse(fr.result);
+        if (!o || typeof o !== "object" || Array.isArray(o)) throw new Error("shape");
+        var clean = {};
+        Object.keys(o).forEach(function (k) {
+          if (BYKEY[k] && typeof o[k] === "string") clean[k] = o[k];
+        });
+        if (!persist(clean)) return;
+        imgPending = {};
+        applyAll();
+        renderGroup(curGroup);
+        toast("설정을 가져왔습니다.");
+      } catch (err) {
+        toast("설정 파일 형식이 올바르지 않습니다.");
+      }
+    };
+    fr.readAsText(file);
+    fi.value = "";
+  }
+
+  function doReset() {
+    if (!window.confirm("수정한 내용을 모두 지우고 처음 상태(기본값)로 되돌립니다. 계속할까요?")) return;
+    try { localStorage.removeItem(SKEY); } catch (e) {}
+    imgPending = {};
+    applyAll();
+    renderGroup(curGroup);
+    var st = $("#admStatus");
+    if (st) st.textContent = "기본값으로 초기화되었습니다";
+    toast("기본값으로 초기화되었습니다.");
+  }
+
+  /* ---------------------------------------------------------
+     열기 / 닫기 / 로그인
+     --------------------------------------------------------- */
+  function openLogin() {
+    if (!loginModal) return;
+    var err = $("#admLoginErr");
+    if (err) err.classList.remove("on");
+    var pw = $("#admPw");
+    if (pw) pw.value = "";
+    loginModal.classList.add("on");
+    document.body.style.overflow = "hidden";
+    setTimeout(function () { var id = $("#admId"); if (id) id.focus(); }, 80);
+  }
+  function closeLogin() {
+    if (!loginModal) return;
+    loginModal.classList.remove("on");
+    if (!panel.classList.contains("on")) document.body.style.overflow = "";
+  }
+  function openPanel() {
+    buildPanel();
+    renderGroup(curGroup);
+    panel.classList.add("on");
+    reopenBtn.classList.remove("show");
+    document.body.style.overflow = "hidden";
+  }
+  function closePanel() {
+    panel.classList.remove("on");
+    document.body.style.overflow = "";
+    if (authed()) reopenBtn.classList.add("show");
+  }
+
+  var openBtn = document.getElementById("adminOpen");
+  if (openBtn) openBtn.addEventListener("click", function () {
+    if (authed()) openPanel(); else openLogin();
+  });
+  if (reopenBtn) reopenBtn.addEventListener("click", openPanel);
+  $$("[data-adm-close]").forEach(function (el) { el.addEventListener("click", closeLogin); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    if (loginModal && loginModal.classList.contains("on")) closeLogin();
+  });
+
+  var loginForm = $("#admLoginForm");
+  if (loginForm) loginForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var idEl = $("#admId");
+    var pwEl = $("#admPw");
+    var id = idEl ? idEl.value.replace(/^\s+|\s+$/g, "") : "";
+    var pw = pwEl ? pwEl.value.replace(/^\s+|\s+$/g, "") : "";
+    if (id === ADMIN_ID && pw === ADMIN_PW) {
+      setAuthed(true);
+      closeLogin();
+      openPanel();
+      toast("관리자 모드로 로그인했습니다.");
+    } else {
+      var err = $("#admLoginErr");
+      if (err) err.classList.add("on");
+      if (loginBox) {
+        loginBox.classList.remove("adm-shake");
+        void loginBox.offsetWidth;
+        loginBox.classList.add("adm-shake");
+      }
+      if (pwEl) { pwEl.value = ""; pwEl.focus(); }
+    }
+  });
+
+  /* ---------------------------------------------------------
+     시작
+     --------------------------------------------------------- */
+  var initial = load();
+  if (Object.keys(initial).length) applyAll();
+  else {
+    window.WING_SETTINGS = {};
+    window.WING_PHONE = "";
+  }
+  if (authed()) reopenBtn.classList.add("show");
+})();
+
 </script>
 </body>
 </html>
