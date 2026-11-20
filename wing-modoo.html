@@ -2187,6 +2187,8 @@ const CONFIG = {
     if (kr) kr.setAttribute("hidden", "");
     var fp = $("#footPhone");
     if (fp) fp.removeAttribute("href");
+    var fe = $("#footEmail");
+    if (fe) fe.setAttribute("href", "mailto:" + htmlToText(fe.innerHTML));
   }
 
   function applyAll() {
@@ -2230,14 +2232,15 @@ const CONFIG = {
   var loginBox = document.getElementById("admLoginBox");
   var reopenBtn = document.getElementById("admReopen");
   var imgPending = {};
-  var draft = {};
+  var working = {};   /* 편집 중인 값(모든 탭 공통) — 저장 시 함께 반영 */
+  var savedCache = {};
   var curGroup = "brand";
   var panelBuilt = false;
 
-  function captureDraft() {
-    $$("[data-fk]", panel).forEach(function (inp) {
-      draft[inp.getAttribute("data-fk")] = inp.value;
-    });
+  function workingValue(f) {
+    if (Object.prototype.hasOwnProperty.call(working, f.k)) return working[f.k];
+    if (Object.prototype.hasOwnProperty.call(savedCache, f.k)) return savedCache[f.k];
+    return f.def;
   }
   function refreshThumb(k) {
     var row = panel.querySelector('.adm-field[data-row="' + k + '"]');
@@ -2295,7 +2298,6 @@ const CONFIG = {
       var b = e.target.closest("[data-g]");
       if (!b) return;
       curGroup = b.getAttribute("data-g");
-      captureDraft();
       $$(".adm-tab", panel).forEach(function (t) { t.classList.toggle("on", t === b); });
       renderGroup(curGroup);
     });
@@ -2320,7 +2322,7 @@ const CONFIG = {
     var div = document.createElement("div");
     div.className = "adm-field";
     div.setAttribute("data-row", f.k);
-    var saved = load();
+    var saved = savedCache;
 
     if (f.type === "img" || f.type === "logo") {
       var pending = imgPending[f.k];
@@ -2341,15 +2343,14 @@ const CONFIG = {
       return div;
     }
 
-    var val = Object.prototype.hasOwnProperty.call(draft, f.k) ? draft[f.k]
-      : (Object.prototype.hasOwnProperty.call(saved, f.k) ? saved[f.k] : f.def);
+    var val = workingValue(f);
     var fieldHtml;
     if (f.area) {
       fieldHtml = '<textarea data-fk="' + f.k + '">' + escHtml(val) + "</textarea>";
     } else {
       fieldHtml = '<input type="text" data-fk="' + f.k + '" value="' + escAttr(val) + '">';
     }
-    if (String(val) !== String(f.def) && Object.prototype.hasOwnProperty.call(draft, f.k)) div.className = "adm-field dirty";
+    if (Object.prototype.hasOwnProperty.call(working, f.k) && String(val) !== String(f.def)) div.className = "adm-field dirty";
     div.innerHTML = "<label>" + f.label + "</label>" + fieldHtml +
       (f.hint ? '<p class="adm-hint">' + f.hint + "</p>" : "");
     return div;
@@ -2358,6 +2359,7 @@ const CONFIG = {
   function renderGroup(g) {
     var body = $("#admBody");
     if (!body) return;
+    savedCache = load();
     body.innerHTML = "";
     var lastSec = null;
     var shown = 0;
@@ -2380,12 +2382,12 @@ const CONFIG = {
   function onPanelInput(e) {
     var inp = e.target.closest("[data-fk]");
     if (!inp) return;
-    var f = BYKEY[inp.getAttribute("data-fk")];
+    var k = inp.getAttribute("data-fk");
+    var f = BYKEY[k];
     if (!f) return;
+    working[k] = inp.value;
     var row = inp.closest(".adm-field");
-    var v = inp.value.replace(/^\s+|\s+$/g, "");
-    var def = f.type === "lead" ? f.def : f.def;
-    if (row) row.classList.toggle("dirty", v !== def);
+    if (row) row.classList.toggle("dirty", inp.value.replace(/^\s+|\s+$/g, "") !== String(f.def));
   }
 
   function onPanelClick(e) {
@@ -2466,15 +2468,18 @@ const CONFIG = {
         return;
       }
       var inp = panel.querySelector('[data-fk="' + f.k.replace(/"/g, '\\"') + '"]');
-      if (!inp) return;
-      var v = inp.value.replace(/^\s+|\s+$/g, "");
-      if (v !== f.def) out[f.k] = v;
+      var v;
+      if (inp) v = inp.value.replace(/^\s+|\s+$/g, "");
+      else if (Object.prototype.hasOwnProperty.call(working, f.k)) v = String(working[f.k]).replace(/^\s+|\s+$/g, "");
+      else if (Object.prototype.hasOwnProperty.call(out, f.k)) v = out[f.k];
+      else return;
+      if (v !== String(f.def)) out[f.k] = v;
       else if (Object.prototype.hasOwnProperty.call(out, f.k)) delete out[f.k];
     });
 
     if (!persist(out)) return;
     imgPending = {};
-    draft = {};
+    working = {};
     applyAll();
     renderGroup(curGroup);
     var st = $("#admStatus");
@@ -2521,7 +2526,7 @@ const CONFIG = {
         });
         if (!persist(clean)) return;
         imgPending = {};
-        draft = {};
+        working = {};
         applyAll();
         renderGroup(curGroup);
         toast("설정을 가져왔습니다.");
@@ -2537,7 +2542,7 @@ const CONFIG = {
     if (!window.confirm("수정한 내용을 모두 지우고 처음 상태(기본값)로 되돌립니다. 계속할까요?")) return;
     try { localStorage.removeItem(SKEY); } catch (e) {}
     imgPending = {};
-    draft = {};
+    working = {};
     applyAll();
     renderGroup(curGroup);
     var st = $("#admStatus");
@@ -2565,7 +2570,7 @@ const CONFIG = {
   }
   function openPanel() {
     buildPanel();
-    draft = {};
+    working = {};
     renderGroup(curGroup);
     panel.classList.add("on");
     reopenBtn.classList.remove("show");
