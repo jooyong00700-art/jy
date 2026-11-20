@@ -13,7 +13,7 @@
 <meta property="og:title" content="주식회사 윙 (WING) | 맘카페 바이럴마케팅">
 <meta property="og:description" content="실사용 계정 · 실명 인증 카페 · 팀이 직접 관리하는 맘카페 바이럴마케팅">
 <meta property="og:type" content="website">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2300C73C'/%3E%3Cpath d='M14 40c8-14 22-20 36-16-6 12-20 20-32 20z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAkFBMVEUA/1Ubx2EDwlMBukQAtjzz/PYAAAAzyWuS47DZ9uNw2Zay68dW0oXN8tsAqlVHzXciw1sDx1oDyFcCxlUD0VkA/wBP0H6j5rsAvUUA/3+C3qMAtjAAtj0AvD0AujwAvFIBukMBu0MAwD8AyFsCyFcDyVfC7tF73aEAfwAAuTsAvD0CukQBvEUA3z8A318G1GGgf/QYAAAAMHRSTlMD/v39/f8A/v7//v/+/wP+/iiQ0P8B/v8oAv8QJ47PD5DR/xdhpP//AmOiYaQICCqbOyyBAAAC+UlEQVR42t2Xa1uzMAyG+zZNT8CYY4O5o3MHz/r//92bFFCmzG3wzXzwsjTPzZOkeFmhQ0yE1tvdPpMXRLbfbbUWk1Ipws9brT9G8ooYfQRRDRjo9UiOrwGM5WhNsgow0DfZVfKAyG4CQQS97BSBIKiUjnom3FIzB+9ZV0D2PpiIgR6NuwLGIz0Q3QsoixA9DAQLYit7xVbs+gF2Yt8PsBdZP0AmZM/4awC4TAP/2gEG/UUE8M60O0C0FxDAYtLugHYuIHDWA7SXIB2erQI8koHWEiAyBhHNrwSgFCdNBG2AxPF28ruDBBMDSTvAIj1Pfm0D55DVZk4DECPvWoyhablZEqWQNELMoXUKtIOxyl1DA4dDY2GSFGLqdAQnTmJChMhIf+SqYSim9qEjnyeOMkiaMSHSI+Tha5WyR6qi2SUBdajYSmVCSjRU5SPPK18tTBHkQ2VsrD5lTQApYzDBRZXBv2JSbVPxbjaUceSwHTAM6ZZ6UL1WPfADhw+qNJN4aSxjnGwDgJoFArfRBoIMS0f5Qe8hFOhcXdR3wCeBxkRHMlVczMyTBatSOoB8AIiGR/ojAFQ9pEip/GAAIOHj7Ryk4eWIhWnqjwGgVNlD6uIQ/Yxfxr31HmUc5M4adaT/BmAEhNmhmaEpBxChcd6wPvHwTf4TADKGgHASc8fjUmmSYjiknnYknAMAH7Uh5ceFzcsnqbU5d5b/mMFZADWc32Wx8FFlVxXeEpV9GXXeQSBE/FkXNcDmzvK36lJ13gEP80C5w8LX81beWy6q/kTOAUBBTOkmr9+nTEoHK8pVi74VwIi0iJoNt9aAak1tB8CPeSt1IvEU4OL4C4BNP/1GvMo+evkqXmhC3QNexFr1irXQd7K7XN7Rf+vTHjXAVNOFo7sFMjCgK8/b5r6b/n7zRlceujd1LYIKuC2vfVPVwcO9mpbXPiYsVlf3Qa4W9cWTCfOlugoh1XL+dfXV+lHrxfIawHIRRJ8APSHa/Ol5dYl49fw0J9fV9f8/EKlFaRQTpBIAAAAASUVORK5CYII=">
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -79,7 +79,7 @@ ul{margin:0;padding:0;list-style:none}
 body.nav-slim{--nav-h:76px}
 body.nav-slim #nav{box-shadow:4px 4px 18px rgba(0,0,0,.12)}
 .brand{display:flex;align-items:center;gap:10px;flex:0 0 auto}
-.brand .mark{width:40px;height:40px;flex:0 0 auto}
+.brand .mark{width:40px;height:40px;flex:0 0 auto;display:block}
 .brand .word{display:flex;align-items:baseline;gap:9px}
 .brand b{font-size:30px;font-weight:900;letter-spacing:-1.2px;color:var(--green);line-height:1}
 .brand span{font-size:13px;font-weight:700;color:#9aa49d;letter-spacing:-.2px}
@@ -444,7 +444,7 @@ body.menu-open .mobile-menu{max-height:440px}
 
 /* ---------- 푸터 ---------- */
 .foot{background:#222;color:#6d6d6d;padding:80px 0 0;text-align:center}
-.foot .f-mark{width:52px;height:52px;margin:0 auto 12px;opacity:.95}
+.foot .f-mark{display:block;width:52px;height:52px;margin:0 auto 12px;opacity:.95}
 .foot .f-name{font-size:17px;font-weight:900;color:#e9efe9;letter-spacing:-.3px}
 .foot-info{margin-top:22px;display:grid;gap:6px;font-size:13.5px;line-height:1.7;color:#8b8b8b;letter-spacing:-.2px}
 .foot-info .row{display:flex;justify-content:center;flex-wrap:wrap;gap:0 14px}
@@ -698,10 +698,6 @@ body.menu-open .mobile-menu{max-height:440px}
   font-family:var(--font);font-size:12px;font-weight:800;letter-spacing:.5px;cursor:pointer;transition:.25s}
 .admin-entry:hover{color:#fff;border-color:var(--green);background:rgba(0,199,60,.14)}
 .admin-entry svg{width:14px;height:14px}
-.wing-logo-img{display:block;object-fit:contain}
-.wing-logo-img.mark{width:40px;height:40px}
-.wing-logo-img.f-mark{width:52px;height:52px;margin:0 auto 12px;opacity:.95}
-@media (max-width:768px){.wing-logo-img.mark{width:34px;height:34px}}
 .foot-info .row[hidden]{display:none!important}
 
 /* 로그인 모달 */
@@ -812,14 +808,7 @@ body.menu-open .mobile-menu{max-height:440px}
 <header id="nav">
   <div class="container nav-inner">
     <a class="brand" href="#top" aria-label="주식회사 윙 홈">
-      <svg class="mark" viewBox="0 0 64 64" aria-hidden="true">
-        <defs><linearGradient id="wm" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#22D95A"/><stop offset="1" stop-color="#00A833"/>
-        </linearGradient></defs>
-        <rect width="64" height="64" rx="16" fill="url(#wm)"/>
-        <path d="M13 41c7-14 20-21 38-19-4 13-17 22-31 22-2.6 0-5-.9-7-3z" fill="#fff" opacity=".95"/>
-        <path d="M20 44c9-3 17-9 22-17-2 10-9 18-19 20z" fill="#00A833" opacity=".35"/>
-      </svg>
+      <img class="mark" src="data:image/png;base64,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" alt="" width="40" height="40" decoding="async">
       <span class="word"><b>WING</b><span>주식회사 윙</span></span>
     </a>
     <nav class="nav-links" aria-label="주요 메뉴">
@@ -1418,10 +1407,7 @@ body.menu-open .mobile-menu{max-height:440px}
 <!-- ================= 푸터 ================= -->
 <footer class="foot" id="sh_ft">
   <div class="container">
-    <svg class="f-mark" viewBox="0 0 64 64" aria-hidden="true">
-      <rect width="64" height="64" rx="16" fill="#2b2b2b"/>
-      <path d="M13 41c7-14 20-21 38-19-4 13-17 22-31 22-2.6 0-5-.9-7-3z" fill="#00C73C"/>
-    </svg>
+    <img class="f-mark" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAMAAABrrFhUAAAAwFBMVEUD0V8Av38AukABukAAwToD02IDw1MBu0QAtzz6/vsAAADe+OcwymqP469s2pWw7MfK89lV1IUAqlVJ0XwA/38AujwE1GED0l2i6LwAwj0A/wACyFkA/1UDxlhDzXUAuDwAuTsCyFm88NAAuDwixV0Af38AuTsEx1gAxVgAfwAExlh63qEDx1gAuDsAtzuC3qMAzGYA//8AmTMAtEYBuUDB79Iex2AArC8CuUEBuEAAxjgA1FUA/6o50HV74KMAvUHfNnfuAAAAQHRSTlMrBEe5Rkb+/v7/AP////////8D/wIJ/////wHOA7b/tc6Q/zT/Ao8zFQJ5/0dHeP8IAQUT0f//DHuSEwYD//8jfEouWgAAENtJREFUeNrtnAd34rgWx/22SLLkBphAKAkJIYWUydSdmd3Z/f7f6qm4SLYMFtiJQeidPXN2HkX3p3v/t8isgw3WpD/kf746f66v5tMp6MiaTudX6z+dV765YX9iYpNT/6X9GX/DEzUdgLOzM9ChxbdDMTxxe2b95gF8ZNa/3l1Nu2Z6EcP06o55wuxjowD6FOnQuWJfATq+2A6vnKHYc0MA+pTmPTt7cCCL+cE99dp+IwD6K4zvrg7H+pTB1R3Gq/7eAFY09p/mh2a+QDB/olqw2g/AkJk/OkDzOYIRQzDcA0B8iM5fDoR4VwBD/Gl9yOYLBOtPG52gGsAqxnfTAzefI5je4XhlDoCK3xqMwBGsEVhzc8wADPH9/AwcyTqb31eGgVMlf0/gaOxnSvBUJYVORfivwZGtdYUQ6ADQF16dHRuAsytuWB0AMQ3/ETi6NaJCENcBQO2fnoEjXGdTHQFHZ/8IHOUa6Qg4pfg/WvsFgdVmAKv4iO3nBIq5QAUwifH8DBzxOpvjeLIBwAxfjcBRr9FVoSp21Pp3fQaOfJ2t1apYBtCn9a8F6wn39QAeJvfAinU/edACmE3mIxvsH80nMx2A/+H1yA4PGK2psSUAMb4D1qy7vCJ0snvPv6f2AJj+nd2gpgD+sSYAkiD4RwWw+mhRAPAg+LhSAPyD5yOb7B/NUxdwkhLIMgdgOtiXAMSWOQB3gTgHYEkNrK2IOYA4ts0BmAvEcQrAQgXIVUAAsM8BuAokACb4Hli57qnpDMDMqiJQKQdnwgNs6gLUjoB7gKUSmMqgY8EgtDIG2IDUmeBXYO16xRNnZm8EsBiYOa/WRgCPgVdnFU/t9YBpvHJsrYLSWsjBTyN77R89UQBXNgO4ogDmNofAHDufpzYDmH527oDV6855shvAk7O2G8DasTkJsDTgzO32gLkztRvA9AQAWL5OAE4ATgBOAE4ATgBOAE4ATgBOAE4ATgBOALYtCA/BJNgegCAAnUcAPd9vC4Dnum7QdQD/Etf91RKAHgXght86ffzXLiFurx0AkANw3UFnwwD2CLWfAoCtAnCDrhLwXWY/MToiUw3gy+/k8YOQm08BeG1lgRSAe93F8I9S+6O2sgAMMwLEg12znyT2E9eHbQHoufnqFgH4K7PfTAMNS2EiE+jm+RPD+DQrhR8lAKRDACT7DR3AtBmSAJhpTbsrkuw3FGgzAIoKuGFXZCDM7SemdZpj/F3S8jtBAPqy/aZ7cuofPle9bzIAw3Brq/6V7Rdx6dXfWH0APmerBkEHkiH0JPuJ+wvme20YQOimDtetVBDJDpC0KW47AMSnwk7JgE4A6N+FLYhglDl8JBN439YQBhr7PZNmpT4Akuc90hUZUAQgO/bQpEapDyA/bqgQiDoiAKn9zClaA5AcN/xGOiEDsgBk9jOnaA9AlA4fZB14rxmZXAHkshe1BYDI5a9K4L1GQFIL6CtlcSsiGBUcPnzvpgCO3VIBnARFG2kwS/9B/l3vWhLnGVDa07+uaUdQH8BjMfPTHbxjLsxnIC4ZwAITg+rEoBkq1T5w8J5BkM2Ao5Q+PSPzntigHS5Xf2wSm6zHNyaQOjuTP1hMiiYtSn0Acg+QaQ7w3ycIqPMVwx/47i5DAcdEdCTdB0Uh2K0vNGlcNSWgG/3K7A93GwuaTISUPtgrhsEulkCwm+swb6f/k9x/IBfFJtW5Y/StahsI1TDYoS9kH7kDOKH2Lsm2wPywPBVoHIDiAq47zvGT3WSANa5kp7fxYid3wlCZCrV3NRaoBEgvc4KxkAFDU5iuEuMUyspwpn4gO34i29/mzZA6DJKcAIoqYQyNHYARMKwj6S5ose+l3+yFrmq/397FSDEIXOkcuBOYyQD8KgCYXWXwkjT/Wl81n31aizdD0CsRiAYiDiB7PMOoM05qS0PRYu9Kox+CIFLNJ8b31oYXI1L1m9cEXoKAnYbJ15MUQFT/0JgABhnya3df+41vhnQEUgSQ1QS1bUkllW27diFNWyChO/QLe2HRfKkvaA2ALgoYgkGC4DGsSSDTE5Nzo4rHMw/9Jyidvnn87wSAF52aFfX4lyOv5pOEWVllpNw9gIT5kcb8vDBsFQD9/g+uFgGXZljvWdXckZLnmmq6AOTmk7L5JC9L2gIApd1HegTCP2vOsxQAtauhKvOV42+lFIbSs9J0F64ewaDeKUhKYjTCoNIXac2XvxiCb210gygYK4x9PYLQQ2Y1ZXGsvTEAvFBvfqBsLXxE9QHAmgsgn7s412Aeit5Yj+CRO8vGz5KTqVTBb36TpuwT5pNAaEOaHyL33207yJcRAJ7uUPpllQiiC7RtA1EZQLTFflr3RFWnz7+OnwyvDVlSaQkA/b5HjzIQP56gCPSB4G90AhpNbgkAL4g32a87fm6+oM3/GfhcIVoCkM3FwyABXo0gokqw4bNcHQACNh3/INKYH/aSxMhe5D1GaVkRtAFAnQn2BAOKAPGqpNwmwqpNSChlABvOjf516fhZ9z1I90CtD0IDPdkNQKEL8AcAifoXwZ6mOAwrw0BtqiWbPP071Ilnqny+B5PymwZ+SOp80F4AIPxWNJHtASV70OhhpN9GKiYaAHoXkB4ELyifsL43JsrHbAymfQDASFf+eon+Io0YXGiEoNRNkS0nB1CvMPJhAYgS3/P8yC1FRwjbAFA8OUkOkt3wIlV9jrBMoDRX27rzQH2NSMWp67u6yiBAoBUP8PSFj0seEzco62FpKwBeuJUAtOr1qJo/Tl2OHr6uKWDLa8UDymcnT0dzBGQjAVAKJHWgUbJfeQyOj17E9/S0h785m+wNwHOrV9gTjokKfZJKgAd0NYCy98pPAWVjF6SdB8hTsXZEsEoFMkFMEfgbCJDNACJQKBml/6snBxqpWkYKYAZAnwgK8wC+RS/UK6FaBGsAUP9VXy33+ygPMlJtv29mkSGA8gFqELCl/LwIVdRALHJ8t1LB0CC3PxQfguDG0zdMgTsAgDdbCGQ7BVJllJ1pOYY8QNyqE8wfgmGFNV+DzeazsULLANTn4ypaQYEg9/aoMpH6UHnaN6mGsm/Kht3iE1m5STba75uaYw4AQn8bAVfEAfIyb/FFEKBSvQy4ruid2M+HReLthUtQzWwggG8BoJzJNI0Q33I+QB8grQMESIn0dDyIxLcop4q00zC1RJTEpk0AxTynXcLifPbLQ7NYSBHxeWH5ehNmj4Gmp7rl+HkW3mU5O71LzXPa9UGNF5rdUOlWrYcSZSgYwxKnn9qP0s/ZaD5JlOeNANB1EW4NA0X3vXIEhHluKBVDA9l+dHO9zfwbtKMdOwNAcJsXELGpMMsEqHCj5EnVhVrKpWEh1BN5kbvZ+cGu5u8BAOpHAKqFSKoeqb+rZZCf7RoF6i/fUgUU+ocuNoS/617vY/5+AGDVPFAlAHIX8IspMF2Si3MH4EcuGgMmHZXWs7kg2suE/QCwSBiEWwik4kdd4KaQAnVFL8kdgL/bq7KfMuUzOfiuALgYbIiEm1wImQuE5eoQJvky74YSBRCIvAr/39v3GwMgIqGqReBeDDLRGxQLhbxITg27SP7FvVbq4cZ9v0kAzA16XyuyIcpqx7Ekg2Fh92kqTKSCk0DlIkmaiaNmdt4QAIagojLgjhwlsieXBaUmK40AnhXdcTE9NJH1WwRAd1tRH3oskyUymPYRfsmCxFZ3kEggU0DkuQ3WfK0DqELA5e5r4vegnALTFSZPzPEqmDtAOQCaNr8ZANSzUR4IkS4IkpMHSWEYaIygXiJ6YfHLP6oApQCgnpM3fBSm1w0AKCTsnhCl+yqP/dh58zRxIUQg0n8O+xEAReMlIIoZQO536auCsfH4qy0A3OLxRarL5W6ZuQC/EX4UInCh92JPSEDgihqg4ADsCdHsG/htqNaR3iMEki6PZIUJKsYBSF4U8j9DVEmSjUT5r0FAwQEo4UT6UX4l1JEQkOo7GqLJ8NYvpcKvYgICRHVYMW9kGhjx3xAUOiQSKNk2bxU7AWAg35GhVNLURCAChdpOqveNgojPnUUVLDdI2VR8kA/GXK8rAOQSn3rBTTIXD9WmyEv+9Dc9OxOI3E9rB6kGYMNjVJoLNuMADdUB6qznA0DF8THbLEmGAlvdSaqHhf1idIZu5LmY0VMQrQMo3HiRXvFmgCQz8e26zUKf87rOfhrMXR0VxqLFbuq9myFfNxeXhMATOPx6AJJqQHRHN0gzFW8kBTZaCoe6iS/y8jzAadQA4PNf0qXXAu61iKeg+Muopgri5nqBsHTrhSQCYzEOqgeA3KQSIOxHxafEdrgCe4NmqHTtwSdaN3lHVBcAf3H6n8JAmqlog/Y32g36uouP1Ad4hVNPA/KOKOL2F92/sfhvGkD56YcPKFNCWiOG4i+2f8gYiWpA3CwUniBwyaC784CL4miQj3V6yTDEr5UGe8xP+JiYz0RKN4fhTaMDgUYBqI9FZNdf/EYo4AC2Hx4LGQqAJUMaQQhcF90fdm8gohZypDwPYs7PjapTvgOW49lrfWZ/5O5/A/6mAOj5fCgTACQ51XrZhHsLawgLHXHUg03b3zyA5EmWQivoMWELKicBhTzIAdCzVv5badK8oeMASrNRdpb+VwagTv6i+kcBhGpD7DY/DW0RAEOgXBKwabDPtLCWgAMW/YE8E6bmf7hBrdjfEgDuBYVumLaDUS0bkC9ent4ViQcAUEsbbQsAQyDdnfOnocJePQCej/KLEpc0dQv41gDEAM+X7slrP8XUS28J2A+0bhBqc4+tAmBuAHsiJ5idImLP5JIw8GC75rcOQDC48L+aXmKEkd+7ad36NwEgGICB2QiPHT16i729CQDBwFA+3mi9FYDOrhOAE4ATgBOAE4ATgBOAE4ATgBOAE4ATADsBfAE2mw++nAD8bjeA350fdgP44Xy3G8B35ze7AfzmLO3OgktnaHMaAF+GDr4EyFb7EbjEDr612QNuKYBnmz3gmQL4bLMGfsbOKl7Y6gIILOKV84mKALJ0UQn45PTxEtoKAC5x35ngIbKUAERDPHHwDP+wNAbAD2q8g+2NARYBFACe/LWw0gXA4q8JZgBm+LudAL5T07kHUBm0clEJ5ABoIFxa6AK0EerjFMDSRgDLDACOY/tcAFzGMU4B9FlLaBuAZ+4AAgCOrVMBqgDcARIA9qlAogApAJoQ7XIB6gAzLANYffzPLg/47+NKAUB5vFjkAuAldYAMwKTft6cjAIt+f1IAQDVxaY8HLJMUIAPAQ2uCgAbAEJcB4NnEjkwALiczrAPwMPlshwd8njxoAbCK+Pz4zT9PamANACtkQBGAIgCaHI/9kgDc4hmuBjA59q6I9UCTDQDwQ3zUE1Kw+Ct+wJsA4Ac8PF4CYDHEBftLAGiJNFwcaS44p/bHeBuA4yWgtV8DgBG4PEIC55c6+3UAWJgcXzak+a8U/1UAaC7AL8cG4AXHOvv1AFgYPKMjCoNz9Kxz/w0AaLl4RELAwn+IzQCwhuHleNxf6X/qAWBCsDyGfHi+WFaE/xYALAw+vRy6Epyjl0+V7r8NANON5e0hIzhHt0tcJX81ADAnwM+Xh4rgHF0+443Hvx0AfugfKgJhfv8B7wdAfMThBYJw/of+VvO2A6AIJtSRbheHw+AcLW6H7LKnhnF1AFAE9KOG1A0OgQHd4u1yKPbcGICE5s8l84PzzlJgW1vcLn8mXtsoAJwi/fl8e7lAnfMFtp3F5e3zz3ynjQNgbiByynD5xwvFsOiK9Qtq+ssfy2RztQ+fr/8Dq1+Qo1ud20UAAAAASUVORK5CYII=" alt="" width="52" height="52" decoding="async">
     <p class="f-name">주식회사 윙 (WING)</p>
 
     <!-- ▼ 사업자 정보: 푸터의 Admin 에서 바로 수정할 수 있습니다 -->
@@ -2018,7 +2004,7 @@ const CONFIG = {
   /* ── 브랜드 · 로고 · 연락처 ── */
   F("brand", "brand.word", "로고 텍스트", ".brand .word b");
   F("brand", "brand.sub", "로고 옆 회사명", ".brand .word span");
-  F("brand", "brand.logo", "로고 이미지", ".brand svg.mark, .foot svg.f-mark", { type: "logo" });
+  F("brand", "brand.logo", "로고 이미지", ".brand .mark, .foot .f-mark", { type: "logo" });
   F("brand", "foot.name", "푸터 회사명", ".foot .f-name", { sec: "사업자 정보" });
   F("brand", "foot.bizno", "사업자등록번호", "#footBizNo");
   F("brand", "foot.ceo", "대표자", "#footCeo");
@@ -2145,14 +2131,14 @@ const CONFIG = {
     f.missing = f.els.length === 0;
     if (f.missing) return;
     f.els.forEach(function (el) {
-      if (f.type === "img") el.__wingDef = el.getAttribute("src") || "";
-      else if (f.type === "logo") el.__wingDef = el.style.display || "";
+      if (f.type === "img" || f.type === "logo") el.__wingDef = el.getAttribute("src") || "";
       else if (f.type === "url") el.__wingDef = el.getAttribute("href") || "";
       else el.__wingDef = el.innerHTML;
     });
     var first = f.els[0];
     if (f.type === "img") f.def = first.getAttribute("src") || "";
-    else if (f.type === "logo" || f.type === "url") f.def = "";
+    else if (f.type === "logo") { f.def = ""; f.defSrc = first.getAttribute("src") || ""; }
+    else if (f.type === "url") f.def = "";
     else if (f.type === "lead") {
       f.def = first.firstChild && first.firstChild.nodeType === 3 ? first.firstChild.nodeValue.replace(/^\s+|\s+$/g, "") : htmlToText(first.innerHTML);
     } else {
@@ -2164,25 +2150,14 @@ const CONFIG = {
   /* ---------------------------------------------------------
      적용 / 초기화
      --------------------------------------------------------- */
-  var logoEls = $$(".brand svg.mark, .foot svg.f-mark");
+  /* 로고는 <img class="mark"> / <img class="f-mark"> 하나로 관리한다
+     (기본값 = HTML 에 박혀 있는 데이터 URI, 교체 시 저장된 dataURL 을 src 에 꽂는다) */
+  var logoEls = $$(".brand .mark, .foot .f-mark");
+  var DEFAULT_LOGO = (logoEls[0] && logoEls[0].getAttribute("src")) || "";
 
   function applyLogo(v) {
-    logoEls.forEach(function (svg) {
-      var nx = svg.nextElementSibling;
-      var img = nx && nx.className && String(nx.className).indexOf("wing-logo-img") > -1 ? nx : null;
-      if (v) {
-        if (!img) {
-          img = document.createElement("img");
-          img.className = "wing-logo-img " + (svg.getAttribute("class") || "");
-          img.alt = "로고";
-          svg.parentNode.insertBefore(img, svg.nextSibling);
-        }
-        img.src = v;
-        svg.style.display = "none";
-      } else {
-        if (img && img.parentNode) img.parentNode.removeChild(img);
-        svg.style.display = svg.__wingDef || "";
-      }
+    logoEls.forEach(function (el) {
+      el.setAttribute("src", v || el.__wingDef || DEFAULT_LOGO);
     });
   }
 
@@ -2211,7 +2186,7 @@ const CONFIG = {
       f.els.forEach(function (el) {
         try {
           if (f.type === "img") el.setAttribute("src", el.__wingDef);
-          else if (f.type === "logo") el.style.display = el.__wingDef;
+          else if (f.type === "logo") el.setAttribute("src", el.__wingDef || (f.defSrc || ""));
           else if (f.type === "url") el.setAttribute("href", el.__wingDef);
           else el.innerHTML = el.__wingDef;
         } catch (e) { /* 한 항목이 실패해도 나머지는 그대로 적용 */ }
@@ -2289,7 +2264,7 @@ const CONFIG = {
     if (!f) return;
     var saved = load();
     var pending = imgPending[k];
-    var cur = pending !== undefined ? pending : (saved[k] || "");
+    var cur = pending !== undefined ? pending : (saved[k] || (f.type === "logo" ? (f.defSrc || "") : ""));
     var box = row.querySelector(".adm-rowimg");
     if (!box || !box.firstElementChild) return;
     var el;
@@ -2368,7 +2343,7 @@ const CONFIG = {
 
     if (f.type === "img" || f.type === "logo") {
       var pending = imgPending[f.k];
-      var cur = pending !== undefined ? pending : (saved[f.k] || "");
+      var cur = pending !== undefined ? pending : (saved[f.k] || (f.type === "logo" ? (f.defSrc || "") : ""));
       var thumb = cur
         ? '<img class="adm-thumb' + (f.type === "logo" ? " sq" : "") + '" alt="미리보기" src="' + escAttr(cur) + '">'
         : '<span class="adm-thumb' + (f.type === "logo" ? " sq" : "") + ' empty">기본</span>';
