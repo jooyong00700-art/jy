@@ -716,9 +716,13 @@ body.menu-open .mobile-menu{max-height:440px}
 .adm-shake{animation:admShake .34s}
 @keyframes admShake{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
 
-/* 편집 드로어 */
-.adm{position:fixed;top:0;right:0;bottom:0;z-index:210;width:min(486px,100%);
+/* 편집 드로어
+   · 모바일(삼성 인터넷 등)에서 상·하단 브라우저 툴바 때문에 하단 [저장 및 적용]이
+     화면 밖으로 밀리지 않도록 높이를 dvh 로 고정한다. (100vh → 100dvh 순서로 폴백) */
+.adm{position:fixed;top:0;right:0;z-index:210;width:min(486px,100%);
+  height:100vh;height:100dvh;max-height:100vh;max-height:100dvh;
   display:flex;flex-direction:column;background:#fff;color:var(--ink);
+  overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
   box-shadow:-26px 0 70px -34px rgba(0,0,0,.55);transform:translateX(103%);visibility:hidden;
   transition:transform .36s cubic-bezier(.2,.8,.2,1),visibility .36s}
 .adm.on{transform:none;visibility:visible}
@@ -736,7 +740,7 @@ body.menu-open .mobile-menu{max-height:440px}
   font-weight:800;padding:7px 11px;border-radius:20px;cursor:pointer;transition:.2s;letter-spacing:-.2px}
 .adm-tab:hover{border-color:#bfe3cb;color:var(--green-d)}
 .adm-tab.on{background:var(--green);border-color:var(--green);color:#fff}
-.adm-body{flex:1 1 auto;overflow:auto;padding:16px 16px 20px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.adm-body{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;padding:16px 16px 22px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
 .adm-body::-webkit-scrollbar{width:8px}
 .adm-body::-webkit-scrollbar-thumb{background:#dfe9e3;border-radius:8px}
 .adm-sec{margin-bottom:18px;padding-bottom:4px}
@@ -761,16 +765,30 @@ body.menu-open .mobile-menu{max-height:440px}
 .adm-mini:hover{background:#f2fbf6}
 .adm-mini.ghost{color:#7b857e;border-color:#e2eae5}
 .adm-hint{font-size:10.5px;color:#a3ada6;line-height:1.45;margin:4px 0 0}
-.adm-foot{border-top:1px solid #eef2ef;padding:11px 16px 13px;display:grid;gap:8px;background:#fbfdfc;flex:0 0 auto}
-.adm-save{width:100%;border:0;border-radius:11px;background:var(--green);color:#fff;font-family:inherit;
-  font-size:15px;font-weight:900;padding:13px;cursor:pointer;transition:.2s;box-shadow:0 12px 22px -16px rgba(0,199,60,.9)}
+.adm-foot{margin-top:auto;border-top:1px solid #eef2ef;
+  padding:11px 16px 13px;padding-bottom:max(14px,env(safe-area-inset-bottom));
+  display:grid;gap:8px;background:#fbfdfc;flex:0 0 auto;position:relative;z-index:2}
+.adm-save{width:100%;min-height:48px;border:0;border-radius:11px;background:var(--green);color:#fff;font-family:inherit;
+  font-size:15px;font-weight:900;padding:13px;cursor:pointer;transition:.2s;touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;box-shadow:0 12px 22px -16px rgba(0,199,60,.9)}
 .adm-save:hover{background:#111}
+.adm-save:active{transform:scale(.99)}
+.adm-done{width:100%;min-height:44px;border:1.5px solid var(--green);border-radius:11px;background:#fff;
+  color:var(--green-d);font-family:inherit;font-size:14px;font-weight:900;padding:11px;cursor:pointer;
+  transition:.2s;touch-action:manipulation}
+.adm-done:hover{background:#f2fbf6}
+.adm-done[hidden]{display:none!important}
 .adm-row3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
 .adm-row3 button{font-family:inherit;font-size:11.5px;font-weight:800;padding:9px 4px;border-radius:9px;
   border:1.5px solid #dfe9e3;background:#fff;color:#3a443c;cursor:pointer;transition:.2s}
 .adm-row3 button:hover{border-color:var(--green);color:var(--green)}
 .adm-note{font-size:10.5px;color:#a3ada6;line-height:1.45;margin:0}
-.adm-status{font-size:11px;color:#0f8b3c;font-weight:800;text-align:center;min-height:14px;margin:0}
+.adm-status{font-size:11px;color:#0f8b3c;font-weight:800;text-align:center;min-height:15px;margin:0;
+  border-radius:8px;padding:4px 6px;transition:background .2s,color .2s}
+.adm-status.ok{background:#E4F8EC;color:#0a7a33;border:1px solid #b6e8c8}
+
+/* 토스트는 편집 드로어(z-index 210)보다 위에 떠야 모바일에서 저장 알림이 가려지지 않는다 */
+.toast{z-index:400}
 .adm-fab{position:fixed;right:26px;bottom:104px;z-index:96;display:none;align-items:center;gap:7px;
   border:0;border-radius:30px;background:#1d2620;color:#fff;font-family:inherit;font-size:12.5px;
   font-weight:800;padding:11px 16px;cursor:pointer;box-shadow:0 14px 26px -14px rgba(0,0,0,.75)}
@@ -778,7 +796,11 @@ body.menu-open .mobile-menu{max-height:440px}
 .adm-fab svg{width:15px;height:15px}
 @media (max-width:768px){
   .adm-fab{right:16px;bottom:88px}
+  .adm{width:100%}
   .adm-body{padding:14px 14px 18px}
+  .adm-foot{padding:10px 14px 12px;padding-bottom:max(16px,env(safe-area-inset-bottom))}
+  .adm-save{font-size:16px;padding:14px}
+  .toast{bottom:max(96px,calc(88px + env(safe-area-inset-bottom)))}
 }
 
 </style>
@@ -1407,7 +1429,6 @@ body.menu-open .mobile-menu{max-height:440px}
       <div class="row">
         <span><span class="k">사업자등록번호</span> <span id="footBizNo">000-00-00000</span></span>
         <span><span class="k">대표</span> <span id="footCeo">홍길동</span></span>
-        <span><span class="k">통신판매업 신고</span> <span id="footMailOrder">제0000-0000-0000호</span></span>
       </div>
       <div class="row">
         <span><span class="k">주소</span> <span id="footAddr">주소를 입력해 주세요</span></span>
@@ -1938,27 +1959,40 @@ const CONFIG = {
 
   /* ---------------------------------------------------------
      저장소
+     · localStorage / sessionStorage 가 막힌 인앱 웹뷰에서도
+       세션 메모리로 동작하도록 폴백을 둔다.
      --------------------------------------------------------- */
+  var memStore = null;   /* 메모리 백업(항상 최신값 유지) */
+  var storageOK = true;  /* localStorage 쓰기 가능 여부 */
+  var authMem = false;   /* sessionStorage 폴백 */
+
   function load() {
+    var raw = null;
+    try { raw = localStorage.getItem(SKEY); } catch (e) { raw = null; }
+    if (raw === null || raw === undefined) return memStore ? memStore : {};
     try {
-      var raw = localStorage.getItem(SKEY);
-      var o = raw ? JSON.parse(raw) : {};
-      return (o && typeof o === "object") ? o : {};
-    } catch (e) { return {}; }
+      var o = JSON.parse(raw);
+      if (o && typeof o === "object") return o;
+    } catch (e) {}
+    return memStore ? memStore : {};
   }
   function persist(obj) {
+    memStore = obj;
     try {
       localStorage.setItem(SKEY, JSON.stringify(obj));
+      storageOK = true;
       return true;
     } catch (e) {
-      toast("브라우저 저장 공간이 부족합니다. 사진을 더 작게 올려 주세요.");
+      storageOK = false;
       return false;
     }
   }
   function authed() {
-    try { return sessionStorage.getItem(AKEY) === "1"; } catch (e) { return false; }
+    if (authMem) return true;
+    try { return sessionStorage.getItem(AKEY) === "1"; } catch (e) { return authMem; }
   }
   function setAuthed(on) {
+    authMem = !!on;
     try { if (on) sessionStorage.setItem(AKEY, "1"); else sessionStorage.removeItem(AKEY); } catch (e) {}
   }
 
@@ -1988,7 +2022,6 @@ const CONFIG = {
   F("brand", "foot.name", "푸터 회사명", ".foot .f-name", { sec: "사업자 정보" });
   F("brand", "foot.bizno", "사업자등록번호", "#footBizNo");
   F("brand", "foot.ceo", "대표자", "#footCeo");
-  F("brand", "foot.mailorder", "통신판매업 신고", "#footMailOrder");
   F("brand", "foot.addr", "주소", "#footAddr");
   F("brand", "foot.email", "이메일", "#footEmail", {
     post: function (v) { var a = $("#footEmail"); if (a) a.setAttribute("href", "mailto:" + v); }
@@ -2176,39 +2209,46 @@ const CONFIG = {
     FIELDS.forEach(function (f) {
       if (f.missing) return;
       f.els.forEach(function (el) {
-        if (f.type === "img") el.setAttribute("src", el.__wingDef);
-        else if (f.type === "logo") el.style.display = el.__wingDef;
-        else if (f.type === "url") el.setAttribute("href", el.__wingDef);
-        else el.innerHTML = el.__wingDef;
+        try {
+          if (f.type === "img") el.setAttribute("src", el.__wingDef);
+          else if (f.type === "logo") el.style.display = el.__wingDef;
+          else if (f.type === "url") el.setAttribute("href", el.__wingDef);
+          else el.innerHTML = el.__wingDef;
+        } catch (e) { /* 한 항목이 실패해도 나머지는 그대로 적용 */ }
       });
     });
-    applyLogo("");
-    var kr = $("#footKakaoRow");
-    if (kr) kr.setAttribute("hidden", "");
-    var fp = $("#footPhone");
-    if (fp) fp.removeAttribute("href");
-    var fe = $("#footEmail");
-    if (fe) fe.setAttribute("href", "mailto:" + htmlToText(fe.innerHTML));
+    try {
+      applyLogo("");
+      var kr = $("#footKakaoRow");
+      if (kr) kr.setAttribute("hidden", "");
+      var fp = $("#footPhone");
+      if (fp) fp.removeAttribute("href");
+      var fe = $("#footEmail");
+      if (fe) fe.setAttribute("href", "mailto:" + htmlToText(fe.innerHTML));
+    } catch (e) {}
   }
 
   function applyAll() {
-    resetDefaults();
+    try { resetDefaults(); } catch (e) {}
     var s = load();
     Object.keys(s).forEach(function (k) {
-      var f = BYKEY[k];
-      if (!f || f.missing) return;
-      var v = s[k];
-      if (f.type === "logo") { applyLogo(v); return; }
-      if (f.type === "url") {
+      /* 항목 하나에서 오류가 나도 전체 적용이 멈추지 않도록 개별 보호 */
+      try {
+        var f = BYKEY[k];
+        if (!f || f.missing) return;
+        var v = s[k];
+        if (f.type === "logo") { applyLogo(v); return; }
+        if (f.type === "url") {
+          if (f.post) f.post(v);
+          return;
+        }
+        f.els.forEach(function (el) { setValue(f, el, v); });
         if (f.post) f.post(v);
-        return;
-      }
-      f.els.forEach(function (el) { setValue(f, el, v); });
-      if (f.post) f.post(v);
+      } catch (e) {}
     });
     window.WING_SETTINGS = s;
     window.WING_PHONE = s["foot.phone"] || "";
-    if (s["foot.phone"]) applyPhone(s["foot.phone"]);
+    if (s["foot.phone"]) { try { applyPhone(s["foot.phone"]); } catch (e) {} }
   }
 
   /* ---------------------------------------------------------
@@ -2283,8 +2323,9 @@ const CONFIG = {
       '<div class="adm-tabs" id="admTabs">' + tabs + "</div>" +
       '<div class="adm-body" id="admBody"></div>' +
       '<div class="adm-foot">' +
-        '<p class="adm-status" id="admStatus"></p>' +
+        '<p class="adm-status" id="admStatus" aria-live="polite"></p>' +
         '<button class="adm-save" type="button" id="admSave">저장 및 적용</button>' +
+        '<button class="adm-done" type="button" id="admDone" hidden>화면 확인 (닫기)</button>' +
         '<div class="adm-row3">' +
           '<button type="button" id="admExport">JSON 내보내기</button>' +
           '<button type="button" id="admImport">JSON 가져오기</button>' +
@@ -2309,6 +2350,7 @@ const CONFIG = {
       toast("관리자 모드에서 로그아웃했습니다.");
     });
     $("#admSave").addEventListener("click", doSave);
+    $("#admDone").addEventListener("click", closePanel);
     $("#admExport").addEventListener("click", doExport);
     $("#admImport").addEventListener("click", function () { $("#admImportFile").click(); });
     $("#admReset").addEventListener("click", doReset);
@@ -2455,40 +2497,64 @@ const CONFIG = {
      저장 · 내보내기 · 가져오기 · 초기화
      --------------------------------------------------------- */
   function doSave() {
-    var out = {};
-    var prev = load();
-    for (var pk in prev) if (prev.hasOwnProperty(pk)) out[pk] = prev[pk];
-
-    FIELDS.forEach(function (f) {
-      if (f.type === "img" || f.type === "logo") {
-        if (Object.prototype.hasOwnProperty.call(imgPending, f.k)) {
-          var iv = imgPending[f.k];
-          if (iv) out[f.k] = iv; else delete out[f.k];
-        }
-        return;
+    try {
+      var out = {};
+      var prev = load();
+      for (var pk in prev) {
+        if (!prev.hasOwnProperty(pk)) continue;
+        if (BYKEY[pk]) out[pk] = prev[pk];   /* 없어진 항목(예: 통신판매업)은 자동으로 정리 */
       }
-      var inp = panel.querySelector('[data-fk="' + f.k.replace(/"/g, '\\"') + '"]');
-      var v;
-      if (inp) v = inp.value.replace(/^\s+|\s+$/g, "");
-      else if (Object.prototype.hasOwnProperty.call(working, f.k)) v = String(working[f.k]).replace(/^\s+|\s+$/g, "");
-      else if (Object.prototype.hasOwnProperty.call(out, f.k)) v = out[f.k];
-      else return;
-      if (v !== String(f.def)) out[f.k] = v;
-      else if (Object.prototype.hasOwnProperty.call(out, f.k)) delete out[f.k];
-    });
 
-    if (!persist(out)) return;
-    imgPending = {};
-    working = {};
-    applyAll();
-    renderGroup(curGroup);
-    var st = $("#admStatus");
-    if (st) {
-      var d = new Date();
-      var p = function (n) { return String(n).length < 2 ? "0" + n : "" + n; };
-      st.textContent = "저장 완료 · " + p(d.getHours()) + ":" + p(d.getMinutes()) + " 기준";
+      FIELDS.forEach(function (f) {
+        try {
+          if (f.type === "img" || f.type === "logo") {
+            if (Object.prototype.hasOwnProperty.call(imgPending, f.k)) {
+              var iv = imgPending[f.k];
+              if (iv) out[f.k] = iv; else delete out[f.k];
+            }
+            return;
+          }
+          var inp = panel.querySelector('[data-fk="' + f.k.replace(/"/g, '\\"') + '"]');
+          var v;
+          if (inp) v = inp.value.replace(/^\s+|\s+$/g, "");
+          else if (Object.prototype.hasOwnProperty.call(working, f.k)) v = String(working[f.k]).replace(/^\s+|\s+$/g, "");
+          else if (Object.prototype.hasOwnProperty.call(out, f.k)) v = out[f.k];
+          else return;
+          if (v !== String(f.def)) out[f.k] = v;
+          else if (Object.prototype.hasOwnProperty.call(out, f.k)) delete out[f.k];
+        } catch (e) { /* 필드 하나가 실패해도 저장은 계속 */ }
+      });
+
+      /* localStorage 가 막혀 있어도 세션 메모리로는 저장/반영한다 */
+      var stored = persist(out);
+      imgPending = {};
+      working = {};
+
+      try { applyAll(); } catch (e) {}
+      try { renderGroup(curGroup); } catch (e) {}
+
+      var st = $("#admStatus");
+      if (st) {
+        var d = new Date();
+        var p = function (n) { return String(n).length < 2 ? "0" + n : "" + n; };
+        st.textContent = "저장 완료 · " + p(d.getHours()) + ":" + p(d.getMinutes()) + " 기준";
+        st.classList.add("ok");
+      }
+      var done = $("#admDone");
+      if (done) done.hidden = false;
+      try {
+        var foot = panel.querySelector(".adm-foot");
+        if (foot && foot.scrollIntoView) foot.scrollIntoView({ block: "end" });
+      } catch (e) {}
+
+      if (!stored) {
+        toast("반영했습니다. 다만 이 브라우저에서는 저장이 차단되어 새로고침하면 사라집니다.");
+      } else {
+        toast("저장 및 적용되었습니다. [화면 확인]을 눌러 반영된 화면을 보세요.");
+      }
+    } catch (err) {
+      toast("저장 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
     }
-    toast("저장 및 적용되었습니다.");
   }
 
   function stamp() {
@@ -2524,12 +2590,14 @@ const CONFIG = {
         Object.keys(o).forEach(function (k) {
           if (BYKEY[k] && typeof o[k] === "string") clean[k] = o[k];
         });
-        if (!persist(clean)) return;
+        var okStore = persist(clean);
         imgPending = {};
         working = {};
         applyAll();
         renderGroup(curGroup);
-        toast("설정을 가져왔습니다.");
+        var done = $("#admDone");
+        if (done) done.hidden = false;
+        toast(okStore ? "설정을 가져왔습니다." : "가져왔습니다. 다만 이 브라우저에서는 저장이 차단되어 새로고침하면 사라집니다.");
       } catch (err) {
         toast("설정 파일 형식이 올바르지 않습니다.");
       }
@@ -2541,12 +2609,15 @@ const CONFIG = {
   function doReset() {
     if (!window.confirm("수정한 내용을 모두 지우고 처음 상태(기본값)로 되돌립니다. 계속할까요?")) return;
     try { localStorage.removeItem(SKEY); } catch (e) {}
+    memStore = null;
     imgPending = {};
     working = {};
     applyAll();
     renderGroup(curGroup);
     var st = $("#admStatus");
-    if (st) st.textContent = "기본값으로 초기화되었습니다";
+    if (st) { st.textContent = "기본값으로 초기화되었습니다"; st.classList.add("ok"); }
+    var done = $("#admDone");
+    if (done) done.hidden = false;
     toast("기본값으로 초기화되었습니다.");
   }
 
@@ -2572,6 +2643,10 @@ const CONFIG = {
     buildPanel();
     working = {};
     renderGroup(curGroup);
+    var st = $("#admStatus");
+    if (st) { st.textContent = ""; st.classList.remove("ok"); }
+    var done = $("#admDone");
+    if (done) done.hidden = true;
     panel.classList.add("on");
     reopenBtn.classList.remove("show");
     document.body.style.overflow = "hidden";
