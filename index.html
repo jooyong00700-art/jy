@@ -3650,7 +3650,8 @@ function rfxStamp(info){
   const t = (info && info.updatedAt) ? String(info.updatedAt) : '';
   if(t.length >= 16) return t.slice(11,16);
   if(/^\d{2}:\d{2}$/.test(t)) return t;
-  return new Date().toLocaleTimeString('ko-KR', {hour:'2-digit', minute:'2-digit'});
+  const d = new Date();
+  return pad(d.getHours()) + ':' + pad(d.getMinutes());
 }
 function rfxMonth(){ return (opt && opt.calMonth) ? opt.calMonth : String((S.live && S.live.date) || '').slice(0,7); }
 function rfxMonthSummary(m){
@@ -3713,7 +3714,10 @@ ACTIONS.monthRecollect = async function(){
 function rfxRecollectModal(m, sum, before, fails, info){
   const parts = String(m).split('-');
   const y = parts[0], mm = Number(parts[1]);
-  const phrase = `이번달(${m}) 전체 매출 빅셀·윙에서 재수집해줘`;
+  const cur = String((S.live && S.live.date) || '').slice(0,7);
+  const phrase = (m === cur)
+    ? `이번달(${m}) 전체 매출 빅셀·윙에서 재수집해줘`
+    : `${m} 전체 매출 빅셀·윙에서 재수집해줘`;
   const segN = Object.keys(S.segments || {}).length;
   const dSales = sum.sales - before.sales, dNet = sum.net - before.net;
   const deltaLine = (dSales || dNet)
