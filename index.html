@@ -2423,7 +2423,7 @@ VIEWS.naver = function(){
     </tr>`).join('');
   const st = N.settlementActual || {};
   return `<div class="topbar">
-      <div><h1>🟢 네이버 스마트스토어 (리스페토)</h1><div class="sub">스마트스토어 리스페토 · ${esc(N.period||'')} · 결제일 기준</div></div>
+      <div><h1>🟢 네이버 스마트스토어 (리스페토)</h1><div class="sub">스마트스토어 리스페토 · ${esc(String(N.period||'').replace(' (결제일 기준)',''))} 결제일 기준</div></div>
       <div class="spacer"></div>
       <button class="btn" data-act="naverSync">🔄 네이버 데이터 새로고침</button>
       <span class="chip"><span class="live"></span>데이터 <b>${esc(String(N.updatedAt||'').replace('T',' ').slice(5,16))}</b></span>
@@ -2502,8 +2502,12 @@ VIEWS.pmnaver = function(){
       <td class="num">${esc(x.status||'')}</td><td class="num">${won(x.salePrice)}원</td>
       <td class="num">${x.cost!=null?won(x.cost)+'원':'-'}</td>
       <td class="num"><span class="flat">${esc(x.costConfidence||'-')}</span></td></tr>`).join('');
-  return topbar('네이버 상품관리', `리스페토 · 네이버 스마트스토어 상품 ${prods.length}개`,
-      `<button class="btn" data-nav="naver">네이버 매출 화면 →</button>`)
+  return `<div class="topbar">
+      <div><h1>네이버 상품관리</h1><div class="sub">리스페토 · 네이버 스마트스토어 상품 ${prods.length}개</div></div>
+      <div class="spacer"></div>
+      <button class="btn" data-nav="naver">네이버 매출 화면 →</button>
+      <span class="chip"><span class="live"></span>네이버 데이터 <b>${esc(String((N.updatedAt||'')).replace('T',' ').slice(5,16))}</b></span>
+    </div>`
   + `<div class="card"><div class="card-h"><h2>판매상품 · 원가</h2><span class="note">원가는 쿠팡 원가표 매칭값(매출 발생 2개 상품은 확정)</span></div>
       <div class="tbl-wrap"><table class="tbl"><thead><tr><th class="l">상품명</th><th class="l">상품번호</th><th>상태</th><th>판매가</th><th>원가</th><th>신뢰도</th></tr></thead>
       <tbody>${body}</tbody></table></div>
