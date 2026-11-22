@@ -240,10 +240,38 @@ input.inp[type=number]{text-align:right}
 .day .qty-line .qa{color:#a36200; background:#fff4e0; border-radius:4px; padding:0 3px; font-weight:700}
 .day .qty-line .qo{color:#0d7a5a; background:#e6f7f1; border-radius:4px; padding:0 3px; font-weight:700}
 .day .qty-line .qp{color:#98a3b8; font-weight:600}
+.day .qty-line .aob{padding:0 4px; font-size:8.5px; line-height:1.5}
+.day .qty-line .aob b{font-size:9.5px}
 .qsplit{font-size:10.5px; color:#5b6784; display:flex; gap:3px; align-items:center; margin-top:2px}
 .qsplit .qa{color:#a36200; background:#fff4e0; border-radius:4px; padding:0 4px; font-weight:700}
 .qsplit .qo{color:#0d7a5a; background:#e6f7f1; border-radius:4px; padding:0 4px; font-weight:700}
 .qsplit .qp{color:#98a3b8; font-weight:600}
+/* ---- 광고 / 자연 판매 배지 & 비율 바 (2026-11-22 시인성 개선) ---- */
+.aob{display:inline-flex; align-items:center; gap:3px; border-radius:999px; padding:1.5px 8px; font-size:11.5px; font-weight:800; line-height:1.5; white-space:nowrap; letter-spacing:-.2px}
+.aob b{font-size:12.5px; letter-spacing:-.3px}
+.aob .pct{font-size:10.5px; font-weight:700; opacity:.72; margin-left:1px}
+.aob.ad{color:#8a4a00; background:linear-gradient(180deg,#fff4e0,#ffe6bd); border:1px solid #ffcf87}
+.aob.og{color:#04573f; background:linear-gradient(180deg,#e7fbf3,#c9f3e2); border:1px solid #9fe6cd}
+.aob.pend{color:#8b96ab; background:#f1f4fa; border:1px dashed #d6dfef; font-weight:700}
+.aob.sm{padding:1px 5px; font-size:9.5px; gap:2px; letter-spacing:-.3px}
+.aob.sm b{font-size:10.5px}
+.aob.sm .pct{font-size:9px}
+.aob.xs{padding:0 5px; font-size:9px; gap:1px; letter-spacing:-.4px}
+.aob.xs b{font-size:9.5px}
+.aob-row{display:flex; align-items:center; gap:4px; flex-wrap:wrap; margin-top:2px}
+.ao-ratio{display:flex; width:100%; height:7px; margin-top:4px; border-radius:99px; overflow:hidden; background:#eef1f7; box-shadow:inset 0 0 0 1px rgba(16,27,52,.06)}
+.ao-ratio i{display:block; height:100%; min-width:3px}
+.ao-ratio i.ad{background:linear-gradient(90deg,#ffc266,#f59f00)}
+.ao-ratio i.og{background:linear-gradient(90deg,#5ddcae,#12b886)}
+.ao-ratio.pend i{min-width:100%; background:repeating-linear-gradient(45deg,#e3e8f2 0 4px,#f3f6fb 4px 8px)}
+.ao-ratio.cal{height:4px; margin-top:2px; border-radius:3px}
+.ao-ratio.wide{height:11px; margin-top:6px; border-radius:6px}
+.ao-cell{display:flex; flex-direction:column; gap:1px; align-items:flex-start}
+.ao-cell .q{font-size:12.5px; font-weight:800; color:#16202f; letter-spacing:-.3px}
+.ao-cell-badges{display:flex; align-items:center; gap:3px; flex-wrap:wrap}
+.ao-cell .ao-ratio{max-width:118px; width:100%}
+.ao-legend-big{display:flex; gap:6px; flex-wrap:wrap; margin-top:8px}
+.kpi .aob{vertical-align:middle}
 .day .settle{margin-top:auto; align-self:flex-start; font-size:9.5px; font-weight:800; color:#2158c9; background:#eaf1ff; border-radius:5px; padding:1px 5px; display:inline-flex; gap:3px; align-items:center}
 .day .memo-dot{position:absolute; top:6px; right:7px; width:6px; height:6px; border-radius:50%; background:#f59f00}
 .cal-foot{display:flex; flex-wrap:wrap; gap:8px 20px; padding:10px 16px 14px; border-top:1px solid var(--line2); font-size:12px; color:#5b6784}
@@ -385,6 +413,18 @@ input.inp[type=number]{text-align:right}
   .ao-tbl th, .ao-tbl td{padding:9px 7px; font-size:12px}
   .ao-tbl .ao-w, .ao-tbl .ao-sub{display:none}
   .ao-tbl .ao-bar{width:62px; margin-top:5px}
+  .aob{padding:1px 6px; font-size:10.5px}
+  .aob b{font-size:11.5px}
+  .aob .pct{font-size:9.5px}
+  .aob.sm{padding:0 4px; font-size:9px}
+  .aob.xs{padding:0 4px; font-size:8.5px}
+  .aob.xs b{font-size:9px}
+  .ao-ratio{height:6px; margin-top:3px}
+  .ao-ratio.wide{height:9px}
+  .day .ao-ratio.cal{height:3px; margin-top:1px}
+  .ao-cell .q{font-size:11.5px}
+  .ao-cell .ao-ratio{max-width:86px}
+  .ao-legend-big .aob{font-size:10px}
   .ao-lg{display:none}
   .months{grid-template-columns:repeat(4,1fr)}
   .cal-wrap{padding:11px}
@@ -480,7 +520,7 @@ const PRODUCTS_3P = [
   {id:'9395470256', name:'리스페토 높이가 높은 접이식 다용도 좌식 테이블', short:'좌식테이블', icon:'🪑', price:29990, disc:8000, fee:11.88, cost:9000}
 ];
 
-/* ---------- 일별 실적 (11/1~11/17 확정, 11/18 실시간) ---------- */
+/* ---------- 일별 실적 (11/1~11/17 확정, 11/18~11/21 빅셀 확정치 = JSON 미수신 시 백업) ---------- */
 const DAILY = [
   {d:'2026-11-01', sales:2498750, profit:504790, ad:283204},
   {d:'2026-11-02', sales:2613950, profit:547658, ad:266901, settle:7009448},
@@ -499,7 +539,10 @@ const DAILY = [
   {d:'2026-11-15', sales:1972540, profit:369321, ad:251844},
   {d:'2026-11-16', sales:1450580, profit:274546, ad:215999},
   {d:'2026-11-17', sales:1534340, profit:295593, ad:210269, qty:88},
-  {d:'2026-11-18', sales:1285010, coupon:175800, netSales:1109210, profit:null, ad:193563, qty:63, live:true}
+  {d:'2026-11-18', sales:1410750, coupon:176200, netSales:1234550, profit:254836, ad:197653, qty:69, adQty:47, organicQty:22},
+  {d:'2026-11-19', sales:1657580, coupon:197800, netSales:1459780, profit:282496, ad:143696, qty:80, adQty:37, organicQty:43},
+  {d:'2026-11-20', sales:1607470, coupon:195400, netSales:1412070, profit:264168, ad:133669, qty:77, adQty:36, organicQty:41},
+  {d:'2026-11-21', sales:1804860, coupon:226000, netSales:1578860, profit:296796, ad:175053, qty:82, adQty:46, organicQty:36}
 ];
 
 /* ================= 빅셀 일자별 실적(2024-08~2026-04 신규 수집 · 2026-05~11 기존, 빅셀 캘린더 원문) ================= */
@@ -1945,14 +1988,20 @@ VIEWS.dashboard = function(){
   const prev = rows[rows.length-2];
   const m = (S.live && S.live.date ? String(S.live.date).slice(0,7) : opt.calMonth); /* 이번 달 KPI는 캘린더 선택과 무관하게 현재 월 고정 */
   const mRows = monthRowsOf(m);
-  const monthSales = mRows.reduce((a,r)=>a+netSalesOf(r),0), monthCoupon = sumOf(mRows,'coupon'), monthProfit = sumOf(mRows,'profit'), monthAd = sumOf(mRows,'ad'), monthNet = monthProfit - monthAd;
+  /* 이번 달 KPI는 빅셀 '매출 월 총합'과 같은 기준(확정=오늘 이전)으로 보여주고,
+     오늘 실시간분은 별도로 표기한다(빅셀에는 전일까지 확정치만 있다). */
+  const liveD = (S.live && S.live.date) || null;
+  const mConf = mRows.filter(r=>r.d!==liveD);
+  const mToday = mRows.filter(r=>r.d===liveD);
+  const monthSales = mConf.reduce((a,r)=>a+netSalesOf(r),0), monthCoupon = sumOf(mConf,'coupon'), monthProfit = sumOf(mConf,'profit'), monthAd = sumOf(mConf,'ad'), monthNet = monthProfit - monthAd;
+  const monthTodaySales = mToday.reduce((a,r)=>a+netSalesOf(r),0);
   const todayNet = live.net;
   const dToday = prev ? deltaPct(live.netSales, netSalesOf(prev)) : null;
   const dNet = prev && prev.net!=null && todayNet!=null ? deltaPct(todayNet, prev.net) : null;
   const avg7 = (()=>{ const r = rows.filter(x=>x.profit!=null).slice(-8,-1); return r.length? sumOf(r,'sales')/r.length : 0; })();
   const lastRow = rows.length ? rows[rows.length-1] : null;
-  const mLast = mRows.length ? mRows[mRows.length-1] : null;
-  const mRange = mLast ? `${Number(mRows[0].d.slice(5,7))}/${dnum(mRows[0].d)}~${Number(mLast.d.slice(5,7))}/${dnum(mLast.d)}` : '데이터 없음';
+  const mLast = mConf.length ? mConf[mConf.length-1] : null;
+  const mRange = mLast ? `${Number(mConf[0].d.slice(5,7))}/${dnum(mConf[0].d)}~${Number(mLast.d.slice(5,7))}/${dnum(mLast.d)}` : '데이터 없음';
 
   return topbar('대시보드', '리스페토 · 로켓그로스 전체 스토어',
       `<span class="chip">기준일 <b>${lastRow ? fmtDate(lastRow.d) : '-'}</b>${lastRow&&lastRow.live?' <span class="live"></span>':''}</span>`)
@@ -1964,14 +2013,16 @@ VIEWS.dashboard = function(){
         </div>
         <div class="val num">${won(live.netSales)}원</div>
         <div class="coup-line"><span>쿠폰 전 <b>${won(live.sales)}원</b></span><span class="c2">쿠폰 −${won(live.coupon)}원</span></div>
-        <div class="delta">${deltaHTML(dToday)} <span class="flat">전일 대비 · ${live.qty}개${live.adQty!=null?` (광고 ${live.adQty} · 자연 ${live.organicQty})`:''} · 목표 ${Math.round(live.netSales/S.targetSales*100)}%</span></div>
+        <div class="delta">${deltaHTML(dToday)} <span class="flat">전일 대비 · 오늘 <b>${live.qty}개</b> 판매 · 목표 ${Math.round(live.netSales/S.targetSales*100)}%</span></div>
+        <div class="aob-row" style="margin-top:5px">${aoBadges(live.adQty, live.organicQty, live.qty, {small:true, pendText:'광고 집계 전(익일 확정)'})}</div>
+        ${aoRatio(live.adQty, live.organicQty, live.qty)}
       </div>
       ${kpiCard('오늘 광고비 <span class="tag">VAT포함</span>', won(live.ad)+'원',
         `<span class="flat">VAT별도 ${won(S.live.adExVat)}원</span>`) }
       ${kpiCard(`오늘 순이익${live.estimate?' <span class="tag estimate">추정</span>':''}`, won(todayNet)+'원',
         `${deltaHTML(dNet)} <span class="flat">광고비(VAT포함) ${won(live.ad)}원 제외</span>`) }
-      ${kpiCard('이번 달 매출 <span class="tag coup">쿠폰 제외</span>', won(monthSales)+'원',
-        `<span class="flat">${mRange} · 순이익(광고비 제외) ${won(monthNet)}원</span>`, {cls:'month-kpi'})}
+      ${kpiCard('이번 달 매출 <span class="tag coup">쿠폰 제외</span> <span class="tag">확정</span>', won(monthSales)+'원',
+        `<span class="flat">${mRange} 확정 · 순이익(광고비 제외) ${won(monthNet)}원${monthTodaySales?` · 오늘 ${won(monthTodaySales)}원 별도(잠정)`:''}</span>`, {cls:'month-kpi'})}
     </div>`
   + `${adOrganicCard()}`
   + `<div class="two" style="margin-bottom:14px">
@@ -2041,6 +2092,36 @@ function todayCampaignsCard(live){
   </div>`;
 }
 
+/* ---------- 광고 / 자연 판매수 배지 · 비율 바 공통 (2026-11-22 시인성 개선) ----------
+   광고 = 쿠팡 광고센터 전환 판매수(익일 확정), 자연 = 총 판매수 − 광고.
+   어느 화면(보고서·캘린더·요약칸·상세 모달)에서든 같은 배지·막대를 쓴다. */
+function aoKnown(adQty, organicQty){ return adQty!=null && organicQty!=null; }
+function aoPctOf(n, total){ return (n==null || !total) ? 0 : (n/total*100); }
+function aoBadges(adQty, organicQty, qty, o){
+  o = o || {};
+  const size = o.small ? ' sm' : '';
+  if(!aoKnown(adQty, organicQty))
+    return `<span class="aob pend${size}">${esc(o.pendText || '광고/자연 집계 전')}</span>`;
+  const pctOn = (o.pct !== false) && qty;
+  const lbl = o.emojiOnly ? '' : '<span class="lbl">광고</span> ';
+  const lblO = o.emojiOnly ? '' : '<span class="lbl">자연</span> ';
+  return `<span class="aob ad${size}" title="광고 판매 ${adQty}개 (쿠팡 광고센터 전환 판매수)${pctOn?` · 비중 ${pct1(aoPctOf(adQty,qty))}%`:''}">📣 ${lbl}<b>${adQty}</b>${pctOn?`<span class="pct">${pct1(aoPctOf(adQty,qty))}%</span>`:''}</span>`
+       + `<span class="aob og${size}" title="자연 판매 ${organicQty}개 (총 ${qty}개 − 광고 ${adQty}개)${pctOn?` · 비중 ${pct1(aoPctOf(organicQty,qty))}%`:''}">🌿 ${lblO}<b>${organicQty}</b>${pctOn?`<span class="pct">${pct1(aoPctOf(organicQty,qty))}%</span>`:''}</span>`;
+}
+function aoRatio(adQty, organicQty, qty, cls){
+  const c = cls ? ' '+cls : '';
+  if(!aoKnown(adQty, organicQty) || !qty)
+    return `<div class="ao-ratio pend${c}" title="광고 전환 판매수는 익일 확정됩니다"><i></i></div>`;
+  const ap = pct1(aoPctOf(adQty,qty)), op = pct1(aoPctOf(organicQty,qty));
+  return `<div class="ao-ratio${c}" title="광고 ${adQty}개 ${ap}% · 자연 ${organicQty}개 ${op}%"><i class="ad" style="width:${ap}%"></i><i class="og" style="width:${op}%"></i></div>`;
+}
+function aoCell(r, o){
+  o = o || {};
+  if(r.qty==null) return '<span class="flat">-</span>';
+  const pend = o.pendText || (r.live ? '광고 집계 전' : '광고 미기록');
+  return `<div class="ao-cell"><div class="ao-cell-badges"><span class="q">${r.qty}개</span>${aoBadges(r.adQty,r.organicQty,r.qty,{small:true, pendText:pend})}</div>${aoRatio(r.adQty,r.organicQty,r.qty)}</div>`;
+}
+
 /* ---- 매출 보고서 ---- */
 /* 날짜 한 줄 렌더 (행별 🔄 재수집 버튼 포함) — 행 단위 갱신에서도 그대로 재사용 */
 function reportRowHTML(rows, r){
@@ -2055,7 +2136,7 @@ function reportRowHTML(rows, r){
     return `<span class="${diff>0?'up':(diff<0?'down':'flat')}">${diff>0?'+':''}${won(diff)}</span>`;
   };
   return `<tr data-row-d="${r.d}">
-    <td class="l"><b>${fmtDate(r.d)}</b>${r.live?' <span class="tag live">LIVE</span>':''}${r.estimate?' <span class="tag estimate">추정</span>':''}${r.qty!=null?`<div class="qsplit">${(r.adQty!=null&&r.organicQty!=null)?`<b class="num" style="color:#16202f">${r.qty}개</b><span class="qa">광고 ${r.adQty}</span><span class="qo">자연 ${r.organicQty}</span>`:`<b class="num" style="color:#16202f">${r.qty}개</b><span class="qp">광고 집계 전</span>`}</div>`:''}</td>
+    <td class="l"><b>${fmtDate(r.d)}</b>${r.live?' <span class="tag live">LIVE</span>':''}${r.estimate?' <span class="tag estimate">추정</span>':''}${r.qty!=null?`<div style="margin-top:2px">${aoCell(r,{pendText:r.live?'광고 집계 전':'광고 미기록'})}</div>`:''}</td>
     <td class="num">${wonW(netSalesOf(r))}<div style="font-size:11px">${cellDelta('sales')}</div></td>
     <td class="num">${wonW(r.profit)}<div style="font-size:11px">${cellDelta('profit')}</div></td>
     <td class="num">${wonW(r.ad)}<div style="font-size:11px">${cellDelta('ad')}</div></td>
@@ -2083,28 +2164,22 @@ function reportCard(rows){
 /* ---- 캘린더 · 표 공통: 판매수(광고·자연) 표기 ---- */
 function qtySplitLine(r){
   const pend = r.live ? '광고 집계 전' : '광고 미기록';
-  const t = (r.adQty!=null && r.organicQty!=null)
-    ? `판매 ${r.qty}개 (광고 ${r.adQty} · 자연 ${r.organicQty})`
-    : `판매 ${r.qty}개 (${pend})`;
-  const inner = (r.adQty!=null && r.organicQty!=null)
-    ? `<b class="qn num">${r.qty}개</b><span class="qa">광고 ${r.adQty}</span><span class="qo">자연 ${r.organicQty}</span>`
-    : `<b class="qn num">${r.qty}개</b><span class="qp">${pend}</span>`;
-  return `<div class="qty-line" title="${t}">${inner}</div>`;
+  const known = aoKnown(r.adQty, r.organicQty);
+  const t = known ? `판매 ${r.qty}개 (광고 ${r.adQty} · 자연 ${r.organicQty})` : `판매 ${r.qty}개 (${pend})`;
+  const inner = `<b class="qn num">${r.qty}개</b>` + aoBadges(r.adQty, r.organicQty, r.qty, {small:true, emojiOnly:true, pct:false, pendText:pend});
+  return `<div class="qty-line" title="${t}">${inner}</div>${aoRatio(r.adQty, r.organicQty, r.qty, 'cal')}`;
 }
 function qtySplitTotalCell(rows){
   const qt = sumOf(rows,'qty');
-  const withAd = rows.filter(r=>r.adQty!=null && r.organicQty!=null);
+  const withAd = rows.filter(r=>aoKnown(r.adQty,r.organicQty));
   const aq = withAd.reduce((a,r)=>a+r.adQty,0), oq = withAd.reduce((a,r)=>a+r.organicQty,0);
   const all = withAd.length===rows.filter(r=>r.qty!=null).length && withAd.length>0;
-  return `<td class="num"><b>${qt}개</b><div class="qsplit">${all
-    ? `<span class="qa">광고 ${aq}</span><span class="qo">자연 ${oq}</span>`
-    : `<span class="qa">광고 ${aq}</span><span class="qp">집계 전 ${rows.length-withAd.length}일 제외</span>`}</div></td>`;
+  const pend = all ? '' : `집계 전 ${rows.length-withAd.length}일 제외`;
+  return `<td class="num"><div class="ao-cell" style="align-items:flex-end"><div class="ao-cell-badges" style="justify-content:flex-end"><span class="q">${qt}개</span>${aoBadges(aq,oq,qt+0,{small:true})}</div>${aoRatio(aq,oq,qt,'')}</div>${pend?`<div class="flat" style="font-size:10px">${pend}</div>`:''}</td>`;
 }
 function qtySplitCell(r){
   if(r.qty==null) return '<td class="num flat">-</td>';
-  if(r.adQty==null || r.organicQty==null)
-    return `<td class="num">${r.qty}개<div class="qsplit"><span class="qp">${r.live?'광고 집계 전':'광고 미기록'}</span></div></td>`;
-  return `<td class="num"><b>${r.qty}개</b><div class="qsplit"><span class="qa">광고 ${r.adQty}</span><span class="qo">자연 ${r.organicQty}</span></div></td>`;
+  return `<td class="num">${aoCell(r)}</td>`;
 }
 
 /* ---- 캘린더 ---- */
@@ -2148,6 +2223,8 @@ function calendarCard(){
   const tail = (7 - ((startDow+lastDay)%7))%7;
   for(let i=1;i<=tail;i++) cells += `<div class="day other"><div class="dn">${i}</div></div>`;
   const mRows = monthRowsOf(opt.calMonth);
+  const calLiveD = (S.live && S.live.date) || null;
+  const mConf = mRows.filter(r=>r.d!==calLiveD), mTodayRows = mRows.filter(r=>r.d===calLiveD);
   const settles = Object.keys(settleByDate).filter(k=>k.startsWith(opt.calMonth));
   const calRows = mRows.slice(-14);
   const mini = lineChart(calRows.length>1?calRows:mRows, ['sales','profit','ad','net'], {compact:true, h:130});
@@ -2189,10 +2266,11 @@ function calendarCard(){
       </div>
     </div>
     <div class="cal-foot">
-      <div class="it"><span class="k">매출 월 총합(쿠폰제외)</span><b>${won(mRows.reduce((a,r)=>a+netSalesOf(r),0))}원</b></div>
-      <div class="it"><span class="k">광고전 마진 총합</span><b>${won(sumOf(mRows,'profit'))}원</b></div>
-      <div class="it"><span class="k">광고비 월 총합</span><b>${won(sumOf(mRows,'ad'))}원</b></div>
-      <div class="it"><span class="k">순이익금 월 총합</span><b>${won(sumOf(mRows,'net'))}원</b></div>
+      <div class="it"><span class="k">매출 월 총합(쿠폰제외·확정)</span><b>${won(mConf.reduce((a,r)=>a+netSalesOf(r),0))}원</b></div>
+      <div class="it"><span class="k">광고전 마진 총합</span><b>${won(sumOf(mConf,'profit'))}원</b></div>
+      <div class="it"><span class="k">광고비 월 총합</span><b>${won(sumOf(mConf,'ad'))}원</b></div>
+      <div class="it"><span class="k">순이익금 월 총합</span><b>${won(sumOf(mConf,'net'))}원</b></div>
+      ${mTodayRows.length?`<div class="it"><span class="k">오늘 ${dnum(calLiveD)}일 잠정(확정 전)</span><b>${won(mTodayRows.reduce((a,r)=>a+netSalesOf(r),0))}원</b></div>`:''}
       <div class="it"><span class="k">구매대행 입고 예정</span><b>0건</b></div>
       <div class="it"><span class="k">정산금 입금 예정</span><b>${settles.length}건</b></div>
     </div>
@@ -2214,19 +2292,17 @@ function adOrganicCard(){
     const isToday = r.d===today;
     const status = has ? '<span class="pill ok">확정</span>'
       : (isToday ? '<span class="pill rfm">오늘 실시간</span>' : '<span class="pill">집계 전</span>');
-    const bar = has
-      ? `<div class="ao-bar" title="광고 ${r.adQty} · 자연 ${r.organicQty}"><i class="ad" style="width:${pct1(ap)}%"></i><i class="og" style="width:${pct1(op)}%"></i></div>`
-      : `<div class="ao-bar pend" title="광고 전환 판매수는 익일 확정됩니다"><i></i></div>`;
+    const bar = aoRatio(r.adQty, r.organicQty, r.qty, 'wide');
     const items = byItemFor(r.d) || [];
     const chips = items.length ? `<tr class="ao-items"><td colspan="5"><div class="ao-chipwrap">${
       items.map(x=>`<span class="ao-chip"><b>${esc(String(x.name).replace(/\s*특가\(.*\)/,''))}</b> <span class="q">${x.qty}개</span>${
-        (x.adQty!=null) ? ` <i class="c-ad">광고 ${x.adQty}</i> <i class="c-og">자연 ${x.organicQty}</i>` : ' <i class="c-pend">광고/자연 미집계</i>'}</span>`).join('')
+        (x.adQty!=null) ? ` <span class="aob ad xs">📣 ${x.adQty}</span> <span class="aob og xs">🌿 ${x.organicQty}</span>` : ' <span class="aob pend xs">광고/자연 미집계</span>'}</span>`).join('')
     }</div></td></tr>` : '';
     return `<tr class="${isToday?'today':''}">
       <td class="l"><b class="ao-d">${fmtDate(r.d)}</b>${isToday?' <span class="tag live">오늘</span>':''}</td>
       <td class="num"><b class="ao-n">${r.qty}개</b>${bar}</td>
-      <td class="num">${has?`<b class="ao-ad">${r.adQty}개</b> <span class="ao-p">${pct1(ap)}%</span>`:'<span class="flat">광고 집계 전</span>'}</td>
-      <td class="num">${has?`<b class="ao-og">${r.organicQty}개</b> <span class="ao-p">${pct1(op)}%</span>`:'<span class="flat">—</span>'}</td>
+      <td class="num">${has?`<span class="aob ad">📣 광고 <b>${r.adQty}</b><span class="pct">${pct1(ap)}%</span></span>`:'<span class="aob pend sm">광고 집계 전</span>'}</td>
+      <td class="num">${has?`<span class="aob og">🌿 자연 <b>${r.organicQty}</b><span class="pct">${pct1(op)}%</span></span>`:'<span class="flat">—</span>'}</td>
       <td class="num">${status}</td>
     </tr>${chips}`;
   }).join('');
@@ -2237,8 +2313,8 @@ function adOrganicCard(){
   const totalRow = conf.length ? `<tr class="total">
       <td class="l">확정 합계 (${conf.length}일)</td>
       <td class="num">${confQ}개</td>
-      <td class="num">광고 ${adQ}개 <span class="ao-p">${pct1(confQ?adQ/confQ*100:0)}%</span></td>
-      <td class="num">자연 ${confQ-adQ}개 <span class="ao-p">${pct1(confQ?(confQ-adQ)/confQ*100:0)}%</span></td>
+      <td class="num"><span class="aob ad sm">📣 광고 <b>${adQ}</b><span class="pct">${pct1(confQ?adQ/confQ*100:0)}%</span></span></td>
+      <td class="num"><span class="aob og sm">🌿 자연 <b>${confQ-adQ}</b><span class="pct">${pct1(confQ?(confQ-adQ)/confQ*100:0)}%</span></span></td>
       <td class="num">${pendN?`<span class="flat">${pendN}일 집계 전</span>`:'<span class="flat">-</span>'}</td>
     </tr>` : '';
   return `<div class="card" style="margin-bottom:14px">
@@ -2935,8 +3011,8 @@ function dayItemsHTML(ds, r){
     return `<tr>
       <td class="l"><b>${esc(name)}</b>${o?`<div class="hint" style="font-size:10px">${esc(o.id)}</div>`:''}</td>
       <td class="num">${x.qty!=null?x.qty+'개':'-'}</td>
-      <td class="num">${x.adQty!=null?x.adQty+'개':'<span class="flat">—</span>'}</td>
-      <td class="num">${x.organicQty!=null?x.organicQty+'개':'<span class="flat">—</span>'}</td>
+      <td class="num">${x.adQty!=null?`<span class="aob ad sm">📣 ${x.adQty}</span>`:'<span class="flat">—</span>'}</td>
+      <td class="num">${x.organicQty!=null?`<span class="aob og sm">🌿 ${x.organicQty}</span>`:'<span class="flat">—</span>'}</td>
       <td class="num">${won(x.sales)}</td>
       <td class="num">${won(margin)}</td>
     </tr>`;
@@ -2975,7 +3051,8 @@ function openDay(ds){
       <div class="stat-line"><span class="lb">이익금 (광고 전 마진)</span><span class="vl num">${wonW(r.profit)}${r.segCalc?' <span class="tag">원가구간 반영</span>':''}</span></div>
       <div class="stat-line"><span class="lb">이익률 / 광고비율</span><span class="vl num">${r.sales?pct1(r.profit/r.sales*100):'-'}% / ${r.sales?pct1(r.ad/r.sales*100):'-'}%</span></div>
       <div class="stat-line"><span class="lb">순이익률</span><span class="vl num">${r.sales&&r.net!=null?pct1(r.net/r.sales*100):'-'}%</span></div>
-      <div class="stat-line"><span class="lb">판매수 (광고 / 자연)</span><span class="vl num">${r.qty!=null?`${r.qty}개${r.adQty!=null?` · 광고 ${r.adQty} · 자연 ${r.organicQty}`:' · 광고/자연 집계 전'}`:'-'}</span></div>
+      <div class="stat-line"><span class="lb">판매수 (광고 / 자연)</span><span class="vl num">${r.qty!=null?`<b>${r.qty}개</b>`:'-'}</span></div>
+      ${r.qty!=null?`<div class="aob-row" style="justify-content:flex-end">${aoBadges(r.adQty,r.organicQty,r.qty,{pendText:(r.adQty==null?'광고 집계 전(익일 확정)':'광고/자연 집계 전')})}</div><div style="padding:0 0 2px 12px">${aoRatio(r.adQty,r.organicQty,r.qty,'wide')}</div>`:''}
       ${dayItemsHTML(ds, r)}
       ` : `<div class="blank" style="margin-bottom:12px">${fmtDate(ds)} 매출 데이터가 아직 없습니다.</div>`}
 
