@@ -4568,7 +4568,13 @@ ACTIONS.prodCsvImport = (d, el)=>{
       if(!any) return;
       const optId = iOpt>=0 ? String(cols[iOpt]==null?'':cols[iOpt]).trim() : '';
       const pid = iProd>=0 ? String(cols[iProd]==null?'':cols[iProd]).trim() : '';
-      if(optId && COST_OPTS.some(o=>o.id===optId)){ segSetVals(optId, ds, vals); nO++; return; }
+      /* 옵션ID가 있는 행은 옵션에만 적용한다. 우리 옵션 마스터에 없는 옵션ID를
+         상품 단위로 덮으면 엉뚱한 옵션 값이 상품 전체에 적용되므로 건너뛴다. */
+      if(optId){
+        if(COST_OPTS.some(o=>o.id===optId)){ segSetVals(optId, ds, vals); nO++; }
+        else skipped++;
+        return;
+      }
       if(pid && PRODUCTS.some(p=>p.id===pid)){ S.costOverrides[pid] = Object.assign({}, S.costOverrides[pid], vals); nP++; return; }
       skipped++;
     });
