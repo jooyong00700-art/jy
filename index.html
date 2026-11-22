@@ -2411,10 +2411,9 @@ VIEWS.naver = function(){
     ['택배비 <span class="flat">(정상 ' + won(t.deliveryOut) + ' + 반품 ' + won(t.deliveryReturn) + ')</span>', -t.delivery, pctOf(t.delivery)],
     ['광고비 <span class="flat">(네이버 광고 미집행)</span>', 0, '0.0%']
   ];
-  const bdBody = bd.map(x=>`<tr><td class="l">${x[0]}</td><td class="num">${won(x[1])}원</td><td class="num">${x[2]}</td></tr>`).join('');
+  const bdBody = bd.map(x=>`<tr><td class="l">${x[0]}</td><td class="num">${x[1]<0?'−'+won(-x[1]):won(x[1])}원</td><td class="num">${x[2]}</td></tr>`).join('');
   const prods = (Array.isArray(N.products)?N.products:[]).map(x=>`<tr>
-      <td class="l">${esc(x.name)}</td>
-      <td class="l"><span class="flat">${esc(x.no)}</span></td>
+      <td class="l">${esc(x.name)}<br><span class="flat">${esc(x.no)}</span></td>
       <td class="num">${esc(x.status||'')}</td>
       <td class="num">${won(x.salePrice)}원</td>
       <td class="num">${x.cost!=null?won(x.cost)+'원':'-'}</td>
@@ -2486,7 +2485,7 @@ VIEWS.naver = function(){
       <div class="card">
         ${sectionHead('🛒 상품 · 원가 매칭', '네이버 판매상품 7개 · 매출 발생 2개는 원가 확정')}
         <div class="tbl-wrap"><table class="tbl">
-          <thead><tr><th class="l">상품명</th><th class="l">상품번호</th><th>상태</th><th>판매가</th><th>원가</th><th>신뢰도</th></tr></thead>
+          <thead><tr><th class="l">상품명 / 상품번호</th><th>상태</th><th>판매가</th><th>원가</th><th>신뢰도</th></tr></thead>
           <tbody>${prods}</tbody></table></div>
       </div>
     </div>`;
