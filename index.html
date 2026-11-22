@@ -2652,13 +2652,17 @@ function adOrganicCard(){
       : (isToday ? '<span class="pill rfm">오늘 실시간</span>' : '<span class="pill">집계 전</span>');
     const bar = aoRatio(r.adQty, r.organicQty, r.qty, 'wide');
     const items = itemRowsFor(r.d) || [];
-    const chips = items.length ? `<tr class="ao-items-row"><td colspan="5"><div class="ao-chipwrap">${
-      items.map(x=>{
-        const o2 = aoOptBreakdown(r.d, aoProdOf(x.name), x.adQty);
-        return `<span class="ao-chip"><b>${esc(String(x.name).replace(/\s*특가\(.*\)/,''))}</b> <span class="q">${x.qty}개</span>${
-          (x.adQty!=null) ? ` <span class="aob ad xs">📣 ${x.adQty}</span> <span class="aob og xs">🌿 ${x.organicQty}</span>` : ' <span class="aob pend xs">광고/자연 미집계</span>'}${o2?` <span class="c-opt">광고 ${o2}</span>`:''}</span>`;
-      }).join('')
-    }</div></td></tr>` : '';
+    /* 광고 전환이 확정된 날은 상품(건조대·깔창)별 칩, 아직 집계 전(오늘)이면 색상별 판매수 한 줄 */
+    const hasAdData = items.some(x=>x.adQty!=null);
+    const chips = items.length ? (hasAdData
+      ? `<tr class="ao-items-row"><td colspan="5"><div class="ao-chipwrap">${
+        items.map(x=>{
+          const o2 = aoOptBreakdown(r.d, aoProdOf(x.name), x.adQty);
+          return `<span class="ao-chip"><b>${esc(String(x.name).replace(/\s*특가\(.*\)/,''))}</b> <span class="q">${x.qty}개</span>${
+            (x.adQty!=null) ? ` <span class="aob ad xs">📣 ${x.adQty}</span> <span class="aob og xs">🌿 ${x.organicQty}</span>` : ' <span class="aob pend xs">광고/자연 미집계</span>'}${o2?` <span class="c-opt">광고 ${o2}</span>`:''}</span>`;
+        }).join('')
+      }</div></td></tr>`
+      : `<tr class="ao-items-row"><td colspan="5">${aoItemsHTML(r.d, r)}<div class="flat" style="font-size:10px;margin-top:2px">광고 전환 판매수는 익일 확정 → 내일 이 시간에 📣 광고 / 🌿 자연으로 나뉘어 표기됩니다.</div></td></tr>`) : '';
     return `<tr class="${isToday?'today':''}">
       <td class="l"><b class="ao-d">${fmtDate(r.d)}</b>${isToday?' <span class="tag live">오늘</span>':''}</td>
       <td class="num"><b class="ao-n">${r.qty}개</b>${bar}</td>
