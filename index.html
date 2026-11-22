@@ -469,6 +469,11 @@ input.inp[type=number]{text-align:right}
   .fc-term.res{flex:1 1 100%}
   .fc-op{font-size:14px}
   .fc-card .fc-amt{max-width:100px}
+  .fc-badges{margin-left:0; flex:1 1 100%}
+  .fc-chip{flex:1 1 auto; padding:5px 8px}
+  .fc-chip .lb{font-size:10px}
+  .fc-chip .vl{font-size:13.5px}
+  .fc-chip .sb{font-size:9.5px; white-space:normal}
   .fc-note{padding:0 12px 12px; font-size:11px}
   .ao-legend-big .aob{font-size:10px}
   .ao-lg{display:none}
@@ -553,6 +558,20 @@ input.inp[type=number]{text-align:right}
 .fc-tag.neg{color:#c22d2d; background:#fdeeee; border:1px solid #f6c4c4}
 .fc-won{font-size:11.5px; color:#7b869a; font-weight:700}
 .fc-note{font-size:11.5px; color:#7b869a; padding:0 16px 14px; line-height:1.6}
+/* 이번달 남은 일수 · 흑자 전환 일목표 배지 (2026-11-22) */
+.fc-badges{display:flex; flex-wrap:wrap; gap:6px; align-items:stretch; margin-left:auto}
+.fc-chip{display:flex; flex-direction:column; gap:0; padding:6px 10px; border-radius:10px; background:#fff; border:1px solid #dfe7f7; min-width:0}
+.fc-chip .lb{font-size:10.5px; font-weight:700; color:#7b869a; white-space:nowrap; line-height:1.35}
+.fc-chip .vl{font-size:14.5px; font-weight:900; letter-spacing:-.3px; color:#101b34; font-variant-numeric:tabular-nums; white-space:nowrap; line-height:1.35}
+.fc-chip .sb{font-size:10px; font-weight:700; color:#98a4bd; white-space:nowrap; line-height:1.35}
+.fc-chip.days{border-color:#cfdcf5; background:#f3f7ff}
+.fc-chip.days .vl{color:#1b4fd8}
+.fc-chip.goal.neg{border-color:#f6c4c4; background:#fff6f3}
+.fc-chip.goal.neg .vl{color:#d9480f}
+.fc-chip.goal.neg .sb{color:#c97a52}
+.fc-chip.goal.pos{border-color:#9fe6cd; background:#f2fdf8}
+.fc-chip.goal.pos .vl{color:#0a7f5c}
+.fc-chip.goal.pos .sb{color:#3f9c80}
 .fc-note code{background:#eef2fa; padding:1px 4px; border-radius:4px; font-size:11px}
 </style>
 </head>
@@ -2708,6 +2727,51 @@ function fixedCostNums(){
     confDays: conf.length, confFrom: conf.length?conf[0].d:null, confTo: conf.length?conf[conf.length-1].d:null,
     hasToday: today.length>0, liveDate};
 }
+/* 이번달 남은 일수 · 흑자 전환 일목표 (2026-11-22 추가)
+   - 오늘은 브라우저 시간대와 무관하게 한국 시간(Asia/Seoul) 기준
+   - 남은 일수 = 그 달 말일 − 오늘 일자 (예: 11/22 → 30 − 22 = 8일) */
+function kstDateStr(d){
+  const t = d || new Date();
+  try{
+    return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul', year:'numeric', month:'2-digit', day:'2-digit'}).format(t);
+  }catch(e){
+    const k = new Date(t.getTime() + 9*3600*1000); /* 폴백: UTC+9 */
+    return k.getUTCFullYear()+'-'+pad(k.getUTCMonth()+1)+'-'+pad(k.getUTCDate());
+  }
+}
+function monthRemainDays(month){
+  const today = kstDateStr();
+  const ty = Number(today.slice(0,4)), tm = Number(today.slice(5,7)), td = Number(today.slice(8,10));
+  const p = String(month || today.slice(0,7)).split('-');
+  const y = Number(p[0]), m = Number(p[1]);
+  const last = new Date(Date.UTC(y, m, 0)).getUTCDate(); /* 그 달 말일 */
+  const isCur = (y===ty && m===tm);
+  const isFuture = (y*100+m) > (ty*100+tm);
+  const days = isCur ? Math.max(0, last - td) : (isFuture ? last : 0);
+  return {today, y, m, last, td, days, isCur, isFuture};
+}
+function fcGoalOf(fin, days){
+  if(fin < 0){
+    const gap = Math.abs(fin);
+    return {neg:true, gap, daily: days>0 ? Math.ceil(gap/days) : 0};
+  }
+  return {neg:false, gap:0, daily:0};
+}
+function fcGoalHTML(fin, month){
+  const r = monthRemainDays(month);
+  const g = fcGoalOf(fin, r.days);
+  const daySub = r.isCur ? `${r.m}월 말일(${r.last}일) − 오늘(${r.td}일)` : (r.isFuture ? `${r.m}월 한 달 전체` : `${r.m}월 마감 · 남은 일수 없음`);
+  const dayChip = `<span class="fc-chip days"><span class="lb">당일 제외 이번달 남은 일수</span><span class="vl">${won(r.days)}일</span><span class="sb">${r.isCur && r.days===0 ? '오늘로 이번 달 마감' : daySub}</span></span>`;
+  let goalClass, goalVal, goalSub;
+  if(!g.neg){
+    goalClass = 'pos'; goalVal = '0원'; goalSub = `이미 흑자 +${won(fin)}원`;
+  } else if(r.days>0){
+    goalClass = 'neg'; goalVal = won(g.daily)+'원'; goalSub = `적자 ${won(g.gap)}원 ÷ ${r.days}일`;
+  } else {
+    goalClass = 'neg'; goalVal = won(g.gap)+'원'; goalSub = '남은 일수 0일 · 남은 금액 전액';
+  }
+  return dayChip + `<span class="fc-chip goal ${goalClass}"><span class="lb">흑자 전환 일 목표 순수익</span><span class="vl">${goalVal}</span><span class="sb">${goalSub}</span></span>`;
+}
 function fixedCostCard(){
   const n = fixedCostNums();
   const list = Array.isArray(S.fixedCosts) ? S.fixedCosts : [];
@@ -2732,8 +2796,9 @@ function fixedCostCard(){
       <span class="fc-term"><span class="k">고정지출 합계</span><b class="num" id="fcTotal">${won(total)}원</b></span>
       <span class="fc-op">=</span>
       <span class="fc-term res"><span class="k">최종 실순수익</span><b class="num ${fin<0?'neg':'pos'}" id="fcFinal">${(fin<0?'−':'+')+won(Math.abs(fin))}원</b></span>
+      <span class="fc-badges" id="fcBadges" data-m="${esc(n.month||'')}">${fcGoalHTML(fin, n.month)}</span>
     </div>
-    <div class="fc-note">이번달 현 순수익 <b>${won(n.now)}원</b> = 빅셀 확정 순이익 <b>${won(n.confNet)}원</b>(${fromTo} 확정 ${n.confDays}일)${n.hasToday?` + 오늘 ${fmtDate(n.liveDate)} 실시간 잠정 순수익 <b>${won(n.todayNet)}원</b>`:''} · <code>bigcell-live.json</code> 수집·갱신 때마다 자동으로 바뀝니다. 입력한 고정지출은 이 브라우저에 저장되어 새로고침·데이터 재수집에도 그대로 남습니다.</div>
+    <div class="fc-note">이번달 현 순수익 <b>${won(n.now)}원</b> = 빅셀 확정 순이익 <b>${won(n.confNet)}원</b>(${fromTo} 확정 ${n.confDays}일)${n.hasToday?` + 오늘 ${fmtDate(n.liveDate)} 실시간 잠정 순수익 <b>${won(n.todayNet)}원</b>`:''} · <code>bigcell-live.json</code> 수집·갱신 때마다 자동으로 바뀝니다. 입력한 고정지출은 이 브라우저에 저장되어 새로고침·데이터 재수집에도 그대로 남습니다.<br>남은 일수·일목표는 <b>한국 시간 오늘</b> 기준 이번 달 말일까지로 계산하며(당일 제외), 고정지출 금액을 입력하는 즉시 다시 계산됩니다. 흑자 전환 일목표 = ⌈적자 금액 ÷ 남은 일수⌉.</div>
   </div>`;
 }
 
@@ -3507,6 +3572,8 @@ function fcRefresh(){
   }
   const tagEl = document.getElementById('fcTag');
   if(tagEl){ tagEl.textContent = fin<0?'적자':'흑자'; tagEl.className = 'fc-tag ' + (fin<0?'neg':'pos'); }
+  const bEl = document.getElementById('fcBadges');
+  if(bEl) bEl.innerHTML = fcGoalHTML(fin, bEl.dataset.m);
 }
 document.addEventListener('input', ev=>{
   const el = ev.target, ds = el && el.dataset;
