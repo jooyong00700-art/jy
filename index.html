@@ -2628,7 +2628,7 @@ VIEWS.products = function(){
       <div class="tbl-wrap"><table class="tbl" id="marginTbl">
         <thead><tr><th class="l">상품</th><th>판매가</th><th>할인</th><th>수수료%</th><th>원가</th><th>입출고</th><th>배송비</th><th>개당 이익금</th><th>이익률</th><th>월 판매</th><th>월 이익금</th></tr></thead>
         <tbody>${rows.map(({p,m})=>`<tr>
-          <td class="l"><div class="prod"><span class="thumb">${p.icon}</span><div><div class="nm">${esc(p.short)}</div><div class="cd">SKU ${p.sku} · ${p.id}</div></div></div></td>
+          <td class="l"><div class="prod"><span class="thumb">${p.icon}</span><div><div class="nm">${esc(p.short)}</div><div class="cd">${p.sku?'SKU '+esc(p.sku)+' · ':''}${p.id}</div></div></div></td>
           ${['price','disc','fee','cost','inout','ship'].map(f=>`<td class="num"><input class="inp num" style="width:${f==='price'?'84px':'68px'};padding:5px 7px" type="number" value="${m[f]}" data-cost-id="${p.id}" data-field="${f}" step="${f==='fee'?'0.01':'1'}"></td>`).join('')}
           <td class="num"><b style="color:${m.profit>0?'var(--ink)':'var(--up)'}">${wonW(m.profit)}</b></td>
           <td class="num">${pct1(m.rate)}%</td>
@@ -4531,7 +4531,7 @@ VIEWS.pmr = function(){
       <td><button class="exp" data-act="pmToggle" data-id="${r.p.pid}">${open?'▾':'▸'}</button></td>
       <td class="l mono">${bcEsc(r.p.pid)}</td>
       <td><span class="thumb">${PM_ICON[r.p.pid]||'📦'}</span></td>
-      <td class="l"><div class="pname">${bcEsc(r.p.name)}</div><div class="pmeta">SKU ${bcEsc(r.p.sku)} · 옵션 ${r.opts.length}개${r.normals?` (일반 ${r.normals})`:''}</div></td>
+      <td class="l"><div class="pname">${bcEsc(r.p.name)}</div><div class="pmeta">${r.p.sku?'SKU '+bcEsc(r.p.sku)+' · ':''}옵션 ${r.opts.length}개${r.normals?` (일반 ${r.normals})`:''}</div></td>
       <td><span class="tag rocket">🚀 로켓그로스</span></td>
       <td class="r num">${bcMoney(c.price)}${wingRep?' <span class="tag wing">윙</span>':''}</td>
       <td class="r"><button class="pen" data-act="discOpen" data-id="${r.p.pid}" title="할인가 설정">✏️</button><span class="num">${bcMoney(c.disc)}</span></td>
