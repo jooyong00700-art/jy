@@ -1868,6 +1868,18 @@ function byItemFor(ds){
     return DEFAULTS.live.options.map(o=>({name:o.name, qty:o.qty, adQty:null, organicQty:null, sales:o.sales, margin:o.margin}));
   return null;
 }
+/* 화면 표시용 상품(품목)별 판매 내역 — bigcell-live.json daily[].items(상품별 광고/자연 분리 포함)를 우선 사용.
+   ※ 이익금 재계산(segProfitFor)은 기존 byItemFor를 그대로 써서 확정 수치가 바뀌지 않게 둔다. */
+function itemRowsFor(ds){
+  const t = S.live || {};
+  if(ds===t.date) return byItemFor(ds);
+  const ov = (S.dailyOverrides || {})[ds];
+  if(ov && Array.isArray(ov.items) && ov.items.length)
+    return ov.items.map(x=>({name:x.name, qty:x.qty,
+      adQty:(x.adQty!=null?x.adQty:null), organicQty:(x.organicQty!=null?x.organicQty:null),
+      sales:x.sales, margin:x.margin}));
+  return byItemFor(ds);
+}
 function segProfitFor(ds){
   const bi = byItemFor(ds);
   if(!bi || !bi.length) return null;
@@ -2293,7 +2305,7 @@ function adOrganicCard(){
     const status = has ? '<span class="pill ok">확정</span>'
       : (isToday ? '<span class="pill rfm">오늘 실시간</span>' : '<span class="pill">집계 전</span>');
     const bar = aoRatio(r.adQty, r.organicQty, r.qty, 'wide');
-    const items = byItemFor(r.d) || [];
+    const items = itemRowsFor(r.d) || [];
     const chips = items.length ? `<tr class="ao-items"><td colspan="5"><div class="ao-chipwrap">${
       items.map(x=>`<span class="ao-chip"><b>${esc(String(x.name).replace(/\s*특가\(.*\)/,''))}</b> <span class="q">${x.qty}개</span>${
         (x.adQty!=null) ? ` <span class="aob ad xs">📣 ${x.adQty}</span> <span class="aob og xs">🌿 ${x.organicQty}</span>` : ' <span class="aob pend xs">광고/자연 미집계</span>'}</span>`).join('')
@@ -2998,7 +3010,7 @@ document.addEventListener('change', ev=>{
 /* ============================== 날짜 상세 모달 ============================== */
 /* ---- 날짜 모달: 상품·옵션별 판매 내역 ---- */
 function dayItemsHTML(ds, r){
-  const items = byItemFor(ds);
+  const items = itemRowsFor(ds);
   if(!items || !items.length){
     return `<div class="sec-t">상품 · 옵션별 판매 내역</div>
       <div class="blank">이 날짜의 옵션별 판매 내역은 아직 없습니다. (빅셀은 옵션별 일별 판매를 제공하지 않고, 쿠팡 윙 재고현황·광고센터에서만 확인됩니다)</div>`;
