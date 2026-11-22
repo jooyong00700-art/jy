@@ -2353,6 +2353,10 @@ function aoColorOf(n){
   if(/올화이트/.test(s)) return '올화이트';
   if(/올크림/.test(s)) return '올크림';
   if(/올블랙/.test(s)) return '올블랙';
+  /* 과거 캠페인명은 '화이트/크림/블랙'으로만 적혀 있다(예: *26년 10월 31일 (620) 화이트) */
+  if(/화이트/.test(s)) return '올화이트';
+  if(/크림/.test(s)) return '올크림';
+  if(/블랙/.test(s)) return '올블랙';
   if(/깔창/.test(s)) return '깔창';
   return '';
 }
@@ -2377,6 +2381,16 @@ function adOptionFor(ds){
   }
   return AD_OPTION_CONF[ds] || null;
 }
+/* 색상별 광고 내역 문자열. 합계가 상품 광고 판매수와 정확히 맞을 때만 반환(어중간한 내역은 숨김) */
+function aoOptBreakdown(ds, prod, adQty){
+  const opt = adOptionFor(ds) || [];
+  const colorProd = c => c==='깔창' ? '깔창' : '건조대';
+  const rows = opt.filter(x=> colorProd(x.name)===prod && x.name!==prod);
+  if(!rows.length) return '';
+  const sum = rows.reduce((a,x)=> a + (Number(x.adQty)||0), 0);
+  if(adQty!=null && sum !== Number(adQty)) return '';
+  return rows.slice().sort((a,b)=> b.adQty-a.adQty).map(x=>`${x.name} ${x.adQty}`).join('·');
+}
 /* 광고/자연 배지 바로 밑에 붙는 품목별 내역. 확정 전(오늘)이면 색상별 판매수량만 보여준다. */
 function aoItemsHTML(ds, r, o){
   o = o || {};
@@ -2398,11 +2412,6 @@ function aoItemsHTML(ds, r, o){
   if(!list.length) return '';
   const hasAd = list.some(x=>x.adQty!=null);
   const hasOg = list.some(x=>x.organicQty!=null);
-  const opt = adOptionFor(ds) || [];
-  const colorProd = c => c==='깔창' ? '깔창' : '건조대';
-  /* 상품명과 같은 색상명(깔창)은 괄호로 되풀이하지 않는다 */
-  const optOf = prod => opt.filter(x=> colorProd(x.name)===prod && x.name!==prod)
-    .sort((a,b)=> b.adQty-a.adQty).map(x=>`${x.name} ${x.adQty}`).join('·');
   const sep = '<span class="sep">|</span>';
   if(!hasAd && !hasOg){
     const cKeys = AO_COLOR_ORDER.filter(c=>colors[c]!=null);
@@ -2413,7 +2422,7 @@ function aoItemsHTML(ds, r, o){
   }
   const adLine = hasAd ? `<div class="ln ad"><span class="em">📣 광고</span>${
     list.filter(x=>x.adQty!=null).map(x=>{
-      const o2 = optOf(x.name);
+      const o2 = aoOptBreakdown(ds, x.name, x.adQty);
       return `<b>${x.name}</b> ${x.adQty}${o2?` <span class="opt">(${o2})</span>`:''}`;
     }).join(sep)}</div>` : '';
   const ogLine = hasOg ? `<div class="ln og"><span class="em">🌿 자연</span>${
@@ -2593,10 +2602,9 @@ function adOrganicCard(){
       : (isToday ? '<span class="pill rfm">오늘 실시간</span>' : '<span class="pill">집계 전</span>');
     const bar = aoRatio(r.adQty, r.organicQty, r.qty, 'wide');
     const items = itemRowsFor(r.d) || [];
-    const optRows = adOptionFor(r.d) || [];
     const chips = items.length ? `<tr class="ao-items-row"><td colspan="5"><div class="ao-chipwrap">${
       items.map(x=>{
-        const o2 = optRows.filter(c=> (c.name==='깔창'?'깔창':'건조대')===aoProdOf(x.name)).map(c=>`${c.name} ${c.adQty}`).join(' · ');
+        const o2 = aoOptBreakdown(r.d, aoProdOf(x.name), x.adQty);
         return `<span class="ao-chip"><b>${esc(String(x.name).replace(/\s*특가\(.*\)/,''))}</b> <span class="q">${x.qty}개</span>${
           (x.adQty!=null) ? ` <span class="aob ad xs">📣 ${x.adQty}</span> <span class="aob og xs">🌿 ${x.organicQty}</span>` : ' <span class="aob pend xs">광고/자연 미집계</span>'}${o2?` <span class="c-opt">광고 ${o2}</span>`:''}</span>`;
       }).join('')
@@ -3392,13 +3400,12 @@ function dayItemsHTML(ds, r){
     return `<div class="sec-t">상품 · 옵션별 판매 내역</div>
       <div class="blank">이 날짜의 옵션별 판매 내역은 아직 없습니다. (빅셀은 옵션별 일별 판매를 제공하지 않고, 쿠팡 윙 재고현황·광고센터에서만 확인됩니다)</div>`;
   }
-  const optRows = adOptionFor(ds) || [];
   const rows = items.map(x=>{
     const name = String(x.name||'');
     const o = COST_OPTS.find(c=> name.indexOf(c.name)>=0);
     const e = o ? optEcon(o.id, ds) : null;
     const margin = x.margin!=null ? x.margin : (e ? e.profit*(x.qty||0) : null);
-    const o2 = optRows.filter(c=> (c.name==='깔창'?'깔창':'건조대')===aoProdOf(name)).map(c=>`${c.name} ${c.adQty}`).join(' · ');
+    const o2 = aoOptBreakdown(ds, aoProdOf(name), x.adQty);
     return `<tr>
       <td class="l"><b>${esc(name)}</b>${o2?`<div class="hint" style="font-size:10px">광고 전환 · ${o2}</div>`:''}${o?`<div class="hint" style="font-size:10px">${esc(o.id)}</div>`:''}</td>
       <td class="num">${x.qty!=null?x.qty+'개':'-'}</td>
