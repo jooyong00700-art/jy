@@ -2029,8 +2029,8 @@ VIEWS.dashboard = function(){
         `<span class="flat">VAT별도 ${won(S.live.adExVat)}원</span>`) }
       ${kpiCard(`오늘 순이익${live.estimate?' <span class="tag estimate">추정</span>':''}`, won(todayNet)+'원',
         `${deltaHTML(dNet)} <span class="flat">광고비(VAT포함) ${won(live.ad)}원 제외</span>`) }
-      ${kpiCard('이번 달 매출 <span class="tag coup">쿠폰 제외</span> <span class="tag">확정</span>', won(monthSales)+'원',
-        `<span class="flat">${mRange} 확정 · 순이익(광고비 제외) ${won(monthNet)}원${monthTodaySales?` · 오늘 ${won(monthTodaySales)}원 별도(잠정)`:''}</span>`, {cls:'month-kpi'})}
+      ${kpiCard(`이번 달 매출 <span class="tag coup">쿠폰 제외</span> <span class="tag">${mConf.length?'확정':'오늘 포함'}</span>`, won(mConf.length?monthSales:monthTodaySales)+'원',
+        `<span class="flat">${mConf.length?`${mRange} 확정 · 순이익(광고비 제외) ${won(monthNet)}원${monthTodaySales?` · 오늘 ${won(monthTodaySales)}원 별도(잠정)`:''}`:`아직 확정치 없음 · 오늘 ${won(monthTodaySales)}원(잠정)`}</span>`, {cls:'month-kpi'})}
     </div>`
   + `${adOrganicCard()}`
   + `<div class="two" style="margin-bottom:14px">
