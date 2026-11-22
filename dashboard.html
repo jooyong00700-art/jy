@@ -2278,7 +2278,9 @@ let opt = {
   dailyRange:'7',
   settleRange:'month',            /* month | day | due */
   settleOpen:{},                  /* 정산 행 세부비용 펠침 */
-  stockOnlyNeed:false             /* 재고 · 입고필요 상품만 */
+  settleQ:'', settleState:'all',  /* 정산 다중 필터: 검색어 · 운영상태 */
+  stockOnlyNeed:false,            /* 재고 · 입고필요 상품만 */
+  prodQ:'', prodState:'on', prodMissing:false, prodSort:'default'  /* 상품 다중 필터 (기본=빅셀과 같은 운영상품) */
 };
 const VIEWS = {};
 const VIEWS_BIND = {};
@@ -3098,27 +3100,112 @@ function monthlyCard(all){
   </div>`;
 }
 
+/* ============================== CSV 반출 · 반입 ============================== */
+function csvCell(v){
+  const s = (v==null) ? '' : String(v);
+  return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s;
+}
+function csvLine(arr){ return arr.map(csvCell).join(','); }
+function downloadCsv(name, lines){
+  const blob = new Blob(['\ufeff' + lines.join('\r\n')], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+}
+function parseCsvText(text){
+  const rows=[]; let row=[], cur='', q=false;
+  const s = String(text||'').replace(/^\ufeff/,'');
+  for(let i=0;i<s.length;i++){
+    const c = s[i];
+    if(q){
+      if(c==='"'){ if(s[i+1]==='"'){ cur+='"'; i++; } else q=false; }
+      else cur += c;
+    } else if(c==='"') q = true;
+    else if(c===','){ row.push(cur); cur=''; }
+    else if(c==='\n'){ row.push(cur); rows.push(row); row=[]; cur=''; }
+    else if(c==='\r'){ /* skip */ }
+    else cur += c;
+  }
+  if(cur!=='' || row.length){ row.push(cur); rows.push(row); }
+  return rows.filter(r=>r.some(x=>String(x).trim()!==''));
+}
+function csvNum(v){
+  const raw = String(v==null?'':v).replace(/[^0-9.\-]/g,'');
+  return raw==='' ? null : Number(raw);
+}
+/* 옵션 원가·할인 구간에 값 반영 (기준일 구간이 없으면 새 구간 생성) */
+function segSetVals(id, ds, vals){
+  const list = segList(id);
+  let seg = list.filter(s=> (!s.from||s.from<=ds) && (!s.to||ds<=s.to))
+                .sort((a,b)=> (a.from||'')<(b.from||'') ? 1 : -1)[0];
+  if(!seg){ seg = {from:ds, to:''}; list.push(seg); }
+  Object.keys(vals).forEach(k=>{ seg[k] = vals[k]; });
+  clearSegCache();
+}
+
 /* ============================== 3. 상품 · 마진 ============================== */
+/* 상품 마진표 행 — 숨김 포함 전체 + 다중 필터(운영상태 · 원가 미입력 · 검색 · 정렬) */
+function prodAllRows(){ return PRODUCTS.map(p=>({p, m: margin(p), hidden:isHidden(p.id)})); }
+function prodFiltered(rows){
+  const q = String(opt.prodQ||'').trim().toLowerCase();
+  let list = (rows||prodAllRows()).slice();
+  if(opt.prodState==='on') list = list.filter(r=>!r.hidden);
+  else if(opt.prodState==='hidden') list = list.filter(r=>r.hidden);
+  if(opt.prodMissing) list = list.filter(r=>!(Number(r.m.cost)>0));
+  if(q) list = list.filter(r=>{
+    const hay = (r.p.short+' '+r.p.name+' '+r.p.id+' '+(r.p.sku||'')).toLowerCase();
+    return hay.indexOf(q)>=0;
+  });
+  const cmp = {
+    profitUnit:(a,b)=> b.m.profit - a.m.profit,
+    profitMonth:(a,b)=> (b.m.profit*b.p.soldM) - (a.m.profit*a.p.soldM),
+    sold:(a,b)=> (b.p.soldM||0) - (a.p.soldM||0),
+    rate:(a,b)=> b.m.rate - a.m.rate,
+    name:(a,b)=> a.p.short.localeCompare(b.p.short, 'ko')
+  }[opt.prodSort||'default'];
+  if(cmp) list.sort(cmp);
+  return list;
+}
 VIEWS.products = function(){
-  const vis = visibleProducts();
-  const hidN = PRODUCTS.length - vis.length;
-  const rows = vis.map(p=>({p, m: margin(p)}));
-  const totalProfit = rows.reduce((a,r)=>a+r.m.profit*r.p.soldM,0);
+  const all = prodAllRows();
+  const rows = prodFiltered(all);
+  const hidN = all.filter(r=>r.hidden).length;
+  const onN = all.length - hidN;
+  const missN = all.filter(r=>!(Number(r.m.cost)>0)).length;
+  const totalProfit = rows.reduce((a,r)=>a+r.m.profit*(r.p.soldM||0),0);
+  const totalSold = rows.reduce((a,r)=>a+(r.p.soldM||0),0);
+  const stateLab = opt.prodState==='hidden' ? '숨김' : (opt.prodState==='on' ? '운영' : '전체');
   return topbar('상품 · 마진','원가를 바꾸면 이익금·마진이 즉시 다시 계산됩니다 (자동 저장)',
     `<button class="btn primary" data-act="resetCosts">원가 초기화</button>`)
   + `<div class="card">
-      ${sectionHead('로켓그로스 상품 마진표', `11월 누적 판매량 기준${hidN?` · 숨김 ${hidN}개 제외`:''}`, `<span class="note">클릭해서 수정 → 이익금 자동계산</span>`)}
+      ${sectionHead('로켓그로스 상품 마진표', `11월 누적 판매량 기준 · ${stateLab} ${rows.length}/${all.length}개`, `<span class="note">클릭해서 수정 → 이익금 자동계산</span>`)}
+      <div class="filterbar" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; padding:11px 14px; border-bottom:1px solid var(--line2)">
+        <div class="seg">
+          <button class="${opt.prodState==='all'?'on':''}" data-act="prodState" data-v="all">전체 ${all.length}</button>
+          <button class="${opt.prodState==='on'?'on':''}" data-act="prodState" data-v="on">운영 ${onN}</button>
+          <button class="${opt.prodState==='hidden'?'on':''}" data-act="prodState" data-v="hidden">숨김 ${hidN}</button>
+        </div>
+        <label class="note" style="display:inline-flex;align-items:center;gap:5px;cursor:pointer"><input type="checkbox" ${opt.prodMissing?'checked':''} data-act="prodMissing">원가 미입력 ${missN}</label>
+        <select class="inp" style="width:132px" data-act="prodSort">
+          ${[['default','기본 순서'],['profitUnit','개당 이익금'],['profitMonth','월 이익금'],['sold','월 판매량'],['rate','이익률'],['name','상품명']].map(([v,l])=>`<option value="${v}" ${(opt.prodSort||'default')===v?'selected':''}>${l}</option>`).join('')}
+        </select>
+        <input class="inp" style="width:220px" type="text" placeholder="상품명 · 노출ID · SKU 검색" value="${esc(opt.prodQ||'')}" data-act="prodSearch">
+        <div style="flex:1"></div>
+        <button class="btn" data-act="prodCsv">⬇ CSV (빅셀 16컬럼)</button>
+        <label class="btn" style="cursor:pointer;margin-left:6px">⬆ CSV 반입<input type="file" accept=".csv,text/csv" style="display:none" data-act="prodCsvImport"></label>
+      </div>
       <div class="tbl-wrap"><table class="tbl" id="marginTbl">
         <thead><tr><th class="l">상품</th><th>판매가</th><th>할인</th><th>수수료%</th><th>원가</th><th>입출고</th><th>배송비</th><th>개당 이익금</th><th>이익률</th><th>월 판매</th><th>월 이익금</th></tr></thead>
-        <tbody>${rows.map(({p,m})=>`<tr>
-          <td class="l"><div class="prod"><span class="thumb">${p.icon}</span><div><div class="nm">${esc(p.short)}</div><div class="cd">${p.sku?'SKU '+esc(p.sku)+' · ':''}${p.id}</div></div></div></td>
+        <tbody>${rows.map(({p,m,hidden})=>`<tr>
+          <td class="l"><div class="prod"><span class="thumb">${p.icon}</span><div><div class="nm">${esc(p.short)}${hidden?' <span class="hd">숨김</span>':''}</div><div class="cd">${p.sku?'SKU '+esc(p.sku)+' · ':''}${p.id}</div></div></div></td>
           ${['price','disc','fee','cost','inout','ship'].map(f=>`<td class="num"><input class="inp num" style="width:${f==='price'?'84px':'68px'};padding:5px 7px" type="number" value="${m[f]}" data-cost-id="${p.id}" data-field="${f}" step="${f==='fee'?'0.01':'1'}"></td>`).join('')}
           <td class="num"><b style="color:${m.profit>0?'var(--ink)':'var(--up)'}">${wonW(m.profit)}</b></td>
           <td class="num">${pct1(m.rate)}%</td>
           <td class="num">${won(p.soldM)}</td>
-          <td class="num"><b>${wonW(m.profit*p.soldM)}</b></td>
-        </tr>`).join('')}
-        <tr class="total"><td class="l">합계 (월 누적 판매량 기준)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="num">${won(vis.reduce((a,p)=>a+p.soldM,0))}</td><td class="num">${wonW(totalProfit)}</td></tr>
+          <td class="num"><b>${wonW(m.profit*(p.soldM||0))}</b></td>
+        </tr>`).join('') || `<tr><td class="l" colspan="11"><span class="flat">조회 조건에 맞는 상품이 없습니다.</span></td></tr>`}
+        <tr class="total"><td class="l">합계 (표시 ${rows.length}개 · 월 판매 기준)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="num">${won(totalSold)}</td><td class="num">${wonW(totalProfit)}</td></tr>
         </tbody>
       </table></div>
       <div class="card-b" style="border-top:1px solid var(--line2)">
@@ -3126,7 +3213,8 @@ VIEWS.products = function(){
           <b>로켓그로스 산식 (빅셀 실데이터 검증 완료)</b><br>
           이익금 = <code>(판매가 − 할인) × (1 − 수수료%)</code> − <code>원가</code> − <code>입출고비</code> − <code>배송비</code><br>
           이익률 = <code>이익금 ÷ 판매가</code> · 입출고비·배송비는 VAT 포함<br>
-          <span class="hint">예: 신발깔장 (10,790−800)×0.8845 = 8,836 → −2,364 −1,100 −1,485 = <b>3,887원</b></div>
+          <span class="hint">예: 신발깔장 (10,790−800)×0.8845 = 8,836 → −2,364 −1,100 −1,485 = <b>3,887원</b></span>
+          <div class="hint" style="margin-top:8px">CSV 반출은 빅셀 <b>상품관리 → 엑셀 다운로드(상품)</b>와 같은 16컬럼 형식입니다. 빅셀에서 받은 파일을 CSV로 저장해 <b>[⬆ CSV 반입]</b>에 올리면 판매가·할인금액·마켓수수료·원가·입출고요금·배송비가 노출ID(또는 옵션ID) 기준으로 반영됩니다. <b>빅셀 서버는 바뀌지 않고 이 대시보드(localStorage)에만 저장</b>됩니다.</div>
         </div>
     </div>`
   + `<div class="two" style="margin-top:14px">${simulatorCard()}${calcCard()}</div>`
@@ -3254,6 +3342,18 @@ VIEWS.ads = function(){
 };
 
 /* ============================== 5. 정산 · 손익 ============================== */
+function settleFiltered(rows){
+  let list = (rows||[]).slice();
+  if(opt.settleState==='on') list = list.filter(r=>!r.hidden);
+  else if(opt.settleState==='hidden') list = list.filter(r=>r.hidden);
+  const q = String(opt.settleQ||'').trim().toLowerCase();
+  if(q) list = list.filter(r=> ((r.short||'')+' '+r.id+' '+(r.sku||'')).toLowerCase().indexOf(q)>=0);
+  return list;
+}
+function settleAllRows(){
+  const sc = (opt.settleRange==='day') ? SETTLE.day : SETTLE.month;
+  return sc.rows.map(r=>Object.assign({}, r, {hidden:isHidden(r.id)}));
+}
 function settleCalc(s){
   const target = s.sales - (s.couponNow||0) - (s.couponDl||0) - (s.fee||0);
   const actual = target - ((s.inout||0) + (s.ship||0) + (s.keep||0) + (s.retCollect||0) + (s.retIn||0)
@@ -3275,9 +3375,10 @@ function settleCell(s, c){
 /* 정산 탭: 요약 타일 + 27열 가로스크롤 표 + 행별 세부비용 펠침 */
 VIEWS.settle = function(){
   const sc = (opt.settleRange==='day') ? SETTLE.day : SETTLE.month;
-  const rows = sc.rows.map(r=>Object.assign({}, r, {hidden:isHidden(r.id)}));
+  const allRows = sc.rows.map(r=>Object.assign({}, r, {hidden:isHidden(r.id)}));
+  const rows = settleFiltered(allRows);
   const T = sc.total;
-  const hiddenN = rows.filter(r=>r.hidden).length;
+  const hiddenN = allRows.filter(r=>r.hidden).length;
   const dueSum = SETTLE_DUE.reduce((a,d)=>a+d.seller+d.rfm,0);
   const logistic = (T.inout||0)+(T.ship||0)+(T.keep||0)+(T.retCollect||0)+(T.retIn||0)+(T.outbound||0)+(T.barcode||0)+(T.fcl||0)+(T.milk||0);
   const couponAll = (T.couponNow||0)+(T.couponDl||0);
@@ -3294,7 +3395,7 @@ VIEWS.settle = function(){
     const cls = (l==='순이익금'||l==='실정산액'||l==='정산대상액') ? ' hl' : '';
     return `<div class="ctile${cls}"><div class="t">${l}</div><div class="v num ${n!=null&&n<0?'up':''}">${(n==null)?'-':(sign&&n?'−':'')+won(Math.abs(n))}</div></div>`;
   }).join('');
-  return topbar('정산 · 손익', `빅셀 정산서 기준 · 로켓그로스 ${rows.length}개 상품(운영 ${rows.length-hiddenN} · 숨김 ${hiddenN})`,
+  return topbar('정산 · 손익', `빅셀 정산서 기준 · 로켓그로스 ${allRows.length}개 상품(운영 ${allRows.length-hiddenN} · 숨김 ${hiddenN}) · 표시 ${rows.length}개`,
       `<div class="seg">${[['month','11월 누적'],['day','11월 21일'],['due','입금 예정']].map(([v,l])=>`<button class="${opt.settleRange===v?'on':''}" data-act="settleRange" data-v="${v}">${l}</button>`).join('')}</div>`)
   + (opt.settleRange==='due' ? dueCard() :
       `<div class="kpis" style="margin-bottom:14px">
@@ -3321,6 +3422,9 @@ VIEWS.settle = function(){
 };
 function wonT(n){ return won(n)+'원'; }
 function settleTable(rows, T){
+  const allN = ((opt.settleRange==='day') ? SETTLE.day : SETTLE.month).rows.length;
+  const onN = ((opt.settleRange==='day') ? SETTLE.day : SETTLE.month).rows.filter(r=>!isHidden(r.id)).length;
+  const hidN = allN - onN;
   const head = `<tr><th class="l sticky-c">상품</th>` + SETTLE_COLS.map(c=>`<th>${c.l}${c.l2?`<div class="th2">${c.l2}</div>`:''}</th>`).join('') + `</tr>`;
   const body = rows.map(s=>{
     const open = !!opt.settleOpen[s.id];
@@ -3332,7 +3436,16 @@ function settleTable(rows, T){
         ${cells}</tr>` + (open ? settleRowDetail(s) : '');
   }).join('');
   const totalCells = SETTLE_COLS.map(c=>`<td class="num">${settleCell(T,c)}</td>`).join('');
-  return `<div class="card">${sectionHead('상품별 정산서 전 컬럼', '판매수량 0인 상품도 입출고·배송비는 발생합니다 — 좌우로 넘겨 27개 컬럼을 봅니다')}
+  return `<div class="card">${sectionHead('상품별 정산서 전 컬럼', `판매수량 0인 상품도 입출고·배송비는 발생합니다 — 좌우로 넘겨 27개 컬럼을 봅니다 (표시 ${rows.length}/${allN})`, `<button class="btn" data-act="settleCsv">⬇ CSV (27컬럼)</button>`)}
+    <div class="filterbar" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; padding:11px 14px; border-bottom:1px solid var(--line2)">
+      <div class="seg">
+        <button class="${opt.settleState==='all'?'on':''}" data-act="settleState" data-v="all">전체 ${allN}</button>
+        <button class="${opt.settleState==='on'?'on':''}" data-act="settleState" data-v="on">운영 ${onN}</button>
+        <button class="${opt.settleState==='hidden'?'on':''}" data-act="settleState" data-v="hidden">숨김 ${hidN}</button>
+      </div>
+      <input class="inp" style="width:220px" type="text" placeholder="상품명 · 노출ID · SKU 검색" value="${esc(opt.settleQ||'')}" data-act="settleSearch">
+      <span class="note">합계행은 필터와 무관하게 빅셀 표기 합계입니다</span>
+    </div>
     <div class="tbl-wrap"><table class="tbl settle-tbl">
       <thead>${head}</thead>
       <tbody>${body}
@@ -4402,6 +4515,92 @@ ACTIONS.segImport = (d, el)=>{
       S.segments = Object.assign({}, S.segments, seg); clearSegCache(); save(); render(); alert('원가·할인가 구간을 불러왔습니다.'); }
     catch(e){ alert('파일을 읽을 수 없습니다. (JSON 형식 확인)'); } };
   fr.readAsText(f);
+};
+
+/* ---------- 상품 · 마진: 다중 필터 · CSV 반출/반입 (빅셀 상품관리 호환) ---------- */
+ACTIONS.prodState = (d)=>{ opt.prodState = d.v || 'all'; render(); };
+ACTIONS.prodSort = (d, el)=>{ opt.prodSort = el.value || 'default'; render(); };
+ACTIONS.prodMissing = (d, el)=>{ opt.prodMissing = !!el.checked; render(); };
+ACTIONS.prodSearch = (d, el)=>{
+  opt.prodQ = el.value;
+  const app = document.getElementById('app');
+  if(app){ app.innerHTML = VIEWS[view](); afterRender(app); }
+  const i = document.querySelector('[data-act="prodSearch"]');
+  if(i){ i.focus(); i.setSelectionRange(i.value.length, i.value.length); }
+};
+ACTIONS.prodCsv = ()=>{
+  const list = prodFiltered();
+  if(!list.length){ toast('내보낼 상품이 없습니다', 'warn', '필터를 확인하세요'); return; }
+  const head = ['스토어','담당자','SKU ID','노출상품ID','옵션ID','상품명','옵션명','구분','판매가','할인금액','이익금','마켓수수료','원가','입출고요금','배송비','빅셀상태'];
+  const lines = [csvLine(head)];
+  list.forEach(({p,m,hidden})=>{
+    lines.push(csvLine(['리스','', p.sku||'', p.id, '', p.name, '', '로켓그로스',
+      m.price, m.disc, m.profit, m.fee, m.cost, m.inout, m.ship, hidden?'숨김':'운영중']));
+  });
+  const ds = (S.live && S.live.date) ? S.live.date : new Date().toISOString().slice(0,10);
+  downloadCsv('리스페토-상품관리-' + ds + '.csv', lines);
+  toast('CSV 내보내기 완료', 'ok', list.length + '개 상품 · 빅셀 상품관리와 같은 16컬럼');
+};
+ACTIONS.prodCsvImport = (d, el)=>{
+  const f = el.files && el.files[0]; if(!f) return;
+  const fr = new FileReader();
+  fr.onload = ()=>{
+    let parsed = [];
+    try{ parsed = parseCsvText(fr.result); }catch(e){ alert('CSV를 읽을 수 없습니다.'); return; }
+    if(parsed.length < 2){ alert('데이터 행이 없습니다. 빅셀 상품관리 엑셀(상품)을 CSV로 저장해 올려주세요.'); return; }
+    const head = parsed[0].map(h=>String(h||'').replace(/^\ufeff/,'').trim());
+    const col = (...names)=>{ for(const n of names){ const i = head.indexOf(n); if(i>=0) return i; } return -1; };
+    const iProd = col('노출상품ID','노출상품 ID','상품ID');
+    const iOpt = col('옵션ID','옵션 ID');
+    const fields = [['판매가','price'],['할인금액','disc'],['마켓수수료','fee'],['원가','cost'],['입출고요금','inout'],['배송비','ship']]
+      .map(([label,key])=>({key, i: col(label)}));
+    if(iProd < 0 && iOpt < 0){ alert('노출상품ID 또는 옵션ID 열이 필요합니다.\n빅셀 상품관리 → 엑셀 다운로드(상품) 파일을 CSV로 저장해 올리면 그대로 반입됩니다.'); return; }
+    if(!fields.some(f=>f.i>=0)){ alert('판매가·할인금액·마켓수수료·원가·입출고요금·배송비 열을 찾지 못했습니다.'); return; }
+    const ds = opt.costDate || (S.live && S.live.date) || new Date().toISOString().slice(0,10);
+    let nP = 0, nO = 0, skipped = 0;
+    parsed.slice(1).forEach(cols=>{
+      const vals = {}; let any = false;
+      fields.forEach(f=>{
+        if(f.i < 0) return;
+        const v = csvNum(cols[f.i]);
+        if(v!=null && !isNaN(v)){ vals[f.key] = v; any = true; }
+      });
+      if(!any) return;
+      const optId = iOpt>=0 ? String(cols[iOpt]==null?'':cols[iOpt]).trim() : '';
+      const pid = iProd>=0 ? String(cols[iProd]==null?'':cols[iProd]).trim() : '';
+      if(optId && COST_OPTS.some(o=>o.id===optId)){ segSetVals(optId, ds, vals); nO++; return; }
+      if(pid && PRODUCTS.some(p=>p.id===pid)){ S.costOverrides[pid] = Object.assign({}, S.costOverrides[pid], vals); nP++; return; }
+      skipped++;
+    });
+    clearSegCache(); save(); render();
+    alert('CSV 반입 완료\n· 상품 ' + nP + '건 · 옵션 ' + nO + '건 반영' + (skipped?('\n· 매칭 안 됨 ' + skipped + '건'):'')
+      + '\n\n기준일 ' + ds + '부터 적용됩니다. 빅셀 서버는 변경하지 않았습니다(이 대시보드에만 저장).');
+  };
+  fr.readAsText(f);
+};
+
+/* ---------- 정산: 다중 필터 · CSV 반출 (27컬럼) ---------- */
+ACTIONS.settleState = (d)=>{ opt.settleState = d.v || 'all'; render(); };
+ACTIONS.settleSearch = (d, el)=>{
+  opt.settleQ = el.value;
+  const app = document.getElementById('app');
+  if(app){ app.innerHTML = VIEWS[view](); afterRender(app); }
+  const i = document.querySelector('[data-act="settleSearch"]');
+  if(i){ i.focus(); i.setSelectionRange(i.value.length, i.value.length); }
+};
+ACTIONS.settleCsv = ()=>{
+  const sc = (opt.settleRange==='day') ? SETTLE.day : SETTLE.month;
+  const rows = settleFiltered(settleAllRows());
+  const head = ['스토어','담당자','SKU ID','노출상품ID','상품명','구분'].concat(SETTLE_COLS.map(c=>c.l + (c.l2 ? '(' + c.l2 + ')' : '')));
+  const lines = [csvLine(head)];
+  rows.forEach(r=>{
+    const base = ['리스','', r.sku||'', r.id, r.short||'', '로켓그로스'];
+    lines.push(csvLine(base.concat(SETTLE_COLS.map(c=> r[c.k]==null ? '' : r[c.k]))));
+  });
+  lines.push(csvLine(['합계','','','','',''].concat(SETTLE_COLS.map(c=> sc.total[c.k]==null ? '' : sc.total[c.k]))));
+  const ds = (opt.settleRange==='day') ? '11월21일' : '11월누적';
+  downloadCsv('리스페토-정산-' + ds + '-' + ((S.live && S.live.date) || new Date().toISOString().slice(0,10)) + '.csv', lines);
+  toast('정산 CSV 내보내기 완료', 'ok', rows.length + '행 · 27컬럼 (합계행은 빅셀 표기 합계)');
 };
 
 /* ============================================================
