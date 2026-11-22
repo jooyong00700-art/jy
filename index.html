@@ -459,6 +459,10 @@ input.inp[type=number]{text-align:right}
   .day .ao-ratio.cal{height:3px; margin-top:1px}
   .ao-cell .q{font-size:11.5px}
   .ao-cell .ao-ratio{max-width:86px}
+  .ao-items .ln{font-size:9.5px; line-height:1.45}
+  .ao-items .ln .opt{font-size:9px}
+  .kpi .ao-items .ln{font-size:10px}
+  .kpi .ao-items .ln .opt{font-size:9px}
   .ao-legend-big .aob{font-size:10px}
   .ao-lg{display:none}
   .months{grid-template-columns:repeat(4,1fr)}
@@ -486,7 +490,7 @@ input.inp[type=number]{text-align:right}
 /* ⚙️ 원가·할인가 / 품목별 칩 */
 .inp{border:1px solid var(--line2);border-radius:7px;padding:5px 8px;font-size:12px;font-family:inherit;background:#fff;color:#101b34}
 .inp:focus{outline:2px solid #c9d8f7;border-color:#8fb0e8}
-.ao-items td{padding:0 0 8px 0 !important;border-bottom:1px solid var(--line2)}
+.ao-items-row td{padding:0 0 8px 0 !important;border-bottom:1px solid var(--line2)}
 .ao-chipwrap{display:flex;flex-wrap:wrap;gap:4px;padding:2px 0 2px 2px}
 .ao-chip{display:inline-flex;align-items:center;gap:4px;background:#f2f5fb;border:1px solid #dde5f5;border-radius:999px;padding:2px 8px;font-size:11px;color:#33456b}
 .ao-chip b{font-weight:700;color:#101b34}
@@ -494,6 +498,24 @@ input.inp[type=number]{text-align:right}
 .ao-chip .c-ad{color:#b35c00;font-style:normal;font-weight:700}
 .ao-chip .c-og{color:#1c7c54;font-style:normal;font-weight:700}
 .ao-chip .c-pend{color:#98a4bd;font-style:normal}
+.ao-chip .c-opt{color:#8b96ab;font-style:normal;font-weight:600;font-size:10px}
+
+/* ---------- 광고/자연 판매 밑 품목 내역 (2026-11-22) ---------- */
+.ao-items{display:flex; flex-direction:column; gap:1px; margin-top:3px; max-width:100%; text-align:left}
+.ao-items .ln{display:flex; align-items:baseline; gap:4px; flex-wrap:wrap; font-size:10.5px; line-height:1.5; font-weight:700; color:#5b6784; letter-spacing:-.2px}
+.ao-items .ln .em{font-style:normal; flex:0 0 auto}
+.ao-items .ln.ad .em{color:#b35c00}
+.ao-items .ln.og .em{color:#0a7f5c}
+.ao-items .ln.pk .em{color:#5b6784}
+.ao-items .ln b{font-weight:800; color:#16202f; font-variant-numeric:tabular-nums}
+.ao-items .ln .opt{color:#8b96ab; font-weight:600; font-size:9.5px}
+.ao-items .ln .sep{color:#ccd5e4; font-weight:600; padding:0 3px}
+.ao-items .ln.ad{color:#8a5a1c}
+.ao-items .ln.og{color:#1c6b53}
+.ao-items.right{align-items:flex-end; text-align:right}
+.ao-items.right .ln{justify-content:flex-end}
+.kpi .ao-items .ln{font-size:11px}
+.kpi .ao-items .ln .opt{font-size:10px}
 </style>
 </head>
 <body>
@@ -2213,6 +2235,7 @@ VIEWS.dashboard = function(){
         <div class="delta">${deltaHTML(dToday)} <span class="flat">전일 대비 · 오늘 <b>${live.qty}개</b> 판매 · 목표 ${Math.round(live.netSales/S.targetSales*100)}%</span></div>
         <div class="aob-row" style="margin-top:5px">${aoBadges(live.adQty, live.organicQty, live.qty, {small:true, pendText:'광고 집계 전(익일 확정)'})}</div>
         ${aoRatio(live.adQty, live.organicQty, live.qty)}
+        ${aoItemsHTML(live.d, live)}
       </div>
       ${kpiCard('오늘 광고비 <span class="tag">VAT포함</span>', won(live.ad)+'원',
         `<span class="flat">VAT별도 ${won(S.live.adExVat)}원</span>`) }
@@ -2319,6 +2342,89 @@ function aoCell(r, o){
   return `<div class="ao-cell"><div class="ao-cell-badges"><span class="q">${r.qty}개</span>${aoBadges(r.adQty,r.organicQty,r.qty,{small:true, pendText:pend})}</div>${aoRatio(r.adQty,r.organicQty,r.qty)}</div>`;
 }
 
+/* ---------- 광고/자연 판매 밑 "어떤 품목" 내역 (2026-11-22) ----------
+   상품 단위(건조대·깔창) 광고/자연 수량 = bigcell-live.json daily[].items 의 adQty/organicQty(확정치).
+   색상(옵션) 단위는 쿠팡 광고센터 캠페인별 전환 판매수가 확정된 날만 괄호로 덧붙인다.
+   자연 판매의 색상 분리는 쿠팡이 제공하지 않아(옵션 판매수 − 광고 전환 이 음수가 되는 날이 있음)
+   상품 단위로만 표기한다 — 숫자를 임의로 나누지 않는다. */
+const AD_OPTION_CONF = {
+  '2026-11-20':[{name:'올크림',adQty:22},{name:'올화이트',adQty:9},{name:'깔창',adQty:3},{name:'올블랙',adQty:2}],
+  '2026-11-21':[{name:'올크림',adQty:17},{name:'올화이트',adQty:15},{name:'올블랙',adQty:11},{name:'깔창',adQty:3}]
+};
+const AO_COLOR_ORDER = ['올화이트','올크림','올블랙','깔창'];
+function aoColorOf(n){
+  const s = String(n||'');
+  if(/올화이트/.test(s)) return '올화이트';
+  if(/올크림/.test(s)) return '올크림';
+  if(/올블랙/.test(s)) return '올블랙';
+  if(/깔창/.test(s)) return '깔창';
+  return '';
+}
+function aoProdOf(n){
+  const s = String(n||'');
+  if(/깔창/.test(s)) return '깔창';
+  if(/건조대/.test(s)) return '건조대';
+  return s.replace(/^리스페토\s*/,'').replace(/\s*특가.*$/,'').replace(/\s*반품.*$/,'');
+}
+/* 그 날의 색상별 광고 전환 판매수: bigcell-live.json adOption → adDetail.campaigns → 내장 확정표 */
+function adOptionFor(ds){
+  const ov = (S.dailyOverrides||{})[ds] || {};
+  const norm = list => {
+    const g = {};
+    (list||[]).forEach(x=>{ const c = aoColorOf(x && x.name); if(!c) return; g[c] = (g[c]||0) + (Number(x.adQty)||0); });
+    const out = AO_COLOR_ORDER.filter(c=>g[c]!=null).map(c=>({name:c, adQty:g[c]}));
+    return out.length ? out : null;
+  };
+  if(Array.isArray(ov.adOption) && ov.adOption.length){ const r = norm(ov.adOption); if(r) return r; }
+  if(ov.adDetail && Array.isArray(ov.adDetail.campaigns) && ov.adDetail.campaigns.length){
+    const r = norm(ov.adDetail.campaigns); if(r) return r;
+  }
+  return AD_OPTION_CONF[ds] || null;
+}
+/* 광고/자연 배지 바로 밑에 붙는 품목별 내역. 확정 전(오늘)이면 색상별 판매수량만 보여준다. */
+function aoItemsHTML(ds, r, o){
+  o = o || {};
+  if(!r || r.qty==null) return '';
+  const items = itemRowsFor(ds) || [];
+  if(!items.length) return '';
+  const g = {}, colors = {};
+  items.forEach(x=>{
+    const k = aoProdOf(x.name);
+    if(!k) return;
+    const b = g[k] || (g[k] = {name:k, qty:0, adQty:null, organicQty:null});
+    b.qty += (Number(x.qty)||0);
+    if(x.adQty!=null) b.adQty = (b.adQty==null?0:b.adQty) + (Number(x.adQty)||0);
+    if(x.organicQty!=null) b.organicQty = (b.organicQty==null?0:b.organicQty) + (Number(x.organicQty)||0);
+    const c = aoColorOf(x.name);
+    if(c) colors[c] = (colors[c]||0) + (Number(x.qty)||0);
+  });
+  const list = Object.keys(g).map(k=>g[k]).sort((a,b)=> (b.adQty!=null?b.adQty:b.qty) - (a.adQty!=null?a.adQty:a.qty));
+  if(!list.length) return '';
+  const hasAd = list.some(x=>x.adQty!=null);
+  const hasOg = list.some(x=>x.organicQty!=null);
+  const opt = adOptionFor(ds) || [];
+  const colorProd = c => c==='깔창' ? '깔창' : '건조대';
+  /* 상품명과 같은 색상명(깔창)은 괄호로 되풀이하지 않는다 */
+  const optOf = prod => opt.filter(x=> colorProd(x.name)===prod && x.name!==prod)
+    .sort((a,b)=> b.adQty-a.adQty).map(x=>`${x.name} ${x.adQty}`).join('·');
+  const sep = '<span class="sep">|</span>';
+  if(!hasAd && !hasOg){
+    const cKeys = AO_COLOR_ORDER.filter(c=>colors[c]!=null);
+    const parts = cKeys.length
+      ? cKeys.map(c=>`<b>${c}</b> ${colors[c]}`)
+      : list.map(x=>`<b>${x.name}</b> ${x.qty}`);
+    return `<div class="ao-items${o.right?' right':''}"><div class="ln pk"><span class="em">📦 판매</span>${parts.join(sep)}</div></div>`;
+  }
+  const adLine = hasAd ? `<div class="ln ad"><span class="em">📣 광고</span>${
+    list.filter(x=>x.adQty!=null).map(x=>{
+      const o2 = optOf(x.name);
+      return `<b>${x.name}</b> ${x.adQty}${o2?` <span class="opt">(${o2})</span>`:''}`;
+    }).join(sep)}</div>` : '';
+  const ogLine = hasOg ? `<div class="ln og"><span class="em">🌿 자연</span>${
+    list.filter(x=>x.organicQty!=null).map(x=>`<b>${x.name}</b> ${x.organicQty}`).join(sep)}</div>` : '';
+  return `<div class="ao-items${o.right?' right':''}">${adLine}${ogLine}</div>`;
+}
+
 /* ---- 매출 보고서 ---- */
 /* 날짜 한 줄 렌더 (행별 🔄 재수집 버튼 포함) — 행 단위 갱신에서도 그대로 재사용 */
 function reportRowHTML(rows, r){
@@ -2333,7 +2439,7 @@ function reportRowHTML(rows, r){
     return `<span class="${diff>0?'up':(diff<0?'down':'flat')}">${diff>0?'+':''}${won(diff)}</span>`;
   };
   return `<tr data-row-d="${r.d}">
-    <td class="l"><b>${fmtDate(r.d)}</b>${r.live?' <span class="tag live">LIVE</span>':''}${r.estimate?' <span class="tag estimate">추정</span>':''}${r.qty!=null?`<div style="margin-top:2px">${aoCell(r,{pendText:r.live?'광고 집계 전':'광고 미기록'})}</div>`:''}</td>
+    <td class="l"><b>${fmtDate(r.d)}</b>${r.live?' <span class="tag live">LIVE</span>':''}${r.estimate?' <span class="tag estimate">추정</span>':''}${r.qty!=null?`<div style="margin-top:2px">${aoCell(r,{pendText:r.live?'광고 집계 전':'광고 미기록'})}</div>${aoItemsHTML(r.d, r)}`:''}</td>
     <td class="num">${wonW(netSalesOf(r))}<div style="font-size:11px">${cellDelta('sales')}</div></td>
     <td class="num">${wonW(r.profit)}<div style="font-size:11px">${cellDelta('profit')}</div></td>
     <td class="num">${wonW(r.ad)}<div style="font-size:11px">${cellDelta('ad')}</div></td>
@@ -2376,7 +2482,7 @@ function qtySplitTotalCell(rows){
 }
 function qtySplitCell(r){
   if(r.qty==null) return '<td class="num flat">-</td>';
-  return `<td class="num">${aoCell(r)}</td>`;
+  return `<td class="num">${aoCell(r)}${aoItemsHTML(r.d, r)}</td>`;
 }
 
 /* ---- 캘린더 ---- */
@@ -2491,9 +2597,13 @@ function adOrganicCard(){
       : (isToday ? '<span class="pill rfm">오늘 실시간</span>' : '<span class="pill">집계 전</span>');
     const bar = aoRatio(r.adQty, r.organicQty, r.qty, 'wide');
     const items = itemRowsFor(r.d) || [];
-    const chips = items.length ? `<tr class="ao-items"><td colspan="5"><div class="ao-chipwrap">${
-      items.map(x=>`<span class="ao-chip"><b>${esc(String(x.name).replace(/\s*특가\(.*\)/,''))}</b> <span class="q">${x.qty}개</span>${
-        (x.adQty!=null) ? ` <span class="aob ad xs">📣 ${x.adQty}</span> <span class="aob og xs">🌿 ${x.organicQty}</span>` : ' <span class="aob pend xs">광고/자연 미집계</span>'}</span>`).join('')
+    const optRows = adOptionFor(r.d) || [];
+    const chips = items.length ? `<tr class="ao-items-row"><td colspan="5"><div class="ao-chipwrap">${
+      items.map(x=>{
+        const o2 = optRows.filter(c=> (c.name==='깔창'?'깔창':'건조대')===aoProdOf(x.name)).map(c=>`${c.name} ${c.adQty}`).join(' · ');
+        return `<span class="ao-chip"><b>${esc(String(x.name).replace(/\s*특가\(.*\)/,''))}</b> <span class="q">${x.qty}개</span>${
+          (x.adQty!=null) ? ` <span class="aob ad xs">📣 ${x.adQty}</span> <span class="aob og xs">🌿 ${x.organicQty}</span>` : ' <span class="aob pend xs">광고/자연 미집계</span>'}${o2?` <span class="c-opt">광고 ${o2}</span>`:''}</span>`;
+      }).join('')
     }</div></td></tr>` : '';
     return `<tr class="${isToday?'today':''}">
       <td class="l"><b class="ao-d">${fmtDate(r.d)}</b>${isToday?' <span class="tag live">오늘</span>':''}</td>
@@ -2521,7 +2631,7 @@ function adOrganicCard(){
       <thead><tr><th class="l">날짜</th><th>총 판매수</th><th>광고<span class="ao-w"> 판매수</span><span class="ao-sub"> (비중)</span></th><th>자연<span class="ao-w"> 판매수</span><span class="ao-sub"> (비중)</span></th><th>상태</th></tr></thead>
       <tbody>${body || '<tr><td class="l" colspan="5"><span class="flat">표시할 판매수 데이터가 없습니다.</span></td></tr>'}${totalRow}</tbody>
     </table></div>
-    <div class="card-b" style="border-top:1px solid var(--line2)"><div class="hint">광고 판매수 = 쿠팡 광고센터 <b>광고 전환 판매수</b>(익일 확정) · 자연 판매수 = 총 판매수 − 광고 판매수 · <code>bigcell-live.json</code>의 daily 데이터가 늘어나면 이 칸도 자동으로 늘어납니다.</div></div>
+    <div class="card-b" style="border-top:1px solid var(--line2)"><div class="hint">광고 판매수 = 쿠팡 광고센터 <b>광고 전환 판매수</b>(익일 확정) · 자연 판매수 = 총 판매수 − 광고 판매수 · 날짜 밑 칩은 그날 팔린 <b>품목(건조대 · 깔창)</b>별 판매수이며, 색상(올화이트·올크림·올블랙) 광고 전환은 확정된 날만 같이 표기합니다 · <code>bigcell-live.json</code>의 daily 데이터가 늘어나면 이 칸도 자동으로 늘어납니다.</div></div>
   </div>`;
 }
 
@@ -3286,13 +3396,15 @@ function dayItemsHTML(ds, r){
     return `<div class="sec-t">상품 · 옵션별 판매 내역</div>
       <div class="blank">이 날짜의 옵션별 판매 내역은 아직 없습니다. (빅셀은 옵션별 일별 판매를 제공하지 않고, 쿠팡 윙 재고현황·광고센터에서만 확인됩니다)</div>`;
   }
+  const optRows = adOptionFor(ds) || [];
   const rows = items.map(x=>{
     const name = String(x.name||'');
     const o = COST_OPTS.find(c=> name.indexOf(c.name)>=0);
     const e = o ? optEcon(o.id, ds) : null;
     const margin = x.margin!=null ? x.margin : (e ? e.profit*(x.qty||0) : null);
+    const o2 = optRows.filter(c=> (c.name==='깔창'?'깔창':'건조대')===aoProdOf(name)).map(c=>`${c.name} ${c.adQty}`).join(' · ');
     return `<tr>
-      <td class="l"><b>${esc(name)}</b>${o?`<div class="hint" style="font-size:10px">${esc(o.id)}</div>`:''}</td>
+      <td class="l"><b>${esc(name)}</b>${o2?`<div class="hint" style="font-size:10px">광고 전환 · ${o2}</div>`:''}${o?`<div class="hint" style="font-size:10px">${esc(o.id)}</div>`:''}</td>
       <td class="num">${x.qty!=null?x.qty+'개':'-'}</td>
       <td class="num">${x.adQty!=null?`<span class="aob ad sm">📣 ${x.adQty}</span>`:'<span class="flat">—</span>'}</td>
       <td class="num">${x.organicQty!=null?`<span class="aob og sm">🌿 ${x.organicQty}</span>`:'<span class="flat">—</span>'}</td>
@@ -3301,10 +3413,11 @@ function dayItemsHTML(ds, r){
     </tr>`;
   }).join('');
   const known = items.some(x=>x.adQty!=null);
-  return `<div class="sec-t">상품 · 옵션별 판매 내역 <span class="cnt">${items.length}개 옵션</span></div>
-    <div class="tbl-wrap"><table class="tbl"><thead><tr><th class="l">옵션</th><th>판매수</th><th>광고</th><th>자연</th><th>매출</th><th>이익금</th></tr></thead>
+  const colorLevel = items.some(x=> aoColorOf(x.name)!=='');
+  return `<div class="sec-t">상품 · 옵션별 판매 내역 <span class="cnt">${items.length}개 ${colorLevel?'옵션':'상품'}</span></div>
+    <div class="tbl-wrap"><table class="tbl"><thead><tr><th class="l">${colorLevel?'옵션':'상품'}</th><th>판매수</th><th>광고</th><th>자연</th><th>매출</th><th>이익금</th></tr></thead>
     <tbody>${rows}</tbody></table></div>
-    <div class="hint" style="margin-top:4px">${known?'광고/자연 판매수는 쿠팡 광고센터 전환 판매수 기준입니다.':'이 날짜는 옵션별 광고/자연 분리가 아직 확정되지 않았습니다(광고 전환은 익일 확정).'}</div>`;
+    <div class="hint" style="margin-top:4px">${known?'광고/자연 판매수는 쿠팡 광고센터 전환 판매수를 상품(빨래건조대·신발깔창) 단위로 확정한 값입니다. 색상별 광고 전환은 광고센터 캠페인 값이 확정된 날만 표기합니다.':'이 날짜는 광고/자연 분리가 아직 확정되지 않았습니다(광고 전환은 익일 확정).'}</div>`;
 }
 
 function openDay(ds){
@@ -3334,7 +3447,7 @@ function openDay(ds){
       <div class="stat-line"><span class="lb">이익률 / 광고비율</span><span class="vl num">${r.sales?pct1(r.profit/r.sales*100):'-'}% / ${r.sales?pct1(r.ad/r.sales*100):'-'}%</span></div>
       <div class="stat-line"><span class="lb">순이익률</span><span class="vl num">${r.sales&&r.net!=null?pct1(r.net/r.sales*100):'-'}%</span></div>
       <div class="stat-line"><span class="lb">판매수 (광고 / 자연)</span><span class="vl num">${r.qty!=null?`<b>${r.qty}개</b>`:'-'}</span></div>
-      ${r.qty!=null?`<div class="aob-row" style="justify-content:flex-end">${aoBadges(r.adQty,r.organicQty,r.qty,{pendText:(r.adQty==null?'광고 집계 전(익일 확정)':'광고/자연 집계 전')})}</div><div style="padding:0 0 2px 12px">${aoRatio(r.adQty,r.organicQty,r.qty,'wide')}</div>`:''}
+      ${r.qty!=null?`<div class="aob-row" style="justify-content:flex-end">${aoBadges(r.adQty,r.organicQty,r.qty,{pendText:(r.adQty==null?'광고 집계 전(익일 확정)':'광고/자연 집계 전')})}</div><div style="padding:0 0 2px 12px">${aoRatio(r.adQty,r.organicQty,r.qty,'wide')}</div>${aoItemsHTML(ds, r, {right:true})}`:''}
       ${dayItemsHTML(ds, r)}
       ` : `<div class="blank" style="margin-bottom:12px">${fmtDate(ds)} 매출 데이터가 아직 없습니다.</div>`}
 
