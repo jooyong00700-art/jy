@@ -569,6 +569,36 @@ input.inp[type=number]{text-align:right}
 .fc-chip.goal.pos .vl{color:#0a7f5c}
 .fc-chip.goal.pos .sb{color:#3f9c80}
 .fc-note code{background:#eef2fa; padding:1px 4px; border-radius:4px; font-size:11px}
+
+/* ---------- 🟢 네이버 스마트스토어 (2026-11-22) ---------- */
+.nv-card{border-left:4px solid #03c75a}
+.nv-strip{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px}
+.nv-chip{display:flex; flex-direction:column; gap:1px; background:#f7fdf9; border:1px solid #d8f0e2; border-radius:11px; padding:9px 11px; min-width:0}
+.nv-chip .lb{font-size:10.5px; font-weight:700; color:#5f8a72}
+.nv-chip .vl{font-size:17px; font-weight:900; letter-spacing:-.4px; color:#0b3d24; font-variant-numeric:tabular-nums; white-space:nowrap}
+.nv-chip .sb{font-size:10px; color:#7e9d8c; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.nv-chip.hi{background:#03c75a; border-color:#03c75a}
+.nv-chip.hi .lb{color:#d8fbe6}
+.nv-chip.hi .vl{color:#fff}
+.nv-chip.hi .sb{color:#c7f5da}
+.nv-line{margin-top:9px; font-size:11.5px; color:#5d6d92; line-height:1.6}
+.nv-tag{font-size:10px; font-weight:800; padding:1px 6px; border-radius:99px; background:#e8f8ef; color:#0a7f5c; border:1px solid #bfe9d3}
+.nv-tag.live{background:#03c75a; color:#fff; border-color:#03c75a}
+.nv-tbl tr.nv-live td{background:#f4fdf8}
+.nv-ref{color:#d9480f; font-weight:800}
+.nv-fx{background:#f7fdf9; border:1px solid #d8f0e2; border-radius:11px; padding:12px 14px; font-size:12.5px; line-height:1.8; color:#33465f}
+.nv-fx code{background:#e9f5ee; padding:1px 5px; border-radius:4px; font-size:11.5px; color:#0a6b4c}
+.nv-fx .ln{margin-bottom:3px}
+.nv-bd td:first-child{width:46%}
+.fc-basis{display:inline-flex; border:1px solid var(--line); border-radius:9px; overflow:hidden; background:#fff}
+.fc-basis button{font-size:11.5px; font-weight:800; color:#66718a; padding:5px 10px}
+.fc-basis button.on{background:#0ea47a; color:#fff}
+.fc-alt{display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:10px 16px 12px; border-top:1px dashed var(--line2); font-size:12px; color:#66718a}
+.fc-alt-b{background:#f6f9ff; border:1px solid #dbe4f7; border-radius:8px; padding:5px 9px; font-weight:700; color:#43506a}
+.fc-alt-b.on{background:#eafaf3; border-color:#bdebd7; color:#0a7f5c}
+.fc-alt-b b{margin-left:4px}
+.fc-alt-n{margin-left:auto; font-size:11px; color:#8b96ab}
+@media(max-width:760px){ .nv-strip{grid-template-columns:repeat(2,minmax(0,1fr))} .fc-alt-n{margin-left:0} }
 </style>
 </head>
 <body>
@@ -578,6 +608,7 @@ input.inp[type=number]{text-align:right}
 </div>
 <div class="tabbar" id="tabbar"></div>
 <div class="tip" id="tip"></div>
+<script type="application/json" id="naverData">{"store":"리스페토","platform":"naver-smartstore","updatedAt":"2026-11-22T13:40:00+09:00","month":"2026-11","period":"2026-11-01~2026-11-21 (결제일 기준)","params":{"feeProduct":5.728,"feeShipping":2.728,"shipRevPerOrder":3000,"deliveryPerOrder":3400,"deliveryReturnPerOrder":6800,"deliveryExchangePerOrder":10200,"exchangeCount":0,"costDryer":9440,"costInsole":2364,"blendedCost":9283,"adCost":0,"formula":"순수익 = 순매출(상품) + 배송비수입(3,000×순건수) − 수수료(상품 5.728% + 배송비 2.728%) − 원가(순건수×9283) − 택배비(정상 3,400×순건수 + 반품 6,800×환불건 + 교환 10,200×교환건)","basis":"판매리포트 결제일 기준 · 환불 건은 매출·원가·배송비수입에서 제외하되 택배비는 반품 6,800원(발송+회수)으로 계상","deliveryNote":"정상 발송 3,400원 / 반품 6,800원(발송 3,400 + 회수 3,400) / 교환 10,200원(3,400×3회). 11월 환불 7건에 반품 회수 택배비 3,400원씩 추가 반영(교환 건수는 잡히지 않아 0건). 고객 부담 반품비 4,900원은 수입으로 잡지 않고 별도 정산·혜택정산 항목으로 두는 보수적 계산.","costNote":"원가 = 건조대 9,440원 88건 + 깔창 2,364원 2건 혼합 9283원/순건","settlementActualNote":"정산관리 실측(정산예정일 11/02~11/23, 2,176,880 / 수수료 115,842 = 5.3215% / 혜택 9,390 / 정산 2,051,648)은 10/30 결제분이 섞여 있고 빠른정산 선지급이 포함돼 위 결제일 기준 산식과 표가 다릅니다."},"today":{"d":"2026-11-22","orders":0,"sales":0,"profit":0,"asOf":"13:40","pendingNewOrders":4,"nextSettlement":{"date":"2026-11-23","amount":89779}},"total":{"days":21,"orders":97,"refunds":7,"netOrders":90,"sales":2011210,"refund":143630,"netSales":1867580,"shipRev":270000,"revenue":2137580,"fee":114340,"cost":835470,"delivery":353600,"deliveryOut":306000,"deliveryReturn":47600,"deliveryExchange":0,"ad":0,"profit":834170,"margin":39.02,"feeRate":5.35},"settlementActual":{"정산기준금액":2176880,"수수료":-115842,"혜택정산":-9390,"정산금액":2051648},"daily":[{"d":"2026-11-01","orders":3,"refunds":0,"netOrders":3,"sales":62970,"refund":0,"netSales":62970,"shipRev":9000,"revenue":71970,"fee":3853,"cost":27849,"delivery":10200,"deliveryOut":10200,"deliveryReturn":0,"deliveryExchange":0,"ad":0,"profit":30068,"margin":41.78},{"d":"2026-11-02","orders":9,"refunds":2,"netOrders":7,"sales":180610,"refund":37680,"netSales":142930,"shipRev":21000,"revenue":163930,"fee":8760,"cost":64981,"delivery":37400,"deliveryOut":23800,"deliveryReturn":13600,"deliveryExchange":0,"ad":0,"profit":52789,"margin":32.2},{"d":"2026-11-03","orders":4,"refunds":0,"netOrders":4,"sales":79960,"refund":0,"netSales":79960,"shipRev":12000,"revenue":91960,"fee":4907,"cost":37132,"delivery":13600,"deliveryOut":13600,"deliveryReturn":0,"deliveryExchange":0,"ad":0,"profit":36321,"margin":39.5},{"d":"2026-11-04","orders":7,"refunds":1,"netOrders":6,"sales":142930,"refund":19990,"netSales":122940,"shipRev":18000,"revenue":140940,"fee":7533,"cost":55698,"delivery":27200,"deliveryOut":20400,"deliveryReturn":6800,"deliveryExchange":0,"ad":0,"profit":50509,"margin":35.84},{"d":"2026-11-05","orders":8,"refunds":0,"netOrders":8,"sales":162920,"refund":0,"netSales":162920,"shipRev":24000,"revenue":186920,"fee":9987,"cost":74264,"delivery":27200,"deliveryOut":27200,"deliveryReturn":0,"deliveryExchange":0,"ad":0,"profit":75469,"margin":40.38},{"d":"2026-11-06","orders":3,"refunds":2,"netOrders":1,"sales":59970,"refund":42980,"netSales":16990,"shipRev":3000,"revenue":19990,"fee":1055,"cost":9283,"delivery":17000,"deliveryOut":3400,"deliveryReturn":13600,"deliveryExchange":0,"ad":0,"profit":-7348,"margin":-36.76},{"d":"2026-11-07","orders":5,"refunds":0,"netOrders":5,"sales":154930,"refund":0,"netSales":154930,"shipRev":15000,"revenue":169930,"fee":9283,"cost":46415,"delivery":17000,"deliveryOut":17000,"deliveryReturn":0,"deliveryExchange":0,"ad":0,"profit":97232,"margin":57.22},{"d":"2026-11-08","orders":6,"refunds":0,"netOrders":6,"sales":125940,"refund":0,"netSales":125940,"shipRev":18000,"revenue":143940,"fee":7705,"cost":55698,"delivery":20400,"deliveryOut":20400,"deliveryReturn":0,"deliveryExchange":0,"ad":0,"profit":60137,"margin":41.78},{"d":"2026-11-09","orders":6,"refunds":0,"netOrders":6,"sales":125940,"refund":0,"netSales":125940,"shipRev":18000,"revenue":143940,"fee":7705,"cost":55698,"delivery":20400,"deliveryOut":20400,"deliveryReturn":0,"deliveryExchange":0,"ad":0,"profit":60137,"margin":41.78},{"d":"2026-11-10","orders":3,"refunds":0,"netOrders":3,"sales":62970,"refund":0,"netSales":62970,"shipRev":9000,"revenue":71970,"fee":3853,"cost":27849,"delivery":10200,"deliveryOut":10200,"deliveryReturn":0,"deliveryExchange":0,"ad":0,"profit":30068,"margin":41.78},{"d":"2026-11-11","orders":8,"refunds":0,"netOrders":8,"sales":161320,"refund":0,"netSales":161320,"shipRev":24000,"revenue":185320,"fee":9895,"cost":74264,"delivery":27200,"deliveryOut":27200,"deliveryReturn":0,"deliveryExchange":0,"ad":0,"profit":73961,"margin":39.91},{"d":"2026-11-12","orders":4,"refunds":0,"netOrders":4,"sales":62960,"refund":0,"netSales":62960,"shipRev":12000,"revenue":74960,"fee":3933,"cost":37132,"delivery":13600,"deliveryOut":13600,"deliveryReturn":0,"deliveryExchange":0,"ad":0,"profit":20295,"margin":27.07},{"d":"2026-11-13","orders":5,"refunds":0,"netOrders":5,"sales":97650,"refund":0,"netSales":97650,"shipRev":15000,"revenue":112650,"fee":6002,"cost":46415,"delivery":17000,"deliveryOut":17000,"deliveryReturn":0,"deliveryExchange":0,"ad":0,"profit":43233,"margin":38.38},{"d":"2026-11-14","orders":4,"refunds":0,"netOrders":4,"sales":85960,"refund":0,"netSales":85960,"shipRev":12000,"revenue":97960,"fee":5251,"cost":37132,"delivery":13600,"deliveryOut":13600,"deliveryReturn":0,"deliveryExchange":0,"ad":0,"profit":41977,"margin":42.85},{"d":"2026-11-15","orders":2,"refunds":0,"netOrders":2,"sales":39980,"refund":0,"netSales":39980,"shipRev":6000,"revenue":45980,"fee":2454,"cost":18566,"delivery":6800,"deliveryOut":6800,"deliveryReturn":0,"deliveryExchange":0,"ad":0,"profit":18160,"margin":39.5},{"d":"2026-11-16","orders":3,"refunds":0,"netOrders":3,"sales":59970,"refund":0,"netSales":59970,"shipRev":9000,"revenue":68970,"fee":3681,"cost":27849,"delivery":10200,"deliveryOut":10200,"deliveryReturn":0,"deliveryExchange":0,"ad":0,"profit":27240,"margin":39.5},{"d":"2026-11-17","orders":5,"refunds":0,"netOrders":5,"sales":100650,"refund":0,"netSales":100650,"shipRev":15000,"revenue":115650,"fee":6174,"cost":46415,"delivery":17000,"deliveryOut":17000,"deliveryReturn":0,"deliveryExchange":0,"ad":0,"profit":46061,"margin":39.83},{"d":"2026-11-18","orders":5,"refunds":2,"netOrders":3,"sales":99950,"refund":42980,"netSales":56970,"shipRev":9000,"revenue":65970,"fee":3509,"cost":27849,"delivery":23800,"deliveryOut":10200,"deliveryReturn":13600,"deliveryExchange":0,"ad":0,"profit":10812,"margin":16.39},{"d":"2026-11-19","orders":1,"refunds":0,"netOrders":1,"sales":17690,"refund":0,"netSales":17690,"shipRev":3000,"revenue":20690,"fee":1095,"cost":9283,"delivery":3400,"deliveryOut":3400,"deliveryReturn":0,"deliveryExchange":0,"ad":0,"profit":6912,"margin":33.41},{"d":"2026-11-20","orders":5,"refunds":0,"netOrders":5,"sales":105950,"refund":0,"netSales":105950,"shipRev":15000,"revenue":120950,"fee":6478,"cost":46415,"delivery":17000,"deliveryOut":17000,"deliveryReturn":0,"deliveryExchange":0,"ad":0,"profit":51057,"margin":42.21},{"d":"2026-11-21","orders":1,"refunds":0,"netOrders":1,"sales":19990,"refund":0,"netSales":19990,"shipRev":3000,"revenue":22990,"fee":1227,"cost":9283,"delivery":3400,"deliveryOut":3400,"deliveryReturn":0,"deliveryExchange":0,"ad":0,"profit":9080,"margin":39.5},{"d":"2026-11-22","orders":0,"refunds":0,"netOrders":0,"sales":0,"refund":0,"netSales":0,"shipRev":0,"revenue":0,"fee":0,"cost":0,"delivery":0,"ad":0,"profit":0,"margin":0,"live":true,"asOf":"13:40"}],"products":[{"no":"11567263360","name":"접이식 미니 원룸 아기 소형 신생아 기숙사 수건 튼튼한 빨래건조대","status":"판매중","salePrice":22990,"cost":9440,"costConfidence":"확정"},{"no":"11984282551","name":"한국트레킹학교 신발깔창 발편한 푹신한 아치쿠션 기능성 군화","status":"판매중","salePrice":9990,"cost":2364,"costConfidence":"확정"},{"no":"13640117573","name":"리스페토 알루미늄 접이식 소형 노트북 받침대 거치대 휴대용파우치포함","status":"판매중","salePrice":12500,"cost":2850,"costConfidence":"동일상품 추정"},{"no":"13640085997","name":"리스페토 양면 스테인리스 발각질제거기","status":"판매중","salePrice":11900,"cost":2400,"costConfidence":"동일상품 추정"},{"no":"10765555288","name":"튼튼한 미니 원룸 접이식 빨래건조대","status":"품절","salePrice":26000,"cost":null,"costConfidence":null},{"no":"9751647352","name":"사진앨범 포토인생 네컷앨범 초음파 성장 아기 셀프 바인더 접착식 커플 사진첩 포토북 랜덤","status":"품절","salePrice":8900,"cost":2700,"costConfidence":"확정"},{"no":"9546438754","name":"혼자배드민턴 부메랑 돌아오는 셔틀콕 리턴 콕 실내 배드민턴 공","status":"품절","salePrice":7990,"cost":0,"costConfidence":null}]}</script>
 <script>
 window.__errs = [];
 window.addEventListener('error', function(e){
@@ -593,6 +624,18 @@ window.addEventListener('error', function(e){
    - 저장: localStorage (원가/메모/실시간 수치/설정)
    ============================================================ */
 const STORE_KEY = 'bigcell-clone-v1';
+
+/* ---------- 네이버 스마트스토어(리스페토) ----------
+   index.html에 내장된 기본값(id="naverData") + 배포된 naver-live.json 자동 갱신을 사용한다.
+   쿠팡과 달리 브라우저 저장값(localStorage)을 두지 않는다 — 공유 JSON이 정본. */
+const NAVER_URL = 'https://raw.githubusercontent.com/jooyong00700-art/jy/main/naver-live.json';
+let NAVER = (function(){
+  try{ return JSON.parse((document.getElementById('naverData')||{}).textContent || '{}'); }catch(e){ return {}; }
+})();
+function nvData(){ return (NAVER && typeof NAVER==='object') ? NAVER : {}; }
+function nvMonthProfit(){ const t = nvData().total||{}; return Number(t.profit)||0; }
+function nvTodayInfo(){ const d = nvData().today||{};
+  return {sales:Number(d.sales)||0, orders:Number(d.orders)||0, profit:Number(d.profit)||0, asOf:String(d.asOf||''), pending:Number(d.pendingNewOrders)||0}; }
 
 /* ---------- 상품 마스터 (로켓그로스) ----------
    hidden = 빅셀 `상품 관리 > 로켓그로스 > 숨김상품` 기준 기본 상태(2026-11-22 조회).
@@ -1773,6 +1816,7 @@ const DEFAULTS = {
   importCostRate:45,        // 한국 도착까지 비용 비율(%)
   targetSales:1500000,      // 일 목표 매출
   vat:1.1,
+  fcBasis:'both',           // 고정지출 차감 기준: coupang(쿠팡만) | both(쿠팡+네이버 합산)
   apiUrl:'https://raw.githubusercontent.com/jooyong00700-art/jy/main/bigcell-live.json', // 자동 수집 엔드포인트 (JSON)
   live:{
     date:'2026-11-18', sales:1330990, coupon:166400, netSales:1164590, qty:65, adExVat:176755, profit:226187, at:'23:10',
@@ -1820,6 +1864,7 @@ function loadState(){
   try{ s = JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); }catch(e){ s = {}; }
   return Object.assign({}, DEFAULTS, s, {
     apiUrl: (s.apiUrl && String(s.apiUrl).trim()) ? String(s.apiUrl).trim() : DEFAULTS.apiUrl,
+    fcBasis: (s.fcBasis==='coupang') ? 'coupang' : DEFAULTS.fcBasis,
     live: loadLive(s.live),
     memos: Object.assign({}, s.memos||{}),
     costOverrides: Object.assign({}, s.costOverrides||{}),
@@ -2304,6 +2349,7 @@ VIEWS.dashboard = function(){
       ${kpiCard(`이번 달 매출 <span class="tag coup">쿠폰 제외</span> <span class="tag">${mConf.length?'확정':'오늘 포함'}</span>`, won(mConf.length?monthSales:monthTodaySales)+'원',
         `<span class="flat">${mConf.length?`${mRange} 확정 · 순이익(광고비 제외) ${won(monthNet)}원${monthTodaySales?` · 오늘 ${won(monthTodaySales)}원 별도(잠정)`:''}`:`아직 확정치 없음 · 오늘 ${won(monthTodaySales)}원(잠정)`}</span>`, {cls:'month-kpi'})}
     </div>`
+  + `${naverCard()}`
   + `${fixedCostCard()}`
   + `${adOrganicCard()}`
   + `<div class="two" style="margin-bottom:14px">
@@ -2314,6 +2360,151 @@ VIEWS.dashboard = function(){
   + `${calendarCard()}`
   + `${stockMiniCard()}`;
 };
+
+/* ============================== 🟢 네이버 스마트스토어 (리스페토) ============================== */
+function naverCard(){
+  const N = nvData(), t = N.total || {}, td = nvTodayInfo();
+  const margin = t.revenue ? t.profit / t.revenue * 100 : 0;
+  const at = String(N.updatedAt || '').replace('T', ' ').slice(5, 16);
+  return `<div class="card nv-card" style="margin-bottom:14px">
+    ${sectionHead('🟢 네이버 스마트스토어 (리스페토)', `결제일 기준 ${esc(N.period||'')} · 수수료 5.728% · 택배비 3,400원/건(반품 6,800)`, `<button class="btn" data-nav="naver">네이버 화면 열기 →</button>`)}
+    <div class="card-b">
+      <div class="nv-strip">
+        <span class="nv-chip"><span class="lb">오늘 매출</span><span class="vl">${won(td.sales)}원</span><span class="sb">${won(td.orders)}건 · ${esc(td.asOf)} 기준</span></span>
+        <span class="nv-chip"><span class="lb">오늘 순수익</span><span class="vl">${won(td.profit)}원</span><span class="sb">광고비 0원</span></span>
+        <span class="nv-chip"><span class="lb">11월 순매출</span><span class="vl">${won(t.netSales)}원</span><span class="sb">상품결제 ${won(t.sales)}원 + 배송비 ${won(t.shipRev)}원</span></span>
+        <span class="nv-chip hi"><span class="lb">11월 순수익</span><span class="vl">${won(t.profit)}원</span><span class="sb">마진 ${pct1(margin)}% · ${won(t.netOrders)}건</span></span>
+      </div>
+      <div class="nv-line">수수료 ${won(t.fee)}원 · 원가 ${won(t.cost)}원 · 택배비 ${won(t.delivery)}원(정상 ${won(t.deliveryOut)} + 반품 ${won(t.deliveryReturn)}) · 광고비 0원 <span class="flat">· 갱신 ${esc(at)}</span> · 고정지출 카드에서 <b>쿠팡+네이버 합산</b> 기준을 선택할 수 있습니다.</div>
+    </div>
+  </div>`;
+}
+VIEWS.naver = function(){
+  const N = nvData(), t = N.total || {}, p = N.params || {}, td = nvTodayInfo();
+  const rows = Array.isArray(N.daily) ? N.daily : [];
+  const margin = t.revenue ? t.profit / t.revenue * 100 : 0;
+  const pctOf = v => t.revenue ? (v / t.revenue * 100).toFixed(1) + '%' : '-';
+  const body = rows.slice().reverse().map(r=>`<tr class="${r.live?'nv-live':''}">
+      <td class="l">${fmtDate(r.d)}${r.live?' <span class="nv-tag live">LIVE</span>':''}</td>
+      <td class="num">${won(r.orders)}</td>
+      <td class="num">${r.refunds?('<span class="nv-ref">'+won(r.refunds)+'</span>'):'-'}</td>
+      <td class="num">${won(r.sales)}</td>
+      <td class="num">${r.refund?'−'+won(r.refund):'-'}</td>
+      <td class="num">${won(r.netSales)}</td>
+      <td class="num">${won(r.shipRev)}</td>
+      <td class="num">−${won(r.fee)}</td>
+      <td class="num">−${won(r.cost)}</td>
+      <td class="num">−${won(r.delivery)}</td>
+      <td class="num"><b>${won(r.profit)}</b></td>
+      <td class="num">${r.revenue?pct1(r.profit/r.revenue*100)+'%':'-'}</td>
+    </tr>`).join('');
+  const bd = [
+    ['상품 순매출 <span class="flat">(상품결제 '+won(t.sales)+' − 환불 '+won(t.refund)+')</span>', t.netSales, pctOf(t.netSales)],
+    ['배송비 수입 <span class="flat">(3,000원 × 순건수 '+won(t.netOrders)+')</span>', t.shipRev, pctOf(t.shipRev)],
+    ['<b>매출 합계</b>', t.revenue, '100%'],
+    ['수수료 <span class="flat">(상품 5.728% + 배송비 2.728%)</span>', -t.fee, pctOf(t.fee)],
+    ['원가 <span class="flat">(순건수 ' + won(t.netOrders) + ' × ' + won(p.blendedCost) + '원)</span>', -t.cost, pctOf(t.cost)],
+    ['택배비 <span class="flat">(정상 ' + won(t.deliveryOut) + ' + 반품 ' + won(t.deliveryReturn) + ')</span>', -t.delivery, pctOf(t.delivery)],
+    ['광고비 <span class="flat">(네이버 광고 미집행)</span>', 0, '0.0%']
+  ];
+  const bdBody = bd.map(x=>`<tr><td class="l">${x[0]}</td><td class="num">${won(x[1])}원</td><td class="num">${x[2]}</td></tr>`).join('');
+  const prods = (Array.isArray(N.products)?N.products:[]).map(x=>`<tr>
+      <td class="l">${esc(x.name)}</td>
+      <td class="l"><span class="flat">${esc(x.no)}</span></td>
+      <td class="num">${esc(x.status||'')}</td>
+      <td class="num">${won(x.salePrice)}원</td>
+      <td class="num">${x.cost!=null?won(x.cost)+'원':'-'}</td>
+      <td class="num"><span class="flat">${esc(x.costConfidence||'-')}</span></td>
+    </tr>`).join('');
+  const st = N.settlementActual || {};
+  return `<div class="topbar">
+      <div><h1>🟢 네이버 스마트스토어 (리스페토)</h1><div class="sub">스마트스토어 리스페토 · ${esc(N.period||'')} · 결제일 기준</div></div>
+      <div class="spacer"></div>
+      <button class="btn" data-act="naverSync">🔄 네이버 데이터 새로고침</button>
+      <span class="chip"><span class="live"></span>데이터 <b>${esc(String(N.updatedAt||'').replace('T',' ').slice(5,16))}</b></span>
+    </div>`
+  + `<div class="kpis" style="margin-bottom:14px">
+      <div class="kpi accent"><div class="lab">오늘 매출 <span class="tag live">LIVE</span></div>
+        <div class="val num">${won(td.sales)}원</div>
+        <div class="delta"><span class="flat">${won(td.orders)}건 · ${esc(td.asOf)} 기준 · 발주확인 대기 ${won(td.pending)}건</span></div></div>
+      ${kpiCard('오늘 순수익', won(td.profit)+'원', '<span class="flat">광고비 0원 · 수수료·원가·택배비 차감</span>')}
+      ${kpiCard('11월 순매출 <span class="tag">결제일 기준</span>', won(t.netSales)+'원',
+        `<span class="flat">상품결제 ${won(t.sales)}원 − 환불 ${won(t.refund)}원 · 배송비 수입 ${won(t.shipRev)}원</span>`)}
+      ${kpiCard('11월 순수익', won(t.profit)+'원',
+        `<span class="flat">마진 ${pct1(margin)}% · ${won(t.netOrders)}건(환불 ${won(t.refunds)}건) · 광고비 0원</span>`, {cls:'month-kpi'})}
+    </div>`
+  + `<div class="two" style="margin-bottom:14px">
+      <div class="card">
+        ${sectionHead('💵 11월 손익 분해', '결제일 기준 · 환불 차감 후')}
+        <div class="tbl-wrap"><table class="tbl nv-bd">
+          <thead><tr><th class="l">항목</th><th>금액</th><th>매출 대비</th></tr></thead>
+          <tbody>${bdBody}
+            <tr class="total"><td class="l"><b>순수익</b></td><td class="num"><b>${won(t.profit)}원</b></td><td class="num"><b>${pct1(margin)}%</b></td></tr>
+          </tbody></table></div>
+      </div>
+      <div class="card">
+        ${sectionHead('🧮 네이버 순수익 계산식', '건당 택배비 3,400원 · 반품 6,800원 확정 반영')}
+        <div class="card-b"><div class="nv-fx">
+          <div class="ln"><b>순수익</b> = 상품 순매출 + 배송비 수입 − 수수료 − 원가 − 택배비 <span class="flat">(광고비 0원)</span></div>
+          <div class="ln">· 수수료: Npay 2.728% + 매출연동 3.0%(공급가액×3.3%) = <b>상품 5.728%</b> · 배송비는 <b>2.728%</b></div>
+          <div class="ln">· 원가: 건조대 <b>9,440원</b> / 깔창 <b>2,364원</b> → 11월 순건 구성비 혼합 <b>${won(p.blendedCost)}원</b></div>
+          <div class="ln">· 택배비: 정상 발송 <b>3,400원</b> · 반품 <b>6,800원</b>(발송 3,400 + 회수 3,400) · 교환 <b>10,200원</b>(3,400×3회)</div>
+          <div class="ln">· 11월 환불 <b>7건</b>은 반품으로 보고 회수 택배비 3,400원씩 추가 차감(교환 0건). 고객 부담 반품비 4,900원은 수입에 넣지 않은 보수적 계산</div>
+          <div class="ln">· 매출·수수료 기준은 <b>판매리포트 결제일</b>, 정산 확정은 아래 정산관리 실측 표를 따릅니다</div>
+          <div class="ln">· <code>naver-live.json</code>을 읽어 자동 갱신되며, 고정지출 카드에서 쿠팡과 합산할 수 있습니다</div>
+        </div></div>
+      </div>
+    </div>`
+  + `<div class="card" style="margin-bottom:14px">
+      ${sectionHead('📅 일자별 실적', '결제일 기준 · 최신순 · 환불 건은 순건에서 제외', `<span class="pill">11월 합계 ${won(t.profit)}원 순수익</span>`)}
+      <div class="tbl-wrap"><table class="tbl nv-tbl">
+        <thead><tr><th class="l">날짜</th><th>건수</th><th>환불</th><th>상품결제</th><th>환불액</th><th>순매출</th><th>배송비</th><th>수수료</th><th>원가</th><th>택배비</th><th>순수익</th><th>마진</th></tr></thead>
+        <tbody>${body}
+          <tr class="total"><td class="l"><b>11월 합계</b></td><td class="num"><b>${won(t.orders)}</b></td><td class="num"><b>${won(t.refunds)}</b></td><td class="num"><b>${won(t.sales)}</b></td><td class="num"><b>−${won(t.refund)}</b></td><td class="num"><b>${won(t.netSales)}</b></td><td class="num"><b>${won(t.shipRev)}</b></td><td class="num"><b>−${won(t.fee)}</b></td><td class="num"><b>−${won(t.cost)}</b></td><td class="num"><b>−${won(t.delivery)}</b></td><td class="num"><b>${won(t.profit)}</b></td><td class="num"><b>${pct1(margin)}%</b></td></tr>
+        </tbody></table></div>
+      <div class="card-b" style="border-top:1px solid var(--line2)"><div class="hint">
+        오늘(${esc(td.asOf)})은 주문통합검색 기준 신규 주문 <b>${won(td.orders)}건 · ${won(td.sales)}원</b>입니다(판매리포트·정산은 당일 미반영).
+      </div></div>
+    </div>`
+  + `<div class="two">
+      <div class="card">
+        ${sectionHead('🧾 정산관리 실측 (참고)', '정산예정일 11/02~11/23 · 결제일 기준 표와 다름')}
+        <div class="tbl-wrap"><table class="tbl">
+          <thead><tr><th class="l">항목</th><th>금액</th></tr></thead>
+          <tbody>
+            <tr><td class="l">정산기준금액</td><td class="num">${won(st['정산기준금액'])}원</td></tr>
+            <tr><td class="l">수수료 합계 <span class="flat">(5.3215%)</span></td><td class="num">−${won(Math.abs(st['수수료']||0))}원</td></tr>
+            <tr><td class="l">혜택정산 <span class="flat">(쿠폰·반품 등)</span></td><td class="num">−${won(Math.abs(st['혜택정산']||0))}원</td></tr>
+            <tr class="total"><td class="l"><b>정산금액</b></td><td class="num"><b>${won(st['정산금액'])}원</b></td></tr>
+          </tbody></table></div>
+        <div class="card-b" style="border-top:1px solid var(--line2)"><div class="hint">10/30 결제분이 섞여 있고 빠른정산 선지급이 포함되어 위 결제일 기준 손익과 금액이 다릅니다. 실제 입금 확정액은 이 표를 기준으로 보세요.</div></div>
+      </div>
+      <div class="card">
+        ${sectionHead('🛒 상품 · 원가 매칭', '네이버 판매상품 7개 · 매출 발생 2개는 원가 확정')}
+        <div class="tbl-wrap"><table class="tbl">
+          <thead><tr><th class="l">상품명</th><th class="l">상품번호</th><th>상태</th><th>판매가</th><th>원가</th><th>신뢰도</th></tr></thead>
+          <tbody>${prods}</tbody></table></div>
+      </div>
+    </div>`;
+};
+
+/* 네이버 상품관리(판매상품·원가 매칭) */
+VIEWS.pmnaver = function(){
+  const N = nvData();
+  const prods = Array.isArray(N.products) ? N.products : [];
+  const body = prods.map(x=>`<tr>
+      <td class="l">${esc(x.name)}</td><td class="l"><span class="flat">${esc(x.no)}</span></td>
+      <td class="num">${esc(x.status||'')}</td><td class="num">${won(x.salePrice)}원</td>
+      <td class="num">${x.cost!=null?won(x.cost)+'원':'-'}</td>
+      <td class="num"><span class="flat">${esc(x.costConfidence||'-')}</span></td></tr>`).join('');
+  return topbar('네이버 상품관리', `리스페토 · 네이버 스마트스토어 상품 ${prods.length}개`,
+      `<button class="btn" data-nav="naver">네이버 매출 화면 →</button>`)
+  + `<div class="card"><div class="card-h"><h2>판매상품 · 원가</h2><span class="note">원가는 쿠팡 원가표 매칭값(매출 발생 2개 상품은 확정)</span></div>
+      <div class="tbl-wrap"><table class="tbl"><thead><tr><th class="l">상품명</th><th class="l">상품번호</th><th>상태</th><th>판매가</th><th>원가</th><th>신뢰도</th></tr></thead>
+      <tbody>${body}</tbody></table></div>
+      <div class="card-b" style="border-top:1px solid var(--line2)"><div class="hint">가격·재고·옵션은 스마트스토어센터 원본을 따릅니다. 대시보드 순수익은 이 원가표를 사용합니다.</div></div></div>`;
+};
+
 
 /* ---- 오늘 옵션별 판매 & 운영 중 광고 실시간 이익 ---- */
 function todayOptionsCard(live){
@@ -2772,7 +2963,12 @@ function fixedCostCard(){
   const n = fixedCostNums();
   const list = Array.isArray(S.fixedCosts) ? S.fixedCosts : [];
   const total = fcTotalOf();
-  const fin = n.now - total;
+  const nvNet = nvMonthProfit();                       /* 네이버 11월 순수익 */
+  const comb = n.now + nvNet;                          /* 쿠팡 + 네이버 합산 */
+  const basis = (S.fcBasis === 'coupang') ? 'coupang' : 'both';
+  const baseAmt = basis === 'both' ? comb : n.now;
+  const fin = baseAmt - total;
+  const finOnly = n.now - total, finBoth = comb - total;
   const rows = list.map(x=>`<tr>
       <td class="l"><input class="inp fc-name" type="text" data-fc-id="${esc(x.id)}" data-fc-field="name" value="${esc(x.name||'')}" placeholder="항목명 (예: 창고 월세)" aria-label="고정지출 항목명"></td>
       <td class="num"><input class="inp fc-amt" type="number" min="0" step="1000" data-fc-id="${esc(x.id)}" data-fc-field="amount" value="${Number(x.amount)||0}" aria-label="고정지출 금액(원)"> <span class="fc-won">원</span></td>
@@ -2780,21 +2976,26 @@ function fixedCostCard(){
     </tr>`).join('');
   const fromTo = n.confFrom ? `${fmtDate(n.confFrom)}~${fmtDate(n.confTo)}` : '확정치 없음';
   return `<div class="card fc-card">
-    ${sectionHead('💸 고정지출비용', '창고 월세 · 알바비 등 매달 나가는 고정비', `<span class="pill" id="fcPill">합계 ${won(total)}원</span>`)}
+    ${sectionHead('💸 고정지출비용', '창고 월세 · 알바비 등 매달 나가는 고정비', `<div class="fc-basis" role="group" aria-label="순수익 기준"><button type="button" class="${basis==='coupang'?'on':''}" data-act="fcBasis" data-v="coupang">쿠팡만</button><button type="button" class="${basis==='both'?'on':''}" data-act="fcBasis" data-v="both">쿠팡+네이버</button></div><span class="pill" id="fcPill">합계 ${won(total)}원</span>`)}
     <div class="tbl-wrap"><table class="tbl fc-tbl">
       <thead><tr><th class="l">항목명</th><th>금액(원)</th><th class="fc-th-del">삭제</th></tr></thead>
       <tbody>${rows || '<tr><td class="l fc-row-empty" colspan="3">등록된 고정지출이 없습니다. 아래 <b>+ 항목 추가</b>로 넣어 주세요.</td></tr>'}</tbody>
     </table></div>
     <div class="fc-add"><button type="button" class="btn" data-act="fcAdd">+ 항목 추가</button></div>
     <div class="fc-eq">
-      <span class="fc-term"><span class="k">이번달 현 순수익 <span class="fc-tag ${fin<0?'neg':'pos'}" id="fcTag">${fin<0?'적자':'흑자'}</span></span><b class="num" id="fcMonthNet" data-v="${n.now}">${won(n.now)}원</b></span>
+      <span class="fc-term"><span class="k">이번달 현 순수익${basis==='both'?' <span class="fc-tag nv" style="background:#eafaf3;color:#0a7f5c">쿠팡+네이버</span>':''} <span class="fc-tag ${fin<0?'neg':'pos'}" id="fcTag">${fin<0?'적자':'흑자'}</span></span><b class="num" id="fcMonthNet" data-v="${baseAmt}" data-cp="${n.now}" data-nv="${nvNet}" data-basis="${basis}">${won(baseAmt)}원</b></span>
       <span class="fc-op">−</span>
       <span class="fc-term"><span class="k">고정지출 합계</span><b class="num" id="fcTotal">${won(total)}원</b></span>
       <span class="fc-op">=</span>
       <span class="fc-term res"><span class="k">최종 실순수익</span><b class="num ${fin<0?'neg':'pos'}" id="fcFinal">${(fin<0?'−':'+')+won(Math.abs(fin))}원</b></span>
       <span class="fc-badges" id="fcBadges" data-m="${esc(n.month||'')}">${fcGoalHTML(fin, n.month)}</span>
     </div>
-    <div class="fc-note">이번달 현 순수익 <b>${won(n.now)}원</b> = 빅셀 확정 순이익 <b>${won(n.confNet)}원</b>(${fromTo} 확정 ${n.confDays}일)${n.hasToday?` + 오늘 ${fmtDate(n.liveDate)} 실시간 잠정 순수익 <b>${won(n.todayNet)}원</b>`:''} · <code>bigcell-live.json</code> 수집·갱신 때마다 자동으로 바뀝니다. 입력한 고정지출은 이 브라우저에 저장되어 새로고침·데이터 재수집에도 그대로 남습니다.<br>남은 일수·일목표는 <b>한국 시간 오늘</b> 기준 이번 달 말일까지로 계산하며(당일 제외), 고정지출 금액을 입력하는 즉시 다시 계산됩니다. 흑자 전환 일목표 = ⌈적자 금액 ÷ 남은 일수⌉.</div>
+    <div class="fc-alt" id="fcAlt" data-cp="${n.now}" data-nv="${nvNet}" data-total="${total}">
+      <span class="fc-alt-b ${basis==='coupang'?'on':''}">쿠팡만 최종 <b class="num ${finOnly<0?'neg':'pos'}" id="fcFinalOnly">${(finOnly<0?'−':'+')+won(Math.abs(finOnly))}원</b></span>
+      <span class="fc-alt-b ${basis==='both'?'on':''}">쿠팡+네이버 합산 최종 <b class="num ${finBoth<0?'neg':'pos'}" id="fcFinalBoth">${(finBoth<0?'−':'+')+won(Math.abs(finBoth))}원</b></span>
+      <span class="fc-alt-n">쿠팡 <b class="num">${won(n.now)}원</b> + 네이버 <b class="num">${won(nvNet)}원</b> = <b class="num">${won(comb)}원</b></span>
+    </div>
+    <div class="fc-note">이번달 현 순수익 <b>${won(baseAmt)}원</b>${basis==='both'?` = 쿠팡 <b>${won(n.now)}원</b> + 네이버 <b>${won(nvNet)}원</b>`:''} · 쿠팡분은 빅셀 확정 순이익 <b>${won(n.confNet)}원</b>(${fromTo} 확정 ${n.confDays}일)${n.hasToday?` + 오늘 ${fmtDate(n.liveDate)} 실시간 잠정 순수익 <b>${won(n.todayNet)}원</b>`:''}, 네이버분은 결제일 기준 11월 순수익 <b>${won(nvNet)}원</b>(택배비 3,400·반품 6,800 반영)입니다. · <code>bigcell-live.json</code>·<code>naver-live.json</code> 수집·갱신 때마다 자동으로 바뀝니다. 입력한 고정지출은 이 브라우저에 저장되어 새로고침·데이터 재수집에도 그대로 남습니다.<br>남은 일수·일목표는 <b>한국 시간 오늘</b> 기준 이번 달 말일까지로 계산하며(당일 제외), 고정지출 금액을 입력하는 즉시 다시 계산됩니다. 흑자 전환 일목표 = ⌈적자 금액 ÷ 남은 일수⌉. 기준은 카드 오른쪽 <b>[쿠팡만 / 쿠팡+네이버]</b>로 바꿀 수 있습니다.</div>
   </div>`;
 }
 
@@ -3473,6 +3674,19 @@ async function fetchLatest(showMsg){
   }
 }
 ACTIONS.liveDate = (d,el)=>{ S.live.date = el.value; save(); };
+/* 네이버 데이터 새로고침 — 배포된 naver-live.json 을 읽어 화면을 다시 그린다 */
+async function fetchNaver(showMsg){
+  try{
+    const j = await fetchSyncJson(NAVER_URL);
+    if(!j || !Array.isArray(j.daily)) throw new Error('naver-live.json 형식 오류');
+    NAVER = j;
+    render();
+    if(showMsg) alert('네이버 데이터 동기화 완료: ' + new Date().toLocaleTimeString('ko-KR'));
+  }catch(e){
+    if(showMsg) alert('네이버 동기화 실패: ' + e.message);
+  }
+}
+ACTIONS.naverSync = ()=> fetchNaver(true);
 ACTIONS.liveSales = (d,el)=>{ S.live = liveNumbers(Object.assign({}, S.live, {sales:numVal(el,0)})); save(); render(); };
 ACTIONS.liveCoupon = (d,el)=>{ S.live = liveNumbers(Object.assign({}, S.live, {coupon:numVal(el,0)})); save(); };
 ACTIONS.liveQty = (d,el)=>{ S.live = liveNumbers(Object.assign({}, S.live, {qty:numVal(el,0)})); save(); };
@@ -3542,6 +3756,7 @@ ACTIONS.csvDaily = ()=>{
 };
 
 /* ---------- 고정지출비용 입력 (즉시 저장) ---------- */
+ACTIONS.fcBasis = (d)=>{ S.fcBasis = (d.v === 'coupang') ? 'coupang' : 'both'; save(); render(); };
 ACTIONS.fcAdd = ()=>{
   const id = 'fc' + Date.now().toString(36) + Math.random().toString(36).slice(2,5);
   S.fixedCosts = (S.fixedCosts||[]).concat([{id, name:'', amount:0}]);
@@ -3556,7 +3771,10 @@ function fcTotalOf(){ return (S.fixedCosts||[]).reduce((a,x)=>a+(Number(x.amount
 /* 카드 안 숫자만 다시 계산 — 입력 중 포커스와 커서를 잃지 않게 render() 를 부르지 않는다 */
 function fcRefresh(){
   const nowEl = document.getElementById('fcMonthNet');
-  const now = nowEl ? Number(nowEl.dataset.v||0) : 0;
+  const cp = nowEl ? Number(nowEl.dataset.cp || 0) : 0;
+  const nv = nowEl ? Number(nowEl.dataset.nv || 0) : 0;
+  const basis = nowEl && nowEl.dataset.basis === 'coupang' ? 'coupang' : 'both';
+  const now = basis === 'coupang' ? cp : cp + nv;
   const total = fcTotalOf();
   const fin = now - total;
   const tEl = document.getElementById('fcTotal'); if(tEl) tEl.textContent = won(total)+'원';
@@ -3570,6 +3788,9 @@ function fcRefresh(){
   if(tagEl){ tagEl.textContent = fin<0?'적자':'흑자'; tagEl.className = 'fc-tag ' + (fin<0?'neg':'pos'); }
   const bEl = document.getElementById('fcBadges');
   if(bEl) bEl.innerHTML = fcGoalHTML(fin, bEl.dataset.m);
+  const fo = document.getElementById('fcFinalOnly'), fb = document.getElementById('fcFinalBoth');
+  if(fo){ const v = cp - total; fo.textContent = (v<0?'−':'+')+won(Math.abs(v))+'원'; fo.className = 'num ' + (v<0?'neg':'pos'); }
+  if(fb){ const v = cp + nv - total; fb.textContent = (v<0?'−':'+')+won(Math.abs(v))+'원'; fb.className = 'num ' + (v<0?'neg':'pos'); }
 }
 document.addEventListener('input', ev=>{
   const el = ev.target, ds = el && el.dataset;
@@ -4582,6 +4803,7 @@ function rfxRecollectModal(m, sum, before, fails, info){
 /* ============================== 시작 ============================== */
 render();
 if(S.apiUrl) setTimeout(()=>fetchLatest(false), 300);
+if(typeof fetchNaver==='function') setTimeout(()=>fetchNaver(false), 700);
 </script>
 <!-- BC7-BLOCK-START -->
 <style>
@@ -4771,7 +4993,7 @@ function bcMoney(n){
 /* ---------- 7개 메뉴 바 ---------- */
 const BC_MENUS = [
   {g:'상품관리', items:[['pm3p','판매자배송 상품관리'],['pmr','로켓그로스 상품관리'],['pmnaver','네이버 상품관리']]},
-  {g:'매출분석', items:[['sa3p','판매자배송 매출분석'],['dashboard','로켓그로스 매출분석'],['sanaver','네이버 매출 분석'],['ads','광고 캠페인 분석']]}
+  {g:'매출분석', items:[['sa3p','판매자배송 매출분석'],['dashboard','로켓그로스 매출분석'],['sanaver','🟢 네이버 스마트스토어'],['ads','광고 캠페인 분석']]}
 ];
 function bcBarHTML(){
   return `<div class="bc7-brand">BIGCELL <span>7개 메뉴</span></div>` +
@@ -5244,8 +5466,8 @@ function bcMembership(kind){
       </div>
     </div></div>`;
 }
-VIEWS.pmnaver = ()=> bcMembership('상품');
-VIEWS.sanaver = ()=> bcMembership('매출');
+/* 네이버 화면은 본 대시보드의 네이버 뷰를 그대로 사용(멤버십 안내 대체) */
+VIEWS.sanaver = ()=> VIEWS.naver();
 
 /* ==================== 5. 판매자배송 매출분석 ==================== */
 VIEWS.sa3p = function(){
