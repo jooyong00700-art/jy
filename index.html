@@ -594,6 +594,8 @@ input.inp[type=number]{text-align:right}
 .nv-fx code{background:#e9f5ee; padding:1px 5px; border-radius:4px; font-size:11.5px; color:#0a6b4c}
 .nv-fx .ln{margin-bottom:3px}
 .nv-bd td:first-child{width:46%}
+.nv-prod td:first-child{white-space:normal; min-width:140px; line-height:1.5}
+.nv-prod td{vertical-align:top}
 .fc-basis{display:inline-flex; border:1px solid var(--line); border-radius:9px; overflow:hidden; background:#fff}
 .fc-basis button{font-size:11.5px; font-weight:800; color:#66718a; padding:5px 10px}
 .fc-basis button.on{background:#0ea47a; color:#fff}
@@ -2484,7 +2486,7 @@ VIEWS.naver = function(){
       </div>
       <div class="card">
         ${sectionHead('🛒 상품 · 원가 매칭', '네이버 판매상품 7개 · 매출 발생 2개는 원가 확정')}
-        <div class="tbl-wrap"><table class="tbl">
+        <div class="tbl-wrap"><table class="tbl nv-prod">
           <thead><tr><th class="l">상품명 / 상품번호</th><th>상태</th><th>판매가</th><th>원가</th><th>신뢰도</th></tr></thead>
           <tbody>${prods}</tbody></table></div>
       </div>
