@@ -172,6 +172,41 @@ table.tbl tr.total td:first-child{color:var(--ink)}
 .pill.warn{background:#fff1f1; color:#c92a2a}
 .pill.ok{background:#e9f9f2; color:#0a7f5c}
 
+/* ---------- 정산 27컬러 · 재고 · 상품관리 ---------- */
+.thumb.sm{width:26px;height:26px;border-radius:7px;flex:0 0 26px;font-size:12px;margin-right:6px}
+.settle-tbl th, .settle-tbl td{padding:9px 10px}
+.settle-tbl th{font-size:11.5px; line-height:1.25}
+.settle-tbl .th2{font-size:9.5px; font-weight:600; color:#9aa5ba; letter-spacing:0}
+.settle-tbl .sticky-c{position:sticky; left:0; z-index:2; background:#fff; box-shadow:1px 0 0 var(--line2); min-width:196px; max-width:240px}
+.settle-tbl thead .sticky-c{background:#fafbfd; z-index:3}
+.settle-tbl tr.total .sticky-c{background:#f6f9ff}
+.settle-tbl tbody tr:hover .sticky-c{background:#fafbff}
+.settle-tbl .sticky-c .nm{font-weight:800; font-size:12.5px; display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:150px}
+.settle-tbl .sticky-c .cd{font-size:10px; color:var(--muted); white-space:nowrap}
+.settle-tbl td.sticky-c{display:flex; align-items:center; gap:2px}
+.sbtn{width:20px; flex:0 0 20px; color:var(--blue); font-size:11px; font-weight:800; padding:0}
+.pname-wrap{min-width:0}
+.hd{background:#fff1f1; color:#c92a2a; font-size:9.5px; font-weight:800; padding:1px 4px; border-radius:4px}
+.srow.ishid .nm{color:#8b96ab}
+sdet>td{background:#f8faff!important; padding:10px 12px!important; border-bottom:1px solid var(--line)}
+.sdet-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(142px,1fr)); gap:6px 14px}
+.sd-i{display:flex; align-items:baseline; justify-content:space-between; gap:8px; border-bottom:1px dashed #e3e9f6; padding:3px 0; font-size:11.5px}
+.sd-l{color:#66718a}
+.sd-l em{font-style:normal; font-size:9.5px; color:#9aa5ba}
+.sd-v{font-weight:700}
+.costgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(132px,1fr)); gap:8px}
+.ctile{background:#f8fafd; border:1px solid var(--line); border-radius:10px; padding:8px 10px}
+.ctile .t{font-size:11px; color:var(--muted); font-weight:700}
+.ctile .v{font-size:14px; font-weight:800; margin-top:2px; letter-spacing:-.3px}
+.ctile.hl{background:#eef3ff; border-color:#d9e4ff}
+.ctile.hl .v{color:var(--blue)}
+.stk-need{background:#fff8ec}
+.stk-zero{color:var(--muted)}
+.prodact{white-space:nowrap}
+.prodact button{font-size:11.5px; font-weight:800; border:1px solid #dfe5f0; border-radius:8px; padding:4px 9px; background:#fff; color:#43506a}
+.prodact button.hide{color:#c92a2a; border-color:#ffd6d6}
+.prodact button.show{color:#0a7f5c; border-color:#bfe9d8}
+
 /* ---------- controls ---------- */
 .toolbar{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
 .seg{display:inline-flex; background:#eef1f7; border-radius:9px; padding:3px; gap:2px}
@@ -484,33 +519,64 @@ window.addEventListener('error', function(e){
    ============================================================ */
 const STORE_KEY = 'bigcell-clone-v1';
 
-/* ---------- 상품 마스터 (로켓그로스) ---------- */
+/* ---------- 상품 마스터 (로켓그로스) ----------
+   hidden = 빅셀 `상품 관리 > 로켓그로스 > 숨김상품` 기준 기본 상태(2026-11-22 조회).
+   숨김 상품은 상품·마진 / 재고·품절 목록에서 빠지고, 정산서에는 그대로 남는다(빅셀과 동일 규칙).
+   사용자가 [숨기기]/[복원]으로 바꾼 값은 S.hidden 에 저장되어 이 기본값을 덮어쓴다. */
 const PRODUCTS = [
-  {id:'8188501167', sku:'48219924', name:'리스페토 빨래건조대 튼튼한 접이식 건조대', short:'빨래건조대', icon:'🧺', mk:'RFM',
+  {id:'8188501167', sku:'48219924', name:'리스페토 빨래건조대 튼튼한 접이식 건조대', short:'빨래건조대', icon:'🧺', mk:'RFM', hidden:false,
    price:22990, disc:3000, fee:11.88, cost:9440, inout:1595, ship:2860,
    stock:3354, stockValue:31661760, daily:73, soldout:'2026-12-30', returns:196, returnRate:9, adsVat:3237781, soldM:1378},
-  {id:'9701805278', sku:'59918188', name:'리스페토 1+1 한국트레킹학교 신발깔창 아치 쿠션 구름깔창', short:'신발깔창', icon:'👟', mk:'RFM',
+  {id:'9701805278', sku:'59918188', name:'리스페토 1+1 한국트레킹학교 신발깔창 아치 쿠션 구름깔창', short:'신발깔창', icon:'👟', mk:'RFM', hidden:false,
    price:10790, disc:800, fee:11.55, cost:2364, inout:1100, ship:1485,
    stock:490, stockValue:1158360, daily:13, soldout:'2026-12-08', returns:39, returnRate:8, adsVat:750899, soldM:296},
-  {id:'9395470256', sku:'70114948', name:'리스페토 높이가 높은 접이식 다용도 좌식 테이블', short:'좌식테이블', icon:'🪑', mk:'RFM',
+  {id:'9395470256', sku:'70114948', name:'리스페토 높이가 높은 접이식 다용도 좌식 테이블', short:'좌식테이블', icon:'🪑', mk:'RFM', hidden:false,
    price:37990, disc:8000, fee:11.88, cost:9000, inout:2008, ship:3823,
    stock:0, stockValue:0, daily:0, soldout:'-', returns:0, returnRate:0, adsVat:0, soldM:0},
-  {id:'9593565569', sku:'74898276', name:'리스페토 ALL 실리콘 미끄럼방지 접이식 노트북거치대', short:'노트북거치대', icon:'💻', mk:'RFM',
+  {id:'9593565569', sku:'74898276', name:'리스페토 ALL 실리콘 미끄럼방지 접이식 노트북거치대', short:'노트북거치대', icon:'💻', mk:'RFM', hidden:false,
    price:7990, disc:0, fee:6.4, cost:2850, inout:1265, ship:1925,
    stock:9, stockValue:25650, daily:0, soldout:'-', returns:0, returnRate:0, adsVat:0, soldM:1},
-  {id:'9593584011', sku:'74899093', name:'리스페토 양면 스테인레스 발각질제거 풋케어', short:'풋케어', icon:'🦶', mk:'RFM',
+  {id:'9593584011', sku:'74899093', name:'리스페토 양면 스테인레스 발각질제거 풋케어', short:'풋케어', icon:'🦶', mk:'RFM', hidden:false,
    price:7900, disc:0, fee:10.56, cost:2400, inout:1078, ship:1238,
    stock:6, stockValue:14400, daily:0, soldout:'-', returns:0, returnRate:0, adsVat:0, soldM:3},
-  {id:'9595425253', sku:'74964850', name:'리스페토 원터치 휴지통 사무실 욕실 가정 쓰레기통 10L', short:'휴지통 10L', icon:'🗑️', mk:'RFM',
+  {id:'9595425253', sku:'74964850', name:'리스페토 원터치 휴지통 사무실 욕실 가정 쓰레기통 10L', short:'휴지통 10L', icon:'🗑️', mk:'RFM', hidden:false,
    price:8900, disc:0, fee:11.88, cost:2220, inout:1293, ship:2310,
    stock:0, stockValue:0, daily:0, soldout:'-', returns:0, returnRate:0, adsVat:0, soldM:0},
-  {id:'9636737924', sku:'75437998', name:'리스페토 공기주입식 손목보호대 (오른손)', short:'손목보호대 R', icon:'🖐️', mk:'RFM',
+  {id:'9636737924', sku:'75437998', name:'리스페토 공기주입식 손목보호대 (오른손)', short:'손목보호대 R', icon:'🖐️', mk:'RFM', hidden:false,
    price:13800, disc:0, fee:11.88, cost:3600, inout:1045, ship:2035,
    stock:0, stockValue:0, daily:0, soldout:'-', returns:0, returnRate:0, adsVat:0, soldM:0},
-  {id:'9611854991', sku:'75437997', name:'리스페토 공기주입식 손목보호대 (왼손)', short:'손목보호대 L', icon:'🤚', mk:'RFM',
+  {id:'9611854991', sku:'75437997', name:'리스페토 공기주입식 손목보호대 (왼손)', short:'손목보호대 L', icon:'🤚', mk:'RFM', hidden:false,
    price:13800, disc:0, fee:11.88, cost:3600, inout:1045, ship:2035,
+   stock:0, stockValue:0, daily:0, soldout:'-', returns:0, returnRate:0, adsVat:0, soldM:0},
+  /* --- 숨김상품 6개 (빅셀 숨김상품 목록 실측: 잘못등록 3 · 셀프배드민턴 · 포토앨범 · 바라클라바) --- */
+  {id:'7846681988', sku:'', name:'잘못등록', short:'잘못등록(7846681988)', icon:'⚠️', mk:'RFM', hidden:true,
+   price:13900, disc:0, fee:11.88, cost:0, inout:0, ship:0,
+   stock:0, stockValue:0, daily:0, soldout:'-', returns:0, returnRate:0, adsVat:0, soldM:0},
+  {id:'7912280870', sku:'', name:'위너스 셀프배드민턴 집에서 배드민턴 연습', short:'셀프배드민턴', icon:'🏸', mk:'RFM', hidden:true,
+   price:26500, disc:0, fee:11.88, cost:0, inout:0, ship:0,
+   stock:0, stockValue:0, daily:0, soldout:'-', returns:0, returnRate:0, adsVat:0, soldM:0},
+  {id:'8011099857', sku:'60592358', name:'리스페토 접착식 포토앨범 네컷앨범 초음파앨범 기념일선물 성장앨범', short:'포토앨범', icon:'📷', mk:'RFM', hidden:true,
+   price:13800, disc:0, fee:11.88, cost:2700, inout:1100, ship:1815,
+   stock:0, stockValue:0, daily:0, soldout:'-', returns:0, returnRate:0, adsVat:0, soldM:0},
+  {id:'8436562849', sku:'52892958', name:'리스페토 남녀공용 패딩 바라클라바', short:'바라클라바', icon:'🧣', mk:'RFM', hidden:true,
+   price:20000, disc:0, fee:11.88, cost:7720, inout:1183, ship:2173,
+   stock:0, stockValue:0, daily:0, soldout:'-', returns:0, returnRate:0, adsVat:0, soldM:0},
+  {id:'9611477934', sku:'75423361', name:'잘못등록', short:'잘못등록(9611477934)', icon:'⚠️', mk:'RFM', hidden:true,
+   price:27900, disc:0, fee:8.58, cost:0, inout:1320, ship:2255,
+   stock:0, stockValue:0, daily:0, soldout:'-', returns:0, returnRate:0, adsVat:0, soldM:0},
+  {id:'9766745761', sku:'59961448', name:'잘못등록', short:'잘못등록(9766745761)', icon:'⚠️', mk:'RFM', hidden:true,
+   price:9900, disc:0, fee:11.55, cost:0, inout:1100, ship:1485,
    stock:0, stockValue:0, daily:0, soldout:'-', returns:0, returnRate:0, adsVat:0, soldM:0}
 ];
+/* 숨김 상태: 기본값(PRODUCTS[].hidden) + 사용자 저장값(S.hidden) */
+function isHidden(id){
+  const ov = (S && S.hidden) ? S.hidden[id] : null;
+  if(ov!=null) return !!ov;
+  const p = PRODUCTS.find(x=>x.id===id);
+  return !!(p && p.hidden);
+}
+function visibleProducts(){ return PRODUCTS.filter(p=>!isHidden(p.id)); }
+function hiddenProducts(){ return PRODUCTS.filter(p=>isHidden(p.id)); }
 
 /* ---------- 판매자배송(3P) 상품 ---------- */
 const PRODUCTS_3P = [
@@ -1419,17 +1485,131 @@ const CAMPAIGNS = [
    cost:32681, conv:86930, imp:27796, click:51, qty:9, profit:30919}
 ];
 
-/* ---------- 정산 (11/17) ---------- */
-const SETTLE = [
-  {id:'8188501167', stock:2302, qty:69, sales:1532950, couponDl:180000, couponNow:0, fee:160744,
-   cost:651360, inout:119625, ship:214500, keep:0, returnFee:0, ad:177588, milk:0, loss:0},
-  {id:'9701805278', stock:512, qty:19, sales:197990, couponDl:13600, couponNow:0, fee:21300,
-   cost:44916, inout:8800, ship:11880, keep:0, returnFee:0, ad:32681, milk:0, loss:0},
-  {id:'9593565569', stock:9, qty:0, sales:0, couponDl:0, couponNow:0, fee:0,
-   cost:0, inout:1265, ship:1925, keep:0, returnFee:0, ad:0, milk:0, loss:0},
-  {id:'9593584011', stock:6, qty:0, sales:0, couponDl:0, couponNow:0, fee:0,
-   cost:0, inout:0, ship:0, keep:0, returnFee:0, ad:0, milk:0, loss:0}
+/* ---------- 정산서 (빅셀 정산 분석 > 로켓그로스 실측 · 2026-11-22 조회) ----------
+   빅셀 정산서 컬럼: 식별 6(스토어·담당자·SKU·노출ID·상품명·구분) + 금액 21 = 27개.
+   단가는 '-'(미확정)로 표기되는 FCL·밀크런은 null. 합계는 빅셀 표기 합계를 그대로 넣었고
+   (각 행 반올림값 합과 1원 차이가 나는 것은 빅셀 자체 반올림 때문), 기간은 11/01~11/21(수집 최신일).
+   정산대상액 = 판매액 − 즉시할인 − 다운로드쿠폰 − 판매수수료
+   실정산액 = 정산대상액 − (입출고+배송+보관+반품회수+반품재입고+반출+바코드+FCL+밀크런) + 재고손실보상 − 광고집행비
+   순이익금 = 실정산액 − 원가 */
+const SETTLE_KEYS = ['id','sku','stock','qty','sales','couponNow','couponDl','fee','target','cost',
+  'inout','ship','keep','retCollect','retIn','outbound','barcode','fcl','loss','ad','milk','actual','net'];
+const SETTLE_COLS = [
+  {k:'stock', l:'재고수량', kind:'int'},
+  {k:'qty', l:'판매수량', kind:'int'},
+  {k:'sales', l:'판매액'},
+  {k:'couponNow', l:'즉시할인쿠폰', l2:'프로모션 포함'},
+  {k:'couponDl', l:'다운로드쿠폰'},
+  {k:'fee', l:'판매수수료', l2:'VAT포함'},
+  {k:'target', l:'정산대상액', strong:true},
+  {k:'cost', l:'원가'},
+  {k:'inout', l:'입출고비', l2:'VAT포함', grp:'물류'},
+  {k:'ship', l:'배송비', l2:'VAT포함', grp:'물류'},
+  {k:'keep', l:'보관비', l2:'VAT포함', grp:'물류'},
+  {k:'retCollect', l:'반품회수비', l2:'VAT포함', grp:'물류'},
+  {k:'retIn', l:'반품재입고비', l2:'VAT포함', grp:'물류'},
+  {k:'outbound', l:'반출비', l2:'VAT포함', grp:'물류'},
+  {k:'barcode', l:'바코드부착비', l2:'VAT포함', grp:'물류'},
+  {k:'fcl', l:'FCL입고서비스비', l2:'VAT포함', grp:'물류'},
+  {k:'loss', l:'재고손실보상액'},
+  {k:'ad', l:'광고집행비', l2:'VAT포함'},
+  {k:'milk', l:'밀크런비', l2:'VAT포함', grp:'물류'},
+  {k:'actual', l:'실정산액', strong:true},
+  {k:'net', l:'순이익금', strong:true, sign:true}
 ];
+/* [id, sku, 재고, 판매, 판매액, 즉시할인, 다운로드쿠폰, 수수료, 정산대상액, 원가, 입출고, 배송, 보관, 반품회수, 반품재입고, 반출, 바코드, FCL, 재고손실보상, 광고비, 밀크런, 실정산액, 순이익] */
+const SETTLE_MONTH_ROWS = [
+  ['8188501167','48219924',3157,1650,37364260,0,4615940,3890806,28857514,15576000,2596660,4631880,0,0,0,0,0,null,0,3778173,null,17850801,2274801],
+  ['9701805278','59918193',456,338,3582550,0,249600,385007,2947943,799032,380050,515075,105,0,0,0,0,null,0,860578,null,1192136,393104],
+  ['9593584011','74899093',6,3,23700,0,0,2502,21198,7200,3234,3713,0,0,0,0,0,null,0,0,null,14252,7052],
+  ['9593565569','74898277',9,1,7990,0,0,562,7428,2850,1265,1925,0,0,0,0,0,null,0,0,null,4238,1388],
+  ['7846681988','',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+  ['7912280870','',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+  ['8011099857','60592358',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+  ['8436562849','52892958',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+  ['9395470256','70114948',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+  ['9595425253','74964849',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+  ['9611477934','75423361',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+  ['9611854991','75437997',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+  ['9636737924','75437998',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+  ['9766745761','59961448',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0]
+];
+const SETTLE_DAY_ROWS = [
+  ['8188501167','48219924',3157,77,1750910,0,219000,182004,1349906,726880,102080,183040,0,0,0,0,0,null,0,153949,null,910837,183957],
+  ['9701805278','59918193',456,5,53950,0,4000,5770,44180,11820,7700,10395,0,0,0,0,0,null,0,21104,null,4981,-6839],
+  ['9593584011','74899093',6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+  ['9593565569','74898277',9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+  ['7846681988','',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+  ['7912280870','',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+  ['8011099857','60592358',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+  ['8436562849','52892958',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+  ['9395470256','70114948',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+  ['9595425253','74964849',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+  ['9611477934','75423361',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+  ['9611854991','75437997',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+  ['9636737924','75437998',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+  ['9766745761','59961448',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0]
+];
+const SETTLE_MONTH_TOTAL = {stock:3628, qty:1992, sales:40978500, couponNow:0, couponDl:4865540, fee:4278877,
+  target:31834083, cost:16385082, inout:2981209, ship:5152593, keep:105, retCollect:0, retIn:0, outbound:0,
+  barcode:0, fcl:null, loss:0, ad:4638751, milk:null, actual:19061426, net:2676344};
+const SETTLE_DAY_TOTAL = {stock:3628, qty:82, sales:1804860, couponNow:0, couponDl:223000, fee:187774,
+  target:1394086, cost:738700, inout:109780, ship:193435, keep:0, retCollect:0, retIn:0, outbound:0,
+  barcode:0, fcl:null, loss:0, ad:175053, milk:null, actual:915818, net:177118};
+function mkSettle(rows){
+  return rows.map(a=>{
+    const o = {};
+    SETTLE_KEYS.forEach((k,i)=>{ o[k] = a[i]; });
+    const p = PRODUCTS.find(x=>x.id===o.id) || {};
+    o.short = p.short || o.id; o.icon = p.icon || '📦';
+    o.name = p.name || ''; o.hidden = !!p.hidden;   /* 기본값만 — 사용자 숨김은 화면에서 S.hidden으로 덮어쓴다 */
+    return o;
+  });
+}
+const SETTLE = {
+  month:{label:'11월 누적 (11/01~11/21)', rows:mkSettle(SETTLE_MONTH_ROWS), total:SETTLE_MONTH_TOTAL},
+  day:{label:'11월 21일 하루', rows:mkSettle(SETTLE_DAY_ROWS), total:SETTLE_DAY_TOTAL}
+};
+
+/* ---------- 재고 · 입고 지표 (빅셀 매출분석 > 로켓그로스 상세보기 실측 2026-11-21) ----------
+   stock=쿠팡재고, value=재고금액(수량×원가), inbound=쿠팡입고예정, daily=최근7일 일일평균판매,
+   soldout=쿠팡품절예상일, need=쿠팡입고필요수량(본사재고 미등록 → null), keep=쿠팡보관비(이번달) */
+const STOCK = {
+  asOf:'2026-11-21', source:'빅셀 매출분석 > 로켓그로스 (상세보기)',
+  settleStock:3628,
+  rows:[
+    {id:'8188501167', stock:3066, value:28943040, inbound:0, inboundValue:0, daily:71, soldout:'2027-01-05', need:null, keep:0, returns:205, retRate:9},
+    {id:'9701805278', stock:449, value:1061436, inbound:0, inboundValue:0, daily:13, soldout:'2026-12-10', need:null, keep:95, returns:37, retRate:8},
+    {id:'9395470256', stock:0, value:0, inbound:0, inboundValue:0, daily:0, soldout:null, need:null, keep:0, returns:0, retRate:0},
+    {id:'9593565569', stock:9, value:25650, inbound:0, inboundValue:0, daily:0, soldout:null, need:null, keep:0, returns:0, retRate:0},
+    {id:'9593584011', stock:6, value:14400, inbound:0, inboundValue:0, daily:0, soldout:null, need:null, keep:0, returns:0, retRate:0},
+    {id:'9595425253', stock:0, value:0, inbound:0, inboundValue:0, daily:0, soldout:null, need:null, keep:0, returns:0, retRate:0},
+    {id:'9636737924', stock:0, value:0, inbound:0, inboundValue:0, daily:0, soldout:null, need:null, keep:0, returns:0, retRate:0},
+    {id:'9611854991', stock:0, value:0, inbound:0, inboundValue:0, daily:0, soldout:null, need:null, keep:0, returns:0, retRate:0}
+  ],
+  total:{stock:3530, value:30044526, inbound:0, inboundValue:0, daily:84, keep:95, returns:242, retRate:9}
+};
+/* 입고 필요 기준: 품절예상일 30일 이내 또는 재고 0인데 판매 이력이 있는 상품 */
+function stockNeedInbound(r){
+  if(!r) return false;
+  if(r.stock===0 && r.daily>0) return true;
+  if(r.stock===0 && r.soldout) return true;
+  if(!r.soldout) return false;
+  const d = dateObj(r.soldout);
+  const today = new Date(); today.setHours(0,0,0,0);
+  return Math.round((d - today)/86400000) <= 30;
+}
+/* 윙 재고현황(옵션별) 합계 → 상품별 (반품 옵션 제외) */
+function wingStockByPid(){
+  const out = {};
+  if(typeof BC7==='undefined' || !BC7.wing || !BC7.wing.stock) return out;
+  (BC7.rfm||[]).forEach(p=> (p.options||[]).forEach(o=>{
+    const v = BC7.wing.stock[o.optId];
+    if(v==null || o.state==='반품') return;
+    out[p.pid] = (out[p.pid]||0) + Number(v);
+  }));
+  return out;
+}
 
 /* ---------- 정산 입금 예정 ---------- */
 const SETTLE_DUE = [
@@ -1540,7 +1720,8 @@ const DEFAULTS = {
   },
   memos:{},
   costOverrides:{},
-  dailyOverrides:{}
+  dailyOverrides:{},
+  hidden:{}
 };
 
 /* 저장된 live 값 복원: 예전 저장값에 쿠폰/실매출이 없으면 기본값의 쿠폰을 물려주지 않고
@@ -1562,7 +1743,8 @@ function loadState(){
     live: loadLive(s.live),
     memos: Object.assign({}, s.memos||{}),
     costOverrides: Object.assign({}, s.costOverrides||{}),
-    dailyOverrides: Object.assign({}, s.dailyOverrides||{})
+    dailyOverrides: Object.assign({}, s.dailyOverrides||{}),
+    hidden: Object.assign({}, s.hidden||{})
   });
 }
 let S = loadState();
@@ -1599,7 +1781,7 @@ function margin(p){
   const inout = ov && ov.inout!=null ? ov.inout : (p.inout||0);
   const ship = ov && ov.ship!=null ? ov.ship : (p.ship||0);
   const base = price - disc;
-  const feeAmt = base * fee/100;
+  const feeAmt = Math.round(base * fee/100);   /* 빅셀은 수수료를 원단위 반올림해 차감 → 이익금 1원까지 일치 */
   const profit = base - feeAmt - cost - inout - ship;
   const rate = price ? profit/price*100 : 0;
   return {price, disc, fee, cost, inout, ship, base, feeAmt, profit, rate};
@@ -1789,8 +1971,9 @@ const COST_OPTS = (function(){
       price:implied, disc:0, fee:o.f, cost:(o.c||master.cost||0), inout:o.io, ship:o.sh,
       q2025:o.q, s2025:o.s, net2025:o.net, seedFrom:'2025-01-01', weight:o.s||0});
   }
-  /* 현재 판매 상품(원가·판매가 최신) */
+  /* 현재 판매 상품(원가·판매가 최신) — 숨김 기본값 상품은 운영 중이 아니므로 원가 가중치 계산에서 제외 */
   for(const p of PRODUCTS){
+    if(p.hidden) continue;
     const key = p.id;
     if(seen[key]) continue;
     seen[key]=1;
@@ -1964,7 +2147,9 @@ let opt = {
   calMetric:{sales:true, profit:true, ad:true, net:true},
   selDate:null,
   dailyRange:'7',
-  settleRange:'day'
+  settleRange:'month',            /* month | day | due */
+  settleOpen:{},                  /* 정산 행 세부비용 펠침 */
+  stockOnlyNeed:false             /* 재고 · 입고필요 상품만 */
 };
 const VIEWS = {};
 const VIEWS_BIND = {};
@@ -2342,21 +2527,24 @@ function adOrganicCard(){
 
 /* ---- 재고 미니 ---- */
 function stockMiniCard(){
-  const list = PRODUCTS.filter(p=>p.stock>0 || p.soldout!=='-');
+  const byId = {}; STOCK.rows.forEach(r=>byId[r.id]=r);
+  const list = visibleProducts().filter(p=>{ const s=byId[p.id]; return s && (s.stock>0 || s.soldout); });
+  const T = STOCK.total;
   return `<div class="card" style="margin-top:14px">
-    ${sectionHead('재고 · 품절 예상','로켓그로스 재고 3,859개 · 재고금액 32,860,170원')}
+    ${sectionHead('재고 · 품절 예상', `로켓그로스 재고 ${won(T.stock)}개 · 재고금액 ${wonW(T.value)}`, `<button class="btn" data-act="navStock">재고·입고 전체 보기 →</button>`)}
     <div class="tbl-wrap"><table class="tbl">
       <thead><tr><th class="l">상품</th><th>쿠팡재고</th><th>재고금액</th><th>일평균 판매</th><th>품절 예상일</th><th>보관비</th></tr></thead>
       <tbody>${list.map(p=>{
-        const days = p.daily>0 ? Math.round(p.stock/p.daily) : null;
-        const color = days==null?'#c9d1e0':(days<14?'#e03e3e':(days<30?'#f08c00':'#0ea47a'));
-        return `<tr>
+        const s = byId[p.id];
+        const du = daysUntil(s.soldout);
+        const color = du==null?'#c9d1e0':(du<=14?'#e03e3e':(du<=30?'#f08c00':'#0ea47a'));
+        return `<tr class="${stockNeedInbound(s)?'stk-need':''}">
           <td class="l"><div class="prod"><span class="thumb">${p.icon}</span><div><div class="nm">${esc(p.short)}</div><div class="cd">${p.id}</div></div></div></td>
-          <td class="num">${won(p.stock)}</td>
-          <td class="num">${wonW(p.stockValue)}</td>
-          <td class="num">${p.daily}개</td>
-          <td class="num">${p.soldout==='-'?'<span class="flat">-</span>':p.soldout.slice(5).replace('-','/')}<div style="font-size:10.5px;color:${color};font-weight:800">${days!=null?days+'일분':''}</div></td>
-          <td class="num">${p.id==='9701805278'?'₩95':'₩0'}</td>
+          <td class="num">${won(s.stock)}</td>
+          <td class="num">${wonW(s.value)}</td>
+          <td class="num">${s.daily}개</td>
+          <td class="num">${!s.soldout?'<span class="flat">-</span>':`${shortYmd(s.soldout)}<div style="font-size:10.5px;color:${color};font-weight:800">${du!=null?du+'일 후':''}</div>`}</td>
+          <td class="num">${s.keep?'₩'+won(s.keep):'<span class="flat">₩0</span>'}</td>
         </tr>`;
       }).join('')}</tbody>
     </table></div>
@@ -2433,23 +2621,25 @@ function monthlyCard(all){
 
 /* ============================== 3. 상품 · 마진 ============================== */
 VIEWS.products = function(){
-  const rows = PRODUCTS.map(p=>({p, m: margin(p)}));
+  const vis = visibleProducts();
+  const hidN = PRODUCTS.length - vis.length;
+  const rows = vis.map(p=>({p, m: margin(p)}));
   const totalProfit = rows.reduce((a,r)=>a+r.m.profit*r.p.soldM,0);
   return topbar('상품 · 마진','원가를 바꾸면 이익금·마진이 즉시 다시 계산됩니다 (자동 저장)',
     `<button class="btn primary" data-act="resetCosts">원가 초기화</button>`)
   + `<div class="card">
-      ${sectionHead('로켓그로스 상품 마진표','11월 누적 판매량 기준', `<span class="note">클릭해서 수정 → 이익금 자동계산</span>`)}
+      ${sectionHead('로켓그로스 상품 마진표', `11월 누적 판매량 기준${hidN?` · 숨김 ${hidN}개 제외`:''}`, `<span class="note">클릭해서 수정 → 이익금 자동계산</span>`)}
       <div class="tbl-wrap"><table class="tbl" id="marginTbl">
         <thead><tr><th class="l">상품</th><th>판매가</th><th>할인</th><th>수수료%</th><th>원가</th><th>입출고</th><th>배송비</th><th>개당 이익금</th><th>이익률</th><th>월 판매</th><th>월 이익금</th></tr></thead>
         <tbody>${rows.map(({p,m})=>`<tr>
-          <td class="l"><div class="prod"><span class="thumb">${p.icon}</span><div><div class="nm">${esc(p.short)}</div><div class="cd">SKU ${p.sku} · ${p.id}</div></div></div></td>
+          <td class="l"><div class="prod"><span class="thumb">${p.icon}</span><div><div class="nm">${esc(p.short)}</div><div class="cd">${p.sku?'SKU '+esc(p.sku)+' · ':''}${p.id}</div></div></div></td>
           ${['price','disc','fee','cost','inout','ship'].map(f=>`<td class="num"><input class="inp num" style="width:${f==='price'?'84px':'68px'};padding:5px 7px" type="number" value="${m[f]}" data-cost-id="${p.id}" data-field="${f}" step="${f==='fee'?'0.01':'1'}"></td>`).join('')}
           <td class="num"><b style="color:${m.profit>0?'var(--ink)':'var(--up)'}">${wonW(m.profit)}</b></td>
           <td class="num">${pct1(m.rate)}%</td>
           <td class="num">${won(p.soldM)}</td>
           <td class="num"><b>${wonW(m.profit*p.soldM)}</b></td>
         </tr>`).join('')}
-        <tr class="total"><td class="l">합계 (월 누적 판매량 기준)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="num">${won(PRODUCTS.reduce((a,p)=>a+p.soldM,0))}</td><td class="num">${wonW(totalProfit)}</td></tr>
+        <tr class="total"><td class="l">합계 (월 누적 판매량 기준)</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td class="num">${won(vis.reduce((a,p)=>a+p.soldM,0))}</td><td class="num">${wonW(totalProfit)}</td></tr>
         </tbody>
       </table></div>
       <div class="card-b" style="border-top:1px solid var(--line2)">
@@ -2465,14 +2655,15 @@ VIEWS.products = function(){
 };
 
 function simulatorCard(){
-  const sel = PRODUCTS.find(p=>p.id===(opt.simId||PRODUCTS[0].id)) || PRODUCTS[0];
+  const vis = visibleProducts();
+  const sel = vis.find(p=>p.id===(opt.simId||vis[0].id)) || vis[0];
   const m = margin(sel);
   const maxP = Math.round(sel.price*1.6);
   return `<div class="card">
     ${sectionHead('마진 시뮬레이터','판매가·원가를 바꿔보면 이익금이 바로 나옵니다')}
     <div class="card-b">
       <div class="form-row"><label>상품</label>
-        <select class="inp" data-act="simPick">${PRODUCTS.map(p=>`<option value="${p.id}" ${p.id===sel.id?'selected':''}>${esc(p.short)} · ${wonW(margin(p).profit)}</option>`).join('')}</select>
+        <select class="inp" data-act="simPick">${vis.map(p=>`<option value="${p.id}" ${p.id===sel.id?'selected':''}>${esc(p.short)} · ${wonW(margin(p).profit)}</option>`).join('')}</select>
       </div>
       <div class="form-row"><label>판매가 <b id="simPriceLab" class="num">${won(m.price)}원</b></label>
         <input type="range" min="${Math.round(sel.price*0.6)}" max="${maxP}" step="100" value="${m.price}" data-act="simPrice" style="width:100%">
@@ -2585,58 +2776,95 @@ VIEWS.ads = function(){
 
 /* ============================== 5. 정산 · 손익 ============================== */
 function settleCalc(s){
-  const target = s.sales - s.couponNow - s.couponDl - s.fee;
-  const actual = target - (s.inout + s.ship + s.keep + s.returnFee + s.milk) + s.loss - s.ad;
-  const net = actual - s.cost;
+  const target = s.sales - (s.couponNow||0) - (s.couponDl||0) - (s.fee||0);
+  const actual = target - ((s.inout||0) + (s.ship||0) + (s.keep||0) + (s.retCollect||0) + (s.retIn||0)
+    + (s.outbound||0) + (s.barcode||0) + (s.fcl||0) + (s.milk||0)) + (s.loss||0) - (s.ad||0);
+  const net = actual - (s.cost||0);
   return {target, actual, net};
 }
+function settleCell(s, c){
+  c = c || {};
+  const v = s[c.k];
+  if(v==null) return '<span class="flat">-</span>';
+  if(c.kind==='int') return v===0 ? '<span class="flat">0</span>' : won(v);
+  const n = Number(v);
+  if(!n) return '<span class="flat">0</span>';
+  const txt = n<0 ? '−'+won(Math.abs(n)) : won(n);
+  if(c.strong) return `<b class="${n<0?'up':''}">${txt}</b>`;
+  return n<0 ? `<span class="up">${txt}</span>` : txt;
+}
+/* 정산 탭: 요약 타일 + 27열 가로스크롤 표 + 행별 세부비용 펠침 */
 VIEWS.settle = function(){
-  const rows = SETTLE.map(s=>{
-    const p = PRODUCTS.find(x=>x.id===s.id) || {short:s.id, icon:'📦'};
-    const c = settleCalc(s);
-    return {s, p, c};
-  });
-  const T = rows.reduce((a,r)=>({
-    stock:a.stock+r.s.stock, qty:a.qty+r.s.qty, sales:a.sales+r.s.sales, dl:a.dl+r.s.couponDl, fee:a.fee+r.s.fee,
-    target:a.target+r.c.target, cost:a.cost+r.s.cost, inout:a.inout+r.s.inout, ship:a.ship+r.s.ship, ad:a.ad+r.s.ad, actual:a.actual+r.c.actual, net:a.net+r.c.net
-  }),{stock:0,qty:0,sales:0,dl:0,fee:0,target:0,cost:0,inout:0,ship:0,ad:0,actual:0,net:0});
+  const sc = (opt.settleRange==='day') ? SETTLE.day : SETTLE.month;
+  const rows = sc.rows.map(r=>Object.assign({}, r, {hidden:isHidden(r.id)}));
+  const T = sc.total;
+  const hiddenN = rows.filter(r=>r.hidden).length;
   const dueSum = SETTLE_DUE.reduce((a,d)=>a+d.seller+d.rfm,0);
-  return topbar('정산 · 손익','11월 17일 로켓그로스 정산서 기준', `<div class="seg">${[['day','일별'],['due','입금 예정']].map(([v,l])=>`<button class="${opt.settleRange===v?'on':''}" data-act="settleRange" data-v="${v}">${l}</button>`).join('')}</div>`)
-  + `<div class="kpis" style="margin-bottom:14px">
-      ${kpiCard('정산대상액', won(T.target)+'원', `<span class="flat">판매액 ${wonT(T.sales)}</span>`)}
-      ${kpiCard('실정산액', won(T.actual)+'원', `<span class="flat">입출고+배송 ${won(T.inout+T.ship)}원</span>`) }
-      ${kpiCard('원가 차감 후 순이익', won(T.net)+'원', `<span class="flat">판매량 ${T.qty}개</span>`, {accent:true})}
-      ${kpiCard('입금 예정 합계', won(dueSum)+'원', `<span class="flat">${SETTLE_DUE.length}건</span>`)}
-    </div>`
-  + (opt.settleRange==='due' ? dueCard() : settleTable(rows, T))
-  + `<div class="card" style="margin-top:14px">${sectionHead('정산 산식 (빅셀 계산 검증 완료)')}
+  const logistic = (T.inout||0)+(T.ship||0)+(T.keep||0)+(T.retCollect||0)+(T.retIn||0)+(T.outbound||0)+(T.barcode||0)+(T.fcl||0)+(T.milk||0);
+  const couponAll = (T.couponNow||0)+(T.couponDl||0);
+  const netRate = T.sales ? T.net/T.sales*100 : 0;
+  const tiles = [
+    ['판매액', T.sales, ''], ['즉시할인쿠폰', T.couponNow, '−'], ['다운로드쿠폰', T.couponDl, '−'],
+    ['판매수수료', T.fee, '−'], ['정산대상액', T.target, ''], ['원가', T.cost, '−'],
+    ['입출고비', T.inout, '−'], ['배송비', T.ship, '−'], ['보관비', T.keep, '−'],
+    ['반품회수비', T.retCollect, '−'], ['반품재입고비', T.retIn, '−'], ['반출비', T.outbound, '−'],
+    ['바코드부착비', T.barcode, '−'], ['FCL입고서비스비', T.fcl, '−'], ['재고손실보상액', T.loss, '+'],
+    ['광고집행비', T.ad, '−'], ['밀크런비', T.milk, '−'], ['실정산액', T.actual, ''], ['순이익금', T.net, '']
+  ].map(([l,v,sign])=>{
+    const n = (v==null)?null:Number(v);
+    const cls = (l==='순이익금'||l==='실정산액'||l==='정산대상액') ? ' hl' : '';
+    return `<div class="ctile${cls}"><div class="t">${l}</div><div class="v num ${n!=null&&n<0?'up':''}">${(n==null)?'-':(sign&&n?'−':'')+won(Math.abs(n))}</div></div>`;
+  }).join('');
+  return topbar('정산 · 손익', `빅셀 정산서 기준 · 로켓그로스 ${rows.length}개 상품(운영 ${rows.length-hiddenN} · 숨김 ${hiddenN})`,
+      `<div class="seg">${[['month','11월 누적'],['day','11월 21일'],['due','입금 예정']].map(([v,l])=>`<button class="${opt.settleRange===v?'on':''}" data-act="settleRange" data-v="${v}">${l}</button>`).join('')}</div>`)
+  + (opt.settleRange==='due' ? dueCard() :
+      `<div class="kpis" style="margin-bottom:14px">
+        ${kpiCard('판매액', won(T.sales)+'원', `<span class="flat">판매 ${won(T.qty)}개 · 쿠폰 −${won(couponAll)}</span>`)}
+        ${kpiCard('정산대상액', won(T.target)+'원', `<span class="flat">판매수수료 −${won(T.fee)}원</span>`)}
+        ${kpiCard('실정산액', won(T.actual)+'원', `<span class="flat">물류·보관 −${won(logistic)} · 광고 −${won(T.ad)}</span>`)}
+        ${kpiCard('순이익금', won(T.net)+'원', `<span class="flat">원가 −${won(T.cost)} · 이익률 ${pct1(netRate)}%</span>`, {accent:true})}
+      </div>
+      <div class="card" style="margin-bottom:14px">${sectionHead('세부비용 요약', `${sc.label} · 빅셀 정산서 금액 21항목`, `<span class="note">표의 행을 누르면 상품별 세부비용이 펼친다</span>`)}
+        <div class="card-b"><div class="costgrid">${tiles}</div>
+        <div class="hint" style="margin-top:10px">정산서 합계는 <b>빅셀 표기 합계</b>입니다(FCL · 밀크런은 빅셀에서도 '-' = 월말 확정 전). 광고집행비는 정산서가 아닌 <b>광고보고서(VAT포함)</b> 기준 · 밀크런비는 월말 확정.</div></div>
+      </div>`
+      + settleTable(rows, T))
+  + `<div class="card" style="margin-top:14px">${sectionHead('정산 산식 (빅셀 1원 일치 검증)')}
       <div class="card-b"><div class="formula">
         정산대상액 = <code>판매액 − 즉시할인쿠폰 − 다운로드쿠폰 − 판매수수료(VAT포함)</code><br>
-        실정산액 = <code>정산대상액 − (입출고비+배송비+보관비+반품회수비+반품재입고비+반출비+바코드비+FCL+밀크런비) + 재고손실보상 − 광고집행비</code><br>
+        실정산액 = <code>정산대상액 − (입출고+배송+보관+반품회수+반품재입고+반출+바코드+FCL+밀크런) + 재고손실보상 − 광고집행비</code><br>
         순이익금 = <code>실정산액 − 원가</code><br>
-        <span class="hint">예) 빨래건조대: 1,192,206 − 119,625 − 214,500 − 177,588 = <b>680,493</b> → 680,493 − 651,360 = <b>29,133원</b></span>
+        <span class="hint">빨래건조대(11월 누적): 37,364,260 − 4,615,940 − 3,890,806 = <b>28,857,514</b> → −2,596,660 −4,631,880 −3,778,173 = <b>17,850,801</b> → −15,576,000 = <b>2,274,801원</b></span>
       </div>
-      <div class="alert info" style="margin-top:10px">ℹ️ 빅셀은 두 가지 순이익을 보여줍니다. <b>정산 기준 순이익(11/17 90,756원)</b>은 정산서 실제 공제액 기준이고, <b>매출분석 기준 순이익(85,324원)</b>은 이익금 − 광고비입니다. 금액 차이는 광고·수수료 집계 시점 차이이며 둘 다 빅셀 화면 값 그대로입니다.</div>
+      <div class="alert info" style="margin-top:10px">ℹ️ 숨김 6개 상품도 정산서에는 그대로 남습니다(빅셀과 동일 규칙) — 정산은 쿠팡 정산서 원본 기준입니다. 행 합계와 표기 합계가 1원 다를 수 있는 건 빅셀 자체의 원단위 반올림 때문입니다.</div>
       </div>
     </div>`;
 };
 function wonT(n){ return won(n)+'원'; }
 function settleTable(rows, T){
-  return `<div class="card">${sectionHead('상품별 정산·손익','판매수량 0인 상품도 입출고·배송비는 발생합니다')}
-    <div class="tbl-wrap"><table class="tbl">
-      <thead><tr><th class="l">상품</th><th>재고</th><th>판매량</th><th>판매액</th><th>다운로드쿠폰</th><th>수수료</th><th>정산대상액</th><th>원가</th><th>입출고</th><th>배송비</th><th>광고비</th><th>실정산액</th><th>순이익금</th></tr></thead>
-      <tbody>${rows.map(({s,p,c})=>`<tr>
-        <td class="l"><div class="prod"><span class="thumb">${p.icon}</span><div><div class="nm">${esc(p.short)}</div><div class="cd">${s.id}</div></div></div></td>
-        <td class="num">${won(s.stock)}</td><td class="num">${s.qty}</td><td class="num">${won(s.sales)}</td>
-        <td class="num">${won(s.couponDl)}</td><td class="num">${won(s.fee)}</td>
-        <td class="num"><b>${won(c.target)}</b></td>
-        <td class="num">${won(s.cost)}</td><td class="num">${won(s.inout)}</td><td class="num">${won(s.ship)}</td><td class="num">${won(s.ad)}</td>
-        <td class="num">${won(c.actual)}</td>
-        <td class="num"><b style="color:${c.net<0?'var(--up)':'var(--ink)'}">${won(c.net)}</b></td></tr>`).join('')}
-        <tr class="total"><td class="l">합계</td><td class="num">${won(T.stock)}</td><td class="num">${T.qty}</td><td class="num">${won(T.sales)}</td><td class="num">${won(T.dl)}</td><td class="num">${won(T.fee)}</td><td class="num">${won(T.target)}</td><td class="num">${won(T.cost)}</td><td class="num">${won(T.inout)}</td><td class="num">${won(T.ship)}</td><td class="num">${won(T.ad)}</td><td class="num">${won(T.actual)}</td><td class="num">${won(T.net)}</td></tr>
+  const head = `<tr><th class="l sticky-c">상품</th>` + SETTLE_COLS.map(c=>`<th>${c.l}${c.l2?`<div class="th2">${c.l2}</div>`:''}</th>`).join('') + `</tr>`;
+  const body = rows.map(s=>{
+    const open = !!opt.settleOpen[s.id];
+    const cells = SETTLE_COLS.map(c=>`<td class="num">${settleCell(s,c)}</td>`).join('');
+    return `<tr class="srow${s.hidden?' ishid':''}">
+        <td class="l sticky-c"><button class="sbtn" data-act="settleToggle" data-id="${s.id}" aria-label="세부비용 펼치기">${open?'▾':'▸'}</button>
+          <span class="thumb sm">${s.icon}</span>
+          <span class="pname-wrap"><span class="nm">${esc(s.short)}</span><span class="cd">${s.id}${s.sku?' · SKU '+esc(s.sku):''}${s.hidden?' <span class="hd">숨김</span>':''}</span></span></td>
+        ${cells}</tr>` + (open ? settleRowDetail(s) : '');
+  }).join('');
+  const totalCells = SETTLE_COLS.map(c=>`<td class="num">${settleCell(T,c)}</td>`).join('');
+  return `<div class="card">${sectionHead('상품별 정산서 전 컬럼', '판매수량 0인 상품도 입출고·배송비는 발생합니다 — 좌우로 넘겨 27개 컬럼을 봅니다')}
+    <div class="tbl-wrap"><table class="tbl settle-tbl">
+      <thead>${head}</thead>
+      <tbody>${body}
+        <tr class="total"><td class="l sticky-c">합계</td>${totalCells}</tr>
       </tbody></table></div>
-    <div class="card-b" style="border-top:1px solid var(--line2)"><div class="alert info">💡 판매량이 0이어도 노트북거치대처럼 입출고·배송비가 발생해 순이익이 <b>-3,190원</b>이 되는 경우가 있습니다. 빅셀 정산서에 그대로 나오는 값입니다.</div></div>
+    <div class="card-b" style="border-top:1px solid var(--line2)"><div class="alert info">💡 판매량이 0이어도 노트북거치대처럼 입출고·배송비가 발생해 순이익이 마이너스가 되는 경우가 있습니다. 빅셀 정산서에 그대로 나오는 값입니다.</div></div>
   </div>`;
+}
+function settleRowDetail(s){
+  const items = SETTLE_COLS.map(c=>`<div class="sd-i"><span class="sd-l">${c.l}${c.l2?` <em>${c.l2}</em>`:''}</span><span class="sd-v num">${settleCell(s,c)}</span></div>`).join('');
+  return `<tr class="sdet"><td colspan="${SETTLE_COLS.length+1}"><div class="sdet-grid">${items}</div></td></tr>`;
 }
 function dueCard(){
   const rows = SETTLE_DUE.slice();
@@ -2659,45 +2887,82 @@ function dueCard(){
 </script>
 <script>
 /* ============================== 6. 재고 · 품절 ============================== */
+function shortYmd(s){
+  if(!s) return '';
+  const [y,m,d] = s.split('-');
+  return `${y.slice(2)}/${Number(m)}/${Number(d)}`;
+}
+function daysUntil(s){
+  if(!s) return null;
+  const d = dateObj(s);
+  const t = new Date(); t.setHours(0,0,0,0);
+  return Math.round((d - t)/86400000);
+}
 VIEWS.stock = function(){
-  const totalStock = PRODUCTS.reduce((a,p)=>a+p.stock,0);
-  const totalValue = PRODUCTS.reduce((a,p)=>a+p.stockValue,0);
-  return topbar('재고 · 품절','로켓그로스 재고 · 품절 예상일 · 입고 필요 수량', `<span class="chip">재고 <b>${won(totalStock)}</b>개</span>`)
+  const byId = {}; STOCK.rows.forEach(r=>byId[r.id]=r);
+  const wing = wingStockByPid();
+  const all = visibleProducts().map(p=>({p, s:byId[p.id]||null, wing:(wing[p.id]!=null?wing[p.id]:null)}));
+  const need = all.filter(x=>stockNeedInbound(x.s));
+  const list = opt.stockOnlyNeed ? need : all;
+  const T = STOCK.total;
+  const wingTotal = Object.keys(wing).reduce((a,k)=>a+wing[k],0);
+  const hiddenN = hiddenProducts().length;
+  const wingAt = (typeof BC7!=='undefined' && BC7.wing && BC7.wing.updatedAt) ? BC7.wing.updatedAt : '';
+  return topbar('재고 · 입고 필요', '쿠팡 윙 재고현황 + 빅셀 매출분석 재고/입고 지표',
+      `<span class="chip">쿠팡재고 <b>${won(T.stock)}</b>개</span>`)
   + `<div class="kpis" style="margin-bottom:14px">
-      ${kpiCard('쿠팡 재고', won(totalStock)+'개', `<span class="flat">재고금액 ${wonW(totalValue)}</span>`)}
-      ${kpiCard('일평균 판매', '73개', `<span class="flat">빨래건조대 기준</span>`)}
-      ${kpiCard('품절 예상', '2종', `<span class="flat">12/8 · 12/30</span>`, {accent:true})}
-      ${kpiCard('반품율', '8~9%', `<span class="flat">반품 235건</span>`)}
+      ${kpiCard('쿠팡재고', won(T.stock)+'개', `<span class="flat">재고금액 ${wonW(T.value)}</span>`)}
+      ${kpiCard('일평균 판매', T.daily+'개', `<span class="flat">최근 7일 · 건조대 ${(byId['8188501167']||{}).daily||0} · 깔창 ${(byId['9701805278']||{}).daily||0}</span>`)}
+      ${kpiCard('입고 필요', need.length+'종', `<span class="flat">${need.length?need.map(x=>esc(x.p.short)).join(' · '):'없음'} · 품절예상 30일 내</span>`, {accent:true})}
+      ${kpiCard('쿠팡보관비', wonW(T.keep), `<span class="flat">이번달 · 반품 ${T.returns}건(${T.retRate}%)</span>`)}
     </div>`
-  + `<div class="card">${sectionHead('상품별 재고 현황','11월 17일 기준')}
+  + `<div class="card">
+    <div class="filterbar" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; padding:11px 14px; border-bottom:1px solid var(--line2)">
+      <div class="seg"><button class="${opt.stockOnlyNeed?'':'on'}" data-act="stockFilter" data-v="all">전체 상품 ${all.length}</button><button class="${opt.stockOnlyNeed?'on':''}" data-act="stockFilter" data-v="need">입고필요 상품만 ${need.length}</button></div>
+      <span class="note" style="font-size:11.5px; color:var(--muted)">기준 ${STOCK.asOf} · 윙 ${esc(wingAt)} · 숨김 ${hiddenN}개 제외</span>
+    </div>
     <div class="tbl-wrap"><table class="tbl">
-      <thead><tr><th class="l">상품</th><th class="l">노출ID · SKU</th><th>재고</th><th>재고금액</th><th>일평균 판매</th><th>소진 예상</th><th>품절 예상일</th><th>반품</th><th>상태</th></tr></thead>
-      <tbody>${PRODUCTS.map(p=>{
-        const days = p.daily>0 ? Math.round(p.stock/p.daily) : null;
-        const status = p.stock===0 ? '<span class="pill warn">품절</span>' : (days!=null && days<20 ? '<span class="pill" style="background:#fff4e0;color:#a86000">부족</span>' : '<span class="pill ok">정상</span>');
-        return `<tr>
-          <td class="l"><div class="prod"><span class="thumb">${p.icon}</span><div><div class="nm">${esc(p.short)}</div></div></div></td>
-          <td class="l"><span class="cd" style="font-size:11px;color:var(--muted)">${p.id} · ${p.sku}</span></td>
-          <td class="num"><b>${won(p.stock)}</b></td><td class="num">${wonW(p.stockValue)}</td><td class="num">${p.daily}개</td>
-          <td class="num">${days==null?'<span class="flat">-</span>':days+'일분'}</td>
-          <td class="num">${p.soldout==='-'?'<span class="flat">-</span>':p.soldout}</td>
-          <td class="num">${p.returns}건${p.returns?' <span class="flat">('+p.returnRate+'%)</span>':''}</td>
-          <td>${status}</td></tr>`;
-      }).join('')}</tbody>
+      <thead><tr><th class="l">상품</th><th>쿠팡재고<div class="th2">수량 · 재고금액</div></th><th>윙 재고현황<div class="th2">옵션합계</div></th><th>쿠팡입고예정<div class="th2">수량(원가)</div></th><th>재고합계</th><th>일평균판매</th><th>품절예상일</th><th>쿠팡입고<div class="th2">필요수량</div></th><th>쿠팡보관비<div class="th2">이번달</div></th><th>반품</th></tr></thead>
+      <tbody>${list.map(({p,s,wing:ws})=>{
+        if(!s) return '';
+        const nd = stockNeedInbound(s);
+        const du = daysUntil(s.soldout);
+        const stTag = s.stock===0 ? '<span class="pill warn">품절</span>'
+          : (nd ? '<span class="pill" style="background:#fff4e0;color:#a86000">부족</span>' : '<span class="pill ok">정상</span>');
+        return `<tr class="${nd?'stk-need':''}">
+          <td class="l"><div class="prod"><span class="thumb">${p.icon}</span><div><div class="nm">${esc(p.short)}</div><div class="cd">${p.id}</div></div></div></td>
+          <td class="num"><b class="${s.stock?'':'stk-zero'}">${won(s.stock)}</b>개<div class="cd" style="font-size:10.5px;color:var(--muted)">${wonW(s.value)}</div></td>
+          <td class="num">${ws!=null?`${won(ws)}개`:'<span class="flat">-</span>'}</td>
+          <td class="num">${won(s.inbound)}개<div class="cd" style="font-size:10.5px;color:var(--muted)">${wonW(s.inboundValue)}</div></td>
+          <td class="num">${won(s.stock + s.inbound)}</td>
+          <td class="num">${s.daily?s.daily+'개':'<span class="flat">0</span>'}</td>
+          <td class="num">${s.soldout?`<b class="${du!=null&&du<=30?'up':''}">${shortYmd(s.soldout)}</b><div class="cd" style="font-size:10.5px;color:var(--muted)">${du!=null?du+'일 후':''}</div>`:'<span class="flat">-</span>'}</td>
+          <td class="num">${s.need!=null?won(s.need)+'개':'<span class="flat" title="본사재고 미등록 → 빅셀도 공란">-</span>'}</td>
+          <td class="num">${s.keep?wonW(s.keep):'<span class="flat">₩0</span>'}</td>
+          <td class="num">${s.returns?s.returns+'건 <span class="flat">('+s.retRate+'%)</span>':'<span class="flat">0</span>'}</td>
+        </tr>`;
+      }).join('') || '<tr><td class="l" colspan="10"><span class="flat">입고가 필요한 상품이 없습니다.</span></td></tr>'}</tbody>
     </table></div>
+    <div class="card-b" style="border-top:1px solid var(--line2)">
+      <div class="hint" style="line-height:1.7">
+        <b>[입고필요 상품만]</b> = 품절예상일이 30일 이내이거나 재고 0인 상품 · 품절예상일 = <code>쿠팡재고 ÷ 최근 7일 일일평균판매량</code> · 쿠팡입고필요수량은 <b>본사재고 등록 후</b> 계산되는 칸이라 빅셀에서도 현재 공란입니다.<br>
+        재고 집계 시점 차이: 매출분석 재고합계 <b>${won(T.stock)}개</b>(${STOCK.asOf}) · 윙 재고현황 옵션합계 <b>${wingTotal?won(wingTotal):'-'}개</b>(${esc(wingAt)}) · 정산서 재고수량 <b>${won(STOCK.settleStock)}개</b>(정산서 스냅샷).
+      </div>
+    </div>
   </div>`
   + `<div class="two" style="margin-top:14px">
-      <div class="card">${sectionHead('쿠팡 품절 상품','11월 17일 기준 · '+SOLDOUT.length+'건')}
-        ${SOLDOUT.map(s=>`<div class="rank-row"><div class="nm">${esc(s.name)}<div class="kw">${s.id}</div></div><span class="pill warn">품절</span></div>`).join('')}
-        <div class="card-b"><div class="alert warn">판매가 계속 0이면 랭킹이 빨라지하여 순위가 떨어집니다. 빨리 입고 요청하세요.</div></div>
+      <div class="card">${sectionHead('쿠팡 품절 상품', '일평균 판매 0 · '+SOLDOUT.filter(s=>!isHidden(s.id)).length+'건')}
+        ${SOLDOUT.filter(s=>!isHidden(s.id)).map(s=>`<div class="rank-row"><div class="nm">${esc(s.name)}<div class="kw">${s.id}</div></div><span class="pill warn">품절</span></div>`).join('') || '<div class="card-b"><span class="flat">품절 상품이 없습니다.</span></div>'}
+        <div class="card-b"><div class="alert warn">재고가 0인 채로 오래 두면 노출 순위가 빨리 떨어집니다. 빅셀 [로켓그로스 입고요청 목록]에서 입고를 신청하세요.</div></div>
       </div>
       <div class="card">${sectionHead('입고 요청 · 발주 현황')}
         <div class="card-b">
           <div class="stat-line"><span class="lb">최근 1개월 입고요청</span><span class="vl">0건</span></div>
-          <div class="stat-line"><span class="lb">로켓 발주리스트(11/18)</span><span class="vl">0건</span></div>
-          <div class="stat-line"><span class="lb">쿠팡 입고예정</span><span class="vl">0개 (₩0)</span></div>
-          <div class="stat-line"><span class="lb">쿠팡 보관비(이번달)</span><span class="vl">₩95</span></div>
-          <div class="alert info" style="margin-top:12px">빅셀에서는 [로켓그로스 입고요청 목록]에서 일괄 입고를 신청합니다. 이 대시보드는 재고·소진 예상일을 보여줍니다.</div>
+          <div class="stat-line"><span class="lb">로켓 발주리스트</span><span class="vl">0건</span></div>
+          <div class="stat-line"><span class="lb">쿠팡 입고예정</span><span class="vl">${won(T.inbound)}개 (${wonW(T.inboundValue)})</span></div>
+          <div class="stat-line"><span class="lb">쿠팡 보관비(이번달)</span><span class="vl">${wonW(T.keep)}</span></div>
+          <div class="stat-line"><span class="lb">재고합계</span><span class="vl">${won(T.stock)}개</span></div>
+          <div class="alert info" style="margin-top:12px">빅셀 [로켓그로스 입고요청 목록]의 자동화는 크롬 확장이 쿠팡 윙 화면을 대신 조작하는 방식입니다. 이 대시보드는 재고·소진 예상일까지 보여줍니다.</div>
         </div>
       </div>
     </div>`;
@@ -2871,6 +3136,9 @@ ACTIONS.repUnit = (d)=>{ opt.repUnit=d.v; render(); };
 ACTIONS.repMode = (d)=>{ opt.repMode=d.v; render(); };
 ACTIONS.dailyRange = (d)=>{ opt.dailyRange=d.v; render(); };
 ACTIONS.settleRange = (d)=>{ opt.settleRange=d.v; render(); };
+ACTIONS.settleToggle = (d)=>{ opt.settleOpen[d.id] = !opt.settleOpen[d.id]; render(); };
+ACTIONS.stockFilter = (d)=>{ opt.stockOnlyNeed = (d.v==='need'); render(); };
+ACTIONS.navStock = ()=>{ go('stock'); };
 ACTIONS.calMetric = (d)=>{ opt.calMetric[d.k]=!opt.calMetric[d.k]; render(); };
 ACTIONS.monthPick = (d)=>{ opt.calMonth=d.m; render(); };
 ACTIONS.yearMinus = ()=>{ const [y,m]=opt.calMonth.split('-').map(Number); opt.calMonth = `${y-1}-${pad(m)}`; render(); };
@@ -2944,7 +3212,8 @@ function simStatsHTML(sel, m){
     <div class="stat-line"><span class="lb">일 70개 판매 시 일 이익</span><span class="vl num">${wonW(m.profit*70)}</span></div>`;
 }
 function refreshSim(){
-  const sel = PRODUCTS.find(p=>p.id===(opt.simId||PRODUCTS[0].id)) || PRODUCTS[0];
+  const vis = visibleProducts();
+  const sel = vis.find(p=>p.id===(opt.simId||vis[0].id)) || vis[0];
   const m = margin(sel);
   const a = document.getElementById('simPriceLab'); if(a) a.textContent = won(m.price)+'원';
   const b = document.getElementById('simCostLab'); if(b) b.textContent = won(m.cost)+'원';
@@ -3041,11 +3310,10 @@ function openDay(ds){
   const r = rows.find(x=>x.d===ds);
   const p = r ? rows[rows.indexOf(r)-1] : null;
   const due = SETTLE_DUE.find(x=>x.d===ds);
-  const settleRows = ds==='2026-11-17' ? SETTLE.filter(s=>s.qty>0 || s.inout>0) : [];
+  const settleRows = [];
   const prodRows = ds==='2026-11-17' ? PRODUCT_DELTA.map(x=>{
     const pp = PRODUCTS.find(p=>p.id===x.id) || {icon:'📦', short:x.id};
-    const st = SETTLE.find(s=>s.id===x.id) || {ad:0};
-    return {pp, x, ad: st.ad};
+    return {pp, x, ad:null};
   }) : [];
   const memos = Object.keys(S.memos).filter(k=>k.startsWith(ds));
   const d = dateObj(ds);
@@ -3080,7 +3348,7 @@ function openDay(ds){
 
       ${prodRows.length?`<div class="sec-t">상품별 매출·이익금</div>
         <div class="tbl-wrap"><table class="tbl"><thead><tr><th class="l">상품</th><th>판매량</th><th>매출</th><th>이익금</th><th>광고비</th><th>순이익</th></tr></thead><tbody>
-        ${prodRows.map(r=>`<tr><td class="l">${r.pp.icon} ${esc(r.pp.short)}</td><td class="num">${r.x.now.qty}</td><td class="num">${won(r.x.now.sales)}</td><td class="num">${won(r.x.now.profit)}</td><td class="num">${won(r.ad)}</td><td class="num"><b>${won(r.x.now.profit-r.ad)}</b></td></tr>`).join('')}
+        ${prodRows.map(r=>`<tr><td class="l">${r.pp.icon} ${esc(r.pp.short)}</td><td class="num">${r.x.now.qty}</td><td class="num">${won(r.x.now.sales)}</td><td class="num">${won(r.x.now.profit)}</td><td class="num">${r.ad!=null?won(r.ad):'<span class="flat">-</span>'}</td><td class="num"><b>${r.ad!=null?won(r.x.now.profit-r.ad):won(r.x.now.profit)}</b></td></tr>`).join('')}
         </tbody></table></div>`:''}
 
       <div class="sec-t">메모</div>
@@ -3726,6 +3994,7 @@ function rfxApplyProducts(p){
       const hit = PRODUCTS.find(y=>y.id===x.pid);
       if(!hit) return;
       ['name','short','icon','price','disc','fee','cost','inout','ship'].forEach(k=>{ if(x[k]!=null) hit[k] = x[k]; });
+      if(x.hidden!=null) hit.hidden = !!x.hidden;   /* bigcell-products.json 의 숨김 기본값 */
     });
   }
   return n;
@@ -4105,11 +4374,11 @@ tr.total td{background:#f6f9ff; font-weight:800; border-top:2px solid #dbe4f7}
    ============================================================ */
 const BC7 = {
   collectedAt: "2026-11-20 12:40",
-  rfm: [{"pid":"9701805278","sku":"59918188","name":"리스페토 1+1 한국트레킹학교 신발깔창 아치 쿠션 구름깔창","short":"신발깔창","icon":"👟","price":10790,"disc":800,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"status":"운영중","options":[{"pid":"9701805278","sku":"59918188","optId":"92496571610","name":"280-285mm 2개 블랙+그레이","price":10790,"disc":800,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"일반상품"},{"pid":"9701805278","sku":"59918189","optId":"92496571616","name":"230-235mm 2개 블랙+그레이","price":10790,"disc":800,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"일반상품"},{"pid":"9701805278","sku":"59918186","optId":"92496571626","name":"260-265mm 2개 블랙+그레이","price":10790,"disc":800,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"일반상품"},{"pid":"9701805278","sku":"59918191","optId":"92496571631","name":"270-275mm 2개 블랙+그레이","price":10790,"disc":800,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"일반상품"},{"pid":"9701805278","sku":"59918185","optId":"92496571651","name":"240-245mm 2개 블랙+그레이","price":10790,"disc":800,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"일반상품"},{"pid":"9701805278","sku":"59918196","optId":"92496571669","name":"250-255mm 2개 블랙+그레이","price":10790,"disc":800,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"일반상품"},{"pid":"9701805278","sku":"60996476","optId":"92694351361","name":"(41-42) 2개 블랙 반품-미사용","price":8950,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61256811","optId":"92743629187","name":"(35-36) 2개 블랙 반품-미사용","price":8250,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61356960","optId":"92774923244","name":"(35-36) 2개 블랙 반품-상","price":7070,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61450202","optId":"92793807930","name":"230-235mm 2개 블랙+그레이 반품-상","price":6470,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61533614","optId":"92814331783","name":"(39-40) 2개 블랙 반품-최상","price":8310,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61548800","optId":"92821032387","name":"230-235mm 2개 블랙+그레이 반품-최상","price":7010,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61570764","optId":"92830164221","name":"(45-46) 2개 블랙 반품-상","price":7670,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61570776","optId":"92830171516","name":"240-245mm 2개 블랙+그레이 반품-상","price":6470,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61617903","optId":"92843983931","name":"(41-42) 2개 블랙 반품-중","price":6400,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61658892","optId":"92851618445","name":"(37-38) 2개 블랙 반품-상","price":7070,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61802944","optId":"92887231028","name":"(41-42) 2개 블랙 반품-최상","price":8310,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61831558","optId":"92896387129","name":"(45-46) 2개 블랙 반품-최상","price":8310,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61863241","optId":"92902990405","name":"(43-44) 2개 블랙 반품-상","price":7670,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61912065","optId":"92914508826","name":"(41-42) 2개 블랙 반품-상","price":7670,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61916639","optId":"92915772578","name":"240-245mm 2개 블랙+그레이 반품-최상","price":7010,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61942568","optId":"92921717152","name":"(35-36) 2개 블랙 반품-최상","price":7660,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62011664","optId":"92938416714","name":"(37-38) 2개 블랙 반품-최상","price":7660,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62021920","optId":"92940000699","name":"(45-46) 2개 블랙 반품-미사용","price":8950,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62051527","optId":"92949436265","name":"(39-40) 2개 블랙 반품-상","price":7670,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62054106","optId":"92950375352","name":"230-235mm 2개 블랙+그레이 반품-미사용","price":7550,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62352460","optId":"93033970550","name":"260-265mm 2개 블랙+그레이 반품-미사용","price":7550,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62474569","optId":"93064208358","name":"250-255mm 2개 블랙+그레이 반품-상","price":6470,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62523562","optId":"93080202223","name":"260-265mm 2개 블랙+그레이 반품-최상","price":7010,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62538134","optId":"93084863350","name":"(39-40) 2개 블랙 반품-미사용","price":8950,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62558610","optId":"93094103782","name":"(43-44) 2개 블랙 반품-미사용","price":8950,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62581658","optId":"93099044607","name":"(37-38) 2개 블랙 반품-미사용","price":8250,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62811467","optId":"93155643459","name":"240-245mm 2개 블랙+그레이 반품-미사용","price":7550,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"63090588","optId":"93225222796","name":"280-285mm 2개 블랙+그레이 반품-최상","price":7010,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"63563952","optId":"93346399676","name":"(43-44) 2개 블랙 반품-중","price":6400,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"63773688","optId":"93394665145","name":"250-255mm 2개 블랙+그레이 반품-최상","price":7010,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"63854145","optId":"93414252060","name":"270-275mm 2개 블랙+그레이 반품-최상","price":7010,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"64680771","optId":"93581857424","name":"(43-44) 2개 블랙 반품-최상","price":8310,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"64769720","optId":"93598883666","name":"230-235mm 2개 블랙+그레이 반품-중","price":5400,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"65343434","optId":"93721193576","name":"260-265mm 2개 블랙+그레이 반품-상","price":6470,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"65391795","optId":"93729808844","name":"270-275mm 2개 블랙+그레이 반품-상","price":6470,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"65427585","optId":"93736633733","name":"(39-40) 2개 블랙 반품-중","price":6400,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"66695402","optId":"94018439366","name":"(37-38) 2개 블랙 반품-중","price":5900,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"67344507","optId":"94163132604","name":"270-275mm 2개 블랙+그레이 반품-미사용","price":7550,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"74341836","optId":"95511464320","name":"250-255mm 2개 블랙+그레이 반품-중","price":5400,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"74481259","optId":"95527106766","name":"(35-36) 2개 블랙 반품-중","price":5900,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"76804723","optId":"95809941284","name":"250-255mm 2개 블랙+그레이 반품-미사용","price":7550,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"77392381","optId":"95862112187","name":"280-285mm 2개 블랙+그레이 반품-미사용","price":7550,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"}]},{"pid":"9636737924","sku":"75437998","name":"리스페토 공기주입식 손목보호대","short":"손목보호대 R","icon":"🖐️","price":13800,"disc":0,"fee":11.88,"cost":3600,"inout":1045,"ship":2035,"status":"운영중","options":[{"pid":"9636737924","sku":"75437998","optId":"95638159400","name":"1개 왼손 FREE","price":13800,"disc":0,"fee":11.88,"cost":3600,"inout":1045,"ship":2035,"state":"일반상품"}]},{"pid":"9611854991","sku":"75437997","name":"리스페토 공기주입식 손목보호대","short":"손목보호대 L","icon":"🤚","price":13800,"disc":0,"fee":11.88,"cost":3600,"inout":1045,"ship":2035,"status":"운영중","options":[{"pid":"9611854991","sku":"75437997","optId":"95638159401","name":"1개 오른손 FREE","price":13800,"disc":0,"fee":11.88,"cost":3600,"inout":1045,"ship":2035,"state":"일반상품"}]},{"pid":"9595425253","sku":"74964850","name":"리스페토 원터치 휴지통 사무실 욕실 가정 쓰레기통 10L","short":"휴지통 10L","icon":"🗑️","price":8900,"disc":0,"fee":11.88,"cost":2220,"inout":1293,"ship":2310,"status":"운영중","options":[{"pid":"9595425253","sku":"74964850","optId":"95587029993","name":"그레이 소 ( 15.5X21.5X32.5)","price":8900,"disc":0,"fee":11.88,"cost":2220,"inout":1293,"ship":2310,"state":"일반상품"},{"pid":"9595425253","sku":"74964848","optId":"95587029996","name":"블랙 소 ( 15.5X21.5X32.5)","price":14900,"disc":0,"fee":11.88,"cost":2220,"inout":1293,"ship":2310,"state":"일반상품"},{"pid":"9595425253","sku":"74964849","optId":"95587029997","name":"화이트 소 ( 15.5X21.5X32.5)","price":14900,"disc":0,"fee":11.88,"cost":2220,"inout":1293,"ship":2310,"state":"일반상품"},{"pid":"9595425253","sku":"76390345","optId":"95756671439","name":"블랙 소 ( 15.5X21.5X32.5) 반품-최상","price":13410,"disc":0,"fee":11.88,"cost":2220,"inout":1293,"ship":2310,"state":"반품"},{"pid":"9595425253","sku":"76495625","optId":"95772879000","name":"화이트 소 ( 15.5X21.5X32.5) 반품-최상","price":13410,"disc":0,"fee":11.88,"cost":2220,"inout":1293,"ship":2310,"state":"반품"},{"pid":"9595425253","sku":"77046310","optId":"95830565539","name":"그레이 소 ( 15.5X21.5X32.5) 반품-미사용","price":8630,"disc":0,"fee":11.88,"cost":2220,"inout":1293,"ship":2310,"state":"반품"},{"pid":"9595425253","sku":"78344990","optId":"95932134311","name":"그레이 소 ( 15.5X21.5X32.5) 반품-상","price":7570,"disc":0,"fee":11.88,"cost":2220,"inout":1293,"ship":2310,"state":"반품"},{"pid":"9595425253","sku":"80766995","optId":"96082254289","name":"그레이 소 ( 15.5X21.5X32.5) 반품-최상","price":8010,"disc":0,"fee":11.88,"cost":2220,"inout":1293,"ship":2310,"state":"반품"}]},{"pid":"9593584011","sku":"74899093","name":"리스페토 양면 스테인레스 발각질제거 풋케어","short":"풋케어","icon":"🦶","price":7900,"disc":0,"fee":10.56,"cost":2400,"inout":1078,"ship":1238,"status":"운영중","options":[{"pid":"9593584011","sku":"74899093","optId":"95581455943","name":"단일상품","price":7900,"disc":0,"fee":10.56,"cost":2400,"inout":1078,"ship":1238,"state":"일반상품"}]},{"pid":"9593565569","sku":"74898276","name":"리스페토 ALL 실리콘 미끄럼방지 휴대용 알루미늄 접이식 노트북거치대 (휴대용 파우치 포함)","short":"노트북거치대","icon":"💻","price":7990,"disc":0,"fee":6.4,"cost":2850,"inout":1265,"ship":1925,"status":"운영중","options":[{"pid":"9593565569","sku":"74898276","optId":"95581388312","name":"1개 메탈 블랙","price":7990,"disc":0,"fee":6.4,"cost":2850,"inout":1265,"ship":1925,"state":"일반상품"},{"pid":"9593565569","sku":"74898277","optId":"95581388313","name":"1개 메탈 실버","price":7990,"disc":0,"fee":6.4,"cost":2850,"inout":1265,"ship":1925,"state":"일반상품"}]},{"pid":"9395470256","sku":"70114948","name":"리스페토 높이가 높은 접이식 다용도 좌식 테이블","short":"좌식테이블","icon":"🪑","price":37990,"disc":8000,"fee":11.88,"cost":9000,"inout":2008,"ship":3823,"status":"운영중","options":[{"pid":"9395470256","sku":"70114948","optId":"94862125697","name":"올화이트 700 X 480 X 350","price":37990,"disc":8000,"fee":11.88,"cost":9000,"inout":2008,"ship":3823,"state":"일반상품"},{"pid":"9395470256","sku":"70954446","optId":"95046401934","name":"올화이트 700 X 480 X 350 반품-최상","price":26590,"disc":0,"fee":11.88,"cost":9000,"inout":1595,"ship":2888,"state":"반품"},{"pid":"9395470256","sku":"71082544","optId":"95068624612","name":"올화이트 700 X 480 X 350 반품-중","price":22790,"disc":0,"fee":11.88,"cost":9000,"inout":1595,"ship":2888,"state":"반품"},{"pid":"9395470256","sku":"71251822","optId":"95096237532","name":"올화이트 700 X 480 X 350 반품-미사용","price":28490,"disc":0,"fee":11.88,"cost":9000,"inout":1595,"ship":2888,"state":"반품"},{"pid":"9395470256","sku":"71383208","optId":"95119758082","name":"올화이트 700 X 480 X 350 반품-상","price":24690,"disc":0,"fee":11.88,"cost":9000,"inout":1595,"ship":2888,"state":"반품"}]},{"pid":"8188501167","sku":"48219924","name":"리스페토 빨래건조대 튼튼한 접이식 건조대","short":"빨래건조대","icon":"🧺","price":22990,"disc":3000,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"status":"운영중","options":[{"pid":"8188501167","sku":"48219924","optId":"90451193372","name":"올블랙 42~76cm","price":22990,"disc":3000,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"일반상품"},{"pid":"8188501167","sku":"48219937","optId":"90451193374","name":"올화이트 42~76cm","price":22990,"disc":3000,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"일반상품"},{"pid":"8188501167","sku":"60272178","optId":"92552270128","name":"올크림 42~76cm","price":22990,"disc":3000,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"일반상품"},{"pid":"8188501167","sku":"60250652","optId":"92552270137","name":"올핑크 42~76cm","price":28990,"disc":9000,"fee":11.88,"cost":9100,"inout":1595,"ship":2860,"state":"일반상품"},{"pid":"8188501167","sku":"60250653","optId":"92552270144","name":"올라벤더 42~76cm","price":28990,"disc":10000,"fee":11.88,"cost":10200,"inout":1595,"ship":2860,"state":"일반상품"},{"pid":"8188501167","sku":"48472947","optId":"90677156164","name":"올화이트 42~76cm 반품-최상","price":16550,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"48515278","optId":"90691673256","name":"올화이트 42~76cm 반품-상","price":15630,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"48755280","optId":"90758484950","name":"올화이트 42~76cm 반품-중","price":14710,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"48765231","optId":"90760689011","name":"올블랙 42~76cm 반품-최상","price":16550,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"48792902","optId":"90767413937","name":"올블랙 42~76cm 반품-미사용","price":17470,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"48925400","optId":"90794402114","name":"올블랙 42~76cm 반품-상","price":15630,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"48995960","optId":"90810838970","name":"올화이트 42~76cm 반품-미사용","price":17470,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"49268169","optId":"90867900464","name":"올블랙 42~76cm 반품-중","price":14710,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"60771886","optId":"92641617692","name":"올크림 42~76cm 반품-미사용","price":17470,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"60977443","optId":"92687981208","name":"올크림 42~76cm 반품-중","price":14710,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"61010114","optId":"92699021431","name":"올라벤더 42~76cm 반품-최상","price":20290,"disc":0,"fee":11.88,"cost":10200,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"61118165","optId":"92721109750","name":"올핑크 42~76cm 반품-미사용","price":22030,"disc":0,"fee":11.88,"cost":9100,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"61229088","optId":"92740267117","name":"올크림 42~76cm 반품-최상","price":16550,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"61372022","optId":"92776927843","name":"올핑크 42~76cm 반품-상","price":19710,"disc":0,"fee":11.88,"cost":9100,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"61474370","optId":"92799104655","name":"올핑크 42~76cm 반품-최상","price":20290,"disc":0,"fee":11.88,"cost":9100,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"61592514","optId":"92836610146","name":"올라벤더 42~76cm 반품-상","price":19710,"disc":0,"fee":11.88,"cost":10200,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"61746143","optId":"92870781276","name":"올라벤더 42~76cm 반품-미사용","price":22030,"disc":0,"fee":11.88,"cost":10200,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"61876911","optId":"92907160699","name":"올크림 42~76cm 반품-상","price":15630,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"62045503","optId":"92946590046","name":"올라벤더 42~76cm 반품-중","price":17970,"disc":0,"fee":11.88,"cost":10200,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"63397628","optId":"93299656202","name":"올핑크 42~76cm 반품-중","price":17970,"disc":0,"fee":11.88,"cost":9100,"inout":1595,"ship":2860,"state":"반품"}]}],
+  rfm: [{"pid":"9701805278","sku":"59918188","name":"리스페토 1+1 한국트레킹학교 신발깔창 아치 쿠션 구름깔창","short":"신발깔창","icon":"👟","price":10790,"disc":800,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"status":"운영중","options":[{"pid":"9701805278","sku":"59918188","optId":"92496571610","name":"280-285mm 2개 블랙+그레이","price":10790,"disc":800,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"일반상품"},{"pid":"9701805278","sku":"59918189","optId":"92496571616","name":"230-235mm 2개 블랙+그레이","price":10790,"disc":800,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"일반상품"},{"pid":"9701805278","sku":"59918186","optId":"92496571626","name":"260-265mm 2개 블랙+그레이","price":10790,"disc":800,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"일반상품"},{"pid":"9701805278","sku":"59918191","optId":"92496571631","name":"270-275mm 2개 블랙+그레이","price":10790,"disc":800,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"일반상품"},{"pid":"9701805278","sku":"59918185","optId":"92496571651","name":"240-245mm 2개 블랙+그레이","price":10790,"disc":800,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"일반상품"},{"pid":"9701805278","sku":"59918196","optId":"92496571669","name":"250-255mm 2개 블랙+그레이","price":10790,"disc":800,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"일반상품"},{"pid":"9701805278","sku":"60996476","optId":"92694351361","name":"(41-42) 2개 블랙 반품-미사용","price":8950,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61256811","optId":"92743629187","name":"(35-36) 2개 블랙 반품-미사용","price":8250,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61356960","optId":"92774923244","name":"(35-36) 2개 블랙 반품-상","price":7070,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61450202","optId":"92793807930","name":"230-235mm 2개 블랙+그레이 반품-상","price":6470,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61533614","optId":"92814331783","name":"(39-40) 2개 블랙 반품-최상","price":8310,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61548800","optId":"92821032387","name":"230-235mm 2개 블랙+그레이 반품-최상","price":7010,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61570764","optId":"92830164221","name":"(45-46) 2개 블랙 반품-상","price":7670,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61570776","optId":"92830171516","name":"240-245mm 2개 블랙+그레이 반품-상","price":6470,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61617903","optId":"92843983931","name":"(41-42) 2개 블랙 반품-중","price":6400,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61658892","optId":"92851618445","name":"(37-38) 2개 블랙 반품-상","price":7070,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61802944","optId":"92887231028","name":"(41-42) 2개 블랙 반품-최상","price":8310,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61831558","optId":"92896387129","name":"(45-46) 2개 블랙 반품-최상","price":8310,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61863241","optId":"92902990405","name":"(43-44) 2개 블랙 반품-상","price":7670,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61912065","optId":"92914508826","name":"(41-42) 2개 블랙 반품-상","price":7670,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61916639","optId":"92915772578","name":"240-245mm 2개 블랙+그레이 반품-최상","price":7010,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"61942568","optId":"92921717152","name":"(35-36) 2개 블랙 반품-최상","price":7660,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62011664","optId":"92938416714","name":"(37-38) 2개 블랙 반품-최상","price":7660,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62021920","optId":"92940000699","name":"(45-46) 2개 블랙 반품-미사용","price":8950,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62051527","optId":"92949436265","name":"(39-40) 2개 블랙 반품-상","price":7670,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62054106","optId":"92950375352","name":"230-235mm 2개 블랙+그레이 반품-미사용","price":7550,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62352460","optId":"93033970550","name":"260-265mm 2개 블랙+그레이 반품-미사용","price":7550,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62474569","optId":"93064208358","name":"250-255mm 2개 블랙+그레이 반품-상","price":6470,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62523562","optId":"93080202223","name":"260-265mm 2개 블랙+그레이 반품-최상","price":7010,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62538134","optId":"93084863350","name":"(39-40) 2개 블랙 반품-미사용","price":8950,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62558610","optId":"93094103782","name":"(43-44) 2개 블랙 반품-미사용","price":8950,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62581658","optId":"93099044607","name":"(37-38) 2개 블랙 반품-미사용","price":8250,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"62811467","optId":"93155643459","name":"240-245mm 2개 블랙+그레이 반품-미사용","price":7550,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"63090588","optId":"93225222796","name":"280-285mm 2개 블랙+그레이 반품-최상","price":7010,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"63563952","optId":"93346399676","name":"(43-44) 2개 블랙 반품-중","price":6400,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"63773688","optId":"93394665145","name":"250-255mm 2개 블랙+그레이 반품-최상","price":7010,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"63854145","optId":"93414252060","name":"270-275mm 2개 블랙+그레이 반품-최상","price":7010,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"64680771","optId":"93581857424","name":"(43-44) 2개 블랙 반품-최상","price":8310,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"64769720","optId":"93598883666","name":"230-235mm 2개 블랙+그레이 반품-중","price":5400,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"65343434","optId":"93721193576","name":"260-265mm 2개 블랙+그레이 반품-상","price":6470,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"65391795","optId":"93729808844","name":"270-275mm 2개 블랙+그레이 반품-상","price":6470,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"65427585","optId":"93736633733","name":"(39-40) 2개 블랙 반품-중","price":6400,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"66695402","optId":"94018439366","name":"(37-38) 2개 블랙 반품-중","price":5900,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"67344507","optId":"94163132604","name":"270-275mm 2개 블랙+그레이 반품-미사용","price":7550,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"74341836","optId":"95511464320","name":"250-255mm 2개 블랙+그레이 반품-중","price":5400,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"74481259","optId":"95527106766","name":"(35-36) 2개 블랙 반품-중","price":5900,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"76804723","optId":"95809941284","name":"250-255mm 2개 블랙+그레이 반품-미사용","price":7550,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"},{"pid":"9701805278","sku":"77392381","optId":"95862112187","name":"280-285mm 2개 블랙+그레이 반품-미사용","price":7550,"disc":0,"fee":11.55,"cost":2364,"inout":1100,"ship":1485,"state":"반품"}]},{"pid":"9636737924","sku":"75437998","name":"리스페토 공기주입식 손목보호대","short":"손목보호대 R","icon":"🖐️","price":13800,"disc":0,"fee":11.88,"cost":3600,"inout":1045,"ship":2035,"status":"운영중","options":[{"pid":"9636737924","sku":"75437998","optId":"95638159400","name":"1개 왼손 FREE","price":13800,"disc":0,"fee":11.88,"cost":3600,"inout":1045,"ship":2035,"state":"일반상품"}]},{"pid":"9611854991","sku":"75437997","name":"리스페토 공기주입식 손목보호대","short":"손목보호대 L","icon":"🤚","price":13800,"disc":0,"fee":11.88,"cost":3600,"inout":1045,"ship":2035,"status":"운영중","options":[{"pid":"9611854991","sku":"75437997","optId":"95638159401","name":"1개 오른손 FREE","price":13800,"disc":0,"fee":11.88,"cost":3600,"inout":1045,"ship":2035,"state":"일반상품"}]},{"pid":"9595425253","sku":"74964850","name":"리스페토 원터치 휴지통 사무실 욕실 가정 쓰레기통 10L","short":"휴지통 10L","icon":"🗑️","price":8900,"disc":0,"fee":11.88,"cost":2220,"inout":1293,"ship":2310,"status":"운영중","options":[{"pid":"9595425253","sku":"74964850","optId":"95587029993","name":"그레이 소 ( 15.5X21.5X32.5)","price":8900,"disc":0,"fee":11.88,"cost":2220,"inout":1293,"ship":2310,"state":"일반상품"},{"pid":"9595425253","sku":"74964848","optId":"95587029996","name":"블랙 소 ( 15.5X21.5X32.5)","price":14900,"disc":0,"fee":11.88,"cost":2220,"inout":1293,"ship":2310,"state":"일반상품"},{"pid":"9595425253","sku":"74964849","optId":"95587029997","name":"화이트 소 ( 15.5X21.5X32.5)","price":14900,"disc":0,"fee":11.88,"cost":2220,"inout":1293,"ship":2310,"state":"일반상품"},{"pid":"9595425253","sku":"76390345","optId":"95756671439","name":"블랙 소 ( 15.5X21.5X32.5) 반품-최상","price":13410,"disc":0,"fee":11.88,"cost":2220,"inout":1293,"ship":2310,"state":"반품"},{"pid":"9595425253","sku":"76495625","optId":"95772879000","name":"화이트 소 ( 15.5X21.5X32.5) 반품-최상","price":13410,"disc":0,"fee":11.88,"cost":2220,"inout":1293,"ship":2310,"state":"반품"},{"pid":"9595425253","sku":"77046310","optId":"95830565539","name":"그레이 소 ( 15.5X21.5X32.5) 반품-미사용","price":8630,"disc":0,"fee":11.88,"cost":2220,"inout":1293,"ship":2310,"state":"반품"},{"pid":"9595425253","sku":"78344990","optId":"95932134311","name":"그레이 소 ( 15.5X21.5X32.5) 반품-상","price":7570,"disc":0,"fee":11.88,"cost":2220,"inout":1293,"ship":2310,"state":"반품"},{"pid":"9595425253","sku":"80766995","optId":"96082254289","name":"그레이 소 ( 15.5X21.5X32.5) 반품-최상","price":8010,"disc":0,"fee":11.88,"cost":2220,"inout":1293,"ship":2310,"state":"반품"}]},{"pid":"9593584011","sku":"74899093","name":"리스페토 양면 스테인레스 발각질제거 풋케어","short":"풋케어","icon":"🦶","price":7900,"disc":0,"fee":10.56,"cost":2400,"inout":1078,"ship":1238,"status":"운영중","options":[{"pid":"9593584011","sku":"74899093","optId":"95581455943","name":"단일상품","price":7900,"disc":0,"fee":10.56,"cost":2400,"inout":1078,"ship":1238,"state":"일반상품"}]},{"pid":"9593565569","sku":"74898276","name":"리스페토 ALL 실리콘 미끄럼방지 휴대용 알루미늄 접이식 노트북거치대 (휴대용 파우치 포함)","short":"노트북거치대","icon":"💻","price":7990,"disc":0,"fee":6.4,"cost":2850,"inout":1265,"ship":1925,"status":"운영중","options":[{"pid":"9593565569","sku":"74898276","optId":"95581388312","name":"1개 메탈 블랙","price":7990,"disc":0,"fee":6.4,"cost":2850,"inout":1265,"ship":1925,"state":"일반상품"},{"pid":"9593565569","sku":"74898277","optId":"95581388313","name":"1개 메탈 실버","price":7990,"disc":0,"fee":6.4,"cost":2850,"inout":1265,"ship":1925,"state":"일반상품"}]},{"pid":"9395470256","sku":"70114948","name":"리스페토 높이가 높은 접이식 다용도 좌식 테이블","short":"좌식테이블","icon":"🪑","price":37990,"disc":8000,"fee":11.88,"cost":9000,"inout":2008,"ship":3823,"status":"운영중","options":[{"pid":"9395470256","sku":"70114948","optId":"94862125697","name":"올화이트 700 X 480 X 350","price":37990,"disc":8000,"fee":11.88,"cost":9000,"inout":2008,"ship":3823,"state":"일반상품"},{"pid":"9395470256","sku":"70954446","optId":"95046401934","name":"올화이트 700 X 480 X 350 반품-최상","price":26590,"disc":0,"fee":11.88,"cost":9000,"inout":1595,"ship":2888,"state":"반품"},{"pid":"9395470256","sku":"71082544","optId":"95068624612","name":"올화이트 700 X 480 X 350 반품-중","price":22790,"disc":0,"fee":11.88,"cost":9000,"inout":1595,"ship":2888,"state":"반품"},{"pid":"9395470256","sku":"71251822","optId":"95096237532","name":"올화이트 700 X 480 X 350 반품-미사용","price":28490,"disc":0,"fee":11.88,"cost":9000,"inout":1595,"ship":2888,"state":"반품"},{"pid":"9395470256","sku":"71383208","optId":"95119758082","name":"올화이트 700 X 480 X 350 반품-상","price":24690,"disc":0,"fee":11.88,"cost":9000,"inout":1595,"ship":2888,"state":"반품"}]},{"pid":"8188501167","sku":"48219924","name":"리스페토 빨래건조대 튼튼한 접이식 건조대","short":"빨래건조대","icon":"🧺","price":22990,"disc":3000,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"status":"운영중","options":[{"pid":"8188501167","sku":"48219924","optId":"90451193372","name":"올블랙 42~76cm","price":22990,"disc":3000,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"일반상품"},{"pid":"8188501167","sku":"48219937","optId":"90451193374","name":"올화이트 42~76cm","price":22990,"disc":3000,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"일반상품"},{"pid":"8188501167","sku":"60272178","optId":"92552270128","name":"올크림 42~76cm","price":22990,"disc":3000,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"일반상품"},{"pid":"8188501167","sku":"60250652","optId":"92552270137","name":"올핑크 42~76cm","price":28990,"disc":9000,"fee":11.88,"cost":9100,"inout":1595,"ship":2860,"state":"일반상품"},{"pid":"8188501167","sku":"60250653","optId":"92552270144","name":"올라벤더 42~76cm","price":28990,"disc":10000,"fee":11.88,"cost":10200,"inout":1595,"ship":2860,"state":"일반상품"},{"pid":"8188501167","sku":"48472947","optId":"90677156164","name":"올화이트 42~76cm 반품-최상","price":16550,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"48515278","optId":"90691673256","name":"올화이트 42~76cm 반품-상","price":15630,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"48755280","optId":"90758484950","name":"올화이트 42~76cm 반품-중","price":14710,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"48765231","optId":"90760689011","name":"올블랙 42~76cm 반품-최상","price":16550,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"48792902","optId":"90767413937","name":"올블랙 42~76cm 반품-미사용","price":17470,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"48925400","optId":"90794402114","name":"올블랙 42~76cm 반품-상","price":15630,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"48995960","optId":"90810838970","name":"올화이트 42~76cm 반품-미사용","price":17470,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"49268169","optId":"90867900464","name":"올블랙 42~76cm 반품-중","price":14710,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"60771886","optId":"92641617692","name":"올크림 42~76cm 반품-미사용","price":17470,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"60977443","optId":"92687981208","name":"올크림 42~76cm 반품-중","price":14710,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"61010114","optId":"92699021431","name":"올라벤더 42~76cm 반품-최상","price":20290,"disc":0,"fee":11.88,"cost":10200,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"61118165","optId":"92721109750","name":"올핑크 42~76cm 반품-미사용","price":22030,"disc":0,"fee":11.88,"cost":9100,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"61229088","optId":"92740267117","name":"올크림 42~76cm 반품-최상","price":16550,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"61372022","optId":"92776927843","name":"올핑크 42~76cm 반품-상","price":19710,"disc":0,"fee":11.88,"cost":9100,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"61474370","optId":"92799104655","name":"올핑크 42~76cm 반품-최상","price":20290,"disc":0,"fee":11.88,"cost":9100,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"61592514","optId":"92836610146","name":"올라벤더 42~76cm 반품-상","price":19710,"disc":0,"fee":11.88,"cost":10200,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"61746143","optId":"92870781276","name":"올라벤더 42~76cm 반품-미사용","price":22030,"disc":0,"fee":11.88,"cost":10200,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"61876911","optId":"92907160699","name":"올크림 42~76cm 반품-상","price":15630,"disc":0,"fee":11.88,"cost":9440,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"62045503","optId":"92946590046","name":"올라벤더 42~76cm 반품-중","price":17970,"disc":0,"fee":11.88,"cost":10200,"inout":1595,"ship":2860,"state":"반품"},{"pid":"8188501167","sku":"63397628","optId":"93299656202","name":"올핑크 42~76cm 반품-중","price":17970,"disc":0,"fee":11.88,"cost":9100,"inout":1595,"ship":2860,"state":"반품"}]},{"pid":"7846681988","sku":"","name":"잘못등록","short":"잘못등록(7846681988)","icon":"⚠️","price":13900,"disc":0,"fee":11.88,"cost":0,"inout":0,"ship":0,"status":"숨김","hidden":true,"options":[{"pid":"7846681988","sku":"","optId":"7846681988","name":"잘못등록 옵션","price":13900,"disc":0,"fee":11.88,"cost":0,"inout":0,"ship":0,"state":"일반상품"}]},{"pid":"7912280870","sku":"","name":"위너스 셀프배드민턴 집에서 배드민턴 연습","short":"셀프배드민턴","icon":"🏸","price":26500,"disc":0,"fee":11.88,"cost":0,"inout":0,"ship":0,"status":"숨김","hidden":true,"options":[{"pid":"7912280870","sku":"","optId":"7912280870","name":"셀프배드민턴 옵션","price":26500,"disc":0,"fee":11.88,"cost":0,"inout":0,"ship":0,"state":"일반상품"}]},{"pid":"8011099857","sku":"60592358","name":"리스페토 접착식 포토앨범 네컷앨범 초음파앨범 기념일선물 성장앨범","short":"포토앨범","icon":"📷","price":13800,"disc":0,"fee":11.88,"cost":2700,"inout":1100,"ship":1815,"status":"숨김","hidden":true,"options":[{"pid":"8011099857","sku":"60592358","optId":"8011099857","name":"포토앨범 옵션","price":13800,"disc":0,"fee":11.88,"cost":2700,"inout":1100,"ship":1815,"state":"일반상품"}]},{"pid":"8436562849","sku":"52892958","name":"리스페토 남녀공용 패딩 바라클라바","short":"바라클라바","icon":"🧣","price":20000,"disc":0,"fee":11.88,"cost":7720,"inout":1183,"ship":2173,"status":"숨김","hidden":true,"options":[{"pid":"8436562849","sku":"52892958","optId":"8436562849","name":"바라클라바 옵션","price":20000,"disc":0,"fee":11.88,"cost":7720,"inout":1183,"ship":2173,"state":"일반상품"}]},{"pid":"9611477934","sku":"75423361","name":"잘못등록","short":"잘못등록(9611477934)","icon":"⚠️","price":27900,"disc":0,"fee":8.58,"cost":0,"inout":1320,"ship":2255,"status":"숨김","hidden":true,"options":[{"pid":"9611477934","sku":"75423361","optId":"9611477934","name":"잘못등록 옵션","price":27900,"disc":0,"fee":8.58,"cost":0,"inout":1320,"ship":2255,"state":"일반상품"}]},{"pid":"9766745761","sku":"59961448","name":"잘못등록","short":"잘못등록(9766745761)","icon":"⚠️","price":9900,"disc":0,"fee":11.55,"cost":0,"inout":1100,"ship":1485,"status":"숨김","hidden":true,"options":[{"pid":"9766745761","sku":"59961448","optId":"9766745761","name":"잘못등록 옵션","price":9900,"disc":0,"fee":11.55,"cost":0,"inout":1100,"ship":1485,"state":"일반상품"}]}],
   p3p: [{"pid":"9595425253","name":"리스페토 원터치 휴지통 10L","short":"휴지통 10L","icon":"🗑️","price":14900,"disc":0,"fee":11.88,"cost":2610,"profit":10520,"pct":70.6,"status":"운영중","options":[{"optId":"95587029992","name":"블랙 소"},{"optId":"95587029994","name":"화이트 소"},{"optId":"95587029995","name":"그레이 소"}]},{"pid":"9593584011","name":"리스페토 양면 스테인레스 발각질제거 풋케어","short":"풋케어","icon":"🦶","price":11300,"disc":0,"fee":10.56,"cost":2400,"profit":7707,"pct":68.2,"status":"운영중","options":[]},{"pid":"9593565569","name":"리스페토 ALL 실리콘 노트북거치대","short":"노트북거치대","icon":"💻","price":11390,"disc":0,"fee":6.4,"cost":2850,"profit":7811,"pct":68.58,"status":"운영중","options":[]},{"pid":"9395470256","name":"리스페토 높이가 높은 접이식 다용도 좌식 테이블","short":"좌식테이블","icon":"🪑","price":29990,"disc":8000,"fee":11.88,"cost":9000,"profit":10378,"pct":34.6,"status":"운영중","options":[]}],
   dh: {"9701805278":[{"optId":"92496571669","from":"2025/06/02","to":"2025/08/16","type":"다운로드쿠폰","price":12800,"amt":2900,"sale":9900},{"optId":"92496571651","from":"2025/06/02","to":"2025/08/16","type":"다운로드쿠폰","price":12800,"amt":2900,"sale":9900},{"optId":"92496571631","from":"2025/06/02","to":"2025/08/16","type":"다운로드쿠폰","price":12800,"amt":2900,"sale":9900},{"optId":"92496571626","from":"2025/06/02","to":"2025/08/16","type":"다운로드쿠폰","price":12800,"amt":2900,"sale":9900},{"optId":"92496571616","from":"2025/06/02","to":"2025/08/16","type":"다운로드쿠폰","price":12800,"amt":2900,"sale":9900},{"optId":"92496571610","from":"2025/06/02","to":"2025/08/16","type":"다운로드쿠폰","price":12800,"amt":2900,"sale":9900},{"optId":"92496571669","from":"2026/01/31","to":"2026/04/09","type":"다운로드쿠폰","price":12800,"amt":2810,"sale":9990},{"optId":"92496571651","from":"2026/01/31","to":"2026/04/09","type":"다운로드쿠폰","price":12800,"amt":2810,"sale":9990},{"optId":"92496571631","from":"2026/01/31","to":"2026/04/09","type":"다운로드쿠폰","price":12800,"amt":2810,"sale":9990},{"optId":"92496571626","from":"2026/01/31","to":"2026/04/09","type":"다운로드쿠폰","price":12800,"amt":2810,"sale":9990},{"optId":"92496571616","from":"2026/01/31","to":"2026/04/09","type":"다운로드쿠폰","price":12800,"amt":2810,"sale":9990},{"optId":"92496571610","from":"2026/01/31","to":"2026/04/09","type":"다운로드쿠폰","price":12800,"amt":2810,"sale":9990},{"optId":"92496571669","from":"2026/04/10","to":"2026/09/07","type":"다운로드쿠폰","price":12790,"amt":2800,"sale":9990},{"optId":"92496571651","from":"2026/04/10","to":"2026/09/07","type":"다운로드쿠폰","price":12790,"amt":2800,"sale":9990},{"optId":"92496571631","from":"2026/04/10","to":"2026/09/07","type":"다운로드쿠폰","price":12790,"amt":2800,"sale":9990},{"optId":"92496571626","from":"2026/04/10","to":"2026/09/07","type":"다운로드쿠폰","price":12790,"amt":2800,"sale":9990},{"optId":"92496571616","from":"2026/04/10","to":"2026/09/07","type":"다운로드쿠폰","price":12790,"amt":2800,"sale":9990},{"optId":"92496571610","from":"2026/04/10","to":"2026/09/07","type":"다운로드쿠폰","price":12790,"amt":2800,"sale":9990},{"optId":"92496571669","from":"2026/09/08","to":"2026/10/30","type":"다운로드쿠폰","price":11790,"amt":1800,"sale":9990},{"optId":"92496571651","from":"2026/09/08","to":"2026/10/30","type":"다운로드쿠폰","price":11790,"amt":1800,"sale":9990},{"optId":"92496571631","from":"2026/09/08","to":"2026/10/30","type":"다운로드쿠폰","price":11790,"amt":1800,"sale":9990},{"optId":"92496571626","from":"2026/09/08","to":"2026/10/30","type":"다운로드쿠폰","price":11790,"amt":1800,"sale":9990},{"optId":"92496571616","from":"2026/09/08","to":"2026/10/30","type":"다운로드쿠폰","price":11790,"amt":1800,"sale":9990},{"optId":"92496571610","from":"2026/09/08","to":"2026/10/30","type":"다운로드쿠폰","price":11790,"amt":1800,"sale":9990},{"optId":"92496571669","from":"2026/10/31","to":"2027/11/01","type":"다운로드쿠폰","price":10790,"amt":800,"sale":9990},{"optId":"92496571651","from":"2026/10/31","to":"2027/11/01","type":"다운로드쿠폰","price":10790,"amt":800,"sale":9990},{"optId":"92496571631","from":"2026/10/31","to":"2027/11/01","type":"다운로드쿠폰","price":10790,"amt":800,"sale":9990},{"optId":"92496571626","from":"2026/10/31","to":"2027/11/01","type":"다운로드쿠폰","price":10790,"amt":800,"sale":9990},{"optId":"92496571616","from":"2026/10/31","to":"2027/11/01","type":"다운로드쿠폰","price":10790,"amt":800,"sale":9990},{"optId":"92496571610","from":"2026/10/31","to":"2027/11/01","type":"다운로드쿠폰","price":10790,"amt":800,"sale":9990}],"9395470256":[{"optId":"94862125697","from":"2026/01/31","to":"2026/04/09","type":"다운로드쿠폰","price":37990,"amt":8000,"sale":29990},{"optId":"94862125697","from":"2026/04/10","to":"2027/05/01","type":"다운로드쿠폰","price":37990,"amt":8000,"sale":29990}],"8188501167":[{"optId":"90451193372","from":"현재 적용","to":"","type":"다운로드쿠폰","price":22990,"amt":3000,"sale":19990},{"optId":"90451193374","from":"현재 적용","to":"","type":"다운로드쿠폰","price":22990,"amt":3000,"sale":19990},{"optId":"92552270128","from":"현재 적용","to":"","type":"다운로드쿠폰","price":22990,"amt":3000,"sale":19990},{"optId":"92552270137","from":"현재 적용","to":"","type":"다운로드쿠폰","price":28990,"amt":9000,"sale":19990},{"optId":"92552270144","from":"현재 적용","to":"","type":"다운로드쿠폰","price":28990,"amt":10000,"sale":18990}]},
   ch: {"9701805278":[{"date":"2026-08-25","optId":"92496571610","name":"280-285mm 2개 블랙+그레이","state":"일반상품","cost":2364},{"date":"2026-08-25","optId":"92496571616","name":"230-235mm 2개 블랙+그레이","state":"일반상품","cost":2364},{"date":"2026-08-25","optId":"92496571626","name":"260-265mm 2개 블랙+그레이","state":"일반상품","cost":2364},{"date":"2026-08-25","optId":"92496571631","name":"270-275mm 2개 블랙+그레이","state":"일반상품","cost":2364},{"date":"2026-08-25","optId":"92496571651","name":"240-245mm 2개 블랙+그레이","state":"일반상품","cost":2364},{"date":"2026-08-25","optId":"92496571669","name":"250-255mm 2개 블랙+그레이","state":"일반상품","cost":2364},{"date":"2026-08-25","optId":"92694351361","name":"(41-42) 2개 블랙 반품-미사용","state":"반품","cost":2364},{"date":"2026-08-25","optId":"92743629187","name":"(35-36) 2개 블랙 반품-미사용","state":"반품","cost":2364},{"date":"2026-08-25","optId":"92774923244","name":"(35-36) 2개 블랙 반품-상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"92793807930","name":"230-235mm 2개 블랙+그레이 반품-상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"92814331783","name":"(39-40) 2개 블랙 반품-최상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"92821032387","name":"230-235mm 2개 블랙+그레이 반품-최상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"92830164221","name":"(45-46) 2개 블랙 반품-상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"92830171516","name":"240-245mm 2개 블랙+그레이 반품-상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"92843983931","name":"(41-42) 2개 블랙 반품-중","state":"반품","cost":2364},{"date":"2026-08-25","optId":"92851618445","name":"(37-38) 2개 블랙 반품-상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"92887231028","name":"(41-42) 2개 블랙 반품-최상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"92896387129","name":"(45-46) 2개 블랙 반품-최상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"92902990405","name":"(43-44) 2개 블랙 반품-상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"92914508826","name":"(41-42) 2개 블랙 반품-상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"92915772578","name":"240-245mm 2개 블랙+그레이 반품-최상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"92921717152","name":"(35-36) 2개 블랙 반품-최상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"92938416714","name":"(37-38) 2개 블랙 반품-최상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"92940000699","name":"(45-46) 2개 블랙 반품-미사용","state":"반품","cost":2364},{"date":"2026-08-25","optId":"92949436265","name":"(39-40) 2개 블랙 반품-상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"92950375352","name":"230-235mm 2개 블랙+그레이 반품-미사용","state":"반품","cost":2364},{"date":"2026-08-25","optId":"93033970550","name":"260-265mm 2개 블랙+그레이 반품-미사용","state":"반품","cost":2364},{"date":"2026-08-25","optId":"93064208358","name":"250-255mm 2개 블랙+그레이 반품-상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"93080202223","name":"260-265mm 2개 블랙+그레이 반품-최상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"93084863350","name":"(39-40) 2개 블랙 반품-미사용","state":"반품","cost":2364},{"date":"2026-08-25","optId":"93094103782","name":"(43-44) 2개 블랙 반품-미사용","state":"반품","cost":2364},{"date":"2026-08-25","optId":"93099044607","name":"(37-38) 2개 블랙 반품-미사용","state":"반품","cost":2364},{"date":"2026-08-25","optId":"93155643459","name":"240-245mm 2개 블랙+그레이 반품-미사용","state":"반품","cost":2364},{"date":"2026-08-25","optId":"93225222796","name":"280-285mm 2개 블랙+그레이 반품-최상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"93346399676","name":"(43-44) 2개 블랙 반품-중","state":"반품","cost":2364},{"date":"2026-08-25","optId":"93394665145","name":"250-255mm 2개 블랙+그레이 반품-최상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"93414252060","name":"270-275mm 2개 블랙+그레이 반품-최상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"93581857424","name":"(43-44) 2개 블랙 반품-최상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"93598883666","name":"230-235mm 2개 블랙+그레이 반품-중","state":"반품","cost":2364},{"date":"2026-08-25","optId":"93721193576","name":"260-265mm 2개 블랙+그레이 반품-상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"93729808844","name":"270-275mm 2개 블랙+그레이 반품-상","state":"반품","cost":2364},{"date":"2026-08-25","optId":"93736633733","name":"(39-40) 2개 블랙 반품-중","state":"반품","cost":2364},{"date":"2026-08-25","optId":"94018439366","name":"(37-38) 2개 블랙 반품-중","state":"반품","cost":2364},{"date":"2026-08-25","optId":"94163132604","name":"270-275mm 2개 블랙+그레이 반품-미사용","state":"반품","cost":2364},{"date":"2026-08-25","optId":"95511464320","name":"250-255mm 2개 블랙+그레이 반품-중","state":"반품","cost":2364},{"date":"2026-08-25","optId":"95527106766","name":"(35-36) 2개 블랙 반품-중","state":"반품","cost":2364},{"date":"2026-08-25","optId":"95809941284","name":"250-255mm 2개 블랙+그레이 반품-미사용","state":"반품","cost":2364},{"date":"2026-08-25","optId":"95862112187","name":"280-285mm 2개 블랙+그레이 반품-미사용","state":"반품","cost":2364}],"9395470256":[{"date":"2026-02-24","optId":"94862125697","name":"올화이트 700 X 480 X 350","state":"일반상품","cost":9000},{"date":"2026-02-24","optId":"95046401934","name":"올화이트 700 X 480 X 350 반품-최상","state":"반품","cost":9000},{"date":"2026-02-24","optId":"95068624612","name":"올화이트 700 X 480 X 350 반품-중","state":"반품","cost":9000},{"date":"2026-02-24","optId":"95096237532","name":"올화이트 700 X 480 X 350 반품-미사용","state":"반품","cost":9000},{"date":"2026-02-24","optId":"95119758082","name":"올화이트 700 X 480 X 350 반품-상","state":"반품","cost":9000}]},
-  wing: {"updatedAt":"2026-11-20 12:22","source":"wing.coupang.com > 로켓그로스 > 재고현황","sales":481360,"qty":24,"prices":{"90451193374":22990,"92552270128":22990,"90451193372":22990,"92496571610":10790,"92496571616":10790,"92496571626":10790,"92496571631":10790,"92496571651":10790,"92496571669":10790,"95581455943":7900},"stock":{"90451193374":1439,"92552270128":1394,"90451193372":368,"92496571610":33,"92496571616":132,"92496571626":81,"92496571631":54,"92496571651":104,"92496571669":55,"95581455943":6}}
+  wing: {"updatedAt":"2026-11-22 10:22","source":"wing.coupang.com > 로켓그로스 > 재고현황","sales":497440,"qty":24,"prices":{"90451193374":22990,"92552270128":22990,"90451193372":22990,"92496571610":10790,"92496571616":10790,"92496571626":10790,"92496571631":10790,"92496571651":10790,"92496571669":10790,"95581455943":7900},"stock":{"90451193374":1370,"92552270128":1328,"90451193372":356,"92496571610":31,"92496571616":130,"92496571626":80,"92496571631":52,"92496571651":97,"92496571669":53,"95581455943":6}}
 };
 
 /* ---------- 상태 ---------- */
@@ -4118,10 +4387,12 @@ S.pm.ov = S.pm.ov || {};      // 옵션별 수정값 {optId:{price,disc,cost,ino
 S.pm.dh = S.pm.dh || {};      // 상품별 할인 히스토리(사용자 수정본)
 S.pm.ch = S.pm.ch || {};      // 상품별 원가 히스토리(사용자 수정본)
 S.pm.open = S.pm.open || {};  // 펼침 상태
-if(!opt.pm) opt.pm = { q:'', kind:'', run:'', nocost:false, dlg:null, tab:'promo', onlyNormal:false };
+if(!opt.pm) opt.pm = { q:'', kind:'', run:'', hide:'N', nocost:false, dlg:null, tab:'promo', onlyNormal:false };
 
 const PM_ICON = { '9701805278':'👟', '9636737924':'🖐️', '9611854991':'🤚', '9595425253':'🗑️',
-                  '9593584011':'🦶', '9593565569':'💻', '9395470256':'🪑', '8188501167':'🧺' };
+                  '9593584011':'🦶', '9593565569':'💻', '9395470256':'🪑', '8188501167':'🧺',
+                  '7846681988':'⚠️', '7912280870':'🏸', '8011099857':'📷', '8436562849':'🧣',
+                  '9611477934':'⚠️', '9766745761':'⚠️' };
 const bcEsc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const bcNum = v => (v==null || v==='' || isNaN(Number(v))) ? null : Number(v);
 
@@ -4143,9 +4414,10 @@ function bcCalc(o){
   const fee = bcNum(o.fee)||0, cost = bcNum(o.cost)||0;
   const inout = bcNum(o.inout)||0, ship = bcNum(o.ship)||0;
   const base = price - disc;
-  const profit = Math.round(base - base*fee/100 - cost - inout - ship);
+  const feeAmt = Math.round(base*fee/100);     /* 빅셀은 수수료를 원단위 반올림 */
+  const profit = base - feeAmt - cost - inout - ship;
   const pct = price ? profit/price*100 : 0;
-  return {price, disc, fee, cost, inout, ship, base, profit, pct};
+  return {price, disc, fee, cost, inout, ship, base, feeAmt, profit, pct};
 }
 function bcProdRow(p){
   const os_ = bcOpt(p.pid);
@@ -4222,10 +4494,12 @@ render = function(){
 VIEWS.pmr = function(){
   const rows = BC7.rfm.map(bcProdRow);
   const q = (opt.pm.q||'').trim().toLowerCase();
+  const hideF = opt.pm.hide || 'N';   /* N=운영상품 · Y=숨김상품 · A=전체 */
   const list = rows.filter(r=>{
+    if(hideF==='N' && isHidden(r.p.pid)) return false;
+    if(hideF==='Y' && !isHidden(r.p.pid)) return false;
     if(opt.pm.kind==='일반' && r.normals===0) return false;
     if(opt.pm.kind==='반품' && r.normals===r.opts.length) return false;
-    if(opt.pm.run==='운영중' && r.p.status!=='운영중') return false;
     if(opt.pm.nocost && !r.missCost) return false;
     if(q){
       const hay = [r.p.name, r.p.pid, r.p.sku].concat(r.opts.map(o=>o.name+' '+o.optId+' '+o.sku)).join(' ').toLowerCase();
@@ -4235,6 +4509,8 @@ VIEWS.pmr = function(){
   });
   const wingCh = bcWingChangedCount();
   const totOpts = rows.reduce((a,r)=>a+r.opts.length,0);
+  const runN = rows.filter(r=>!isHidden(r.p.pid)).length;
+  const hidN = rows.length - runN;
 
   const body = list.map(r=>{
     const open = !!S.pm.open[r.p.pid];
@@ -4259,19 +4535,23 @@ VIEWS.pmr = function(){
       <td><button class="exp" data-act="pmToggle" data-id="${r.p.pid}">${open?'▾':'▸'}</button></td>
       <td class="l mono">${bcEsc(r.p.pid)}</td>
       <td><span class="thumb">${PM_ICON[r.p.pid]||'📦'}</span></td>
-      <td class="l"><div class="pname">${bcEsc(r.p.name)}</div><div class="pmeta">SKU ${bcEsc(r.p.sku)} · 옵션 ${r.opts.length}개${r.normals?` (일반 ${r.normals})`:''}</div></td>
+      <td class="l"><div class="pname">${bcEsc(r.p.name)}</div><div class="pmeta">${r.p.sku?'SKU '+bcEsc(r.p.sku)+' · ':''}옵션 ${r.opts.length}개${r.normals?` (일반 ${r.normals})`:''}</div></td>
       <td><span class="tag rocket">🚀 로켓그로스</span></td>
       <td class="r num">${bcMoney(c.price)}${wingRep?' <span class="tag wing">윙</span>':''}</td>
       <td class="r"><button class="pen" data-act="discOpen" data-id="${r.p.pid}" title="할인가 설정">✏️</button><span class="num">${bcMoney(c.disc)}</span></td>
       <td class="r num ${c.profit<0?'neg':''}">${bcMoney(c.profit)}<span class="pct">(${c.pct.toFixed(2)}%)</span></td>
       <td class="r num">${c.fee}%</td>
       <td class="r"><button class="pen" data-act="costOpen" data-id="${r.p.pid}" title="원가 입력 히스토리">✏️</button><span class="num">${bcMoney(c.cost)}</span></td>
-    </tr>` + (open ? `<tr class="subwrap"><td colspan="10" class="flush">
+      <td>${isHidden(r.p.pid)?'<span class="pill warn">숨김</span>':'<span class="pill ok">운영중</span>'}</td>
+      <td class="prodact">${isHidden(r.p.pid)
+        ? `<button class="show" data-act="pmHide" data-id="${r.p.pid}">복원</button>`
+        : `<button class="hide" data-act="pmHide" data-id="${r.p.pid}">숨기기</button>`}</td>
+    </tr>` + (open ? `<tr class="subwrap"><td colspan="12" class="flush">
         <table class="tbl sub"><thead><tr><th class="l">SKU ID</th><th class="l">옵션ID</th><th class="l">옵션명</th><th class="r">판매가</th><th class="r">할인금액</th><th class="r">이익금(%)</th><th class="r">마켓수수료</th><th class="r">원가</th><th class="r">입출고요금</th><th class="r">배송비</th></tr></thead>
         <tbody>${optRows}</tbody></table></td></tr>` : '');
   }).join('');
 
-  return topbar('로켓그로스 상품관리', `리스페토 · 상품 ${BC7.rfm.length}개 · 옵션 ${totOpts}개 · 빅셀 수집 ${BC7.collectedAt}`,
+  return topbar('로켓그로스 상품관리', `리스페토 · 상품 ${BC7.rfm.length}개(운영 ${runN} · 숨김 ${hidN}) · 옵션 ${totOpts}개 · 빅셀 수집 ${BC7.collectedAt}`,
       `<span class="chip"><span class="live"></span>윙 ${esc(BC7.wing.updatedAt)}</span>
        <button class="btn" data-act="pmExport">⬇ 엑셀 다운로드</button>`)
   + `<div class="alert info" style="margin-bottom:12px">* 입출고요금과 배송비는 별도로 구분되어 있으며, 부가세가 포함된 금액입니다. <b>빅셀 로켓그로스 상품 관리</b> 구조 그대로입니다.</div>
@@ -4290,8 +4570,8 @@ VIEWS.pmr = function(){
     <select class="inp sm" data-act="pmFilter" data-k="kind">
       <option value="">상품 종류 선택</option><option value="일반"${opt.pm.kind==='일반'?' selected':''}>일반상품만</option><option value="반품"${opt.pm.kind==='반품'?' selected':''}>반품상품만</option>
     </select>
-    <select class="inp sm" data-act="pmFilter" data-k="run">
-      <option value="">운영상품</option><option value="운영중"${opt.pm.run==='운영중'?' selected':''}>운영중</option>
+    <select class="inp sm" data-act="pmFilter" data-k="hide">
+      <option value="N"${hideF==='N'?' selected':''}>운영상품 ${runN}</option><option value="Y"${hideF==='Y'?' selected':''}>숨김상품 ${hidN}</option><option value="A"${hideF==='A'?' selected':''}>전체 ${rows.length}</option>
     </select>
     <input class="inp sm grow" id="pmQ" placeholder="노출상품·옵션·SKU ID, 상품명, 옵션명, 담당자" value="${bcEsc(opt.pm.q||'')}">
     <button class="btn dark" data-act="pmSearch">검색</button>
@@ -4302,13 +4582,23 @@ VIEWS.pmr = function(){
   <div class="tbl-wrap"><table class="tbl pm">
     <thead><tr>
       <th style="width:34px"></th><th class="l">노출상품ID</th><th>이미지</th><th class="l">상품명</th><th>구분</th>
-      <th class="r">판매가</th><th class="r">할인금액</th><th class="r">이익금(%)</th><th class="r">마켓수수료</th><th class="r">원가</th>
+      <th class="r">판매가</th><th class="r">할인금액</th><th class="r">이익금(%)</th><th class="r">마켓수수료</th><th class="r">원가</th><th>빅셀상태</th><th>숨김</th>
     </tr></thead>
-    <tbody>${body || `<tr><td colspan="10" class="blank">조건에 맞는 상품이 없습니다.</td></tr>`}</tbody>
+    <tbody>${body || `<tr><td colspan="12" class="blank">조건에 맞는 상품이 없습니다.</td></tr>`}</tbody>
   </table></div>
   <div class="card-b" style="border-top:1px solid var(--line2); font-size:11.5px; color:var(--muted)">
     판매가·이익금은 옵션별로 다시 계산됩니다(이익금 = (판매가−할인) × (1−수수료%) − 원가 − 입출고 − 배송비). ✏️를 누르면 빅셀과 같은 <b>할인가 설정</b> / <b>원가 입력 히스토리</b> 창이 열립니다. 수정값은 이 브라우저(localStorage)에 저장되고 JSON으로 백업할 수 있습니다.
   </div></div>`
+  + `<div class="card" style="margin-top:12px">${sectionHead('숨김 상태', `운영 ${runN} · 숨김 ${hidN} · 빅셀 2026-11-22 숨김상품 목록 기준`)}
+    <div class="card-b">
+      <div class="alert info">빅셀과 같은 규칙입니다: 숨김 상품은 <b>상품·마진</b>과 <b>재고·품절</b> 목록에서 빠지고, <b>정산서에는 그대로 남습니다</b>(정산은 쿠팡 정산서 원본 기준).</div>
+      <div class="toolbar" style="margin-top:10px">
+        <button class="btn" data-act="hiddenExport">⬇ 숨김 설정 JSON 내보내기</button>
+        <button class="btn" data-act="hiddenReset">↺ 빅셀 기준으로 초기화</button>
+        <span class="hint">바꾼 값은 이 브라우저(localStorage)에 저장됩니다. 초기화하면 빅셀 숨김상품 ${PRODUCTS.filter(p=>p.hidden).length}개가 기본값으로 돌아갑니다.</span>
+      </div>
+    </div>
+  </div>`
   + bcModals();
 };
 
@@ -4318,7 +4608,27 @@ ACTIONS.pmFilter = (d, el)=>{
   const k = d.k;
   if(k==='nocost') opt.pm.nocost = el.checked;
   else opt.pm[k] = el.value;
-  if(k==='kind'||k==='run') render();
+  if(k==='kind'||k==='hide') render();
+};
+/* 숨기기 / 복원 — localStorage 저장 */
+ACTIONS.pmHide = (d)=>{
+  const id = d.id;
+  const hide = !isHidden(id);
+  if(hide && !confirm('이 상품을 숨길까요?\n\n숨기면 상품·마진 / 재고·품절 목록에서 빠지고, 정산서에는 그대로 남습니다.')) return;
+  S.hidden[id] = hide;
+  save(); render();
+  const p = PRODUCTS.find(x=>x.id===id) || BC7.rfm.find(x=>x.pid===id) || {};
+  toast(hide?'상품을 숨겼습니다':'상품을 복원했습니다', hide?'':'ok', (p.short||p.name||id)+' · '+(hide?'숨김':'운영중'));
+};
+ACTIONS.hiddenExport = ()=>{
+  const data = { savedAt:new Date().toISOString(), source:'대시보드 숨김 상태', products:PRODUCTS.map(p=>({id:p.id, short:p.short, hiddenDefault:!!p.hidden, hidden:isHidden(p.id)})) };
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'bigcell-hidden.json'; a.click();
+};
+ACTIONS.hiddenReset = ()=>{
+  if(!confirm('숨김 상태를 빅셀 기준(숨김 '+PRODUCTS.filter(p=>p.hidden).length+'개)으로 되돌릴깨요?')) return;
+  S.hidden = {}; save(); render();
+  toast('빅셀 기준으로 초기화했습니다','ok');
 };
 ACTIONS.pmSearch = ()=>{
   const el = document.getElementById('pmQ');
