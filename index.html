@@ -2392,9 +2392,9 @@ VIEWS.naver = function(){
       <td class="num">${r.refund?'−'+won(r.refund):'-'}</td>
       <td class="num">${won(r.netSales)}</td>
       <td class="num">${won(r.shipRev)}</td>
-      <td class="num">−${won(r.fee)}</td>
-      <td class="num">−${won(r.cost)}</td>
-      <td class="num">−${won(r.delivery)}</td>
+      <td class="num">${r.revenue?'−'+won(r.fee):'-'}</td>
+      <td class="num">${r.revenue?'−'+won(r.cost):'-'}</td>
+      <td class="num">${r.revenue?'−'+won(r.delivery):'-'}</td>
       <td class="num"><b>${won(r.profit)}</b></td>
       <td class="num">${r.revenue?pct1(r.profit/r.revenue*100)+'%':'-'}</td>
     </tr>`).join('');
@@ -5012,7 +5012,7 @@ if(!__navHas('pmr')){
       {id:'pmnaver', ico:'🟢', label:'네이버 상품관리'}]},
     {g:'매출분석', items:[
       {id:'sa3p', ico:'📊', label:'판매자배송 매출분석'},
-      {id:'sanaver', ico:'🟢', label:'네이버 매출 분석'}]});
+      {id:'sanaver', ico:'🟢', label:'네이버 스마트스토어'}]});
   TABS.splice(1, 0, {id:'pmr', ico:'🚀', label:'상품'}, {id:'ads', ico:'📣', label:'광고'});
 }
 /* render 후 상단 바 삽입 */
