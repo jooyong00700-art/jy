@@ -1466,9 +1466,9 @@ const OPT2025 = [{"id": "90451193372", "pid": "8188501167", "name": "올블랙 4
 
 /* ---------- 상품별 매출 변동 (11/17, 빅셀 대시보드) ---------- */
 const PRODUCT_DELTA = [
-  {id:'9701805278', prev:{sales:73960, profit:25111, qty:8}, now:{sales:184390, profit:64772, qty:19}},
-  {id:'8188501167', prev:{sales:1368630, profit:247282, qty:69}, now:{sales:1349950, profit:230821, qty:69}},
-  {id:'9593565569', prev:{sales:7990, profit:1439, qty:1}, now:{sales:0, profit:0, qty:0}}
+  {id:'9701805278', prev:{sales:73960, profit:25111, qty:8}, now:{sales:184390, profit:64772, qty:19}, ad:32681},
+  {id:'8188501167', prev:{sales:1368630, profit:247282, qty:69}, now:{sales:1349950, profit:230821, qty:69}, ad:177588},
+  {id:'9593565569', prev:{sales:7990, profit:1439, qty:1}, now:{sales:0, profit:0, qty:0}, ad:0}
 ];
 
 /* ---------- 광고 캠페인 (11/17) ---------- */
@@ -3118,7 +3118,9 @@ VIEWS.settings = function(){
     <div class="card-b">
       <div class="stat-line"><span class="lb">일별 매출·이익금·광고비</span><span class="vl">빅셀 대시보드 매출 보고서 (11/1~11/17)</span></div>
       <div class="stat-line"><span class="lb">상품 원가·수수료·입출고·배송비</span><span class="vl">빅셀 로켓그로스 상품 관리</span></div>
-      <div class="stat-line"><span class="lb">정산·손익</span><span class="vl">빅셀 로켓그로스 정산 분석</span></div>
+      <div class="stat-line"><span class="lb">정산·손익</span><span class="vl">빅셀 정산 분석 > 로켓그로스 (11/01~11/21 확정 · 27개 전 컴럼)</span></div>
+      <div class="stat-line"><span class="lb">재고·입고 지표</span><span class="vl">빅셀 매출분석 상세보기(${STOCK.asOf}) + 쿠팡 윙 재고현황(11/22 10:22)</span></div>
+      <div class="stat-line"><span class="lb">상품 숨김 상태</span><span class="vl">빅셀 상품 관리 > 로켓그로스 > 숨김상품 (운영 8 · 숨김 6)</span></div>
       <div class="stat-line"><span class="lb">캠페인 성과</span><span class="vl">빅셀 광고 캠페인 분석</span></div>
       <div class="stat-line"><span class="lb">오늘 실시간</span><span class="vl">쿠팡 윙 ${esc(S.live.date)} ${esc(S.live.at||'')} 기준 (쿠폰 전 매출 · 쿠폰 분리)</span></div>
       <div class="stat-line"><span class="lb">저장된 수정값</span><span class="vl">${Object.keys(S.costOverrides).length}개 원가 · ${Object.keys(S.memos).length}개 메모</span></div>
@@ -3309,7 +3311,7 @@ function openDay(ds){
   const settleRows = [];
   const prodRows = ds==='2026-11-17' ? PRODUCT_DELTA.map(x=>{
     const pp = PRODUCTS.find(p=>p.id===x.id) || {icon:'📦', short:x.id};
-    return {pp, x, ad:null};
+    return {pp, x, ad:(x.ad!=null?x.ad:null)};
   }) : [];
   const memos = Object.keys(S.memos).filter(k=>k.startsWith(ds));
   const d = dateObj(ds);
