@@ -459,6 +459,13 @@ input.inp[type=number]{text-align:right}
   .ao-items .ln .opt{font-size:9px}
   .kpi .ao-items .ln{font-size:10px}
   .kpi .ao-items .ln .opt{font-size:9px}
+  .fc-eq{gap:6px; padding:11px 12px; border-radius:10px}
+  .fc-term b{font-size:15px}
+  .fc-term.res b{font-size:18px}
+  .fc-term.res{flex:1 1 100%}
+  .fc-op{font-size:14px}
+  .fc-card .fc-amt{max-width:100px}
+  .fc-note{padding:0 12px 12px; font-size:11px}
   .ao-legend-big .aob{font-size:10px}
   .ao-lg{display:none}
   .months{grid-template-columns:repeat(4,1fr)}
@@ -512,6 +519,31 @@ input.inp[type=number]{text-align:right}
 .ao-items.right .ln{justify-content:flex-end}
 .kpi .ao-items .ln{font-size:11px}
 .kpi .ao-items .ln .opt{font-size:10px}
+
+/* ---------- 고정지출비용 카드 (2026-11-22) ---------- */
+.fc-card{margin-bottom:14px}
+.fc-card .fc-tbl td,.fc-card .fc-tbl th{vertical-align:middle}
+.fc-card .inp{width:100%; box-sizing:border-box}
+.fc-card .fc-name{text-align:left; font-weight:700}
+.fc-card .fc-amt{max-width:150px; text-align:right; font-variant-numeric:tabular-nums; margin-left:auto}
+.fc-card .fc-del{width:28px;height:28px;border-radius:8px;color:#98a4bd;font-size:13px;line-height:1;margin:0 auto;display:flex;align-items:center;justify-content:center}
+.fc-card .fc-del:hover{background:#fdecec;color:#e03e3e}
+.fc-card .fc-row-empty{color:#98a4bd;font-weight:600}
+.fc-add{margin:10px 12px 12px}
+.fc-eq{display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:14px 16px; border-radius:12px; background:linear-gradient(180deg,#f8faff,#edf2fd); border:1px solid #dfe7f7}
+.fc-term{display:flex; flex-direction:column; gap:1px; min-width:0}
+.fc-term .k{font-size:11.5px; font-weight:700; color:#66718a; white-space:nowrap}
+.fc-term b{font-size:20px; font-weight:900; letter-spacing:-.4px; color:#101b34; font-variant-numeric:tabular-nums; white-space:nowrap}
+.fc-term.res b{font-size:24px}
+.fc-term.res b.pos{color:var(--blue)}
+.fc-term.res b.neg{color:var(--up)}
+.fc-op{font-size:18px; font-weight:900; color:#8b96ab; padding:0 2px}
+.fc-tag{display:inline-block; margin-left:4px; padding:0 6px; border-radius:999px; font-size:10.5px; font-weight:800; vertical-align:middle}
+.fc-tag.pos{color:#0a7f5c; background:#e7fbf3; border:1px solid #9fe6cd}
+.fc-tag.neg{color:#c22d2d; background:#fdeeee; border:1px solid #f6c4c4}
+.fc-won{font-size:11.5px; color:#7b869a; font-weight:700}
+.fc-note{font-size:11.5px; color:#7b869a; padding:0 16px 14px; line-height:1.6}
+.fc-note code{background:#eef2fa; padding:1px 4px; border-radius:4px; font-size:11px}
 </style>
 </head>
 <body>
@@ -1739,7 +1771,12 @@ const DEFAULTS = {
   memos:{},
   costOverrides:{},
   dailyOverrides:{},
-  hidden:{}
+  hidden:{},
+  /* 고정지출비용: 항목명 + 금액. 값은 이 브라우저 localStorage에 저장되며 재수집·새로고침에도 유지된다. */
+  fixedCosts:[
+    {id:'fc-rent', name:'창고 월세', amount:0},
+    {id:'fc-alba', name:'알바비', amount:0}
+  ]
 };
 
 /* 저장된 live 값 복원: 예전 저장값에 쿠폰/실매출이 없으면 기본값의 쿠폰을 물려주지 않고
@@ -1762,7 +1799,9 @@ function loadState(){
     memos: Object.assign({}, s.memos||{}),
     costOverrides: Object.assign({}, s.costOverrides||{}),
     dailyOverrides: Object.assign({}, s.dailyOverrides||{}),
-    hidden: Object.assign({}, s.hidden||{})
+    hidden: Object.assign({}, s.hidden||{}),
+    fixedCosts: (Array.isArray(s.fixedCosts) ? s.fixedCosts : DEFAULTS.fixedCosts)
+      .map((x,i)=>({id:(x&&x.id)||('fc-'+i), name:String((x&&x.name)||''), amount:Math.max(0, Math.round(Number(x&&x.amount)||0))}))
   });
 }
 let S = loadState();
@@ -2240,6 +2279,7 @@ VIEWS.dashboard = function(){
       ${kpiCard(`이번 달 매출 <span class="tag coup">쿠폰 제외</span> <span class="tag">${mConf.length?'확정':'오늘 포함'}</span>`, won(mConf.length?monthSales:monthTodaySales)+'원',
         `<span class="flat">${mConf.length?`${mRange} 확정 · 순이익(광고비 제외) ${won(monthNet)}원${monthTodaySales?` · 오늘 ${won(monthTodaySales)}원 별도(잠정)`:''}`:`아직 확정치 없음 · 오늘 ${won(monthTodaySales)}원(잠정)`}</span>`, {cls:'month-kpi'})}
     </div>`
+  + `${fixedCostCard()}`
   + `${adOrganicCard()}`
   + `<div class="two" style="margin-bottom:14px">
       ${todayOptionsCard(live)}
@@ -2636,6 +2676,50 @@ function adOrganicCard(){
       <tbody>${body || '<tr><td class="l" colspan="5"><span class="flat">표시할 판매수 데이터가 없습니다.</span></td></tr>'}${totalRow}</tbody>
     </table></div>
     <div class="card-b" style="border-top:1px solid var(--line2)"><div class="hint">광고 판매수 = 쿠팡 광고센터 <b>광고 전환 판매수</b>(익일 확정) · 자연 판매수 = 총 판매수 − 광고 판매수 · 날짜 밑 칩은 그날 팔린 <b>품목(건조대 · 깔창)</b>별 판매수이며, 색상(올화이트·올크림·올블랙) 광고 전환은 확정된 날만 같이 표기합니다 · <code>bigcell-live.json</code>의 daily 데이터가 늘어나면 이 칸도 자동으로 늘어납니다.</div></div>
+  </div>`;
+}
+
+/* ---- 💸 고정지출비용 (이번달 매출 KPI 바로 아래) ---- */
+/* 이번달 현 순수익 = 빅셀 확정 순이익(오늘 이전) + 오늘 실시간 잠정 순수익. 수집이 갱신되면 같이 바뀐다. */
+function fixedCostNums(){
+  const rows = dailySeries();
+  const liveDate = (S.live && S.live.date) || null;
+  const month = liveDate ? String(liveDate).slice(0,7) : opt.calMonth;
+  const mRows = rows.filter(r=> r.d.startsWith(month) && r.net!=null);
+  const conf = mRows.filter(r=> r.d!==liveDate);
+  const today = mRows.filter(r=> r.d===liveDate);
+  const confNet = conf.reduce((a,r)=>a+r.net, 0);
+  const todayNet = today.reduce((a,r)=>a+r.net, 0);
+  return {month, confNet, todayNet, now: confNet + todayNet,
+    confDays: conf.length, confFrom: conf.length?conf[0].d:null, confTo: conf.length?conf[conf.length-1].d:null,
+    hasToday: today.length>0, liveDate};
+}
+function fixedCostCard(){
+  const n = fixedCostNums();
+  const list = Array.isArray(S.fixedCosts) ? S.fixedCosts : [];
+  const total = fcTotalOf();
+  const fin = n.now - total;
+  const rows = list.map(x=>`<tr>
+      <td class="l"><input class="inp fc-name" type="text" data-fc-id="${esc(x.id)}" data-fc-field="name" value="${esc(x.name||'')}" placeholder="항목명 (예: 창고 월세)" aria-label="고정지출 항목명"></td>
+      <td class="num"><input class="inp fc-amt" type="number" min="0" step="1000" data-fc-id="${esc(x.id)}" data-fc-field="amount" value="${Number(x.amount)||0}" aria-label="고정지출 금액(원)"> <span class="fc-won">원</span></td>
+      <td class="num"><button type="button" class="fc-del" data-act="fcDel" data-fc-id="${esc(x.id)}" title="이 항목 삭제" aria-label="${esc(x.name||'항목')} 삭제">✕</button></td>
+    </tr>`).join('');
+  const fromTo = n.confFrom ? `${fmtDate(n.confFrom)}~${fmtDate(n.confTo)}` : '확정치 없음';
+  return `<div class="card fc-card">
+    ${sectionHead('💸 고정지출비용', '창고 월세 · 알바비 등 매달 나가는 고정비', `<span class="pill" id="fcPill">합계 ${won(total)}원</span>`)}
+    <div class="tbl-wrap"><table class="tbl fc-tbl">
+      <thead><tr><th class="l">항목명</th><th>금액(원)</th><th class="fc-th-del">삭제</th></tr></thead>
+      <tbody>${rows || '<tr><td class="l fc-row-empty" colspan="3">등록된 고정지출이 없습니다. 아래 <b>+ 항목 추가</b>로 넣어 주세요.</td></tr>'}</tbody>
+    </table></div>
+    <div class="fc-add"><button type="button" class="btn" data-act="fcAdd">+ 항목 추가</button></div>
+    <div class="fc-eq">
+      <span class="fc-term"><span class="k">이번달 현 순수익 <span class="fc-tag ${fin<0?'neg':'pos'}" id="fcTag">${fin<0?'적자':'흑자'}</span></span><b class="num" id="fcMonthNet" data-v="${n.now}">${won(n.now)}원</b></span>
+      <span class="fc-op">−</span>
+      <span class="fc-term"><span class="k">고정지출 합계</span><b class="num" id="fcTotal">${won(total)}원</b></span>
+      <span class="fc-op">=</span>
+      <span class="fc-term res"><span class="k">최종 실순수익</span><b class="num ${fin<0?'neg':'pos'}" id="fcFinal">${(fin<0?'−':'+')+won(Math.abs(fin))}원</b></span>
+    </div>
+    <div class="fc-note">이번달 현 순수익 <b>${won(n.now)}원</b> = 빅셀 확정 순이익 <b>${won(n.confNet)}원</b>(${fromTo} 확정 ${n.confDays}일)${n.hasToday?` + 오늘 ${fmtDate(n.liveDate)} 실시간 잠정 순수익 <b>${won(n.todayNet)}원</b>`:''} · <code>bigcell-live.json</code> 수집·갱신 때마다 자동으로 바뀝니다. 입력한 고정지출은 이 브라우저에 저장되어 새로고침·데이터 재수집에도 그대로 남습니다.</div>
   </div>`;
 }
 
@@ -3382,6 +3466,45 @@ ACTIONS.csvDaily = ()=>{
   const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='bigcell-daily.csv'; a.click();
 };
 
+/* ---------- 고정지출비용 입력 (즉시 저장) ---------- */
+ACTIONS.fcAdd = ()=>{
+  const id = 'fc' + Date.now().toString(36) + Math.random().toString(36).slice(2,5);
+  S.fixedCosts = (S.fixedCosts||[]).concat([{id, name:'', amount:0}]);
+  save(); render();
+  const el = document.querySelector('input[data-fc-id="'+id+'"]'); if(el) el.focus();
+};
+ACTIONS.fcDel = (d)=>{
+  S.fixedCosts = (S.fixedCosts||[]).filter(x=>x.id!==d.fcId);
+  save(); render();
+};
+function fcTotalOf(){ return (S.fixedCosts||[]).reduce((a,x)=>a+(Number(x.amount)||0), 0); }
+/* 카드 안 숫자만 다시 계산 — 입력 중 포커스와 커서를 잃지 않게 render() 를 부르지 않는다 */
+function fcRefresh(){
+  const nowEl = document.getElementById('fcMonthNet');
+  const now = nowEl ? Number(nowEl.dataset.v||0) : 0;
+  const total = fcTotalOf();
+  const fin = now - total;
+  const tEl = document.getElementById('fcTotal'); if(tEl) tEl.textContent = won(total)+'원';
+  const pEl = document.getElementById('fcPill'); if(pEl) pEl.textContent = '합계 '+won(total)+'원';
+  const fEl = document.getElementById('fcFinal');
+  if(fEl){
+    fEl.textContent = (fin<0?'−':'+')+won(Math.abs(fin))+'원';
+    fEl.className = 'num ' + (fin<0?'neg':'pos');
+  }
+  const tagEl = document.getElementById('fcTag');
+  if(tagEl){ tagEl.textContent = fin<0?'적자':'흑자'; tagEl.className = 'fc-tag ' + (fin<0?'neg':'pos'); }
+}
+document.addEventListener('input', ev=>{
+  const el = ev.target, ds = el && el.dataset;
+  if(!ds || !ds.fcId) return;
+  const it = (S.fixedCosts||[]).find(x=>x.id===ds.fcId);
+  if(!it) return;
+  if(ds.fcField==='name') it.name = String(el.value||'').slice(0, 30);
+  else if(ds.fcField==='amount') it.amount = Math.max(0, Math.round(Number(String(el.value||'').replace(/[^0-9]/g,''))||0));
+  else return;
+  save(); fcRefresh();
+});
+
 /* 원가 입력 (표) */
 document.addEventListener('change', ev=>{
   const el = ev.target;
@@ -3416,7 +3539,7 @@ function dayItemsHTML(ds, r){
     </tr>`;
   }).join('');
   const known = items.some(x=>x.adQty!=null);
-  const colorLevel = items.some(x=> aoColorOf(x.name)!=='');
+  const colorLevel = items.some(x=> /올화이트|올크림|올블랙/.test(String(x.name||'')));
   return `<div class="sec-t">상품 · 옵션별 판매 내역 <span class="cnt">${items.length}개 ${colorLevel?'옵션':'상품'}</span></div>
     <div class="tbl-wrap"><table class="tbl"><thead><tr><th class="l">${colorLevel?'옵션':'상품'}</th><th>판매수</th><th>광고</th><th>자연</th><th>매출</th><th>이익금</th></tr></thead>
     <tbody>${rows}</tbody></table></div>
