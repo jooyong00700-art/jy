@@ -3184,7 +3184,6 @@ VIEWS.products = function(){
         <input class="inp" style="width:220px" type="text" placeholder="상품명 · 노출ID · SKU 검색" value="${esc(opt.prodQ||'')}" data-act="prodSearch">
         <div style="flex:1"></div>
         <button class="btn" data-act="prodCsv">⬇ CSV (빅셀 16컬럼)</button>
-        <label class="btn" style="cursor:pointer;margin-left:6px">⬆ CSV 반입<input type="file" accept=".csv,text/csv" style="display:none" data-act="prodCsvImport"></label>
       </div>
       <div class="tbl-wrap"><table class="tbl" id="marginTbl">
         <thead><tr><th class="l">상품</th><th>판매가</th><th>할인</th><th>수수료%</th><th>원가</th><th>입출고</th><th>배송비</th><th>개당 이익금</th><th>이익률</th><th>월 판매</th><th>월 이익금</th></tr></thead>
@@ -3205,7 +3204,7 @@ VIEWS.products = function(){
           이익금 = <code>(판매가 − 할인) × (1 − 수수료%)</code> − <code>원가</code> − <code>입출고비</code> − <code>배송비</code><br>
           이익률 = <code>이익금 ÷ 판매가</code> · 입출고비·배송비는 VAT 포함<br>
           <span class="hint">예: 신발깔장 (10,790−800)×0.8845 = 8,836 → −2,364 −1,100 −1,485 = <b>3,887원</b></span>
-          <div class="hint" style="margin-top:8px">CSV 반출은 빅셀 <b>상품관리 → 엑셀 다운로드(상품)</b>와 같은 16컬럼 형식입니다. 빅셀에서 받은 파일을 CSV로 저장해 <b>[⬆ CSV 반입]</b>에 올리면 노출ID 기준으로 판매가·할인금액·마켓수수료·원가·입출고요금·배송비가 상품 마스터에 반영됩니다(옵션 행이 하나뿐인 상품은 그 값, 여러 옵션 상품은 옵션 값이 상품 전체를 덮지 않도록 건너뜁니다). <b>빅셀 서버는 바뀌지 않고 이 대시보드(localStorage)에만 저장</b>되며, 확정된 일별 매출·이익금은 바뀌지 않습니다.</div>
+          <div class="hint" style="margin-top:8px">CSV 반출은 빅셀 <b>상품관리 → 엑셀 다운로드(상품)</b>와 같은 16컬럼 형식입니다. 빅셀에서 받은 파일을 반입하려면 좌측 <b>🚀 로켓그로스 상품관리</b> 화면의 <b>[📥 엑셀 업로드]</b>를 쓰세요(옵션ID 단위 · 옵션 값이 그대로 들어가고 확정 일별 손익은 바뀌지 않습니다).</div>
         </div>
     </div>`
   + `<div class="two" style="margin-top:14px">${simulatorCard()}${calcCard()}</div>`
@@ -3732,7 +3731,7 @@ ACTIONS.calDelta = (d,el)=>{ opt.calDelta = el.checked; render(); };
 ACTIONS.calStock = (d,el)=>{ opt.calStock = el.checked; render(); };
 ACTIONS.calSettle = (d,el)=>{ opt.calSettle = el.checked; render(); };
 ACTIONS.resetCosts = ()=>{ S.costOverrides={}; save(); render(); };
-ACTIONS.resetAll = ()=>{ if(confirm('저장된 원가·메모·실시간 수치를 모두 초기화할까요?')){ localStorage.removeItem(STORE_KEY); S=loadState(); render(); } };
+ACTIONS.resetAll = ()=>{ if(confirm('저장된 원가·메모·실시간 수치를 모두 초기화할까요?')){ localStorage.removeItem(STORE_KEY); S=loadState(); if(typeof ensurePm==='function') ensurePm(); render(); } };
 ACTIONS.exportJson = ()=>{
   const blob = new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'bigcell-settings.json'; a.click();
@@ -4532,60 +4531,6 @@ ACTIONS.prodCsv = ()=>{
   downloadCsv('리스페토-상품관리-' + ds + '.csv', lines);
   toast('CSV 내보내기 완료', 'ok', list.length + '개 상품 · 빅셀 상품관리와 같은 16컬럼');
 };
-ACTIONS.prodCsvImport = (d, el)=>{
-  const f = el.files && el.files[0]; if(!f) return;
-  const fr = new FileReader();
-  fr.onload = ()=>{
-    let parsed = [];
-    try{ parsed = parseCsvText(fr.result); }catch(e){ alert('CSV를 읽을 수 없습니다.'); return; }
-    if(parsed.length < 2){ alert('데이터 행이 없습니다. 빅셀 상품관리 엑셀(상품)을 CSV로 저장해 올려주세요.'); return; }
-    const head = parsed[0].map(h=>String(h||'').replace(/^\ufeff/,'').trim());
-    const col = (...names)=>{ for(const n of names){ const i = head.indexOf(n); if(i>=0) return i; } return -1; };
-    const iProd = col('노출상품ID','노출상품 ID','상품ID');
-    const iOpt = col('옵션ID','옵션 ID');
-    const fields = [['판매가','price'],['할인금액','disc'],['마켓수수료','fee'],['원가','cost'],['입출고요금','inout'],['배송비','ship']]
-      .map(([label,key])=>({key, i: col(label)}));
-    if(iProd < 0 && iOpt < 0){ alert('노출상품ID 또는 옵션ID 열이 필요합니다.\n빅셀 상품관리 → 엑셀 다운로드(상품) 파일을 CSV로 저장해 올리면 그대로 반입됩니다.'); return; }
-    if(!fields.some(f=>f.i>=0)){ alert('판매가·할인금액·마켓수수료·원가·입출고요금·배송비 열을 찾지 못했습니다.'); return; }
-    const ds = opt.costDate || (S.live && S.live.date) || new Date().toISOString().slice(0,10);
-    /* 1) 옵션ID 없는 행 → 노출상품ID 상품 마스터에 반영 (우리 CSV·상품 단위 파일)
-       2) 옵션ID 있는 행(빅셀 상품 엑셀) → 옵션 행이 하나뿐인 상품만 그 값을 상품 값으로 반영
-          여러 옵션 상품은 한 옵션 값이 상품 전체를 덮어 버리므로 건너뛰고 건수로 알린다. */
-    const items = parsed.slice(1).map(cols=>{
-      const vals = {}; let any = false;
-      fields.forEach(f=>{
-        if(f.i < 0) return;
-        const v = csvNum(cols[f.i]);
-        if(v!=null && !isNaN(v)){ vals[f.key] = v; any = true; }
-      });
-      return { vals, any,
-        optId: iOpt>=0 ? String(cols[iOpt]==null?'':cols[iOpt]).trim() : '',
-        pid: iProd>=0 ? String(cols[iProd]==null?'':cols[iProd]).trim() : '' };
-    }).filter(r=>r.any);
-    const optCnt = {};
-    items.forEach(r=>{ if(r.optId && r.pid) optCnt[r.pid] = (optCnt[r.pid]||0) + 1; });
-    let nP = 0, optMulti = 0, skipped = 0;
-    items.forEach(r=>{
-      if(r.optId){
-        if(r.pid && optCnt[r.pid]===1 && PRODUCTS.some(p=>p.id===r.pid)){
-          S.costOverrides[r.pid] = Object.assign({}, S.costOverrides[r.pid], r.vals); nP++;
-        } else { optMulti++; }
-        return;
-      }
-      if(r.pid && PRODUCTS.some(p=>p.id===r.pid)){
-        S.costOverrides[r.pid] = Object.assign({}, S.costOverrides[r.pid], r.vals); nP++; return;
-      }
-      skipped++;
-    });
-    save(); render();
-    alert('CSV 반입 완료\n· 상품 ' + nP + '건 반영'
-      + (optMulti ? ('\n· 옵션 단위 행 ' + optMulti + '건은 건너뛰었습니다 (여러 옵션 상품은 옵션 값이 상품 전체를 덮으므로)'):'')
-      + (skipped ? ('\n· 노출상품ID를 찾지 못해 건너뛴 행 ' + skipped + '건'):'')
-      + '\n\n기준일 ' + ds + ' 기준으로 상품 마진표에 반영했습니다. 옵션별 값은 [원가·할인가 관리]에서 옵션을 골라 확인하세요.'
-      + '\n빅셀 서버는 변경하지 않았습니다(이 대시보드에만 저장).');
-  };
-  fr.readAsText(f);
-};
 
 /* ---------- 정산: 다중 필터 · CSV 반출 (27컬럼) ---------- */
 ACTIONS.settleState = (d)=>{ opt.settleState = d.v || 'all'; render(); };
@@ -5134,11 +5079,14 @@ const BC7 = {
 };
 
 /* ---------- 상태 ---------- */
-if(!S.pm) S.pm = {};
-S.pm.ov = S.pm.ov || {};      // 옵션별 수정값 {optId:{price,disc,cost,inout,ship,fee}}
-S.pm.dh = S.pm.dh || {};      // 상품별 할인 히스토리(사용자 수정본)
-S.pm.ch = S.pm.ch || {};      // 상품별 원가 히스토리(사용자 수정본)
-S.pm.open = S.pm.open || {};  // 펼침 상태
+function ensurePm(){
+  if(!S.pm) S.pm = {};
+  S.pm.ov = S.pm.ov || {};      // 옵션별 수정값 {optId:{price,disc,cost,inout,ship,fee}}
+  S.pm.dh = S.pm.dh || {};      // 상품별 할인 히스토리(사용자 수정본)
+  S.pm.ch = S.pm.ch || {};      // 상품별 원가 히스토리(사용자 수정본)
+  S.pm.open = S.pm.open || {};  // 펼침 상태
+}
+ensurePm();
 if(!opt.pm) opt.pm = { q:'', kind:'', run:'', hide:'N', nocost:false, dlg:null, tab:'promo', onlyNormal:false };
 
 const PM_ICON = { '9701805278':'👟', '9636737924':'🖐️', '9611854991':'🤚', '9595425253':'🗑️',
@@ -5330,6 +5278,7 @@ VIEWS.pmr = function(){
     <label class="chk"><input type="checkbox" data-act="pmFilter" data-k="nocost" ${opt.pm.nocost?'checked':''}> 원가 미입력 상품</label>
     <span class="spacer"></span>
     <button class="btn" data-act="pmExport">📊 엑셀 다운로드</button>
+    <label class="btn" style="cursor:pointer;margin-left:6px">📥 엑셀 업로드<input type="file" accept=".csv,text/csv" style="display:none" data-act="pmUpload"></label>
   </div>
   <div class="tbl-wrap"><table class="tbl pm">
     <thead><tr>
@@ -5400,6 +5349,45 @@ ACTIONS.pmExport = ()=>{
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
   a.download = '로켓그로스-상품관리-2026-11-20.csv'; a.click();
+};
+/* 빅셀「상품관리 → 엑셀 업로드(원가 등)」처럼 옵션ID 기준으로 판매가·할인·수수료·원가·입출고·배송비를 일괄 반입한다.
+   저장되는 곳은 이 대시보드의 옵션 수정값(S.pm.ov)뿐 — 빅셀 서버·확정 일별 손익은 바뀌지 않는다. */
+ACTIONS.pmUpload = (d, el)=>{
+  const f = el.files && el.files[0]; if(!f) return;
+  const fr = new FileReader();
+  fr.onload = ()=>{
+    let parsed = [];
+    try{ parsed = parseCsvText(fr.result); }catch(e){ alert('CSV를 읽을 수 없습니다.'); return; }
+    if(parsed.length < 2){ alert('데이터 행이 없습니다.\n빅셀 상품관리 → 엑셀 다운로드(상품) 파일을 엑셀에서 CSV로 저장해 올려주세요.'); return; }
+    const head = parsed[0].map(h=>String(h||'').replace(/^\ufeff/,'').trim());
+    const col = (...names)=>{ for(const n of names){ const i = head.indexOf(n); if(i>=0) return i; } return -1; };
+    const iOpt = col('옵션ID','옵션 ID');
+    const fields = [['판매가','price'],['할인금액','disc'],['마켓수수료','fee'],['원가','cost'],['입출고요금','inout'],['배송비','ship']]
+      .map(([label,key])=>({key, i: col(label)}));
+    if(iOpt < 0){ alert('옵션ID 열이 필요합니다.\n빅셀 상품관리 → 엑셀 다운로드(상품) 파일의 16컬럼 형식을 그대로 올려주세요.'); return; }
+    if(!fields.some(f=>f.i>=0)){ alert('판매가·할인금액·마켓수수료·원가·입출고요금·배송비 열을 찾지 못했습니다.'); return; }
+    const known = {};
+    BC7.rfm.forEach(p=>bcOpt(p.pid).forEach(o=>{ known[o.optId] = 1; }));
+    let nO = 0, skip = 0;
+    parsed.slice(1).forEach(cols=>{
+      const oid = String(cols[iOpt]==null?'':cols[iOpt]).trim();
+      if(!oid || !known[oid]){ skip++; return; }
+      const vals = {}; let any = false;
+      fields.forEach(f=>{
+        if(f.i < 0) return;
+        const v = csvNum(cols[f.i]);
+        if(v!=null && !isNaN(v)){ vals[f.key] = v; any = true; }
+      });
+      if(!any){ skip++; return; }
+      S.pm.ov[oid] = Object.assign({}, S.pm.ov[oid], vals);
+      nO++;
+    });
+    save(); render();
+    alert('엑셀 업로드 완료\n· 옵션 ' + nO + '건 반영'
+      + (skip ? ('\n· 건너뜀 ' + skip + '건 (이 스토어 옵션ID가 아니거나 반영할 값이 없는 행)'):'')
+      + '\n\n빅셀 서버는 바뀌지 않았고, 확정된 일별 매출·이익금도 그대로입니다. 반입값은 이 브라우저(localStorage)에 저장됩니다.');
+  };
+  fr.readAsText(f);
 };
 
 /* ==================== 2. 할인가 / 원가 모달 ==================== */
