@@ -1,7 +1,7 @@
 {
  "store": "리스페토",
  "platform": "naver-smartstore",
- "updatedAt": "2026-11-23T10:40:00+09:00",
+ "updatedAt": "2026-11-23T13:10:00+09:00",
  "month": "2026-11",
  "basis": "배송완료일",
  "period": "2026-11-01~2026-11-23 (배송완료일 기준 · 확정)",
@@ -26,19 +26,19 @@
  "today": {
   "d": "2026-11-23",
   "date": "2026-11-23",
-  "orders": 2,
-  "units": 2,
-  "sales": 39980,
-  "shipRev": 6000,
-  "fee": 2454,
-  "cost": 18880,
-  "parcelCost": 6800,
-  "profit": 17846,
-  "asOf": "10:35",
+  "orders": 3,
+  "units": 3,
+  "sales": 62970,
+  "shipRev": 9000,
+  "fee": 3853,
+  "cost": 28320,
+  "parcelCost": 10200,
+  "profit": 29597,
+  "asOf": "13:10",
   "deliveredToday": 0,
   "pendingNewOrders": 7,
-  "shipped": 13,
-  "purchasedConfirmed": 29,
+  "shipped": 7,
+  "purchasedConfirmed": 30,
   "newReviews": 7,
   "cancelRequest": 0,
   "returnRequest": 0,
@@ -48,7 +48,7 @@
    "amount": 89779,
    "status": "완료"
   },
-  "source": "주문통합검색(결제일 11/23) + 홈 대시보드 10:20 기준"
+  "source": "주문통합검색(결제일 11/23) + 홈 대시보드 13:03 기준"
  },
  "total": {
   "orders": 89,
@@ -101,7 +101,7 @@
    "shippingIncome": 0,
    "total": 0
   },
-  "note": "발송처리 후 배송완료 전(배송중) — 확정 매출 제외. 발주확인·발송대기 0건(10:22 전량 발송처리)"
+  "note": "발송처리 후 배송완료 전(배송중) — 확정 매출 제외. 발주확인 대기 0건 · 신규주문 0건(13:05 기준)"
  },
  "parcelMonth": {
   "month": "2026-11",
