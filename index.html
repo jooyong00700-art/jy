@@ -2493,7 +2493,7 @@ VIEWS.naver = function(){
         </div>`:'<div class="flat">해당 월 정산 데이터가 없습니다.</div>'}
         <div class="hint" style="margin-top:8px">
           정상 발송은 그 달 <b>발송처리(송장 등록)된 건수</b>(발주확인·발송대기·발송 전 취소 제외)이고, 반품은 발송+회수 2건, 교환은 발송+회수+재발송 3건으로 잡습니다. ${pm&&pm.note?esc(pm.note):''}
-          <br>손익의 택배비는 배송완료된 주문에 매출과 짝지어 계산하므로 이 카드와 차이가 날 수 있습니다(11월: 카드 ${won((N.parcelMonth||{}).cost||0)}원 vs 손익 ${won(t.parcelCost)}원 — 배송중 ${won(ps.n)}건 발송분).
+          <br>손익의 택배비는 배송완료된 주문에 매출과 짝지어 계산하므로 이 카드와 차이가 날 수 있습니다${(N.parcelMonth&&sel===N.month)?`(11월: 카드 ${won(N.parcelMonth.cost||0)}원 vs 손익 ${won(t.parcelCost)}원 — 배송중 ${won(ps.n)}건 발송분)`:''}.
         </div>
       </div>
     </div>`
