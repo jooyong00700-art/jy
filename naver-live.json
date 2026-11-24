@@ -1,12 +1,12 @@
 {
  "store": "리스페토",
  "platform": "naver-smartstore",
- "updatedAt": "2026-11-24T09:12:00+09:00",
+ "updatedAt": "2026-11-24T13:05:00+09:00",
  "month": "2026-11",
  "basis": "배송완료일",
- "period": "2026-11-01~2026-11-24 (배송완료일 기준 · 확정: 마지막 배송완료 11/21)",
- "periodMtd": "2026-11-01~2026-11-24 (배송완료일 기준 · 확정: 마지막 배송완료 11/21)",
- "collectedAt": "2026-11-24T09:12:00+09:00",
+ "period": "2026-11-01~2026-11-24 (배송완료일 기준 · 확정: 마지막 배송완료 11/24)",
+ "periodMtd": "2026-11-01~2026-11-24 (배송완료일 기준 · 확정: 마지막 배송완료 11/24)",
+ "collectedAt": "2026-11-24T13:05:00+09:00",
  "params": {
   "feeProduct": 5.728,
   "feeShipping": 2.728,
@@ -34,12 +34,12 @@
   "cost": 0,
   "parcelCost": 0,
   "profit": 0,
-  "asOf": "09:12",
-  "deliveredToday": 0,
-  "pendingNewOrders": 8,
+  "asOf": "13:05",
+  "deliveredToday": 2,
+  "pendingNewOrders": 6,
   "newOrders": 5,
-  "shipped": 8,
-  "purchasedConfirmed": 29,
+  "shipped": 6,
+  "purchasedConfirmed": 30,
   "newReviews": 6,
   "cancelRequest": 0,
   "returnRequest": 0,
@@ -49,51 +49,51 @@
    "amount": 179777,
    "status": "완료"
   },
-  "source": "스마트스토어센터 홈 대시보드 09:06 기준 + 주문통합검색(결제일 11/24 0건) + 발주확인/발송관리(신규주문 5건)"
+  "source": "스마트스토어센터 홈 대시보드 13:03 기준 + 발주확인/발송관리(신규주문 5건·발송기한 11/24 23:59) + 배송현황 관리(배송완료 13건·배송중 6건) + 구매확정 내역 30건"
  },
  "total": {
-  "orders": 89,
-  "units": 91,
-  "netSales": 1847590,
-  "shippingIncome": 273000,
-  "revenue": 2120590,
-  "fee": 113279,
-  "cost": 844888,
-  "parcelCost": 343400,
-  "profit": 819023,
+  "orders": 91,
+  "units": 93,
+  "netSales": 1890570,
+  "shippingIncome": 279000,
+  "revenue": 2169570,
+  "fee": 115905,
+  "cost": 863768,
+  "parcelCost": 350200,
+  "profit": 839697,
   "cancelQty": 5,
   "returnQty": 3,
   "exchangeQty": 3,
-  "days": 16,
-  "margin": 38.62,
+  "days": 17,
+  "margin": 38.7,
   "feeRate": 5.34,
-  "invoices": 86
+  "invoices": 88
  },
  "totalMtd": {
-  "orders": 89,
-  "units": 91,
-  "netSales": 1847590,
-  "shippingIncome": 273000,
-  "revenue": 2120590,
-  "fee": 113279,
-  "cost": 844888,
-  "parcelCost": 343400,
-  "profit": 819023,
+  "orders": 91,
+  "units": 93,
+  "netSales": 1890570,
+  "shippingIncome": 279000,
+  "revenue": 2169570,
+  "fee": 115905,
+  "cost": 863768,
+  "parcelCost": 350200,
+  "profit": 839697,
   "cancelQty": 5,
   "returnQty": 3,
   "exchangeQty": 3,
-  "days": 16,
-  "margin": 38.62,
+  "days": 17,
+  "margin": 38.7,
   "feeRate": 5.34,
-  "invoices": 86
+  "invoices": 88
  },
  "pending": {
   "shipping": {
-   "n": 8,
-   "qty": 8,
-   "sales": 165920,
-   "shippingIncome": 24000,
-   "total": 189920
+   "n": 6,
+   "qty": 6,
+   "sales": 122940,
+   "shippingIncome": 18000,
+   "total": 140940
   },
   "beforeShip": {
    "n": 5,
@@ -144,7 +144,7 @@
     }
    ]
   },
-  "note": "발송처리 후 배송완료 전(배송중) — 확정 매출 제외. 신규주문(발주 전) 5건(발송기한 11/24) · 배송중 8건(09:06 기준)"
+  "note": "발송처리 후 배송완료 전(배송중) — 확정 매출 제외. 신규주문(발주 전) 5건(발송기한 11/24 23:59) · 배송중 6건(13:0x 기준)"
  },
  "parcelMonth": {
   "month": "2026-11",
@@ -197,7 +197,7 @@
   }
  ],
  "claims": {
-  "collectedAt": "2026-11-24T09:10:00+09:00",
+  "collectedAt": "2026-11-24T13:05:00+09:00",
   "basis": "취소=취소완료일, 반품=환불(수거)완료일, 교환=결제일 귀속",
   "cancels": [
    {
@@ -645,6 +645,25 @@
    "refundOnly": true
   },
   {
+   "date": "2026-11-24",
+   "d": "2026-11-24",
+   "orders": 2,
+   "units": 2,
+   "invoices": 2,
+   "netSales": 42980,
+   "shippingIncome": 6000,
+   "revenue": 48980,
+   "fee": 2626,
+   "cost": 18880,
+   "parcelCost": 6800,
+   "profit": 20674,
+   "margin": 42.21,
+   "cancelQty": 0,
+   "returnQty": 0,
+   "exchangeQty": 0,
+   "live": false
+  },
+  {
    "date": "교환",
    "d": "교환",
    "orderLabel": "교환 3건",
@@ -749,6 +768,6 @@
  "notes": {
   "basis": "배송완료(구매확정 포함) 기준. 10월 결제·11월 배송완료 건은 11월에 포함, 11월 결제·미배송 건은 제외",
   "exchange": "교환 3건은 매출 유지. 2건은 배송완료일이 기록되지 않아 '교환' 보정 행에 매출·legs를 모았습니다",
-  "parcelDiff": "손익의 택배비는 배송완료 건과 매출을 짝지어 계산합니다. 월별 정산 카드는 11월에 실제 발송된 송장 기준이라 차액이 생깁니다(배송중 8건 + 교환 2건 첫 발송분)"
+  "parcelDiff": "손익의 택배비는 배송완료 건과 매출을 짝지어 계산합니다. 월별 정산 카드는 11월에 실제 발송된 송장 기준이라 차액이 생깁니다(배송중 6건 + 교환 2건 첫 발송분)"
  }
 }
