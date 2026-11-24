@@ -1,12 +1,12 @@
 {
  "store": "리스페토",
  "platform": "naver-smartstore",
- "updatedAt": "2026-11-23T13:10:00+09:00",
+ "updatedAt": "2026-11-24T09:12:00+09:00",
  "month": "2026-11",
  "basis": "배송완료일",
- "period": "2026-11-01~2026-11-23 (배송완료일 기준 · 확정)",
- "periodMtd": "2026-11-01~2026-11-23 (배송완료일 기준 · 확정)",
- "collectedAt": "2026-11-23T10:35:00+09:00",
+ "period": "2026-11-01~2026-11-24 (배송완료일 기준 · 확정: 마지막 배송완료 11/21)",
+ "periodMtd": "2026-11-01~2026-11-24 (배송완료일 기준 · 확정: 마지막 배송완료 11/21)",
+ "collectedAt": "2026-11-24T09:12:00+09:00",
  "params": {
   "feeProduct": 5.728,
   "feeShipping": 2.728,
@@ -24,31 +24,32 @@
   "settlementActualNote": "정산관리 실측은 정산예정일 기준이라 배송완료 기준 손익과 다릅니다."
  },
  "today": {
-  "d": "2026-11-23",
-  "date": "2026-11-23",
-  "orders": 3,
-  "units": 3,
-  "sales": 62970,
-  "shipRev": 9000,
-  "fee": 3853,
-  "cost": 28320,
-  "parcelCost": 10200,
-  "profit": 29597,
-  "asOf": "13:10",
+  "d": "2026-11-24",
+  "date": "2026-11-24",
+  "orders": 0,
+  "units": 0,
+  "sales": 0,
+  "shipRev": 0,
+  "fee": 0,
+  "cost": 0,
+  "parcelCost": 0,
+  "profit": 0,
+  "asOf": "09:12",
   "deliveredToday": 0,
-  "pendingNewOrders": 7,
-  "shipped": 7,
-  "purchasedConfirmed": 30,
-  "newReviews": 7,
+  "pendingNewOrders": 8,
+  "newOrders": 5,
+  "shipped": 8,
+  "purchasedConfirmed": 29,
+  "newReviews": 6,
   "cancelRequest": 0,
   "returnRequest": 0,
   "exchangeRequest": 0,
   "nextSettlement": {
-   "date": "2026-11-23",
-   "amount": 89779,
+   "date": "2026-11-24",
+   "amount": 179777,
    "status": "완료"
   },
-  "source": "주문통합검색(결제일 11/23) + 홈 대시보드 13:03 기준"
+  "source": "스마트스토어센터 홈 대시보드 09:06 기준 + 주문통합검색(결제일 11/24 0건) + 발주확인/발송관리(신규주문 5건)"
  },
  "total": {
   "orders": 89,
@@ -60,7 +61,7 @@
   "cost": 844888,
   "parcelCost": 343400,
   "profit": 819023,
-  "cancelQty": 4,
+  "cancelQty": 5,
   "returnQty": 3,
   "exchangeQty": 3,
   "days": 16,
@@ -78,7 +79,7 @@
   "cost": 844888,
   "parcelCost": 343400,
   "profit": 819023,
-  "cancelQty": 4,
+  "cancelQty": 5,
   "returnQty": 3,
   "exchangeQty": 3,
   "days": 16,
@@ -88,29 +89,71 @@
  },
  "pending": {
   "shipping": {
-   "n": 7,
-   "qty": 7,
-   "sales": 142930,
-   "shippingIncome": 21000,
-   "total": 163930
+   "n": 8,
+   "qty": 8,
+   "sales": 165920,
+   "shippingIncome": 24000,
+   "total": 189920
   },
   "beforeShip": {
-   "n": 0,
-   "qty": 0,
-   "sales": 0,
-   "shippingIncome": 0,
-   "total": 0
+   "n": 5,
+   "qty": 5,
+   "sales": 100650,
+   "shippingIncome": 15000,
+   "total": 115650,
+   "orders": [
+    {
+     "key": "2026112332732311",
+     "paid": "2026-11-23 19:18",
+     "opt": "ALL 크림",
+     "amount": 17690,
+     "due": "2026-11-24 23:59:59",
+     "buyer": "고정영"
+    },
+    {
+     "key": "2026112332334131",
+     "paid": "2026-11-23 19:07",
+     "opt": "ALL 화이트",
+     "amount": 19990,
+     "due": "2026-11-24 23:59:59",
+     "buyer": "김장현"
+    },
+    {
+     "key": "2026112322802831",
+     "paid": "2026-11-23 15:10",
+     "opt": "ALL 크림",
+     "amount": 19990,
+     "due": "2026-11-24 23:59:59",
+     "buyer": "이가을"
+    },
+    {
+     "key": "2026112322740531",
+     "paid": "2026-11-23 15:08",
+     "opt": "ALL 크림",
+     "amount": 22990,
+     "due": "2026-11-24 23:59:59",
+     "buyer": "유원성"
+    },
+    {
+     "key": "2026112321779821",
+     "paid": "2026-11-23 14:47",
+     "opt": "ALL 화이트",
+     "amount": 19990,
+     "due": "2026-11-24 23:59:59",
+     "buyer": "강해나"
+    }
+   ]
   },
-  "note": "발송처리 후 배송완료 전(배송중) — 확정 매출 제외. 발주확인 대기 0건 · 신규주문 0건(13:05 기준)"
+  "note": "발송처리 후 배송완료 전(배송중) — 확정 매출 제외. 신규주문(발주 전) 5건(발송기한 11/24) · 배송중 8건(09:06 기준)"
  },
  "parcelMonth": {
   "month": "2026-11",
-  "normal": 93,
+  "normal": 95,
   "returns": 3,
   "exchanges": 3,
-  "parcelCount": 108,
-  "cost": 367200,
-  "normalCost": 316200,
+  "parcelCount": 110,
+  "cost": 374000,
+  "normalCost": 323000,
   "returnCost": 20400,
   "exchangeCost": 30600,
   "note": "11월 반품 3건 중 1건은 10/27 결제분 회수(발송은 10월) · 교환 3건은 교환배송비 0(판매자 귀책)"
@@ -142,19 +185,19 @@
   },
   {
    "month": "2026-11",
-   "normal": 93,
+   "normal": 95,
    "returns": 3,
    "exchanges": 3,
-   "parcelCount": 108,
-   "cost": 367200,
-   "normalCost": 316200,
+   "parcelCount": 110,
+   "cost": 374000,
+   "normalCost": 323000,
    "returnCost": 20400,
    "exchangeCost": 30600,
    "note": "11월 반품 3건 중 1건은 10/27 결제분 회수(발송은 10월) · 교환 3건은 교환배송비 0(판매자 귀책)"
   }
  ],
  "claims": {
-  "collectedAt": "2026-11-23T10:16:00+09:00",
+  "collectedAt": "2026-11-24T09:10:00+09:00",
   "basis": "취소=취소완료일, 반품=환불(수거)완료일, 교환=결제일 귀속",
   "cancels": [
    {
@@ -180,6 +223,13 @@
     "paid": "2026-11-06 14:49",
     "amount": 19990,
     "kind": "취소완료"
+   },
+   {
+    "date": "2026-11-23",
+    "paid": "2026-11-23 19:03",
+    "amount": 22990,
+    "kind": "취소완료",
+    "note": "김장현 ALL 화이트 1개 · 취소완료 2026.11.23 19:06:45 · 주문실수(발송 전)"
    }
   ],
   "returns": [
@@ -241,7 +291,7 @@
     "note": "반품철회 — 매출 유지"
    }
   ],
-  "total": "취소 4건 77,660 + 반품 3건 65,970 = 7건 143,630 (판매리포트 환불액과 일치)"
+  "total": "취소 5건 102,650 + 반품 3건 65,970 = 8건 168,620 (반품 1건은 10/27 결제분 회수) · 교환 3건(교환완료 2·교환재배송중 1)은 매출 유지"
  },
  "settlementActual": {
   "정산기준금액": 2176880,
@@ -575,6 +625,26 @@
    "live": false
   },
   {
+   "date": "2026-11-23",
+   "d": "2026-11-23",
+   "orders": 0,
+   "units": 0,
+   "invoices": 0,
+   "netSales": 0,
+   "shippingIncome": 0,
+   "revenue": 0,
+   "fee": 0,
+   "cost": 0,
+   "parcelCost": 0,
+   "profit": 0,
+   "margin": -100,
+   "cancelQty": 1,
+   "returnQty": 0,
+   "exchangeQty": 0,
+   "live": false,
+   "refundOnly": true
+  },
+  {
    "date": "교환",
    "d": "교환",
    "orderLabel": "교환 3건",
@@ -679,6 +749,6 @@
  "notes": {
   "basis": "배송완료(구매확정 포함) 기준. 10월 결제·11월 배송완료 건은 11월에 포함, 11월 결제·미배송 건은 제외",
   "exchange": "교환 3건은 매출 유지. 2건은 배송완료일이 기록되지 않아 '교환' 보정 행에 매출·legs를 모았습니다",
-  "parcelDiff": "손익의 택배비는 배송완료 건과 매출을 짝지어 계산합니다. 월별 정산 카드는 11월에 실제 발송된 송장 기준이라 차액이 생깁니다(배송중 7건 + 교환 2건 첫 발송분)"
+  "parcelDiff": "손익의 택배비는 배송완료 건과 매출을 짝지어 계산합니다. 월별 정산 카드는 11월에 실제 발송된 송장 기준이라 차액이 생깁니다(배송중 8건 + 교환 2건 첫 발송분)"
  }
 }
