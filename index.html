@@ -1774,15 +1774,12 @@ function stockNeedInbound(r){
   const today = new Date(); today.setHours(0,0,0,0);
   return Math.round((d - today)/86400000) <= 30;
 }
-/* 윙 재고현황(옵션별) 합계 → 상품별 (반품 옵션 제외)
-   실시간 동기화(S.live.wingPrices.stock)가 있으면 그값이 최신 — 없을 때만 정적 스냅샷(BC7.wing.stock) 사용 */
+/* 윙 재고현황(옵션별) 합계 → 상품별 (반품 옵션 제외) */
 function wingStockByPid(){
   const out = {};
-  const liveStock = (typeof S!=='undefined' && S.live && S.live.wingPrices && S.live.wingPrices.stock) ? S.live.wingPrices.stock : null;
-  const stock = liveStock || (typeof BC7!=='undefined' && BC7.wing && BC7.wing.stock) || null;
-  if(!stock) return out;
+  if(typeof BC7==='undefined' || !BC7.wing || !BC7.wing.stock) return out;
   (BC7.rfm||[]).forEach(p=> (p.options||[]).forEach(o=>{
-    const v = stock[o.optId];
+    const v = BC7.wing.stock[o.optId];
     if(v==null || o.state==='반품') return;
     out[p.pid] = (out[p.pid]||0) + Number(v);
   }));
@@ -3630,7 +3627,7 @@ VIEWS.stock = function(){
   const T = STOCK.total;
   const wingTotal = Object.keys(wing).reduce((a,k)=>a+wing[k],0);
   const hiddenN = hiddenProducts().length;
-  const wingAt = (S && S.live && S.live.date) ? (S.live.date.slice(5)+' '+S.live.at) : ((typeof BC7!=='undefined' && BC7.wing && BC7.wing.updatedAt) ? BC7.wing.updatedAt : '');
+  const wingAt = (typeof BC7!=='undefined' && BC7.wing && BC7.wing.updatedAt) ? BC7.wing.updatedAt : '';
   return topbar('재고 · 입고 필요', '쿠팡 윙 재고현황 + 빅셀 매출분석 재고/입고 지표',
       `<span class="chip">쿠팡재고 <b>${won(T.stock)}</b>개</span>`)
   + `<div class="kpis" style="margin-bottom:14px">
@@ -3642,7 +3639,7 @@ VIEWS.stock = function(){
   + `<div class="card">
     <div class="filterbar" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; padding:11px 14px; border-bottom:1px solid var(--line2)">
       <div class="seg"><button class="${opt.stockOnlyNeed?'':'on'}" data-act="stockFilter" data-v="all">전체 상품 ${all.length}</button><button class="${opt.stockOnlyNeed?'on':''}" data-act="stockFilter" data-v="need">입고필요 상품만 ${need.length}</button></div>
-      <span class="note" style="font-size:11.5px; color:var(--muted)">기준 ${STOCK.asOf} · 윙 ${esc(wingAt)} · 숨김 ${hiddenN}개 제외</span>
+      <span class="note" style="font-size:11.5px; color:var(--muted)">기준 ${STOCK.asOf} · 윙 스냅샷 ${esc(wingAt)}(🔄 매출 새로고침 시 갱신) · 숨김 ${hiddenN}개 제외</span>
     </div>
     <div class="tbl-wrap"><table class="tbl">
       <thead><tr><th class="l">상품</th><th>쿠팡재고<div class="th2">수량 · 재고금액</div></th><th>윙 재고현황<div class="th2">옵션합계</div></th><th>쿠팡입고예정<div class="th2">수량(원가)</div></th><th>재고합계</th><th>일평균판매</th><th>품절예상일</th><th>쿠팡입고<div class="th2">필요수량</div></th><th>쿠팡보관비<div class="th2">이번달</div></th><th>반품</th></tr></thead>
@@ -3861,10 +3858,10 @@ VIEWS.settings = function(){
   </div>`
   + `<div class="card" style="margin-top:14px">${sectionHead('이 대시보드의 데이터 출처')}
     <div class="card-b">
-      <div class="stat-line"><span class="lb">일별 매출·이익금·광고비</span><span class="vl">빅셀 대시보드 매출 보고서 (11/1~11/17)</span></div>
+      <div class="stat-line"><span class="lb">일별 매출·이익금·광고비</span><span class="vl">빅셀 대시보드 매출 보고서 (11/1~11/23 확정 · 11/24 실시간 별도)</span></div>
       <div class="stat-line"><span class="lb">상품 원가·수수료·입출고·배송비</span><span class="vl">빅셀 로켓그로스 상품 관리</span></div>
-      <div class="stat-line"><span class="lb">정산·손익</span><span class="vl">빅셀 정산 분석 > 로켓그로스 (11/01~11/21 확정 · 27개 전 컴럼)</span></div>
-      <div class="stat-line"><span class="lb">재고·입고 지표</span><span class="vl">빅셀 매출분석 상세보기(${STOCK.asOf}) + 쿠팡 윙 재고현황(${S.live&&S.live.date?S.live.date.slice(5)+' '+S.live.at:BC7.wing.updatedAt})</span></div>
+      <div class="stat-line"><span class="lb">정산·손익</span><span class="vl">빅셀 정산 분석 > 로켓그로스 (11/01~11/22 확정 · 27개 전컬럼)</span></div>
+      <div class="stat-line"><span class="lb">재고·입고 지표</span><span class="vl">빅셀 매출분석 상세보기(${STOCK.asOf}) + 쿠팡 윙 재고현황 스냅샷(${BC7.wing.updatedAt})</span></div>
       <div class="stat-line"><span class="lb">상품 숨김 상태</span><span class="vl">빅셀 상품 관리 > 로켓그로스 > 숨김상품 (운영 8 · 숨김 6)</span></div>
       <div class="stat-line"><span class="lb">캠페인 성과</span><span class="vl">빅셀 광고 캠페인 분석</span></div>
       <div class="stat-line"><span class="lb">오늘 실시간</span><span class="vl">쿠팡 윙 ${esc(S.live.date)} ${esc(S.live.at||'')} 기준 (쿠폰 전 매출 · 쿠폰 분리)</span></div>
