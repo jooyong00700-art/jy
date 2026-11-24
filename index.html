@@ -1778,12 +1778,15 @@ function stockNeedInbound(r){
   const today = new Date(); today.setHours(0,0,0,0);
   return Math.round((d - today)/86400000) <= 30;
 }
-/* 윙 재고현황(옵션별) 합계 → 상품별 (반품 옵션 제외) */
+/* 윙 재고현황(옵션별) 합계 → 상품별 (반품 옵션 제외)
+   실시간 동기화(S.live.wingPrices.stock)가 있으면 그값이 최신 — 없을 때만 정적 스냅샷(BC7.wing.stock) 사용 */
 function wingStockByPid(){
   const out = {};
-  if(typeof BC7==='undefined' || !BC7.wing || !BC7.wing.stock) return out;
+  const liveStock = (typeof S!=='undefined' && S.live && S.live.wingPrices && S.live.wingPrices.stock) ? S.live.wingPrices.stock : null;
+  const stock = liveStock || (typeof BC7!=='undefined' && BC7.wing && BC7.wing.stock) || null;
+  if(!stock) return out;
   (BC7.rfm||[]).forEach(p=> (p.options||[]).forEach(o=>{
-    const v = BC7.wing.stock[o.optId];
+    const v = stock[o.optId];
     if(v==null || o.state==='반품') return;
     out[p.pid] = (out[p.pid]||0) + Number(v);
   }));
@@ -3631,7 +3634,7 @@ VIEWS.stock = function(){
   const T = STOCK.total;
   const wingTotal = Object.keys(wing).reduce((a,k)=>a+wing[k],0);
   const hiddenN = hiddenProducts().length;
-  const wingAt = (typeof BC7!=='undefined' && BC7.wing && BC7.wing.updatedAt) ? BC7.wing.updatedAt : '';
+  const wingAt = (S && S.live && S.live.date) ? (S.live.date.slice(5)+' '+S.live.at) : ((typeof BC7!=='undefined' && BC7.wing && BC7.wing.updatedAt) ? BC7.wing.updatedAt : '');
   return topbar('재고 · 입고 필요', '쿠팡 윙 재고현황 + 빅셀 매출분석 재고/입고 지표',
       `<span class="chip">쿠팡재고 <b>${won(T.stock)}</b>개</span>`)
   + `<div class="kpis" style="margin-bottom:14px">
