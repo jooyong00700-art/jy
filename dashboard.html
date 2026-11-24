@@ -1799,16 +1799,26 @@ const SETTLE_DUE = [
   {d:'2026-12-04', seller:0, rfm:7922595}
 ];
 
-/* ---------- 노출순위 (11/17) ---------- */
+/* ---------- 노출순위 (빅셀 노출순위 보고서 · 옵션별 '전체순위') ----------
+   조회 2026-11-24 14:0x (빅셀 읽기 전용) · prev = 11/22, now = 11/23(마지막 완전 수집일)
+   교차확인: 빅셀 대시보드 '상품별 순위 변동'(11/23 기준) = 접이식건조대 올화이트 26→19 ▲7 ·
+   접이식빨래건조대 올화이트 28→28 · 올블랙 46→46 · 올크림 32→38 ▼6 과 정확히 일치.
+   now:null = 3페이지(60위) 밖이라 측정값 없음(빅셀 표에도 공란). 키워드 '건조대'·'빨래건조대'는 같은 이유로 값이 없다.
+   빅셀 페이지 단위는 20개(예: 19위 = 1페이지 19번째, 37위 = 2페이지 17번째). */
 const RANKS = [
-  {id:'90451193374', name:'리스페토 접이식 건조대 올화이트', kw:'접이식빨래건조대', prev:38, now:19},
-  {id:'90451193372', name:'리스페토 접이식 건조대 올블랙', kw:'접이식빨래건조대', prev:39, now:23},
-  {id:'92552270128', name:'리스페토 접이식 건조대 올크림', kw:'접이식빨래건조대', prev:18, now:14},
-  {id:'90451193370', name:'리스페토 원룸 빨래건조대 올블랙', kw:'원룸빨래건조대', prev:44, now:41},
-  {id:'90451193371', name:'리스페토 접이식 건조대 올블랙', kw:'빨래건조대', prev:48, now:47},
-  {id:'90451193373', name:'리스페토 원룸 빨래건조대 올크림', kw:'원룸빨래건조대', prev:38, now:38},
-  {id:'90451193369', name:'리스페토 접이식 건조대 올화이트', kw:'빨래건조대', prev:14, now:17},
-  {id:'92552270129', name:'리스페토 접이식 건조대 올크림', kw:'빨래건조대', prev:30, now:46}
+  {id:'90451193374', name:'리스페토 접이식 건조대 올화이트', kw:'접이식건조대', prev:26, now:19},
+  {id:'90451193374', name:'리스페토 접이식 건조대 올화이트', kw:'접이식빨래건조대', prev:28, now:28},
+  {id:'90451193372', name:'리스페토 접이식 건조대 올블랙', kw:'접이식빨래건조대', prev:46, now:46},
+  {id:'92552270128', name:'리스페토 접이식 건조대 올크림', kw:'접이식빨래건조대', prev:32, now:38},
+  {id:'90451193374', name:'리스페토 접이식 건조대 올화이트', kw:'원룸빨래건조대', prev:46, now:null},
+  {id:'90451193374', name:'리스페토 접이식 건조대 올화이트', kw:'미니빨래건조대', prev:44, now:null}
+];
+/* 11/24(오늘) 빅셀 수집분 — 조회 시점(14:0x) 값이라 수집이 더 진행되면 바뀔 수 있다 */
+const RANKS_TODAY = [
+  {kw:'접이식빨래건조대', opt:'올화이트', rank:37},
+  {kw:'접이식빨래건조대', opt:'올블랙', rank:39},
+  {kw:'접이식빨래건조대', opt:'올크림', rank:41},
+  {kw:'원룸빨래건조대', opt:'올화이트', rank:49}
 ];
 
 /* ---------- 품절 상품 ---------- */
@@ -3612,6 +3622,7 @@ VIEWS.stock = function(){
   const wing = wingStockByPid();
   const all = visibleProducts().map(p=>({p, s:byId[p.id]||null, wing:(wing[p.id]!=null?wing[p.id]:null)}));
   const need = all.filter(x=>stockNeedInbound(x.s));
+  const near14 = all.filter(x=>x.s && x.s.soldout && daysUntil(x.s.soldout)!=null && daysUntil(x.s.soldout)<=14);
   const list = opt.stockOnlyNeed ? need : all;
   const T = STOCK.total;
   const wingTotal = Object.keys(wing).reduce((a,k)=>a+wing[k],0);
@@ -3622,7 +3633,7 @@ VIEWS.stock = function(){
   + `<div class="kpis" style="margin-bottom:14px">
       ${kpiCard('쿠팡재고', won(T.stock)+'개', `<span class="flat">재고금액 ${wonW(T.value)}</span>`)}
       ${kpiCard('일평균 판매', T.daily+'개', `<span class="flat">최근 7일 · 건조대 ${(byId['8188501167']||{}).daily||0} · 깔창 ${(byId['9701805278']||{}).daily||0}</span>`)}
-      ${kpiCard('입고 필요', need.length+'종', `<span class="flat">${need.length?need.map(x=>esc(x.p.short)).join(' · '):'없음'} · 품절예상 30일 내</span>`, {accent:true})}
+      ${kpiCard('입고 필요', need.length+'종', `<span class="flat">${need.length?need.map(x=>esc(x.p.short)).join(' · '):'없음'} · 품절예상 30일 내</span><div class="flat" style="font-size:10.5px">빅셀 카드 기준(14일 내) ${near14.length}건</div>`, {accent:true})}
       ${kpiCard('쿠팡보관비', wonW(T.keep), `<span class="flat">이번달 · 반품 ${T.returns}건(${T.retRate}%)</span>`)}
     </div>`
   + `<div class="card">
@@ -3655,6 +3666,7 @@ VIEWS.stock = function(){
     <div class="card-b" style="border-top:1px solid var(--line2)">
       <div class="hint" style="line-height:1.7">
         <b>[입고필요 상품만]</b> = 품절예상일이 30일 이내이거나 재고 0인 상품 · 품절예상일 = <code>쿠팡재고 ÷ 최근 7일 일일평균판매량</code> · 쿠팡입고필요수량은 <b>본사재고 등록 후</b> 계산되는 칸이라 빅셀에서도 현재 공란입니다.<br>
+        <b>빅셀 대시보드 '쿠팡 품절 예상 상품' 카드와 차이</b>: 빅셀 카드는 <b>14일 이내</b>만 올리고(조회조건 비공개, 실측상 16~17일 남은 건도 빠짐) 이 화면은 입고판단용으로 <b>30일까지</b> 보여줍니다. 지금 14일 이내 <b>${near14.length}건</b> · 30일 이내 <b>${need.length}건</b> ${near14.length===0?'→ 빅셀 카드 0건과 일치(계산식 동일, 표시 범위만 다름)':''}<br>
         재고 집계 시점 차이: 매출분석 재고합계 <b>${won(T.stock)}개</b>(${STOCK.asOf}) · 윙 재고현황 옵션합계 <b>${wingTotal?won(wingTotal):'-'}개</b>(${esc(wingAt)}) · 정산서 재고수량 <b>${won(STOCK.settleStock)}개</b>(정산서 스냅샷).
       </div>
     </div>
@@ -3679,33 +3691,50 @@ VIEWS.stock = function(){
 
 /* ============================== 7. 노출순위 ============================== */
 VIEWS.rank = function(){
-  const up = RANKS.filter(r=>r.now<r.prev).length, down = RANKS.filter(r=>r.now>r.prev).length;
-  const best = RANKS.slice().sort((a,b)=>a.now-b.now)[0];
-  return topbar('노출순위','쿠팡 자연 검색 순위 (광고 제외) · 11월 17일 기준',
+  const meas = RANKS.filter(r=>r.now!=null);
+  const up = meas.filter(r=>r.now<r.prev).length, down = meas.filter(r=>r.now>r.prev).length;
+  const same = meas.filter(r=>r.now===r.prev).length;
+  const outN = RANKS.length - meas.length;
+  const best = meas.slice().sort((a,b)=>a.now-b.now)[0];
+  return topbar('노출순위','쿠팡 자연 검색 순위 (광고 제외 · 최대 3페이지) · 11월 23일 기준 · 11월 24일 수집분 포함',
     `<span class="chip">추적 키워드 <b>17</b>/100</span>`)
   + `<div class="kpis" style="margin-bottom:14px">
-      ${kpiCard('추적 상품', RANKS.length+'개', `<span class="flat">빨래건조대 옵션</span>`)}
-      ${kpiCard('상승', up+'개', `<span class="up">순위 개선</span>`)}
-      ${kpiCard('하락', down+'개', `<span class="down">순위 하락</span>`)}
-      ${kpiCard('최고 순위', best.now+'위', `<span class="flat">${esc(best.name)}</span>`, {accent:true})}
+      ${kpiCard('최고 순위', best.now+'위', `<span class="flat">${esc(best.kw)}</span>`, {accent:true})}
+      ${kpiCard('상승', up+'줄', `<span class="up">순위 개선</span>`)}
+      ${kpiCard('하락', down+'줄', `<span class="down">순위 하락</span>`)}
+      ${kpiCard('변동 없음 · 3p 밖', same+' · '+outN+'줄', `<span class="flat">60위 밖은 빅셀도 공란</span>`)}
     </div>`
-  + `<div class="card">${sectionHead('상품별 순위 변동','전일 대비')}
+  + `<div class="card">${sectionHead('상품별 순위 변동','빅셀 대시보드와 같은 기준 · 전일(11/22) → 11/23')}
     <div class="tbl-wrap"><table class="tbl">
       <thead><tr><th class="l">상품</th><th class="l">키워드</th><th>전일</th><th>현재</th><th>변동</th><th>페이지</th></tr></thead>
       <tbody>${RANKS.map(r=>{
-        const diff = r.prev-r.now;
+        const diff = (r.now!=null) ? r.prev-r.now : null;
         return `<tr>
           <td class="l"><div class="prod"><span class="thumb">🧺</span><div><div class="nm">${esc(r.name)}</div><div class="cd">${r.id}</div></div></div></td>
           <td class="l"><span class="pill rfm">${esc(r.kw)}</span></td>
-          <td class="num">${r.prev}위</td><td class="num"><b>${r.now}위</b></td>
-          <td class="num ${diff>0?'up':(diff<0?'down':'flat')}">${diff>0?'▲'+diff:(diff<0?'▼'+Math.abs(diff):'-')}</td>
-          <td class="num">${Math.ceil(r.now/36)}p</td></tr>`;
+          <td class="num">${r.prev}위</td>
+          <td class="num">${r.now!=null?`<b>${r.now}위</b>`:'<span class="flat">3p 밖</span>'}</td>
+          <td class="num ${diff>0?'up':(diff<0?'down':'flat')}">${r.now==null?'<span class="flat">-</span>':(diff>0?'▲'+diff:(diff<0?'▼'+Math.abs(diff):'-'))}</td>
+          <td class="num">${r.now!=null?Math.ceil(r.now/20)+'p':'<span class="flat">-</span>'}</td></tr>`;
       }).join('')}</tbody>
     </table></div>
     <div class="card-b" style="border-top:1px solid var(--line2)">
-      <div class="botn">${barChart(RANKS.map(r=>({l:r.kw.slice(0,4), v:100-r.now*2, sub:r.now+'위', c:r.now<=20?'#12b886':(r.now<=30?'#2f6bff':'#f59f00')})),{h:170})}</div>
-      <div class="hint" style="margin-top:6px">막대가 높을수록 상위 노출입니다. <b>접이식빨래건조대 올화이트 19위(+19)</b>, <b>올블랙 23위(+16)</b>가 크게 상승했습니다.</div>
+      <div class="botn">${barChart(meas.map(r=>({l:r.kw.slice(0,4), v:100-r.now*2, sub:r.now+'위', c:r.now<=20?'#12b886':(r.now<=30?'#2f6bff':'#f59f00')})),{h:170})}</div>
+      <div class="hint" style="margin-top:6px">막대가 높을수록 상위 노출입니다. 접이식건조대 올화이트가 <b>26위 → 19위(▲7)</b>로 1페이지에 재진입했고, 접이식빨래건조대 올크림은 32→38위로 내려갔습니다. 키워드 '건조대'·'빨래건조대'는 3페이지 밖이라 값이 없습니다.</div>
     </div>
+  </div>`
+  + `<div class="card" style="margin-top:14px">${sectionHead('11월 24일(오늘) 빅셀 수집분','조회 14:0x · 수집이 더 진행되면 값이 바뀔 수 있습니다')}
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th class="l">키워드</th><th class="l">옵션</th><th>전체순위</th><th>페이지</th><th>11/23 대비</th></tr></thead>
+      <tbody>${RANKS_TODAY.map(t=>{
+        const base = RANKS.find(r=>r.kw===t.kw && r.name.indexOf(t.opt)>=0 && r.now!=null);
+        const d = base ? base.now - t.rank : null;
+        return `<tr><td class="l"><span class="pill rfm">${esc(t.kw)}</span></td><td class="l">${esc(t.opt)}</td>
+          <td class="num"><b>${t.rank}위</b></td><td class="num">${Math.ceil(t.rank/20)}p</td>
+          <td class="num ${d>0?'up':(d<0?'down':'flat')}">${d==null?'<span class="flat">-</span>':(d>0?'▲'+d:(d<0?'▼'+Math.abs(d):'-'))}</td></tr>`;
+      }).join('')}</tbody>
+    </table></div>
+    <div class="card-b" style="border-top:1px solid var(--line2)"><div class="hint">빅셀 노출순위 보고서 [데이터 수집기간 선택]에서 날짜를 11/22·11/23·11/24로 각각 조회해 옵션별 '전체순위'를 그대로 옮겼습니다. 빅셀의 키워드×날짜 보고서 표는 날짜 열이 선택일과 하루 어긋나 보여(교차확인) 옵션별 값만 사용했습니다.</div></div>
   </div>`;
 };
 
@@ -3832,7 +3861,7 @@ VIEWS.settings = function(){
       <div class="stat-line"><span class="lb">일별 매출·이익금·광고비</span><span class="vl">빅셀 대시보드 매출 보고서 (11/1~11/17)</span></div>
       <div class="stat-line"><span class="lb">상품 원가·수수료·입출고·배송비</span><span class="vl">빅셀 로켓그로스 상품 관리</span></div>
       <div class="stat-line"><span class="lb">정산·손익</span><span class="vl">빅셀 정산 분석 > 로켓그로스 (11/01~11/21 확정 · 27개 전 컴럼)</span></div>
-      <div class="stat-line"><span class="lb">재고·입고 지표</span><span class="vl">빅셀 매출분석 상세보기(${STOCK.asOf}) + 쿠팡 윙 재고현황(11/22 10:22)</span></div>
+      <div class="stat-line"><span class="lb">재고·입고 지표</span><span class="vl">빅셀 매출분석 상세보기(${STOCK.asOf}) + 쿠팡 윙 재고현황(${S.live&&S.live.date?S.live.date.slice(5)+' '+S.live.at:BC7.wing.updatedAt})</span></div>
       <div class="stat-line"><span class="lb">상품 숨김 상태</span><span class="vl">빅셀 상품 관리 > 로켓그로스 > 숨김상품 (운영 8 · 숨김 6)</span></div>
       <div class="stat-line"><span class="lb">캠페인 성과</span><span class="vl">빅셀 광고 캠페인 분석</span></div>
       <div class="stat-line"><span class="lb">오늘 실시간</span><span class="vl">쿠팡 윙 ${esc(S.live.date)} ${esc(S.live.at||'')} 기준 (쿠폰 전 매출 · 쿠폰 분리)</span></div>
@@ -5424,8 +5453,9 @@ VIEWS.pmr = function(){
   const wingNow = (S && S.live && S.live.date)
     ? {sales:S.live.sales, qty:S.live.qty, at:(S.live.date.slice(5)+' '+S.live.at+' 동기화'), source:'쿠팡 윙 > 로켓그로스 > 재고현황 (실시간 동기화)'}
     : {sales:BC7.wing.sales, qty:BC7.wing.qty, at:BC7.wing.updatedAt, source:BC7.wing.source};
+  const wingChip = (S && S.live && S.live.date) ? (S.live.date.slice(5)+' '+S.live.at+' 동기화') : BC7.wing.updatedAt;
   return topbar('로켓그로스 상품관리', `리스페토 · 상품 ${BC7.rfm.length}개(운영 ${runN} · 숨김 ${hidN}) · 옵션 ${totOpts}개 · 빅셀 수집 ${BC7.collectedAt}`,
-      `<span class="chip"><span class="live"></span>윙 ${esc(BC7.wing.updatedAt)}</span>
+      `<span class="chip"><span class="live"></span>윙 ${esc(wingChip)}</span>
        <button class="btn" data-act="pmExport">⬇ 엑셀 다운로드</button>`)
   + bcDiscSoonCard()
   + `<div class="alert info" style="margin-bottom:12px">* 입출고요금과 배송비는 별도로 구분되어 있으며, 부가세가 포함된 금액입니다. <b>빅셀 로켓그로스 상품 관리</b> 구조 그대로입니다.</div>
