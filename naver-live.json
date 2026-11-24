@@ -1,12 +1,12 @@
 {
  "store": "리스페토",
  "platform": "naver-smartstore",
- "updatedAt": "2026-11-24T17:05:00+09:00",
+ "updatedAt": "2026-11-24T21:04:00+09:00",
  "month": "2026-11",
  "basis": "배송완료일",
  "period": "2026-11-01~2026-11-24 (배송완료일 기준 · 확정: 마지막 배송완료 11/24)",
  "periodMtd": "2026-11-01~2026-11-24 (배송완료일 기준 · 확정: 마지막 배송완료 11/24)",
- "collectedAt": "2026-11-24T17:05:00+09:00",
+ "collectedAt": "2026-11-24T21:04:00+09:00",
  "params": {
   "feeProduct": 5.728,
   "feeShipping": 2.728,
@@ -34,13 +34,13 @@
   "cost": 0,
   "parcelCost": 0,
   "profit": 0,
-  "asOf": "17:05",
-  "deliveredToday": 4,
-  "pendingNewOrders": 10,
+  "asOf": "21:04",
+  "deliveredToday": 8,
+  "pendingNewOrders": 6,
   "newOrders": 0,
-  "shipped": 10,
+  "shipped": 6,
   "purchasedConfirmed": 31,
-  "newReviews": 6,
+  "newReviews": 7,
   "cancelRequest": 0,
   "returnRequest": 0,
   "exchangeRequest": 0,
@@ -49,51 +49,51 @@
    "amount": 179777,
    "status": "완료"
   },
-  "source": "스마트스토어센터 홈 대시보드 17:02 기준(신규주문 0·배송준비 0·배송중 10·배송완료 13·구매확정 31·취소/반품/교환 요청 0) + 구매확정 내역 31건(구매확정일 11/18~11/24) + 배송현황 관리(배송완료 13건·배송중 10건) 17:02~17:10 조회. 새 리뷰 6건은 13:03 대시보드 값 유지(17시 미재조회)"
+  "source": "스마트스토어센터 홈 대시보드 21:04 기준(신규주문 0·배송준비 0·배송중 6·배송완료 17·구매확정 31·취소/반품/교환 요청 0·새 리뷰 7) + 배송현황 관리(배송완료 17건·배송중 6건) + 구매확정 내역 31건(구매확정일 11/18~11/24) + 취소·반품·교환 관리 클레임 조회 21:03~21:04"
  },
  "total": {
-  "orders": 93,
-  "units": 95,
-  "netSales": 1933550,
-  "shippingIncome": 285000,
-  "revenue": 2218550,
-  "fee": 118530,
-  "cost": 882648,
-  "parcelCost": 357000,
-  "profit": 860372,
+  "orders": 97,
+  "units": 99,
+  "netSales": 2013510,
+  "shippingIncome": 297000,
+  "revenue": 2310510,
+  "fee": 123438,
+  "cost": 920408,
+  "parcelCost": 370600,
+  "profit": 896064,
   "cancelQty": 5,
   "returnQty": 3,
   "exchangeQty": 3,
   "days": 17,
   "margin": 38.78,
   "feeRate": 5.34,
-  "invoices": 90
+  "invoices": 94
  },
  "totalMtd": {
-  "orders": 93,
-  "units": 95,
-  "netSales": 1933550,
-  "shippingIncome": 285000,
-  "revenue": 2218550,
-  "fee": 118530,
-  "cost": 882648,
-  "parcelCost": 357000,
-  "profit": 860372,
+  "orders": 97,
+  "units": 99,
+  "netSales": 2013510,
+  "shippingIncome": 297000,
+  "revenue": 2310510,
+  "fee": 123438,
+  "cost": 920408,
+  "parcelCost": 370600,
+  "profit": 896064,
   "cancelQty": 5,
   "returnQty": 3,
   "exchangeQty": 3,
   "days": 17,
   "margin": 38.78,
   "feeRate": 5.34,
-  "invoices": 90
+  "invoices": 94
  },
  "pending": {
   "shipping": {
-   "n": 10,
-   "qty": 10,
-   "sales": 200600,
-   "shippingIncome": 30000,
-   "total": 230600
+   "n": 6,
+   "qty": 6,
+   "sales": 120640,
+   "shippingIncome": 18000,
+   "total": 138640
   },
   "beforeShip": {
    "n": 0,
@@ -103,7 +103,7 @@
    "total": 0,
    "orders": []
   },
-  "note": "발송처리 후 배송완료 전(배송중) — 확정 매출 제외. 신규주문(발주 전) 0건 · 배송중 10건 230,600원(상품 200,600 + 배송비 30,000 · 17:0x 기준)"
+  "note": "발송처리 후 배송완료 전(배송중) — 확정 매출 제외. 신규주문(발주 전) 0건 · 배송중 6건 138,640원(상품 120,640 + 배송비 18,000 · 21:04 기준)"
  },
  "parcelMonth": {
   "month": "2026-11",
@@ -606,17 +606,17 @@
   {
    "date": "2026-11-24",
    "d": "2026-11-24",
-   "orders": 4,
-   "units": 4,
-   "invoices": 4,
-   "netSales": 85960,
-   "shippingIncome": 12000,
-   "revenue": 97960,
-   "fee": 5251,
-   "cost": 37760,
-   "parcelCost": 13600,
-   "profit": 41349,
-   "margin": 42.21,
+   "orders": 8,
+   "units": 8,
+   "invoices": 8,
+   "netSales": 165920,
+   "shippingIncome": 24000,
+   "revenue": 189920,
+   "fee": 10159,
+   "cost": 75520,
+   "parcelCost": 27200,
+   "profit": 77041,
+   "margin": 40.56,
    "cancelQty": 0,
    "returnQty": 0,
    "exchangeQty": 0,
@@ -727,6 +727,6 @@
  "notes": {
   "basis": "배송완료(구매확정 포함) 기준. 10월 결제·11월 배송완료 건은 11월에 포함, 11월 결제·미배송 건은 제외",
   "exchange": "교환 3건은 매출 유지. 2건은 배송완료일이 기록되지 않아 '교환' 보정 행에 매출·legs를 모았습니다",
-  "parcelDiff": "손익의 택배비는 배송완료 건과 매출을 짝지어 계산합니다. 월별 정산 카드는 11월에 실제 발송된 송장 기준이라 차액이 생깁니다(배송중 10건 + 교환 2건 첫 발송분)"
+  "parcelDiff": "손익의 택배비는 배송완료 건과 매출을 짝지어 계산합니다. 월별 정산 카드는 11월에 실제 발송된 송장 기준이라 차액이 생깁니다(배송중 6건 + 교환 2건 첫 발송분)"
  }
 }
