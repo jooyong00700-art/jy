@@ -5940,18 +5940,18 @@ VIEWS.sa3p = function(){
       <div class="kpi"><div class="lab">매출(할인 후)</div><div class="val num">${won(sales)}원</div><div class="delta flat">할인전 ${won(gross)} − 쿠폰 ${won(disc)}</div></div>
       <div class="kpi"><div class="lab">판매수량</div><div class="val num">${qty}개</div><div class="delta flat">3P 채널</div></div>
       <div class="kpi"><div class="lab">이익금</div><div class="val num">${won(margin)}원</div><div class="delta flat">원가 −${won(costSum)} · 수수료 반영</div></div>
-      <div class="kpi"><div class="lab">이익률</div><div class="val num">${sales?pct1(margin/sales*100):'-'}%</div><div class="delta flat">입출고·배송비 없음</div></div>
+      <div class="kpi"><div class="lab">이익률(매출 대비)</div><div class="val num">${sales?pct1(margin/sales*100):'-'}%</div><div class="delta flat">입출고·배송비 없음</div></div>
     </div>
     <div class="card"><div class="card-h"><h2>상품별 실적</h2><span class="note">bigcell-live.json daily[].p3 · 빅셀 판매자배송 매출 분석과 같은 값</span></div>
     <div class="tbl-wrap"><table class="tbl"><thead><tr>
-      <th class="l">일자</th><th class="l">상품명</th><th>옵션ID</th><th class="r">판매수량</th><th class="r">할인전</th><th class="r">할인(쿠폰)</th><th class="r">매출</th><th class="r">원가</th><th class="r">이익금</th><th class="r">이익률</th>
+      <th class="l">일자</th><th class="l">상품명</th><th>옵션ID</th><th class="r">판매수량</th><th class="r">할인전</th><th class="r">할인(쿠폰)</th><th class="r">매출</th><th class="r">원가</th><th class="r">이익금</th><th class="r">이익률(매출)</th>
     </tr></thead><tbody>${body}
       <tr class="total"><td class="l"><b>합계</b></td><td></td><td></td><td class="r num"><b>${qty}</b></td><td class="r num"><b>${bcMoney(gross)}</b></td><td class="r num"><b>${bcMoney(disc)}</b></td><td class="r num"><b>${bcMoney(sales)}</b></td><td class="r num"><b>${bcMoney(costSum)}</b></td><td class="r num"><b>${bcMoney(margin)}</b></td><td class="r num"><b>${sales?pct1(margin/sales*100):'-'}%</b></td></tr>
     </tbody></table></div>
     <div class="card-b" style="border-top:1px solid var(--line2)"><div class="hint">
       판매자배송은 <b>2026-11-23까지 일일 평균 판매 0건</b>이었고, <b>11/24에 좌식테이블 1개(할인전 29,990 · 쿠폰 8,000 · 21,990원 · 이익금 10,378원)</b>가 처음 나왔습니다. 이 건은 쿠팡 윙 로켓그로스 재고현황에 잡히지 않아, 빅셀 11/24 총매출 1,471,400원 = 로켓그로스 1,449,410 + 3P 21,990 으로 맞춰집니다.
     </div></div></div>
-    <div class="card" style="margin-top:14px"><div class="card-h"><h2>판매자배송 상품 4종 · 개당 이익금</h2><span class="note">빅셀 판매자배송 상품관리(2026-11-25 확인) 그대로</span></div>
+    <div class="card" style="margin-top:14px"><div class="card-h"><h2>판매자배송 상품 4종 · 개당 이익금</h2><span class="note">빅셀 판매자배송 상품관리(2026-11-25 확인) 그대로 · 이익금%는 판매가 대비</span></div>
     <div class="tbl-wrap"><table class="tbl"><thead><tr><th class="l">노출상품ID</th><th class="l">상품명</th><th class="r">판매가</th><th class="r">할인금액</th><th class="r">마켓수수료</th><th class="r">원가</th><th class="r">이익금(%)</th></tr></thead><tbody>${master}</tbody></table></div>
     <div class="card-b" style="border-top:1px solid var(--line2)"><div class="formula">판매자배송 이익금 = <code>(판매가 − 할인) × (1 − 수수료%)</code> − <code>원가</code> <span class="hint">(입출고·배송비 없음 — 3P는 쿠팡 배송비 미적용)</span></div>
     <div class="alert info" style="margin-top:10px">빅셀 <b>판매자배송 정산 &amp; 손익금 분석</b>은 판매일이 아니라 <b>구매확정일 기준</b>으로 조회됩니다. 11/24 3P 판매분은 구매확정 전이라 2026-11-25 14:0x 조회에서도 정산서 전 행이 0원이었습니다 — 확정 후 정산 탭에 별도로 잡힙니다.</div></div></div>`;
