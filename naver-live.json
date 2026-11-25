@@ -1,12 +1,12 @@
 {
  "store": "리스페토",
  "platform": "naver-smartstore",
- "updatedAt": "2026-11-24T23:02:00+09:00",
+ "updatedAt": "2026-11-25T09:20:00+09:00",
  "month": "2026-11",
  "basis": "배송완료일",
- "period": "2026-11-01~2026-11-24 (배송완료일 기준 · 확정: 마지막 배송완료 11/24)",
- "periodMtd": "2026-11-01~2026-11-24 (배송완료일 기준 · 확정: 마지막 배송완료 11/24)",
- "collectedAt": "2026-11-24T23:02:00+09:00",
+ "period": "2026-11-01~2026-11-25 (배송완료일 기준 · 확정: 마지막 배송완료 11/24)",
+ "periodMtd": "2026-11-01~2026-11-25 (배송완료일 기준 · 확정: 마지막 배송완료 11/24)",
+ "collectedAt": "2026-11-25T09:20:00+09:00",
  "params": {
   "feeProduct": 5.728,
   "feeShipping": 2.728,
@@ -24,32 +24,32 @@
   "settlementActualNote": "정산관리 실측은 정산예정일 기준이라 배송완료 기준 손익과 다릅니다."
  },
  "today": {
-  "d": "2026-11-24",
-  "date": "2026-11-24",
-  "orders": 0,
-  "units": 0,
-  "sales": 0,
-  "shipRev": 0,
-  "fee": 0,
-  "cost": 0,
-  "parcelCost": 0,
-  "profit": 0,
-  "asOf": "23:02",
-  "deliveredToday": 8,
+  "d": "2026-11-25",
+  "date": "2026-11-25",
+  "orders": 1,
+  "units": 1,
+  "sales": 19990,
+  "shipRev": 3000,
+  "fee": 1227,
+  "cost": 9440,
+  "parcelCost": 3400,
+  "profit": 8923,
+  "asOf": "09:20",
+  "deliveredToday": 0,
   "pendingNewOrders": 6,
-  "newOrders": 0,
+  "newOrders": 1,
   "shipped": 6,
-  "purchasedConfirmed": 32,
-  "newReviews": 7,
+  "purchasedConfirmed": 25,
+  "newReviews": 4,
   "cancelRequest": 0,
   "returnRequest": 0,
   "exchangeRequest": 0,
   "nextSettlement": {
-   "date": "2026-11-24",
-   "amount": 179777,
+   "date": "2026-11-25",
+   "amount": 132421,
    "status": "완료"
   },
-  "source": "스마트스토어센터 홈 대시보드 23:02 기준(신규주문 0·배송준비 0·배송중 6·배송완료 16·구매확정 32·취소/반품/교환 요청 0·새 리뷰 7) + 배송현황 관리(배송완료 16건·배송중 6건, 최근 배송완료 11/24 20:01) + 구매확정 내역 32건(구매확정일 11/18~11/24, 최근 이소윤 22:15:37) + 취소·반품·교환 관리 클레임 조회 23:02"
+  "source": "스마트스토어센터 홈 대시보드 09:14 기준(신규주문 1·배송준비 0·배송중 6·배송완료 13·구매확정 25·취소/반품/교환 요청 0·새 리뷰 4·문의 0·판매중 4/품절 3) + 발주(주문)확인/발송관리(신규주문 서현정 2026112588394041 · 결제 11/25 02:19:43 · 발송기한 11/25 23:59:59) + 배송현황 관리(배송완료일 11/01~11/25 13건 — 신규 배송완료 없음, 최신 11/24 20:01:52 이기윤 / 배송중 6건 유지) + 구매확정 내역(25건, 11/17 배송완료 3건이 11/25 02:1x~02:5x 구매확정) + 취소 관리(취소완료 최근3일 2건 = 김장현 11/23·고정영 11/25 07:50) + 반품·교환 관리(최근3일 완료 0건) · 09:14~09:30 수집"
  },
  "total": {
   "orders": 97,
@@ -61,7 +61,7 @@
   "cost": 920408,
   "parcelCost": 370600,
   "profit": 896064,
-  "cancelQty": 5,
+  "cancelQty": 6,
   "returnQty": 3,
   "exchangeQty": 3,
   "days": 17,
@@ -79,7 +79,7 @@
   "cost": 920408,
   "parcelCost": 370600,
   "profit": 896064,
-  "cancelQty": 5,
+  "cancelQty": 6,
   "returnQty": 3,
   "exchangeQty": 3,
   "days": 17,
@@ -96,14 +96,28 @@
    "total": 138640
   },
   "beforeShip": {
-   "n": 0,
-   "qty": 0,
-   "sales": 0,
-   "shippingIncome": 0,
-   "total": 0,
-   "orders": []
+   "n": 1,
+   "qty": 1,
+   "sales": 19990,
+   "shippingIncome": 3000,
+   "total": 22990,
+   "orders": [
+    {
+     "orderNo": "2026112568365921",
+     "productOrderNo": "2026112588394041",
+     "buyer": "서현정",
+     "product": "빨래건조대 (11567263360)",
+     "option": "색상: ALL 화이트",
+     "qty": 1,
+     "amount": 19990,
+     "shipping": 3000,
+     "paid": "2026.11.25 02:19:43",
+     "dueDate": "2026.11.25 23:59:59",
+     "settleAmount": 18846
+    }
+   ]
   },
-  "note": "발송처리 후 배송완료 전(배송중) — 확정 매출 제외. 신규주문(발주 전) 0건 · 배송중 6건 138,640원(상품 120,640 + 배송비 18,000 · 23:02 기준)"
+  "note": "발송처리 후 배송완료 전(배송중) — 확정 매출 제외. 신규주문(발주 전) 1건 · 배송중 6건 138,640원(상품 120,640 + 배송비 18,000 · 09:20 기준)"
  },
  "parcelMonth": {
   "month": "2026-11",
@@ -156,7 +170,7 @@
   }
  ],
  "claims": {
-  "collectedAt": "2026-11-24T13:05:00+09:00",
+  "collectedAt": "2026-11-25T09:30:00+09:00",
   "basis": "취소=취소완료일, 반품=환불(수거)완료일, 교환=결제일 귀속",
   "cancels": [
    {
@@ -189,6 +203,13 @@
     "amount": 22990,
     "kind": "취소완료",
     "note": "김장현 ALL 화이트 1개 · 취소완료 2026.11.23 19:06:45 · 주문실수(발송 전)"
+   },
+   {
+    "date": "2026-11-25",
+    "paid": "2026-11-25 07:49",
+    "amount": 22990,
+    "kind": "취소완료",
+    "note": "고정영 ALL 크림 1개 · 2026112590609781 · 취소완료 2026.11.25 07:50:33 · 주문실수(발송 전, 송장 없음)"
    }
   ],
   "returns": [
@@ -621,6 +642,26 @@
    "returnQty": 0,
    "exchangeQty": 0,
    "live": false
+  },
+  {
+   "date": "2026-11-25",
+   "d": "2026-11-25",
+   "orders": 0,
+   "units": 0,
+   "invoices": 0,
+   "netSales": 0,
+   "shippingIncome": 0,
+   "revenue": 0,
+   "fee": 0,
+   "cost": 0,
+   "parcelCost": 0,
+   "profit": 0,
+   "margin": -100,
+   "cancelQty": 1,
+   "returnQty": 0,
+   "exchangeQty": 0,
+   "live": false,
+   "refundOnly": true
   },
   {
    "date": "교환",
