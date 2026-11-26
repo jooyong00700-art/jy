@@ -1662,10 +1662,10 @@ const SETTLE_COLS = [
 ];
 /* [id, sku, 재고, 판매, 판매액, 즉시할인, 다운로드쿠폰, 수수료, 정산대상액, 원가, 입출고, 배송, 보관, 반품회수, 반품재입고, 반출, 바코드, FCL, 재고손실보상, 광고비, 밀크런, 실정산액, 순이익] */
 const SETTLE_MONTH_ROWS = [
-  ['8188501167','48219924',3075,1741,39438870,0,4879940,4105924,30453006,16435040,2730640,4872120,0,0,0,0,0,null,0,3899522,null,18950724,2515684],
-  ['9701805278','59918193',449,352,3733610,0,260000,401255,3072355,832128,390060,527835,105,0,0,0,0,null,0,883288,null,1271068,438940],
+  ['8188501167','48219924',2838,1946,44090020,0,5462940,4589257,34037823,18370240,3087920,5510340,0,0,0,0,0,null,0,4208304,null,21231259,2861019],
+  ['9701805278','59918193',419,384,4074570,0,283200,437960,3353410,907776,423170,571780,105,0,0,0,0,null,0,948696,null,1409660,501884],
   ['9593584011','74899093',6,3,23700,0,0,2502,21198,7200,3234,3713,0,0,0,0,0,null,0,0,null,14252,7052],
-  ['9593565569','74898277',9,2,15980,0,0,1124,14856,5700,1265,1925,0,0,0,0,0,null,0,0,null,11666,5966],
+  ['9593565569','74898277',8,1,7990,0,0,562,7428,2850,1265,1925,0,0,0,0,0,null,0,0,null,4238,1388],
   ['7846681988','',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
   ['7912280870','',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
   ['8011099857','60592358',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
@@ -1678,11 +1678,11 @@ const SETTLE_MONTH_ROWS = [
   ['9766745761','59961448',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0]
 ];
 const SETTLE_DAY_ROWS = {
-  '2026-11-22': [
-    ['8188501167','48219924',3075,91,2074610,0,264000,215118,1595492,859040,133980,240240,0,0,0,0,0,null,0,121349,null,1099923,240883],
-    ['9701805278','59918193',449,14,151060,0,10400,16248,124412,33096,10010,12760,0,0,0,0,0,null,0,22710,null,78932,45836],
+  '2026-11-25': [
+    ['8188501167','48219924',2838,67,1488810,0,180000,155499,1153311,632480,108460,194480,0,0,0,0,0,null,0,142745,null,707626,75146],
+    ['9701805278','59918193',419,13,135950,0,8800,14687,112463,30732,11110,14245,0,0,0,0,0,null,0,21970,null,65138,34406],
     ['9593584011','74899093',6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
-    ['9593565569','74898277',9,1,7990,0,0,562,7428,2850,0,0,0,0,0,0,0,null,0,0,null,7428,4578],
+    ['9593565569','74898277',8,-1,-7990,0,0,-562,-7428,-2850,-1265,-1925,0,0,0,0,0,null,0,0,null,-4238,-1388],
     ['7846681988','',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
     ['7912280870','',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
     ['8011099857','60592358',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
@@ -1694,11 +1694,27 @@ const SETTLE_DAY_ROWS = {
     ['9636737924','75437998',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
     ['9766745761','59961448',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0]
   ],
-  '2026-11-21': [
-    ['8188501167','48219924',3157,77,1750910,0,219000,182004,1349906,726880,102080,183040,0,0,0,0,0,null,0,153949,null,910837,183957],
-    ['9701805278','59918193',456,5,53950,0,4000,5770,44180,11820,7700,10395,0,0,0,0,0,null,0,21104,null,4981,-6839],
+  '2026-11-24': [
+    ['8188501167','48219924',2904,67,1524530,0,190000,158554,1175976,632480,119625,212080,0,0,0,0,0,null,0,78855,null,765416,132936],
+    ['9701805278','59918193',428,12,129480,0,8800,13940,106740,28368,9900,13365,0,0,0,0,0,null,0,20798,null,62677,34309],
     ['9593584011','74899093',6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
-    ['9593565569','74898277',9,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+    ['9593565569','74898277',8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+    ['7846681988','',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+    ['7912280870','',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+    ['8011099857','60592358',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+    ['8436562849','52892958',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+    ['9395470256','70114948',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+    ['9595425253','74964849',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+    ['9611477934','75423361',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+    ['9611854991','75437997',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+    ['9636737924','75437998',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+    ['9766745761','59961448',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0]
+  ],
+  '2026-11-23': [
+    ['8188501167','48219924',2980,71,1637810,0,213000,169280,1255530,670240,129195,231660,0,0,0,0,0,null,0,87182,null,807493,137253],
+    ['9701805278','59918193',436,7,75530,0,5600,8078,61852,16548,12100,16335,0,0,0,0,0,null,0,22640,null,10777,-5771],
+    ['9593584011','74899093',6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
+    ['9593565569','74898277',8,0,0,0,0,0,0,0,1265,1925,0,0,0,0,0,null,0,0,null,-3190,-3190],
     ['7846681988','',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
     ['7912280870','',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
     ['8011099857','60592358',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0],
@@ -1711,16 +1727,19 @@ const SETTLE_DAY_ROWS = {
     ['9766745761','59961448',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,0,0,null,0,0]
   ]
 };
-const SETTLE_MONTH_TOTAL = {stock:3539, qty:2098, sales:43212160, couponNow:0, couponDl:5139940, fee:4510805,
-  target:33561415, cost:17280068, inout:3125199, ship:5405593, keep:105, retCollect:0, retIn:0, outbound:0,
-  barcode:0, fcl:null, loss:0, ad:4782810, milk:null, actual:20247709, net:2967641};
+const SETTLE_MONTH_TOTAL = {stock:3271, qty:2334, sales:48196280, couponNow:0, couponDl:5746140, fee:5030281,
+  target:37419859, cost:19288066, inout:3515589, ship:6087758, keep:105, retCollect:0, retIn:0, outbound:0,
+  barcode:0, fcl:null, loss:0, ad:5157000, milk:null, actual:22659408, net:3371342};
 const SETTLE_DAY_TOTAL = {
-  '2026-11-22': {stock:3539, qty:106, sales:2233660, couponNow:0, couponDl:274400, fee:231928,
-    target:1727332, cost:894986, inout:143990, ship:253000, keep:0, retCollect:0, retIn:0, outbound:0,
-    barcode:0, fcl:null, loss:0, ad:144059, milk:null, actual:1186283, net:291297},
-  '2026-11-21': {stock:3628, qty:82, sales:1804860, couponNow:0, couponDl:223000, fee:187774,
-    target:1394086, cost:738700, inout:109780, ship:193435, keep:0, retCollect:0, retIn:0, outbound:0,
-    barcode:0, fcl:null, loss:0, ad:175053, milk:null, actual:915818, net:177118}
+  '2026-11-25': {stock:3271, qty:79, sales:1616770, couponNow:0, couponDl:188800, fee:169624,
+    target:1258346, cost:660362, inout:118305, ship:206800, keep:0, retCollect:0, retIn:0, outbound:0,
+    barcode:0, fcl:null, loss:0, ad:164715, milk:null, actual:768526, net:108164},
+  '2026-11-24': {stock:3346, qty:79, sales:1654010, couponNow:0, couponDl:198800, fee:172494,
+    target:1282716, cost:660848, inout:129525, ship:225445, keep:0, retCollect:0, retIn:0, outbound:0,
+    barcode:0, fcl:null, loss:0, ad:99653, milk:null, actual:828093, net:167245},
+  '2026-11-23': {stock:3430, qty:78, sales:1713340, couponNow:0, couponDl:218600, fee:177358,
+    target:1317382, cost:686788, inout:142560, ship:249920, keep:0, retCollect:0, retIn:0, outbound:0,
+    barcode:0, fcl:null, loss:0, ad:109822, milk:null, actual:815080, net:128292}
 };
 function mkSettle(rows){
   return rows.map(a=>{
@@ -1732,9 +1751,9 @@ function mkSettle(rows){
     return o;
   });
 }
-const SETTLE_DAY_KEYS = ['2026-11-22','2026-11-21'];   /* 최신일 먼저 */
+const SETTLE_DAY_KEYS = ['2026-11-25','2026-11-24','2026-11-23'];   /* 최신일 먼저 */
 const SETTLE = {
-  month:{key:'month', label:'11월 누적 (11/01~11/22)', rows:mkSettle(SETTLE_MONTH_ROWS), total:SETTLE_MONTH_TOTAL},
+  month:{key:'month', label:'11월 누적 (11/01~11/25)', rows:mkSettle(SETTLE_MONTH_ROWS), total:SETTLE_MONTH_TOTAL},
   days:SETTLE_DAY_KEYS.reduce((a,d)=>{
     const dt = dateObj(d);
     a[d] = {key:d, label:`${dt.getMonth()+1}월 ${dt.getDate()}일 하루`, rows:mkSettle(SETTLE_DAY_ROWS[d]), total:SETTLE_DAY_TOTAL[d]};
@@ -1753,7 +1772,7 @@ function settleSc(){
    soldout=쿠팡품절예상일, need=쿠팡입고필요수량(본사재고 미등록 → null), keep=쿠팡보관비(이번달) */
 const STOCK = {
   asOf:'2026-11-22', source:'빅셀 매출분석 > 로켓그로스 (상세보기)',
-  settleStock:3539,
+  settleStock:3271,
   rows:[
     {id:'8188501167', stock:2979, value:28121760, inbound:0, inboundValue:0, daily:73, soldout:'2027-01-04', need:null, keep:0, returns:206, retRate:9},
     {id:'9701805278', stock:436, value:1030704, inbound:0, inboundValue:0, daily:12, soldout:'2026-12-10', need:null, keep:95, returns:38, retRate:8},
@@ -1802,30 +1821,32 @@ const SETTLE_DUE = [
 ];
 
 /* ---------- 노출순위 (빅셀 노출순위 보고서 · 옵션별 '전체순위') ----------
-   조회 2026-11-25 14:0x (빅셀 읽기 전용) · prev = 11/23, now = 11/24(확정)
-   교차확인: 빅셀 대시보드 '상품별 순위 변동'(11/24 기준) = 원룸빨래건조대 올화이트 49위 신규 ▲49 ·
-   접이식빨래건조대 올블랙 46→39 ▲7 · 올크림 38→41 ▼3 · 올화이트 28→37 ▼9 와 정확히 일치.
+   조회 2026-11-26 14:0x (빅셀 읽기 전용) · prev = 11/24, now = 11/25(확정)
+   11/25 확정 = 11/25 14:0x 수집분 그대로 — 빅셀 옵션표를 11/25로 지정해 7줄 재확인(추가 수집 없음).
+   교차확인: 빅셀 대시보드 '상품별 순위 변동'(11/25 기준) = 원룸 올블랙 39(전일 -) · 접이식건조대 올블랙 32(전일 -) ·
+   접이식건조대 올화이트 22(전일 -) · 접이식빨래건조대 올블랙 39→34 ▲5 · 올화이트 37→37 · 올크림 41→41 · 원룸 올화이트 49→49 와 일치.
    now:null = 3페이지(60위) 밖이라 측정값 없음(빅셀 표에도 공란). 키워드 '건조대'·'빨래건조대'는 같은 이유로 값이 없다.
    빅셀 페이지 단위는 20개(예: 19위 = 1페이지 19번째, 37위 = 2페이지 17번째).
    prev:null = 그 전일에도 3p 밖(신규 진입) 표시. */
 const RANKS = [
-  {id:'90451193374', name:'리스페토 접이식 건조대 올화이트', kw:'접이식건조대', prev:19, now:null},
-  {id:'90451193374', name:'리스페토 접이식 건조대 올화이트', kw:'접이식빨래건조대', prev:28, now:37},
-  {id:'90451193372', name:'리스페토 접이식 건조대 올블랙', kw:'접이식빨래건조대', prev:46, now:39},
-  {id:'92552270128', name:'리스페토 접이식 건조대 올크림', kw:'접이식빨래건조대', prev:38, now:41},
-  {id:'90451193374', name:'리스페토 접이식 건조대 올화이트', kw:'원룸빨래건조대', prev:null, now:49},
-  {id:'90451193374', name:'리스페토 접이식 건조대 올화이트', kw:'미니빨래건조대', prev:null, now:null}
+  {id:'90451193374', name:'리스페토 접이식 건조대 올화이트', kw:'접이식건조대', prev:null, now:22},
+  {id:'90451193372', name:'리스페토 접이식 건조대 올블랙', kw:'접이식건조대', prev:null, now:32},
+  {id:'90451193374', name:'리스페토 접이식 건조대 올화이트', kw:'접이식빨래건조대', prev:37, now:37},
+  {id:'90451193372', name:'리스페토 접이식 건조대 올블랙', kw:'접이식빨래건조대', prev:39, now:34},
+  {id:'92552270128', name:'리스페토 접이식 건조대 올크림', kw:'접이식빨래건조대', prev:41, now:41},
+  {id:'90451193374', name:'리스페토 접이식 건조대 올화이트', kw:'원룸빨래건조대', prev:49, now:49},
+  {id:'90451193372', name:'리스페토 접이식 건조대 올블랙', kw:'원룸빨래건조대', prev:null, now:39}
 ];
-/* 11/25(오늘) 빅셀 수집분 — 조회 시점(14:0x) 값이라 수집이 더 진행되면 바뀔 수 있다.
-   prev = 11/24 확정치(빅셀 옵션표 11/24 조회) · null = 11/24에 3p 밖이라 비교값 없음 */
+/* 11/26(오늘) 빅셀 수집분 — 14:0x 조회 시점 값이라 수집이 더 진행되면 바뀔 수 있다.
+   prev = 11/25 확정치 · rank:null = 오늘 3p 밖으로 밀림(전일 32위) */
 const RANKS_TODAY = [
-  {kw:'접이식빨래건조대', opt:'올블랙', rank:34, prev:39, page:'2p 14'},
   {kw:'접이식빨래건조대', opt:'올화이트', rank:37, prev:37, page:'2p 17'},
-  {kw:'접이식빨래건조대', opt:'올크림', rank:41, prev:41, page:'3p 1'},
-  {kw:'접이식건조대', opt:'올화이트', rank:22, prev:null, page:'2p 2'},
-  {kw:'접이식건조대', opt:'올블랙', rank:32, prev:null, page:'2p 12'},
-  {kw:'원룸빨래건조대', opt:'올블랙', rank:39, prev:null, page:'2p 19'},
-  {kw:'원룸빨래건조대', opt:'올화이트', rank:49, prev:49, page:'3p 9'}
+  {kw:'접이식빨래건조대', opt:'올블랙', rank:38, prev:34, page:'2p 18'},
+  {kw:'접이식빨래건조대', opt:'올크림', rank:42, prev:41, page:'3p 2'},
+  {kw:'접이식건조대', opt:'올화이트', rank:37, prev:22, page:'2p 17'},
+  {kw:'원룸빨래건조대', opt:'올블랙', rank:41, prev:39, page:'3p 1'},
+  {kw:'원룸빨래건조대', opt:'올화이트', rank:49, prev:49, page:'3p 9'},
+  {kw:'접이식건조대', opt:'올블랙', rank:null, prev:32, page:'-'}
 ];
 
 /* ---------- 품절 상품 ---------- */
@@ -3530,9 +3551,9 @@ VIEWS.settle = function(){
     return `<div class="ctile${cls}"><div class="t">${l}</div><div class="v num ${n!=null&&n<0?'up':''}">${(n==null)?'-':(sign&&n?'−':'')+won(Math.abs(n))}</div></div>`;
   }).join('');
   return topbar('정산 · 손익', `빅셀 정산서 기준 · 로켓그로스 ${allRows.length}개 상품(운영 ${allRows.length-hiddenN} · 숨김 ${hiddenN}) · 표시 ${rows.length}개`,
-      `<div class="seg">${[['month','11월 누적'],['2026-11-22','11월 22일'],['2026-11-21','11월 21일'],['due','입금 예정']].map(([v,l])=>`<button class="${opt.settleRange===v?'on':''}" data-act="settleRange" data-v="${v}">${l}</button>`).join('')}</div>`)
+      `<div class="seg">${[['month','11월 누적'],['2026-11-25','11월 25일'],['2026-11-24','11월 24일'],['2026-11-23','11월 23일'],['due','입금 예정']].map(([v,l])=>`<button class="${opt.settleRange===v?'on':''}" data-act="settleRange" data-v="${v}">${l}</button>`).join('')}</div>`)
   + (opt.settleRange==='due' ? dueCard() :
-      `<div class="alert info" style="margin-bottom:12px">빅셀 로켓그로스 정산서는 <b>11/22분(11/23 14시 수집)</b>까지만 올라와 있습니다. <b>11/23·11/24 정산서는 2026-11-25 14:0x 조회에서도 전 행 0원</b>(빅셀 수집 지연)이라 표시 기간을 11/22에 두었습니다 — 올라오면 그대로 반영됩니다. 판매자배송(3P) 정산은 판매일이 아니라 <b>구매확정일 기준</b>이라 별도 정산서로 잡힙니다(11/24 첫 3P 판매 21,990원은 구매확정 전 → 정산서 0원).</div>
+      `<div class="alert info" style="margin-bottom:12px"><b>11/23·11/24·11/25 정산서가 모두 올라왔습니다</b>(저장 11/22분까지이던 빅셀 수집이 11/26 14:0x 조회에서 재개). 11월 누적도 11/01~11/25 기준으로 바뀌었습니다. 정산서는 판매일 기준 · 일자별 판매수량은 매출분석과 1~2건 차이날 수 있습니다(취소·반품·3P 제외 등). 판매자배송(3P) 정산은 <b>구매확정일 기준</b>이라 11/01~11/25 조회에서도 아직 전 행 0원입니다(11/24 첫 3P 판매 21,990원 → 구매확정 후 반영).</div>
       <div class="kpis" style="margin-bottom:14px">
         ${kpiCard('판매액', won(T.sales)+'원', `<span class="flat">판매 ${won(T.qty)}개 · 쿠폰 −${won(couponAll)}</span>`)}
         ${kpiCard('정산대상액', won(T.target)+'원', `<span class="flat">판매수수료 −${won(T.fee)}원</span>`)}
@@ -3549,7 +3570,7 @@ VIEWS.settle = function(){
         정산대상액 = <code>판매액 − 즉시할인쿠폰 − 다운로드쿠폰 − 판매수수료(VAT포함)</code><br>
         실정산액 = <code>정산대상액 − (입출고+배송+보관+반품회수+반품재입고+반출+바코드+FCL+밀크런) + 재고손실보상 − 광고집행비</code><br>
         순이익금 = <code>실정산액 − 원가</code><br>
-        <span class="hint">빨래건조대(11월 누적 11/01~11/22): 39,438,870 − 4,879,940 − 4,105,924 = <b>30,453,006</b> → −2,730,640 −4,872,120 −3,899,522 = <b>18,950,724</b> → −16,435,040 = <b>2,515,684원</b></span>
+        <span class="hint">빨래건조대(11월 누적 11/01~11/25): 44,090,020 − 5,462,940 − 4,589,257 = <b>34,037,823</b> → −3,087,920 −5,510,340 −4,208,304 = <b>21,231,259</b> → −18,370,240 = <b>2,861,019원</b></span>
       </div>
       <div class="alert info" style="margin-top:10px">ℹ️ 숨김 6개 상품도 정산서에는 그대로 남습니다(빅셀과 동일 규칙) — 정산은 쿠팡 정산서 원본 기준입니다. 행 합계와 표기 합계가 1원 다를 수 있는 건 빅셀 자체의 원단위 반올림 때문입니다.</div>
       </div>
@@ -3676,7 +3697,7 @@ VIEWS.stock = function(){
       <div class="hint" style="line-height:1.7">
         <b>[입고필요 상품만]</b> = 품절예상일이 30일 이내이거나 재고 0인 상품 · 품절예상일 = <code>쿠팡재고 ÷ 최근 7일 일일평균판매량</code> · 쿠팡입고필요수량은 <b>본사재고 등록 후</b> 계산되는 칸이라 빅셀에서도 현재 공란입니다.<br>
         <b>빅셀 대시보드 '쿠팡 품절 예상 상품' 카드와 차이</b>: 빅셀 카드는 <b>14일 이내</b>만 올리고(조회조건 비공개, 실측상 16~17일 남은 건도 빠짐) 이 화면은 입고판단용으로 <b>30일까지</b> 보여줍니다. 지금 14일 이내 <b>${near14.length}건</b> · 30일 이내 <b>${need.length}건</b> ${near14.length===0?'→ 빅셀 카드 0건과 일치(계산식 동일, 표시 범위만 다름)':''}<br>
-        재고 집계 시점 차이: 매출분석 재고합계 <b>${won(T.stock)}개</b>(${STOCK.asOf}) · 윙 재고현황 옵션합계 <b>${wingTotal?won(wingTotal):'-'}개</b>(${esc(wingAt)}) · 정산서 재고수량 <b>${won(STOCK.settleStock)}개</b>(정산서 스냅샷).
+        재고 집계 시점 차이: 매출분석 재고합계 <b>${won(T.stock)}개</b>(${STOCK.asOf}) · 윙 재고현황 옵션합계 <b>${wingTotal?won(wingTotal):'-'}개</b>(${esc(wingAt)}) · 정산서 재고수량 <b>${won(STOCK.settleStock)}개</b>(11/25 정산서 기준).
       </div>
     </div>
   </div>`
@@ -3707,7 +3728,7 @@ VIEWS.rank = function(){
   const newN = meas.filter(r=>r.prev==null).length;
   const outN = RANKS.length - meas.length;
   const best = meas.slice().sort((a,b)=>a.now-b.now)[0];
-  return topbar('노출순위','쿠팡 자연 검색 순위 (광고 제외 · 최대 3페이지) · 11월 24일 확정 · 11월 25일 수집분 포함',
+  return topbar('노출순위','쿠팡 자연 검색 순위 (광고 제외 · 최대 3페이지) · 11월 25일 확정 · 11월 26일 수집분 포함',
     `<span class="chip">추적 키워드 <b>17</b>/100</span>`)
   + `<div class="kpis" style="margin-bottom:14px">
       ${kpiCard('최고 순위', best.now+'위', `<span class="flat">${esc(best.kw)}</span>`, {accent:true})}
@@ -3715,7 +3736,7 @@ VIEWS.rank = function(){
       ${kpiCard('하락', down+'줄', `<span class="down">순위 하락</span>`)}
       ${kpiCard('신규 · 변동없음', newN+' · '+same+'줄', `<span class="flat">3p 밖 ${outN}줄</span>`)}
     </div>`
-  + `<div class="card">${sectionHead('상품별 순위 변동','빅셀 대시보드와 같은 기준 · 전일(11/23) → 11/24')}
+  + `<div class="card">${sectionHead('상품별 순위 변동','빅셀 대시보드와 같은 기준 · 전일(11/24) → 11/25')}
     <div class="tbl-wrap"><table class="tbl">
       <thead><tr><th class="l">상품</th><th class="l">키워드</th><th>전일</th><th>현재</th><th>변동</th><th>페이지</th></tr></thead>
       <tbody>${RANKS.map(r=>{
@@ -3733,20 +3754,24 @@ VIEWS.rank = function(){
     </table></div>
     <div class="card-b" style="border-top:1px solid var(--line2)">
       <div class="botn">${barChart(meas.map(r=>({l:r.kw.slice(0,4), v:100-r.now*2, sub:r.now+'위', c:r.now<=20?'#12b886':(r.now<=30?'#2f6bff':'#f59f00')})),{h:170})}</div>
-      <div class="hint" style="margin-top:6px">막대가 높을수록 상위 노출입니다. 11/24는 접이식빨래건조대 올블랙이 <b>46위 → 39위(▲7)</b>로 오르고 올화이트 28→37(▼9)·올크림 38→41(▼3)은 밀렸으며, 원룸빨래건조대 올화이트가 <b>49위(3p 9번째)로 3페이지에 새로 들어왔습니다</b>. 반대로 11/23에 19위(1p)였던 접이식건조대 올화이트는 11/24에 3p 밖으로 빠졌다가 11/25에 22위로 돌아왔습니다. 키워드 '건조대'·'빨래건조대'는 3페이지 밖이라 값이 없습니다.</div>
+      <div class="hint" style="margin-top:6px">막대가 높을수록 상위 노출입니다. 11/25는 접이식건조대 키워드가 살아나 <b>올화이트가 3p 밖→22위(2p 2), 올블랙이 3p 밖→32위(2p 12)</b>로 새로 들어왔고, 원룸빨래건조대 올블랙도 <b>3p 밖→39위</b>로 진입했습니다. 반대로 11/23에 19위(1p)였던 접이식건조대 올화이트는 11/24 3p 밖 → 11/25 22위로 복귀했고, 오늘(11/26) 다시 37위로 밀렸습니다(아래 카드). 키워드 '건조대'·'빨래건조대'는 3페이지 밖이라 값이 없습니다.</div>
     </div>
   </div>`
-  + `<div class="card" style="margin-top:14px">${sectionHead('11월 25일(오늘) 빅셀 수집분','조회 14:0x · 수집이 더 진행되면 값이 바뀔 수 있습니다')}
+  + `<div class="card" style="margin-top:14px">${sectionHead('11월 26일(오늘) 빅셀 수집분','조회 14:0x · 수집이 더 진행되면 값이 바뀔 수 있습니다')}
     <div class="tbl-wrap"><table class="tbl">
-      <thead><tr><th class="l">키워드</th><th class="l">옵션</th><th>전체순위</th><th>페이지</th><th>11/24 확정 대비</th></tr></thead>
+      <thead><tr><th class="l">키워드</th><th class="l">옵션</th><th>전체순위</th><th>페이지</th><th>11/25 확정 대비</th></tr></thead>
       <tbody>${RANKS_TODAY.map(t=>{
-        const d = (t.prev!=null) ? t.prev - t.rank : null;
+        const d = (t.rank!=null && t.prev!=null) ? t.prev - t.rank : null;
+        const rk = t.rank==null ? '<span class="flat">3p 밖</span>' : `<b>${t.rank}위</b>`;
+        const pg = t.rank==null ? '<span class="flat">-</span>' : (t.page||Math.ceil(t.rank/20)+'p');
+        const dl = t.rank==null ? '<span class="down">▼3p 밖으로</span>'
+          : (t.prev==null ? '<span class="up">3p 밖→진입</span>' : (d>0?'▲'+d:(d<0?'▼'+Math.abs(d):'-')));
         return `<tr><td class="l"><span class="pill rfm">${esc(t.kw)}</span></td><td class="l">${esc(t.opt)}</td>
-          <td class="num"><b>${t.rank}위</b></td><td class="num">${t.page||Math.ceil(t.rank/20)+'p'}</td>
-          <td class="num ${d>0?'up':(d<0?'down':'flat')}">${t.prev==null?'<span class="up">3p 밖→진입</span>':(d>0?'▲'+d:(d<0?'▼'+Math.abs(d):'-'))}</td></tr>`;
+          <td class="num">${rk}</td><td class="num">${pg}</td>
+          <td class="num ${d!=null&&d>0?'up':(d!=null&&d<0?'down':'flat')}">${dl}</td></tr>`;
       }).join('')}</tbody>
     </table></div>
-    <div class="card-b" style="border-top:1px solid var(--line2)"><div class="hint">빅셀 노출순위 보고서 [데이터 수집기간 선택]에서 날짜를 11/23·11/24·11/25로 각각 지정해 <b>옵션별 '전체순위'</b>를 그대로 옮겼습니다(전체순위 = (페이지−1)×20 + 순위). 빅셀의 키워드×날짜 표는 하루에 <b>그 키워드에서 가장 잘 나온 옵션 1줄</b>만 보여주므로(그래서 색상별 값이 섞여 보입니다) 옵션별 값은 옵션표에서 읽었습니다. 11/25 조회분은 14:0x 시점 값입니다.</div></div>
+    <div class="card-b" style="border-top:1px solid var(--line2)"><div class="hint">빅셀 노출순위 보고서 [데이터 수집기간 선택]에서 날짜를 11/25·11/26으로 각각 지정해 <b>옵션별 '전체순위'</b>를 그대로 옮겼습니다(전체순위 = (페이지−1)×20 + 순위). 오늘은 접이식건조대 올화이트가 22→37(▼15)로 크게 밀렸고, 어제 32위였던 접이식건조대 올블랙은 3p 밖으로 빠져 오늘 옵션표에 없습니다(광고 제외 기준이라 하루 사이 진폭이 큰 날이 있습니다). 11/26 조회분은 14:0x 시점 값입니다.</div></div>
   </div>`;
 };
 
@@ -3872,7 +3897,7 @@ VIEWS.settings = function(){
     <div class="card-b">
       <div class="stat-line"><span class="lb">일별 매출·이익금·광고비</span><span class="vl">빅셀 대시보드 매출 보고서 (11/1~11/24 확정 · 11/25 실시간 별도)</span></div>
       <div class="stat-line"><span class="lb">상품 원가·수수료·입출고·배송비</span><span class="vl">빅셀 로켓그로스 상품 관리</span></div>
-      <div class="stat-line"><span class="lb">정산·손익</span><span class="vl">빅셀 정산 분석 > 로켓그로스 (11/01~11/22 확정 · 11/23·11/24는 빅셀 미수집 · 27개 전컬럼)</span></div>
+      <div class="stat-line"><span class="lb">정산·손익</span><span class="vl">빅셀 정산 분석 > 로켓그로스 (11/01~11/25 확정 · 11/23~11/25 정산서 수집 완료 · 27개 전컬럼)</span></div>
       <div class="stat-line"><span class="lb">판매자배송(3P) 매출</span><span class="vl">bigcell-live.json daily[].p3 (11/24 좌식테이블 1건 21,990원 · 정산은 구매확정일 기준)</span></div>
       <div class="stat-line"><span class="lb">재고·입고 지표</span><span class="vl">빅셀 매출분석 상세보기(${STOCK.asOf}) + 쿠팡 윙 재고현황 스냅샷(${BC7.wing.updatedAt})</span></div>
       <div class="stat-line"><span class="lb">상품 숨김 상태</span><span class="vl">빅셀 상품 관리 > 로켓그로스 > 숨김상품 (운영 8 · 숨김 6)</span></div>
