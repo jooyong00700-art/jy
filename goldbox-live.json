@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-28 07:22",
+  "updatedAt": "2026-11-28 07:34",
   "date": "2026-11-28",
   "items": [
     {
@@ -11,11 +11,11 @@
       "reviews": "(1,118)",
       "thumb": "https://thumbnail.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/dd6d/270966acc12d6e7078c72b1dcb1cb2902bcbdd552bf3be94bdf235bda175.png",
       "url": "https://www.coupang.com/vp/products/9730665989?itemId=29118597164&vendorItemId=96112761698",
-      "cny": 198.0,
-      "krw": 59400,
+      "cny": 166.0,
+      "krw": 49800,
       "url1688": "https://detail.1688.com/offer/1082748821382.html",
-      "match": "유사품(11자 코너형 개방식 철제 옷장·가두리 의류 수납장): 开放式货架衣柜角落地衣帽架 加厚碳钢 ¥198 1개부터(90+판매, 徐州翔龙家具) — 원가는 판매가 59,900원과 거의 같아 마진 없음. 대안 ¥208·¥277·¥34.5(2단)",
-      "collectedAt": "11/28 07:22"
+      "match": "유사품(코너형 개방식 철제 옷장·각거치 의류 수납장, 徐州翔龙家具·入驻7년): 상세페이지 1개부터 ¥166.00起 — 사이즈·구성(转角80*80*220 등 60여종)별 가격 상이, 검색카드 표시가는 ¥198",
+      "collectedAt": "11/28 07:34"
     },
     {
       "productId": "7754487390",
@@ -26,11 +26,11 @@
       "reviews": "(1,759)",
       "thumb": "https://thumbnail.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/bdd6/3f1b6ea15b30bffd436f720eb54772fbc9c0c80f39213180aa59afb60a83.png",
       "url": "https://www.coupang.com/vp/products/7754487390?itemId=20895864414&vendorItemId=91178959784",
-      "cny": 255.0,
-      "krw": 76500,
-      "url1688": "https://detail.1688.com/offer/1008795409903.html",
-      "match": "유사품(무엽 타워형 냉온풍기·리모컨): 跨境新款无叶电风扇暖风机遥控家用冷暖扇小型台式落地塔扇 ¥255 1개부터 — 동일 공장 미확인. 대안 ¥230·¥265·¥305. 원가 76,500원(판매가 144,530원)",
-      "collectedAt": "11/28 07:22"
+      "cny": null,
+      "krw": null,
+      "url1688": "",
+      "match": "동일/유사 공장 미확정 — 이미지 검색 상위는 30W 미니 무엽선풍기(¥185)·소형 냉온 타워(¥230~305)뿐, 2kW급 대형 PTC 타워 온풍기 대응품은 ¥498~대(안제로 등)로 원가가 판매가와 맞먹어 소싱 메리트 없음",
+      "collectedAt": "11/28 07:34"
     }
   ]
 }
