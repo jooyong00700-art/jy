@@ -49,6 +49,12 @@ input,select,textarea{font-family:inherit; font-size:inherit; color:inherit}
 .nav-item.on{background:rgba(47,107,255,.16); color:#fff; border-left-color:#3b82f6; font-weight:700}
 .nav-item .ico{width:16px; text-align:center; opacity:.85; font-size:13px}
 .nav-item .badge{margin-left:auto; font-size:10px; background:#2f6bff; color:#fff; border-radius:99px; padding:1px 6px; font-weight:700}
+.side-sync{margin-top:10px; padding:12px 18px 4px; border-top:1px solid rgba(255,255,255,.07); font-size:11px; color:#5d6d92; line-height:1.55}
+.side-sync .ss-k{font-weight:800; color:#93a4c6; font-size:10.5px}
+.side-sync .ss-k span{font-weight:600; color:#61719a}
+.side-sync .ss-v{color:#cfd9ea; font-weight:800; font-variant-numeric:tabular-nums; letter-spacing:.1px}
+.side-sync .ss-v.ss-at{font-weight:700; color:#9fb0d0; line-height:1.6}
+.side-sync .ss-brand{margin-top:10px; color:#4f5f85; font-weight:700}
 .main{flex:1 1 auto; min-width:0; padding:18px 22px 90px; max-width:1560px}
 
 /* topbar */
@@ -59,6 +65,12 @@ input,select,textarea{font-family:inherit; font-size:inherit; color:inherit}
 .chip{display:inline-flex; align-items:center; gap:6px; background:#fff; border:1px solid var(--line); border-radius:999px; padding:6px 11px; font-size:12px; color:var(--ink2); box-shadow:var(--shadow)}
 .chip b{color:var(--ink)}
 .chip .live{width:7px;height:7px;border-radius:50%;background:#22b573; box-shadow:0 0 0 3px rgba(34,181,115,.18)}
+/* ---------- 정기 수집 시간표 · 최근 수집 시각 ---------- */
+.chip.sched{background:#f5f8ff; border-color:#dbe5f8; color:#42527c}
+.chip.sched b{color:#1e3d75; letter-spacing:.15px; font-variant-numeric:tabular-nums}
+.chip.sched .ic{font-size:12px; line-height:1}
+.chip .sep{color:#c3ccdd}
+@media (max-width:760px){ .chip.sched{font-size:10.5px; padding:5px 9px; gap:4px} .chip.sched b{letter-spacing:0} }
 
 /* ---------- cards ---------- */
 .grid{display:grid; gap:14px}
@@ -111,6 +123,9 @@ input,select,textarea{font-family:inherit; font-size:inherit; color:inherit}
 .live-btn .bolt{font-size:13px; filter:drop-shadow(0 0 6px rgba(255,255,255,.6))}
 .lp-src{display:flex; align-items:center; gap:8px; flex-wrap:wrap; background:#f7f9fd; border:1px solid var(--line); border-radius:11px; padding:8px 11px; font-size:12px; color:#5b6784}
 .lp-src b{color:var(--ink)}
+.lp-sched{display:flex; align-items:center; gap:5px; flex-wrap:wrap; margin-top:7px; background:#f2f6ff; border:1px dashed #cddcf7; border-radius:10px; padding:7px 11px; font-size:11.5px; color:#45537a; line-height:1.55}
+.lp-sched b{color:#1f3d78; font-variant-numeric:tabular-nums}
+.lp-sched .flat{color:#7b88a5}
 .lp-grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px}
 .lp-grid .form-row{margin-bottom:0}
 .lp-grid .form-row label{display:block; font-size:11.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
@@ -2344,12 +2359,36 @@ const TABS = [
   {id:'report', ico:'💬', label:'리포트'}
 ];
 let view = 'dashboard';
+/* ---------- 정기 수집 시간표 (쿠팡 윙·광고센터 + 네이버 스마트스토어 실시간 동기화) ----------
+   시간을 바꿀 때는 아래 배열만 고치면 헤더·사이드바·순수익 모달에 모두 반영된다. */
+const COLLECT_TIMES = ['09:30','13:00','17:00','20:00','22:00','23:40'];
+const COLLECT_TXT = COLLECT_TIMES.join(' · ');
+function isoAtShort(s){
+  const m = /^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}:\d{2})/.exec(String(s||''));
+  return m ? `${Number(m[2])}/${m[3]} ${m[4]}` : '';
+}
+function dateAtText(d, at){
+  if(!d || !/^\d{4}-\d{2}-\d{2}$/.test(String(d))) return String(at||'');
+  return `${fmtDate(d).replace(/\(.\)$/,'')} ${at||''}`.trim();
+}
+/* 최근 수집 시각 — 쿠팡: bigcell-live.json의 live.at / 네이버: naver-live.json의 collectedAt */
+function coupLastAt(){ return (S.live && S.live.date) ? dateAtText(S.live.date, S.live.at) : '-'; }
+function naverLastAt(){
+  const N = nvData();
+  return isoAtShort(N.collectedAt || N.updatedAt) || '-';
+}
 function renderSide(){
   const html = `<div class="brand"><span class="dot"></span>BIGCELL <small>통합 대시보드</small></div>` +
     NAV.map(g=>`<div class="nav-group"><div class="nav-title">${g.g}</div>` +
       g.items.map(it=>`<button class="nav-item ${view===it.id?'on':''}" data-nav="${it.id}"><span class="ico">${it.ico}</span>${it.label}</button>`).join('') +
       `</div>`).join('') +
-    `<div style="padding:14px 18px; font-size:11px; color:#5d6d92; line-height:1.6">데이터 기준<br><b style="color:#9fb0d0">${esc(S.live.date)} ${esc(S.live.at||'')}</b><br>리스페토 · thfwysla</div>`;
+    `<div class="side-sync">
+      <div class="ss-k">🗓 정기 수집 <span>하루 ${COLLECT_TIMES.length}회</span></div>
+      <div class="ss-v">${COLLECT_TXT}</div>
+      <div class="ss-k" style="margin-top:9px">최근 수집</div>
+      <div class="ss-v ss-at">쿠팡 ${esc(coupLastAt())}<br>네이버 ${esc(naverLastAt())}</div>
+      <div class="ss-brand">리스페토 · thfwysla</div>
+    </div>`;
   const el = document.getElementById('side');
   el.innerHTML = html;
   el.querySelectorAll('[data-nav]').forEach(b=>b.onclick=()=>go(b.dataset.nav));
@@ -2403,12 +2442,20 @@ const VIEWS_BIND = {};
 const ACTIONS = {};
 
 /* ============================== 공통 조각 ============================== */
+function collectScheduleChip(){
+  return `<span class="chip sched" title="쿠팡 윙·광고센터·네이버 스마트스토어 자동 동기화 정기 수집 시간 (한국시간 · 하루 ${COLLECT_TIMES.length}회)"><span class="ic">🗓</span>정기 수집 <b>${COLLECT_TXT}</b></span>`;
+}
+function lastCollectChip(){
+  const nv = naverLastAt();
+  return `<span class="chip" title="bigcell-live.json · naver-live.json 최근 수집 시각"><span class="live"></span>최근 수집 <b>${esc(coupLastAt())}</b>${nv!=='-'?` <span class="sep">·</span> 네이버 <b>${esc(nv)}</b>`:''}</span>`;
+}
 function topbar(title, sub, right){
   return `<div class="topbar">
     <div><h1>${title}</h1><div class="sub">${sub||''}</div></div>
     <div class="spacer"></div>
     ${right||''}
-    <span class="chip"><span class="live"></span>데이터 <b>${fmtDate(S.live.date).replace(/\(.\)$/,'')} ${esc(S.live.at||'')}</b></span>
+    ${collectScheduleChip()}
+    ${lastCollectChip()}
   </div>`;
 }
 function kpiCard(lab, val, delta, extra){
@@ -2499,7 +2546,7 @@ function naverCard(){
   const at = String(N.updatedAt || '').replace('T', ' ').slice(5, 16);
   const pm = nvParcelOf(N.month || '2026-11');
   return `<div class="card nv-card" style="margin-bottom:14px">
-    ${sectionHead('🟢 네이버 스마트스토어 (리스페토)', `배송완료일 기준 ${esc(N.period||'')} · 수수료 5.728% · 택배비 3,400원/건(반품 6,800 · 교환 10,200)`, `<button class="btn" data-nav="naver">네이버 화면 열기 →</button>`)}
+    ${sectionHead('🟢 네이버 스마트스토어 (리스페토)', `배송완료일 기준 ${esc(N.period||'')} · 최근 수집 ${esc(naverLastAt())} · 수수료 5.728% · 택배비 3,400원/건(반품 6,800 · 교환 10,200)`, `<button class="btn" data-nav="naver">네이버 화면 열기 →</button>`)}
     <div class="card-b">
       <div class="nv-strip">
         <span class="nv-chip"><span class="lb">11월 배송완료 매출</span><span class="vl">${won(t.revenue)}원</span><span class="sb">상품 ${won(t.netSales)} + 배송비 ${won(t.shippingIncome)} · ${won(t.orders)}건</span></span>
@@ -4313,6 +4360,8 @@ const LP_MIX = [{id:'8188501167'}, {id:'9701805278'}];   // 건조대 · 신발�
 let LP = null;
 
 function lpNow(){ const d = new Date(); return pad(d.getHours())+':'+pad(d.getMinutes()); }
+/* 모달에 보이는 '최근 수집' — 방금 불러온 JSON의 수집 시각(LP.srcAt) 우선, 없으면 페이지 데이터 기준 */
+function lpSrcText(){ return LP && LP.srcDate ? (dateAtText(LP.srcDate, LP.srcAt) || coupLastAt()) : coupLastAt(); }
 function lpDefaults(){
   const l = S.live || {};
   const qty = Number(l.qty) || 0;
@@ -4329,7 +4378,9 @@ function lpDefaults(){
     coupon: hasC ? couponNum(l.coupon) : est,
     couponAuto: !hasC || couponNum(l.coupon) === est,   // 수량·비중으로 자동 산출
     avgRate: Math.round(blendedMargin()*10000)/100,
-    at: l.at || ''
+    at: l.at || '',
+    srcDate: (S.live && S.live.date) || '',
+    srcAt: (S.live && S.live.at) || ''
   };
 }
 function lpProducts(){
@@ -4443,10 +4494,11 @@ function openLivePanel(keep, noSync){
     <div class="mh"><h3>⚡ 실시간 순수익 조회</h3>${badge}<button class="x" id="lpX" aria-label="닫기">✕</button></div>
     <div class="mb">
       <div class="lp-src">
-        <span>기준일 <b>${LP.date}</b> · 기록 <b>${esc(LP.at||'-')}</b></span>
+        <span>기준일 <b>${LP.date}</b> · 불러온 시각 <b>${esc(LP.at||'-')}</b></span>
         <span class="spacer"></span>
         <button class="btn" id="lpSync" type="button">↻ 지금 불러오기</button>
       </div>
+      <div class="lp-sched">🗓 정기 수집 <b>${COLLECT_TXT}</b> <span class="flat">(하루 ${COLLECT_TIMES.length}회 · 한국시간)</span> <span class="sep">|</span> 최근 수집 쿠팡 <b>${esc(lpSrcText())}</b> · 네이버 <b>${esc(naverLastAt())}</b></div>
       <div class="lp-hint" id="lpSyncMsg">${S.apiUrl?`자동 수집 엔드포인트 <b>${esc(S.apiUrl)}</b>${LP.at?' · 마지막 기록 '+esc(LP.at):''}`:'자동 수집 엔드포인트가 설정되지 않아 <b>저장된 오늘 실시간 값</b>을 불러왔습니다.'}</div>
 
       <div class="sec-t">① 오늘 값 입력 <span class="cnt">쿠팡 윙 · 광고센터</span></div>
@@ -4596,8 +4648,10 @@ async function lpSync(auto){
     else if(src.ad!=null) adEx = Number(src.ad)/(S.vat||1.1);
     if(adEx!=null && !isNaN(adEx)) LP.adExVat = Math.round(adEx);
     LP.at = lpNow();
+    if(src.at) LP.srcAt = src.at;
+    if(/^\d{4}-\d{2}-\d{2}$/.test(String(src.date||''))) LP.srcDate = src.date;
     openLivePanel(true, true);
-    lpNote(`✅ 자동 수집 완료 · <b>${lpNow()}</b> <span class="flat">${esc(S.apiUrl)}</span>`);
+    lpNote(`✅ 자동 수집 완료 · <b>${lpNow()}</b> <span class="flat">최근 수집 ${esc(lpSrcText())}</span> <span class="flat">${esc(S.apiUrl)}</span>`);
     if(!auto) lpToast('최신 값을 불러왔습니다. 반영하려면 [오늘 실적에 반영]을 누르세요.');
   }catch(e){
     lpNote(`⚠️ 자동 수집 실패: ${esc(e.message)} — 저장된 값을 그대로 사용합니다.`);
