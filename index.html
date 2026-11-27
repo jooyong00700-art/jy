@@ -4655,7 +4655,7 @@ async function lpSync(auto){
     if(src.at) LP.srcAt = src.at;
     if(/^\d{4}-\d{2}-\d{2}$/.test(String(src.date||''))) LP.srcDate = src.date;
     openLivePanel(true, true);
-    lpNote(`✅ 자동 수집 완료 · <b>${lpNow()}</b> <span class="flat">최근 수집 ${esc(lpSrcText())}</span> <span class="flat">${esc(S.apiUrl)}</span>`);
+    lpNote(`✅ 자동 수집 완료 · 불러온 시각 <b>${lpNow()}</b> · <span class="flat">최근 수집 ${esc(lpSrcText())}</span> <span class="flat">${esc(S.apiUrl)}</span>`);
     if(!auto) lpToast('최신 값을 불러왔습니다. 반영하려면 [오늘 실적에 반영]을 누르세요.');
   }catch(e){
     lpNote(`⚠️ 자동 수집 실패: ${esc(e.message)} — 저장된 값을 그대로 사용합니다.`);
