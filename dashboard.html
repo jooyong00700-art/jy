@@ -3817,7 +3817,7 @@ VIEWS.stock = function(){
         ${SOLDOUT.filter(s=>!isHidden(s.id)).map(s=>`<div class="rank-row"><div class="nm">${esc(s.name)}<div class="kw">${s.id}</div></div><span class="pill warn">품절</span></div>`).join('') || '<div class="card-b"><span class="flat">품절 상품이 없습니다.</span></div>'}
         <div class="card-b"><div class="alert warn">재고가 0인 채로 오래 두면 노출 순위가 빨리 떨어집니다. 빅셀 [로켓그로스 입고요청 목록]에서 입고를 신청하세요.</div></div>
       </div>
-      <div class="card">${sectionHead('입고 요청 · 발주 현황', '빅셀 로켓 메뉴 2개 화면 · 2026-11-27 14:0x 확인')}
+      <div class="card">${sectionHead('입고 요청 · 발주 현황', '빅셀 로켓 메뉴 2개 화면 · 2026-11-28 14:1x 확인')}
         <div class="card-b">
           <div class="stat-line"><span class="lb">최근 1개월 입고요청</span><span class="vl">0건</span></div>
           <div class="stat-line"><span class="lb">로켓 발주리스트</span><span class="vl">0건</span></div>
@@ -3825,8 +3825,8 @@ VIEWS.stock = function(){
           <div class="stat-line"><span class="lb">쿠팡 보관비(이번달)</span><span class="vl">${wonW(T.keep)}</span></div>
           <div class="stat-line"><span class="lb">재고합계</span><span class="vl">${won(T.stock)}개</span></div>
           <div class="hint" style="margin-top:10px; line-height:1.7">
-            · <b>입고요청 목록</b> = 요청일 기준 최근 1개월 조회 · 상태 필터 · [묶음 입고요청 생성] · 엑셀 다운로드 — 11/27 14:0x 조회 <b>0건</b>(같은 입고일·같은 밀크런은 묶여서 입고됩니다).<br>
-            · <b>로켓 발주리스트</b> = 발주일·입고예정일 기준 <b>익일 1회 자동 수집</b> · 발주수량/확정수량/입고수량·공급단가·발주이익금 열 · [발주서 재수집] 버튼 — 11/27 0건.
+            · <b>입고요청 목록</b> = 요청일 기준 최근 1개월 조회 · 상태 필터 · [묶음 입고요청 생성] · 엑셀 다운로드 — 11/28 14:1x 조회(요청일 10/28~11/28) <b>0건</b>(같은 입고일·같은 밀크런은 묶여서 입고됩니다).<br>
+            · <b>로켓 발주리스트</b> = 발주일·입고예정일 기준 <b>익일 1회 자동 수집</b> · 발주수량/확정수량/입고수량·공급단가·발주이익금 열 · [발주서 재수집] 버튼 — 11/27 기준 0건(11/28 14:1x 확인).
           </div>
           <div class="alert info" style="margin-top:12px">빅셀 [로켓그로스 입고요청 목록]의 자동화는 크롬 확장이 쿠팡 윙 화면을 대신 조작하는 방식입니다. 이 대시보드는 재고·소진 예상일까지 보여줍니다.</div>
         </div>
